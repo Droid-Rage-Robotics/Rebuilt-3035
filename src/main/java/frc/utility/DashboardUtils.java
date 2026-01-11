@@ -100,7 +100,7 @@ public class DashboardUtils {
 
         if (DroidRageConstants.BatteryLow) {
             Elastic.sendNotification(notification
-                .withLevel(Elastic.Notification.NotificationLevel.ERROR)
+                .withLevel(Elastic.NotificationLevel.ERROR)
                 .withTitle("Battery")
                 .withDescription("Battery Low!")
                 .withDisplaySeconds(10.0));
