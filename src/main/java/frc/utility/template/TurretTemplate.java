@@ -1,62 +1,52 @@
 package frc.utility.template;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.DroidRageConstants.Control;
 import frc.utility.DashboardUtils.Dashboard;
 import frc.utility.motor.MotorBase;
 
 public class TurretTemplate extends SubsystemBase implements Dashboard {
     protected final MotorBase[] motors;
-    protected final PIDController controller;
-    protected final SimpleMotorFeedforward feedforward;
-    protected final Control control;
+    protected final ProfiledPIDController controller;
     protected final double maxPosition;
     protected final double minPosition;
     protected final double offset;
+    protected final double conversionFactor;
     protected final int mainNum;
-    protected final String name;
-    protected final TrapezoidProfile profile;
-    protected TrapezoidProfile.State current = new TrapezoidProfile.State(0,0); //initial
-    protected TrapezoidProfile.State goal = new TrapezoidProfile.State(0,0);
+    protected final boolean isEnabled;
 
     public TurretTemplate(
         MotorBase[] motors,
-        PIDController controller,
-        SimpleMotorFeedforward feedforward,
-        TrapezoidProfile.Constraints constraints,
+        ProfiledPIDController controller,
         double maxPosition,
         double minPosition,
+        double conversionFactor,
         double offset,
-        Control control,
-        String tabName,
-        String subsystemName,
         int mainNum,
-        String name
+        boolean isEnabled
     ){
         this.motors=motors;
         this.controller=controller;
-        this.feedforward=feedforward;
-        this.control=control;
+        this.conversionFactor=conversionFactor;
         this.maxPosition=maxPosition;
         this.minPosition=minPosition;
         this.offset=offset;
         this.mainNum=mainNum;
-        this.name=name;
+        this.isEnabled=isEnabled;
 
-        profile = new TrapezoidProfile(constraints);
+        for (MotorBase motor: motors) {
+            motor.withIsEnabled(isEnabled);
+        }
     }
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(name,this);
-        SmartDashboard.putData(name + "/Reset Encoder", runOnce(this::resetEncoder));
+        SmartDashboard.putData(this.getName() ,this);
+        SmartDashboard.putData(this.getName() + "/Reset Encoder", runOnce(this::resetEncoder));
     }
 
     @Override
@@ -67,36 +57,21 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Current Position (Degrees)", () -> Math.toDegrees(getEncoderPosition()), null);
-        builder.addDoubleProperty("Current Position (Radians)", this::getEncoderPosition, null);
-        builder.addDoubleProperty("Target Position (Degrees)", () -> Math.toDegrees(getTargetPosition()), null);
-        builder.addDoubleProperty("Target Position (Radians)", controller::getSetpoint, null);
+        builder.addDoubleProperty("Goal Position", this::getGoalPosition, null);
+        builder.addDoubleProperty("Current Position", this::getPosition, null);
+        builder.addDoubleProperty("Position Setpoint", this::getPositionSetpoint, null);
+        builder.addDoubleProperty("Velocity Setpoint", this::getVelocitySetpoint, null);
+        builder.addDoubleProperty("Current Velocity", this::getVelocity, null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
+        // builder.addDoubleProperty("Calculated Voltage", () -> calculatedVoltage, null);
+        // builder.addDoubleProperty("Calculated FF", () -> calculatedFF, null);
+        // builder.addDoubleProperty("Calculated PID", () -> calculatedPID, null);
+        builder.addDoubleProperty("Position Error", controller::getPositionError, null);
     }
 
     @Override
     public void periodic() {
-        // targetDegreeWriter.set(Math.toDegrees(controller.getSetpoint()));
-        // targetRadianWriter.set(controller.getSetpoint());
-        switch(control){
-            case PID:
-                setVoltage(controller.calculate(getEncoderPosition(), controller.getSetpoint()));
-                // setVoltage((controller.calculate(getEncoderPosition(), getTargetPosition())) + .37);
-                //.37 is kG ^^
-                break;
-            case FEEDFORWARD:
-                setVoltage(controller.calculate(getEncoderPosition(), controller.getSetpoint())
-                +feedforward.calculate(1,1)); 
-                //ks * Math.signum(velocity) + kg + kv * velocity + ka * acceleration; ^^
-                break;
-            case TRAPEZOID_PROFILE:
-                goal = new TrapezoidProfile.State(controller.getSetpoint(),01);
-                current = profile.calculate(0.02, current, goal);
 
-                setVoltage(controller.calculate(getEncoderPosition(), current.position)
-                        + feedforward.calculate(current.position, current.velocity));
-                break;
-        };        
     }
 
     @Override
@@ -115,12 +90,29 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         if(degree>maxPosition||degree<minPosition) {
             degree = Math.toDegrees(degree); //Pretty sure this needs to be like this
         };
-        controller.setSetpoint(Math.toRadians(degree));
+        controller.setGoal(Math.toRadians(degree));
     }
 
-    public double getTargetPosition(){
-        return controller.getSetpoint();
+    public double getGoalPosition(){
+        return controller.getGoal().position;
     }
+
+    public double getVelocitySetpoint() {
+        return controller.getSetpoint().velocity;
+    }
+
+    public double getPositionSetpoint() {
+        return controller.getSetpoint().position;
+    }
+
+    public double getPosition() {
+        return motors[mainNum].getPosition() * conversionFactor;
+    }
+
+    public double getVelocity() {
+        return motors[mainNum].getVelocity() * conversionFactor;
+    }
+
     protected void setVoltage(double voltage) {
         for (MotorBase motor: motors) {
             motor.setVoltage(voltage);
@@ -129,7 +121,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     
     public void resetEncoder() {
         for (MotorBase motor: motors) {
-            // motor.getEncoder().setPosition(0);
             motor.resetEncoder(0);
         }
     }
