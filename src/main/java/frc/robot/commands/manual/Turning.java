@@ -27,7 +27,7 @@ import frc.robot.subsystems.drive.SwerveModule;
 
 public class Turning extends Command {
     private final SwerveDrive drive;
-    private final Elevator elevator;
+    // private final Elevator elevator;
     private final CommandXboxController driver;
     private final Supplier<Double> x, y;
     private volatile double xSpeed, ySpeed, turnSpeed;
@@ -44,9 +44,38 @@ public class Turning extends Command {
     // private SlewRateLimiter yLimiter = new
     // SlewRateLimiter(SwerveDriveConstants.SwerveDriveConfig.MAX_ACCELERATION_UNITS_PER_SECOND.getValue());
 
-    public Turning(SwerveDrive drive, CommandXboxController driver, Elevator elevator) {
+    // public Turning(SwerveDrive drive, CommandXboxController driver, Elevator elevator) {
+    //     this.drive = drive;
+    //     this.elevator=elevator;
+    //     this.driver=driver;
+    //     this.x = driver::getLeftX;
+    //     this.y = driver::getLeftY;
+    //     antiTipX.setTolerance(2);
+    //     antiTipY.setTolerance(2);
+
+    //     driver.rightBumper().whileTrue(drive.setSpeed(Speed.SUPER_SLOW))
+    //             .whileFalse(drive.setSpeed(Speed.SLOW));
+    //     // driver.rightBumper().whileTrue(drive.setSpeed(Speed.SLOW))
+    //     // .whileFalse(drive.setSpeed(Speed.NORMAL));
+
+    //     driver.b().onTrue(new SequentialCommandGroup(
+    //         drive.setYawCommand(0),
+    //         new InstantCommand(()->rightStickDeg=0)
+    //     ));
+
+    //     if (elevator.getPosition() >= ElevatorValue.L3.getHeight()) {
+    //         drive.setSpeed(Speed.SLOW);
+    //     }
+
+    //     SmartDashboard.putData("Drive/Turn Goal", turnGoal);
+
+    //     turnController.enableContinuousInput(0, 360);
+
+    //     addRequirements(drive);
+    // }
+
+    public Turning(SwerveDrive drive, CommandXboxController driver) {
         this.drive = drive;
-        this.elevator=elevator;
         this.driver=driver;
         this.x = driver::getLeftX;
         this.y = driver::getLeftY;
@@ -62,10 +91,6 @@ public class Turning extends Command {
             drive.setYawCommand(0),
             new InstantCommand(()->rightStickDeg=0)
         ));
-
-        if (elevator.getPosition() >= ElevatorValue.L3.getHeight()) {
-            drive.setSpeed(Speed.SLOW);
-        }
 
         SmartDashboard.putData("Drive/Turn Goal", turnGoal);
 
@@ -133,14 +158,17 @@ public class Turning extends Command {
 
         double translationalSpeed;
 
-        if (elevator.getPosition() >= (0.15 * Elevator.Constants.MAX_HEIGHT)) {
-            translationalSpeed = 1.0 - (elevator.getPosition() / Elevator.Constants.MAX_HEIGHT) * 0.95;
+        // if (elevator.getPosition() >= (0.15 * Elevator.Constants.MAX_HEIGHT)) {
+        //     translationalSpeed = 1.0 - (elevator.getPosition() / Elevator.Constants.MAX_HEIGHT) * 0.95;
 
-            translationalSpeed = MathUtil.clamp(translationalSpeed, 0.01, drive.getTranslationalSpeed());
-        }
-        else {
-            translationalSpeed = drive.getTranslationalSpeed();
-        }
+        //     translationalSpeed = MathUtil.clamp(translationalSpeed, 0.01, drive.getTranslationalSpeed());
+        // }
+        // else {
+        //     translationalSpeed = drive.getTranslationalSpeed();
+        // }
+
+        translationalSpeed = drive.getTranslationalSpeed();
+
 
         // Smooth driving and apply speed
         xSpeed = 

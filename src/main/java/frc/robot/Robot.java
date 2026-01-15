@@ -141,6 +141,8 @@ public class Robot extends TimedRobot {
         // robotContainer.configureTeleOpBindings(drive, elevator, carriage, climb, vision);
         // robotContainer.configureTeleOpBindings(drive, elevator, carriage, vision);
 
+        robotContainer.testDrive(driver, drive, vision);
+
         
         // robotContainer.resetClimb(climb);
         vision.setUpVision(); //Has to be here to set up Limelight Pipelines
