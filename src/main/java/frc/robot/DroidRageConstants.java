@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.SuppliedCommand;
-import frc.robot.subsystems.carriage.Carriage.CarriageValue;
 
 public final class DroidRageConstants {
     public enum Alignment {
@@ -46,43 +45,7 @@ public final class DroidRageConstants {
         };
     };
 
-    public static Element element = Element.ALGAE;
-    public static Command setElement(CarriageValue position){
-        return SuppliedCommand.create(
-            () -> Commands.sequence(
-            switch(position){
-                case ALGAE_HIGH, ALGAE_LOW, BARGE, BARGE_HOLD, INTAKE_GROUND, PROCESSOR:
-                    yield new SequentialCommandGroup(
-                        new InstantCommand(()-> element = Element.ALGAE),
-                        new InstantCommand(()->elementWriter.set(element.toString()))
-                    );
-                case INTAKE_HPS, INTAKE_HPS_BLOCK, L1, L2, L3,L4:
-                    yield new SequentialCommandGroup(
-                        new InstantCommand(()-> element = Element.CORAL),
-                        new InstantCommand(()->elementWriter.set(element.toString()))
-                    );
-                default:
-                    yield new SequentialCommandGroup(
-                        new InstantCommand(()-> element = Element.NONE),
-                        new InstantCommand(()->elementWriter.set(element.toString()))
-                    );
-            }
-        ));
-        // switch(position){
-        //     case ALGAE_HIGH, ALGAE_LOW, INTAKE_GROUND:
-        //         DroidRageConstants.element = DroidRageConstants.Element.ALGAE;
-        //         elementWriter.set(element.toString());
-        //         break;
-        //     case INTAKE_HPS, INTAKE_HPS_BLOCK:
-        //         DroidRageConstants.element = DroidRageConstants.Element.CORAL;
-        //         elementWriter.set(element.toString());
-        //         break;
-        //     default:
-        //         DroidRageConstants.element = DroidRageConstants.Element.NONE;
-        //         elementWriter.set(element.toString());
-        //         break;
-        // }
-    }
+    
     
     public static class Gamepad {
         public static final int DRIVER_CONTROLLER_PORT = 0;
