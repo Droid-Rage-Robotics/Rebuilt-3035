@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -103,7 +104,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         new Pose2d()
     );
 
-    private volatile Speed speed = Speed.SLOW;
+    private volatile Speed speed = Speed.NORMAL;
     private volatile TippingState tippingState = TippingState.NO_TIP_CORRECTION;
 
     private final Field2d field = new Field2d();
@@ -420,14 +421,14 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
     // public void changeAllianceRotation(){//DO THIS AT THE END OF AUTOS ONLY
     //     //No WORK
     //     setYaw(getHeading() +90);
-    //     // switch (DriverStation.getAlliance().get()) {
-    //     //     case Red:
-    //     //         setYaw(getHeading() + 180);
-    //     //         break;
-    //     //     case Blue:
-    //     //         setYaw(getHeading());
-    //     //         break;
-    //     // }
+    //     switch (DriverStation.getAlliance().get()) {
+    //         case Red:
+    //             setYaw(getHeading() + 180);
+    //             break;
+    //         case Blue:
+    //             setYaw(getHeading());
+    //             break;
+    //     }
     // } 
 
     public SysIdRoutine getDriveSysId() {
