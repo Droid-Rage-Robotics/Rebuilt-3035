@@ -1,121 +1,177 @@
 package frc.utility.template;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.utility.LimelightEx;
 import frc.utility.DashboardUtils.Dashboard;
 import frc.utility.motor.MotorBase;
 
 public class TurretTemplate extends SubsystemBase implements Dashboard {
-    protected final MotorBase[] motors;
-    protected final ProfiledPIDController controller;
-    protected final double maxPosition;
-    protected final double minPosition;
-    protected final double offset;
-    protected final double conversionFactor;
-    protected final int mainNum;
-    protected final boolean isEnabled;
+    private final MotorBase[] motors;
+    private final int mainNum;
+    private final LimelightEx limelight;
+
+    private final ProfiledPIDController controller;
+    private final SimpleMotorFeedforward feedforward;
+
+    private final double minAngleRad;
+    private final double maxAngleRad;
+    private final double conversionFactor;
+    private final double encoderOffsetRad;
+
+    private final boolean isEnabled;
+
+    private Rotation2d goalAngle = Rotation2d.fromRadians(0);
 
     public TurretTemplate(
         MotorBase[] motors,
-        ProfiledPIDController controller,
-        double maxPosition,
-        double minPosition,
-        double conversionFactor,
-        double offset,
         int mainNum,
+        LimelightEx limelight,
+        ProfiledPIDController controller,
+        SimpleMotorFeedforward feedforward,
+        double minAngleRad,
+        double maxAngleRad,
+        double conversionFactor,
+        double encoderOffsetRad,
         boolean isEnabled
-    ){
+    ) {
         this.motors=motors;
-        this.controller=controller;
-        this.conversionFactor=conversionFactor;
-        this.maxPosition=maxPosition;
-        this.minPosition=minPosition;
-        this.offset=offset;
         this.mainNum=mainNum;
+        this.limelight=limelight;
+        this.controller=controller;
+        this.feedforward=feedforward;
+        this.minAngleRad=minAngleRad;
+        this.maxAngleRad=maxAngleRad;
+        this.conversionFactor=conversionFactor;
+        this.encoderOffsetRad=encoderOffsetRad;
         this.isEnabled=isEnabled;
 
-        for (MotorBase motor: motors) {
+        controller.enableContinuousInput(-Math.PI, Math.PI);
+
+        for (MotorBase motor : motors) {
             motor.withIsEnabled(isEnabled);
         }
     }
 
+    /* ---------------- Dashboard ---------------- */
+
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(this.getName() ,this);
-        SmartDashboard.putData(this.getName() + "/Reset Encoder", runOnce(this::resetEncoder));
+        SmartDashboard.putData(getName(), this);
+        SmartDashboard.putData(getName() + "/Reset Encoder", runOnce(this::resetEncoder));
     }
 
-    @Override
-    public void practiceWriters() {}
-
-    @Override
-    public void alerts() {}
+    @Override public void practiceWriters() {}
+    @Override public void alerts() {}
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Goal Position", this::getGoalPosition, null);
-        builder.addDoubleProperty("Current Position", this::getPosition, null);
-        builder.addDoubleProperty("Position Setpoint", this::getPositionSetpoint, null);
-        builder.addDoubleProperty("Velocity Setpoint", this::getVelocitySetpoint, null);
-        builder.addDoubleProperty("Current Velocity", this::getVelocity, null);
+        builder.addDoubleProperty("Goal Angle (deg)", () -> getGoalAngle().getDegrees(), null);
+        builder.addDoubleProperty("Current Angle (deg)", () -> getCurrentAngle().getDegrees(), null);
+        builder.addDoubleProperty("Position Setpoint (deg)", this::getPositionSetpoint, null);
+        builder.addDoubleProperty("Velocity Setpoint (deg/s)", this::getVelocitySetpoint, null);
+        builder.addDoubleProperty("Current Velocity (deg/s)", () -> Math.toDegrees(getVelocity()), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
-        // builder.addDoubleProperty("Calculated Voltage", () -> calculatedVoltage, null);
-        // builder.addDoubleProperty("Calculated FF", () -> calculatedFF, null);
-        // builder.addDoubleProperty("Calculated PID", () -> calculatedPID, null);
-        builder.addDoubleProperty("Position Error", controller::getPositionError, null);
+        builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
     }
+
+    /* ---------------- Periodic Control Loop ---------------- */
 
     @Override
     public void periodic() {
+        double currentAngleRad = getCurrentAngle().getRadians();
 
+        double pidOut = controller.calculate(currentAngleRad);
+        var setpoint = controller.getSetpoint();
+
+        double ffOut = feedforward.calculate(setpoint.velocity);
+
+        setVoltage(pidOut + ffOut);
     }
 
     @Override
     public void simulationPeriodic() {
         periodic();
     }
-    
-    public Command setTargetPositionCommand(double degree){
-        return new InstantCommand(()->setTargetPosition(degree));
+
+    /* ---------------- Commands ---------------- */
+
+    public Command setTargetPositionCommand(double degrees) {
+        return new InstantCommand(() -> setTargetPositionDegrees(degrees), this);
     }
 
-    /*
-     * Use this for initialization
-     */
-    public void setTargetPosition(double degree) {
-        if(degree>maxPosition||degree<minPosition) {
-            degree = Math.toDegrees(degree); //Pretty sure this needs to be like this
-        };
-        controller.setGoal(Math.toRadians(degree));
+    /* ---------------- Manual Goal Control ---------------- */
+
+    public void setTargetPositionDegrees(double degrees) {
+        setGoalAngle(Rotation2d.fromDegrees(degrees));
     }
 
-    public double getGoalPosition(){
-        return controller.getGoal().position;
+    public void setGoalAngle(Rotation2d angle) {
+        double clamped = MathUtil.clamp(
+            angle.getRadians(),
+            minAngleRad,
+            maxAngleRad
+        );
+
+        goalAngle = new Rotation2d(clamped);
+        controller.setGoal(clamped);
+    }
+
+    public Rotation2d getGoalAngle() {
+        return goalAngle;
     }
 
     public double getVelocitySetpoint() {
-        return controller.getSetpoint().velocity;
+        return Math.toDegrees(controller.getSetpoint().velocity);
     }
 
     public double getPositionSetpoint() {
-        return controller.getSetpoint().position;
+        return Math.toDegrees(controller.getSetpoint().position);
     }
 
-    public double getPosition() {
-        return motors[mainNum].getPosition() * conversionFactor;
+    /* ---------------- Vision Aiming ---------------- */
+
+    public void aimWithLimelight() {
+        if (!limelight.getTV()) return;
+
+        double txDeg = limelight.getTX();
+        Rotation2d currentAngle = getCurrentAngle();
+
+        // Shift the goal by the Limelight error
+        Rotation2d newGoal = currentAngle.minus(Rotation2d.fromDegrees(txDeg));
+        setGoalAngle(newGoal);
+    }
+    
+    /* ---------------- Sensor Access ---------------- */
+
+    public Rotation2d getCurrentAngle() {
+        double motorPos = motors[mainNum].getPosition(); // motor units
+        double angleRad = motorPos * conversionFactor + encoderOffsetRad;
+        return new Rotation2d(angleRad);
     }
 
     public double getVelocity() {
         return motors[mainNum].getVelocity() * conversionFactor;
     }
+    
+    public double getVoltage() {
+        return motors[mainNum].getVoltage();
+    }
 
-    protected void setVoltage(double voltage) {
-        for (MotorBase motor: motors) {
+    /* ---------------- Motor Control ---------------- */
+
+    public void setVoltage(double voltage) {
+        if (isEnabled) {
+            for (MotorBase motor: motors) {
             motor.setVoltage(voltage);
+        }
         }
     }
     
@@ -125,16 +181,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         }
     }
 
-    public double getEncoderPosition() {
-        double radian = motors[mainNum].getPosition()+offset;
-        // + Constants.OFFSET) % Constants.RADIANS_PER_ROTATION
-        return radian;
-    }
-
-    public double getVoltage() {
-        return motors[mainNum].getVoltage();
-    }
-
+    /* ---------------- Utility ---------------- */
+    
     public MotorBase getMotor(){
         return motors[mainNum];
     }
@@ -143,7 +191,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         return motors;
     }
 
-    public boolean atSetpoint(){
-        return controller.atSetpoint();
+    public boolean atGoal(){
+        return controller.atGoal();
     }
 }
