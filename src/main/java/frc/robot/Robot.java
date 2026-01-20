@@ -20,7 +20,6 @@ import frc.robot.commands.SysId.ManualSysIdRoutine;
 import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.autos.AutoChooser;
 import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.carriage.Arm;
 import frc.robot.subsystems.carriage.Carriage;
 import frc.robot.subsystems.carriage.Intake;
