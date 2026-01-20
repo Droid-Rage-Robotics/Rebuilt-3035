@@ -7,13 +7,15 @@ import edu.wpi.first.math.util.Units;
 public class SwerveDriveConstants {
     public enum SwerveDriveConfig {
         PHYSICAL_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND(2 * (2 * Math.PI)),
+        PHYSICAL_MAX_SPEED_METERS_PER_SECOND(4.47),
+        
         TRACK_WIDTH(Units.inchesToMeters(28.5)),//Units.inchesToMeters(28.5)
         WHEEL_BASE(Units.inchesToMeters(28.5)),//Units.inchesToMeters(28.5)
 
         MAX_ACCELERATION_UNITS_PER_SECOND(10),
         MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND(10),
 
-        MAX_SPEED_METERS_PER_SECOND(SwerveModule.Constants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND / 4),
+        MAX_SPEED_METERS_PER_SECOND(PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue() / 4),
         MAX_ANGULAR_SPEED_RADIANS_PER_SECOND(PHYSICAL_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND.getValue() / 10),
         MAX_ACCELERATION_METERS_PER_SECOND_SQUARED(1),
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED(1), // 1 / 8 of a full rotation per second per second),
