@@ -47,7 +47,6 @@ public class SwerveModule implements Sendable {
         //If strafing, the robot drifts to he front/back, then increase
                 //.115
 
-        public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.47;
 
         public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35;//50, 40
         public static final double DRIVE_STATOR_CURRENT_LIMIT = 75;   //90, 80
@@ -153,7 +152,7 @@ public class SwerveModule implements Sendable {
             return;
         }
         desiredState.optimize(getState().angle);
-        driveMotor.setPower(state.speedMetersPerSecond / Constants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+        driveMotor.setPower(state.speedMetersPerSecond / SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue());
         turnMotor.setPower((turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()))*1);
     }
 

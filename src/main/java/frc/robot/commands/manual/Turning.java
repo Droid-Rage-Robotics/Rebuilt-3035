@@ -20,7 +20,6 @@ import frc.robot.subsystems.drive.SwerveDriveConstants;
 import frc.robot.subsystems.drive.SwerveDriveConstants.DriveOptions;
 import frc.robot.subsystems.drive.SwerveDriveConstants.Speed;
 import frc.utility.ControllerUtils;
-import frc.robot.subsystems.drive.SwerveModule;
 
 public class Turning extends Command {
     private final SwerveDrive drive;
@@ -170,11 +169,11 @@ public class Turning extends Command {
         // Smooth driving and apply speed
         xSpeed = 
             (xSpeed *
-            SwerveModule.Constants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND) * 
+            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()) * 
             translationalSpeed;
         ySpeed = 
             (ySpeed *
-            SwerveModule.Constants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND) *
+            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()) *
             translationalSpeed;
         turnSpeed = 
             turnSpeed *
