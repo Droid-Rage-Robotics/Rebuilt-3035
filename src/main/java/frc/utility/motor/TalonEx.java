@@ -31,6 +31,16 @@ public class TalonEx extends MotorBase {
         this.configurator = motor.getConfigurator(); // Use to apply configs
     }
 
+    private TalonEx(MotorConstants constants) {
+        this.motor = new TalonFX(constants.deviceId, constants.canBus);
+        this.canBus = constants.canBus;
+        this.deviceId = constants.deviceId;
+        this.isEnabled = constants.isEnabled;
+        this.config = constants.getConfig();
+        this.configurator = motor.getConfigurator();
+        configurator.apply(config);
+    }
+
     /**
      * Creates a new TalonEx instance with the specified
      * device id and canbus
@@ -50,6 +60,10 @@ public class TalonEx extends MotorBase {
      */
     public static TalonEx create(int deviceId) {
         return new TalonEx(deviceId, DroidRageConstants.rioCanBus);
+    }
+
+    public static TalonEx createWithConstants(MotorConstants constants) {
+        return new TalonEx(constants);
     }
 
     /**
@@ -135,10 +149,10 @@ public class TalonEx extends MotorBase {
      * @return TalonEx (for call chaining)
      */
     public TalonEx withIdleMode(ZeroPowerMode mode) {
-        motor.setNeutralMode(switch (mode) {
+        config.MotorOutput.NeutralMode= switch (mode) {
             case Brake -> NeutralModeValue.Brake;
             case Coast -> NeutralModeValue.Coast;
-        });
+        };
         return this;
     }
 

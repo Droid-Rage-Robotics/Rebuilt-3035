@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.utility.LimelightEx;
 import frc.utility.DashboardUtils.Dashboard;
 import frc.utility.motor.MotorBase;
+import frc.utility.motor.MotorConstants;
+import frc.utility.motor.TalonEx;
 
 public class TurretTemplate extends SubsystemBase implements Dashboard {
     private final MotorBase[] motors;
@@ -31,7 +33,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     private Rotation2d goalAngle = Rotation2d.fromRadians(0);
 
     public TurretTemplate(
-        MotorBase[] motors,
         int mainNum,
         LimelightEx limelight,
         ProfiledPIDController controller,
@@ -40,9 +41,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         double maxAngleRad,
         double conversionFactor,
         double encoderOffsetRad,
-        boolean isEnabled
+        boolean isEnabled,
+        MotorConstants... motorConstants
     ) {
-        this.motors=motors;
         this.mainNum=mainNum;
         this.limelight=limelight;
         this.controller=controller;
@@ -55,8 +56,15 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
         controller.enableContinuousInput(-Math.PI, Math.PI);
 
-        for (MotorBase motor : motors) {
-            motor.withIsEnabled(isEnabled);
+        this.motors = new MotorBase[motorConstants.length];
+        
+        for (MotorConstants constants : motorConstants) {
+            constants.subsystem=this;
+            constants.isEnabled=isEnabled;
+        }
+
+        for (int i = 0; i < motorConstants.length; i++) {
+            this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
     }
 
