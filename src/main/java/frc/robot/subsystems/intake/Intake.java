@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -8,7 +8,7 @@ import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.motor.MotorConstants.ZeroPowerMode;
 import frc.utility.template.FlywheelTemplate;
 
-public class Indexer extends FlywheelTemplate{
+public class Intake extends FlywheelTemplate {
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
@@ -17,7 +17,7 @@ public class Indexer extends FlywheelTemplate{
         .withSupplyCurrentLimit(70)
         .withStatorCurrentLimit(70);
 
-    public Indexer(boolean isEnabled) {
+    public Intake(boolean isEnabled) {
         super(
             0,
             new PIDController(0, 0, 0), 
@@ -25,7 +25,7 @@ public class Indexer extends FlywheelTemplate{
             0, 
             0, 
             1, 
-            "Indexer", 
+            "Intake", 
             isEnabled,
             motorConstants);
     }
