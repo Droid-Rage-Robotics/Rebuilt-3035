@@ -1,43 +1,36 @@
-// package frc.robot.commands;
+package frc.robot.commands;
 
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import frc.robot.subsystems.drive.SwerveDrive;
-// import frc.robot.subsystems.shooter.Turret;
-// import frc.utility.LimelightEx;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.shooter.Turret;
+import frc.utility.LimelightEx;
 
-// public class TurretAim extends Command {
-//     private final Turret turret;
-//     private final PIDController turretController = new PIDController(0, 0, 0);
-//     private final SwerveDrive drive;
-//     private final LimelightEx turretLimelight;
+public class TurretAim extends Command {
+    private final Turret turret;
+    private final SwerveDrive drive;
 
-//     public TurretAim(Turret turret, SwerveDrive drive, LimelightEx turretLimelight) {
-//         this.turret=turret;
-//         this.drive=drive;
-//         this.turretLimelight=turretLimelight;
+    public TurretAim(Turret turret, SwerveDrive drive) {
+        this.turret=turret;
+        this.drive=drive;
 
-//         addRequirements(turret);
-//     }
+        addRequirements(turret);
+    }
 
-//     @Override
-//     public void initialize() {
+    @Override
+    public void initialize() {
         
-//     }
+    }
 
-//     @Override
-//     public void execute() {
-//         var tagError = turretLimelight.getTX();
+    @Override
+    public void execute() {
+        if (drive.getPose().getX()>=4.625||drive.getPose().getX()<=5)  { // if is in neutral zone; dumb values for now
+            turret.setTargetPositionDegrees(0);
+        } else if (drive.getPose().getX()>=4.625||drive.getPose().getX()<=5)  { // if is in red alliance zone; stupid values for now
+            turret.aimWithLimelight();
 
-//         if (drive.getPose().getX()>=4.625||drive.getPose().getX()<=5)  { // if is in alliance zone; dumb values for now
-//             turret.setTargetPosition(tagError);
-//         }
-
-//         var volts = turretController.calculate(tagError, 0);
-
-//         if (turretLimelight.getTV()) {
-//             turret.setVoltage(volts);
-//         }
-
-//     }
-// }
+        } else if (drive.getPose().getX()>=4.625||drive.getPose().getX()<=5)  { // if is in blue alliance zone; stupid values for now
+            turret.aimWithLimelight();
+        }
+    }
+}
