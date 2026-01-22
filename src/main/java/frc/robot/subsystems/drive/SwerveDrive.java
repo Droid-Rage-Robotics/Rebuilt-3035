@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -32,7 +33,6 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.utility.DashboardUtils;
 import frc.utility.DashboardUtils.Dashboard;
-import frc.utility.encoder.EncoderBase.EncoderDirection;
 import frc.utility.motor.MotorBase.Direction;
 import lombok.Getter;
 
@@ -63,28 +63,28 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         .withDriveMotor(3,Direction.Forward, true)
         .withTurnMotor(1, Direction.Forward, true)
         .withEncoder(2, SwerveDriveConfig.FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue, 
-        EncoderDirection.Forward);
+        SensorDirectionValue.CounterClockwise_Positive);
         
     private final SwerveModule backRight = SwerveModule.create()
         .withSubsystem(this, POD.BR)
         .withDriveMotor(6, Direction.Forward, true)
         .withTurnMotor(4, Direction.Forward, true)
         .withEncoder(5, SwerveDriveConfig.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue,
-        EncoderDirection.Forward);
+        SensorDirectionValue.CounterClockwise_Positive);
 
     private final SwerveModule backLeft = SwerveModule.create()
         .withSubsystem(this, POD.BL)
         .withDriveMotor(9, Direction.Forward, true)
         .withTurnMotor(7, Direction.Forward, true)
         .withEncoder(8, SwerveDriveConfig.BACK_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue, 
-        EncoderDirection.Forward);
+        SensorDirectionValue.CounterClockwise_Positive);
     
     private final SwerveModule frontLeft = SwerveModule.create()
         .withSubsystem(this, POD.FL)
         .withDriveMotor(12, Direction.Forward, true)
         .withTurnMotor(10, Direction.Forward, true)
         .withEncoder(11, SwerveDriveConfig.FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue, 
-        EncoderDirection.Forward);
+        SensorDirectionValue.CounterClockwise_Positive);
     
     @Getter private final SwerveModule[] swerveModules = { frontLeft, frontRight, backLeft, backRight };
     

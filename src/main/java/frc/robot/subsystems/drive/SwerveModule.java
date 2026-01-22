@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
 import frc.utility.encoder.CANcoderEx;
-import frc.utility.encoder.EncoderBase.EncoderDirection;
 import frc.utility.motor.MotorBase.Direction;
 import frc.utility.motor.MotorBase.ZeroPowerMode;
 import frc.utility.motor.TalonEx;
@@ -101,7 +100,7 @@ public class SwerveModule implements Sendable {
         return this;
     }
 
-    public SwerveModule withEncoder(int absoluteEncoderId, Supplier<Double> absoluteEncoderOffsetRad, EncoderDirection direction) {
+    public SwerveModule withEncoder(int absoluteEncoderId, Supplier<Double> absoluteEncoderOffsetRad, SensorDirectionValue direction) {
         turnEncoder = CANcoderEx.create(absoluteEncoderId, DroidRageConstants.driveCanBus)
             .withDirection(SensorDirectionValue.CounterClockwise_Positive)
             .withMagnetOffset(absoluteEncoderOffsetRad.get()/Constants.TURN_ENCODER_ROT_2_RAD)
