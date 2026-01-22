@@ -1,5 +1,6 @@
 package frc.utility.template;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -57,6 +58,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         DashboardUtils.registerDashboard(this);
     }
 
+    /* ---------------- Dashboard ---------------- */
+    
     @Override
     public void elasticInit() {
         SmartDashboard.putData(name, this);
@@ -66,7 +69,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Target Speed", controller::getSetpoint, null);
         builder.addDoubleProperty("Current Speed", this::getVelocity, null);
-        builder.addDoubleProperty("Applied Voltage", motors[mainNum]::getVoltage, null);
+        builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
     }
 
     @Override
@@ -75,6 +78,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void alerts() {}
 
+    /* ---------------- Periodic Control Loop ---------------- */
+    
     @Override
     public void periodic() {
         setVoltage(
@@ -87,25 +92,42 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         periodic();
     }
 
-    public Command setTargetPositionCommand(double target){
+    /* ---------------- Commands ---------------- */
+
+    public Command setTargetVelocityCommand(double target){
         return Commands.sequence(
-            new InstantCommand(()->setTargetPosition(target))
+            new InstantCommand(()->setTargetVelocity(target))
         );
         // return new InstantCommand(()->setTargetPosition(target));
     }
 
-    /*
-     * Use this for initialization
-     */
-    public void setTargetPosition(double target) {
-        if(target>maxSpeed||target<minSpeed) return;
-        controller.setSetpoint(target);
+    /* ---------------- Manual Goal Control ---------------- */
+
+    public void setTargetVelocity(double target) {
+        double clamped = MathUtil.clamp(
+            target, 
+            minSpeed, 
+            maxSpeed);
+        
+        controller.setSetpoint(clamped);
     }
 
-    public double getTargetPosition(){
+    public double getTargetVelocity(){
         return controller.getSetpoint();
     }
 
+    /* ---------------- Sensor Access ---------------- */
+
+    public double getVelocity() {
+        return motors[mainNum].getVelocity() * conversionFactor;
+    }
+    
+    public double getVoltage() {
+        return motors[mainNum].getVoltage();
+    }
+
+    /* ---------------- Motor Control ---------------- */
+    
     protected void setVoltage(double voltage) {
         for (MotorBase motor: motors) {
             motor.setVoltage(voltage);
@@ -116,10 +138,6 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         for (MotorBase motor: motors) {
             motor.resetEncoder(0);
         }
-    }
-
-    public double getVelocity() {
-        return motors[mainNum].getVelocity() * conversionFactor;
     }
 
     /* ---------------- Utility ---------------- */
