@@ -9,17 +9,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.DroidRageConstants.Control;
 import frc.utility.DashboardUtils;
 import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.encoder.CANcoderEx;
+import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorBase;
+import frc.utility.motor.MotorConstants;
+import frc.utility.motor.TalonEx;
+import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ArmTemplate extends SubsystemBase implements Dashboard {
     protected final MotorBase[] motors;
     protected final PIDController controller;
     protected final ArmFeedforward feedforward;
-    protected DigitalInput limitSwitch;
-    protected final Control control;
+    // protected final DigitalInput limitSwitch;
     protected final double maxPosition;
     protected final double minPosition;
     protected final double offset;
@@ -28,71 +31,51 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     protected TrapezoidProfile.State current = new TrapezoidProfile.State(0,0); //initial
     protected TrapezoidProfile.State goal = new TrapezoidProfile.State(0,0);
     protected final String name;
+    private final CANcoderEx encoder;
 
     public ArmTemplate(
-        MotorBase[] motors,
         PIDController controller,
         ArmFeedforward feedforward,
         TrapezoidProfile.Constraints constraints,
         double maxPosition,
         double minPosition,
         double offset,
-        Control control,
-        String tabName,
-        String subsystemName,
-        int mainNum,
-        boolean isEnabled
+        boolean isEnabled,
+        SubsystemConstants constants,
+        EncoderConstants encoderConstants,
+        MotorConstants... motorConstants
     ){
-        this.motors=motors;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.control=control;
         this.maxPosition=maxPosition;
         this.minPosition=minPosition;
         this.offset=offset;
-        this.mainNum=mainNum;
-        this.name=subsystemName;
+        this.mainNum=constants.mainNum;
+        this.name=constants.name;
 
         profile = new TrapezoidProfile(constraints);
 
-        for (MotorBase motor: motors) {
-            motor.withIsEnabled(isEnabled);
+
+        if (constants.encoderType==EncoderType.ABSOLUTE||encoderConstants==null) {
+            throw new NullPointerException("Encoder constants are required when using an absolute encoder");
+        } else if (constants.encoderType==EncoderType.ABSOLUTE) {
+            encoder = CANcoderEx.createWithConstants(encoderConstants);
+        } else {
+            encoder = null;
         }
 
-        DashboardUtils.registerDashboard(this);
-    }
+        // if (constants.hasLimitSwitch)
 
-    public ArmTemplate(
-        MotorBase[] motors,
-        PIDController controller,
-        ArmFeedforward feedforward,
-        DigitalInput limitSwitch,
-        TrapezoidProfile.Constraints constraints,
-        double maxPosition,
-        double minPosition,
-        double offset,
-        Control control,
-        String tabName,
-        String subsystemName,
-        int mainNum,
-        boolean isEnabled
-    ){
-        this.motors=motors;
-        this.controller=controller;
-        this.feedforward=feedforward;
-        this.limitSwitch=limitSwitch;
-        this.control=control;
-        this.maxPosition=maxPosition;
-        this.minPosition=minPosition;
-        this.offset=offset;
-        this.mainNum=mainNum;
-        this.name=subsystemName;
-
-        for (MotorBase motor: motors) {
-            motor.withIsEnabled(isEnabled);
+        this.motors = new MotorBase[motorConstants.length];
+        
+        for (MotorConstants m_motorConstants : motorConstants) {
+            m_motorConstants.subsystem=this;
+            m_motorConstants.isEnabled=isEnabled;
         }
 
-        profile = new TrapezoidProfile(constraints);
+        for (int i = 0; i < motorConstants.length; i++) {
+            this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
+        }
 
         DashboardUtils.registerDashboard(this);
     }
@@ -103,9 +86,10 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     }
 
     @Override
-    public void practiceWriters() {
-        
-    }
+    public void practiceWriters() {}
+
+    @Override
+    public void alerts() {}
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -118,27 +102,11 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void periodic() {
-        switch(control){
-            case PID:
-                setVoltage(controller.calculate(getEncoderPosition(), controller.getSetpoint()));
-                // setVoltage((controller.calculate(getEncoderPosition(), getTargetPosition())) + .37);
-                //.37 is kG ^^
-                break;
-            case FEEDFORWARD:
-                setVoltage(controller.calculate(getEncoderPosition(), controller.getSetpoint())
-                +feedforward.calculate(1,1)); 
-                //ks * Math.signum(velocity) + kg + kv * velocity + ka * acceleration; ^^
-                break;
-            case TRAPEZOID_PROFILE:
-                goal = new TrapezoidProfile.State(controller.getSetpoint(),01);
-                current = profile.calculate(0.02, current, goal);
-
-                setVoltage(controller.calculate(getEncoderPosition(), current.position)
-                        + feedforward.calculate(current.position, current.velocity));
-                break;
-
-            case SYS_ID: break;
-        };        
+        setVoltage(
+            controller.calculate(getEncoderPosition(), controller.getSetpoint())
+            +feedforward.calculate(1,1)
+        ); 
+        //ks * Math.signum(velocity) + kg + kv * velocity + ka * acceleration; ^^
     }
 
     @Override
@@ -163,6 +131,9 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     public double getTargetPosition(){
         return controller.getSetpoint();
     }
+    
+    /* ---------------- Motor Control ---------------- */
+    
     protected void setVoltage(double voltage) {
         for (MotorBase motor: motors) {
             motor.setVoltage(voltage);
@@ -194,7 +165,4 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     public boolean atSetpoint(){
         return controller.atSetpoint();
     }
-
-    @Override
-    public void alerts() {}
 }
