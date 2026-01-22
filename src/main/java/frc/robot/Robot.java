@@ -19,7 +19,6 @@ import frc.robot.SysID.SysID.Measurement;
 import frc.robot.commands.SysId.ManualSysIdRoutine;
 import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.autos.AutoChooser;
-import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.vision.Vision;
 import frc.utility.DashboardUtils;
@@ -29,12 +28,6 @@ public class Robot extends TimedRobot {
     private final Vision vision = new Vision();
     private final SwerveDrive drive = new SwerveDrive(true, vision);//-10 Works
     private final CANdle candle = new CANdle(0);
-    // private final Elevator elevator = new Elevator(true);
-    // private final Carriage carriage = new Carriage(
-    //     new Arm(true),
-    //     new Pivot(true),
-    //     new Intake(true)
-    // );
     
     // private Climb climb = new Climb(false);
 
