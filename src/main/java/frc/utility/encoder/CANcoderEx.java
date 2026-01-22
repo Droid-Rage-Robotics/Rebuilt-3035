@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.DroidRageConstants;
 
-public class CANcoderEx extends EncoderBase {
+public class CANcoderEx {
     private final CANcoder encoder;
     private final CANcoderConfiguration config;
     private final int deviceId;
@@ -15,6 +15,13 @@ public class CANcoderEx extends EncoderBase {
         this.deviceId=deviceId;
         this.encoder = new CANcoder(deviceId, canBus);
         this.config = new CANcoderConfiguration();
+    }
+
+    private CANcoderEx(EncoderConstants constants) {
+        this.deviceId = constants.deviceId;
+        this.encoder = new CANcoder(constants.deviceId, constants.canBus);
+        this.config = constants.getConfig();
+        withConfiguration(config);
     }
 
     /**
@@ -36,6 +43,10 @@ public class CANcoderEx extends EncoderBase {
      */
     public static CANcoderEx create(int deviceId) {
         return new CANcoderEx(deviceId, DroidRageConstants.rioCanBus);
+    }
+
+    public static CANcoderEx createWithConstants(EncoderConstants constants) {
+        return new CANcoderEx(constants);
     }
 
     /**
@@ -141,20 +152,15 @@ public class CANcoderEx extends EncoderBase {
         return this;
     }
 
-    @Override
     public double getAbsolutePosition() {
         return encoder.getAbsolutePosition().getValueAsDouble();
     }
 
-    @Override
     public double getVelocity() {
         return encoder.getVelocity().getValueAsDouble();
     }
 
-    @Override
     public int getDeviceId() {
         return deviceId;
     }
-
-    
 }
