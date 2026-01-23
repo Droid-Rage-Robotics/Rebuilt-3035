@@ -1,10 +1,12 @@
 package frc.utility.template;
 
+import java.util.Optional;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,26 +22,26 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ArmTemplate extends SubsystemBase implements Dashboard {
     protected final MotorBase[] motors;
-    protected final PIDController controller;
+    protected final ProfiledPIDController controller;
     protected final ArmFeedforward feedforward;
     // protected final DigitalInput limitSwitch;
-    protected final double maxPosition;
-    protected final double minPosition;
-    protected final double offset;
+    private final double minAngleRad;
+    private final double maxAngleRad;
+    private final double conversionFactor;
+    private final double encoderOffsetRad;
     protected final int mainNum;
-    protected final TrapezoidProfile profile;
-    protected TrapezoidProfile.State current = new TrapezoidProfile.State(0,0); //initial
-    protected TrapezoidProfile.State goal = new TrapezoidProfile.State(0,0);
     protected final String name;
-    private final CANcoderEx encoder;
+    private final Optional<CANcoderEx> encoder;
+
+    private Rotation2d goalAngle = Rotation2d.fromRadians(0);
 
     public ArmTemplate(
-        PIDController controller,
+        ProfiledPIDController controller,
         ArmFeedforward feedforward,
-        TrapezoidProfile.Constraints constraints,
-        double maxPosition,
-        double minPosition,
-        double offset,
+        double minAngleRad,
+        double maxAngleRad,
+        double conversionFactor,
+        double encoderOffsetRad,
         boolean isEnabled,
         SubsystemConstants constants,
         EncoderConstants encoderConstants,
@@ -47,21 +49,20 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     ){
         this.controller=controller;
         this.feedforward=feedforward;
-        this.maxPosition=maxPosition;
-        this.minPosition=minPosition;
-        this.offset=offset;
+        this.minAngleRad=minAngleRad;
+        this.maxAngleRad=maxAngleRad;
+        this.conversionFactor=conversionFactor;
+        this.encoderOffsetRad=encoderOffsetRad;
         this.mainNum=constants.mainNum;
         this.name=constants.name;
 
-        profile = new TrapezoidProfile(constraints);
-
-
-        if (constants.encoderType==EncoderType.ABSOLUTE||encoderConstants==null) {
-            throw new NullPointerException("Encoder constants are required when using an absolute encoder");
-        } else if (constants.encoderType==EncoderType.ABSOLUTE) {
-            encoder = CANcoderEx.createWithConstants(encoderConstants);
+        if (constants.encoderType == EncoderType.ABSOLUTE) {
+            if (encoderConstants == null) {
+                throw new NullPointerException("Encoder constants required for absolute encoder");
+            }
+            this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
         } else {
-            encoder = null;
+            this.encoder = Optional.empty();
         }
 
         // if (constants.hasLimitSwitch)
@@ -80,6 +81,8 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         DashboardUtils.registerDashboard(this);
     }
 
+    /* ---------------- Dashboard ---------------- */
+
     @Override
     public void elasticInit() {
         SmartDashboard.putData(name, this);
@@ -93,19 +96,27 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Current Position (Degrees)", () -> Math.toDegrees(getEncoderPosition()), null);
-        builder.addDoubleProperty("Current Position (Radians)", this::getEncoderPosition, null);
-        builder.addDoubleProperty("Target Position (Degrees)", () -> Math.toDegrees(controller.getSetpoint()), null);
-        builder.addDoubleProperty("Target Position (Radians)", controller::getSetpoint, null);
-        builder.addDoubleProperty("Applied Voltage", motors[mainNum]::getVoltage, null);
+        builder.addDoubleProperty("Goal Angle (deg)", () -> getGoalAngle().getDegrees(), null);
+        builder.addDoubleProperty("Current Angle (deg)", () -> getCurrentAngle().getDegrees(), null);
+        builder.addDoubleProperty("Position Setpoint (deg)", this::getPositionSetpoint, null);
+        builder.addDoubleProperty("Velocity Setpoint (deg/s)", this::getVelocitySetpoint, null);
+        builder.addDoubleProperty("Current Velocity (deg/s)", () -> Math.toDegrees(getVelocity()), null);
+        builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
+        builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
     }
+    
+    /* ---------------- Periodic Control Loop ---------------- */
 
     @Override
     public void periodic() {
-        setVoltage(
-            controller.calculate(getEncoderPosition(), controller.getSetpoint())
-            +feedforward.calculate(1,1)
-        ); 
+        double currentAngleRad = getCurrentAngle().getRadians();
+        
+        double pidOut = controller.calculate(currentAngleRad);
+        var setpoint = controller.getSetpoint();
+
+        double ffOut = feedforward.calculate(setpoint.position, setpoint.velocity);
+
+        setVoltage(pidOut + ffOut);
         //ks * Math.signum(velocity) + kg + kv * velocity + ka * acceleration; ^^
     }
 
@@ -113,46 +124,83 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     public void simulationPeriodic() {
         periodic();
     }
+
+    /* ---------------- Commands ---------------- */
     
     public Command setTargetPositionCommand(double degree){
-        return new InstantCommand(()->setTargetPosition(degree));
+        return new InstantCommand(()->setTargetPositionDegrees(degree));
     }
 
-    /*
-     * Use this for initialization
-     */
-    public void setTargetPosition(double degree) {
-        if(degree>maxPosition||degree<minPosition) {
-            degree = Math.toDegrees(degree); //Pretty sure this needs to be like this
-        };
-        controller.setSetpoint(Math.toRadians(degree));
+    /* ---------------- Manual Goal Control ---------------- */
+
+    public void setTargetPositionDegrees(double degrees) {
+        setGoalAngle(Rotation2d.fromDegrees(degrees));
     }
 
-    public double getTargetPosition(){
-        return controller.getSetpoint();
+    public void setGoalAngle(Rotation2d angle) {
+        double clamped = MathUtil.clamp(
+            angle.getRadians(),
+            minAngleRad,
+            maxAngleRad
+        );
+
+        goalAngle = new Rotation2d(clamped);
+        controller.setGoal(clamped);
+    }
+
+    public Rotation2d getGoalAngle() {
+        return goalAngle;
+    }
+
+    public double getVelocitySetpoint() {
+        return Math.toDegrees(controller.getSetpoint().velocity);
+    }
+
+    public double getPositionSetpoint() {
+        return Math.toDegrees(controller.getSetpoint().position);
     }
     
+    /* ---------------- Sensor Access ---------------- */
+
+    public Rotation2d getCurrentAngle() {
+        var raw = encoder
+            .map(enc -> enc.getAbsolutePosition())
+            .orElse(motors[mainNum].getPosition());
+
+        double angleRad = raw * conversionFactor + encoderOffsetRad;
+        return new Rotation2d(angleRad);
+    }
+
+    public double getVelocity() {
+        return encoder
+            .map(enc -> enc.getVelocity() * conversionFactor)
+            .orElse(motors[mainNum].getVelocity() * conversionFactor);
+    }
+    
+    public double getVoltage() {
+        return motors[mainNum].getVoltage();
+    }
+
     /* ---------------- Motor Control ---------------- */
     
     protected void setVoltage(double voltage) {
+        double angle = getCurrentAngle().getRadians();
+        if ((angle >= maxAngleRad && voltage > 0) ||
+            (angle <= minAngleRad && voltage < 0)) {
+            voltage = 0;
+        }
         for (MotorBase motor: motors) {
             motor.setVoltage(voltage);
-        }
     }
+}
     
     public void resetEncoder() {
         for (MotorBase motor: motors) {
-            // motor.getEncoder().setPosition(0);
             motor.resetEncoder(0);
         }
     }
 
-    public double getEncoderPosition() {
-        // double radian = motors[mainNum].getPosition()+offset;
-        // + Constants.OFFSET) % Constants.RADIANS_PER_ROTATION
-        // return motors[mainNum].getPosition()+offset;
-        return 0;
-    }
+    /* ---------------- Utility ---------------- */
 
     public MotorBase getMotor(){
         return motors[mainNum];
