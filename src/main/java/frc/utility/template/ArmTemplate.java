@@ -36,23 +36,19 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     private Rotation2d goalAngle = Rotation2d.fromRadians(0);
 
     public ArmTemplate(
+        boolean isEnabled,
         ProfiledPIDController controller,
         ArmFeedforward feedforward,
-        double minAngleRad,
-        double maxAngleRad,
-        double conversionFactor,
-        double encoderOffsetRad,
-        boolean isEnabled,
         SubsystemConstants constants,
         EncoderConstants encoderConstants,
         MotorConstants... motorConstants
     ){
         this.controller=controller;
         this.feedforward=feedforward;
-        this.minAngleRad=minAngleRad;
-        this.maxAngleRad=maxAngleRad;
-        this.conversionFactor=conversionFactor;
-        this.encoderOffsetRad=encoderOffsetRad;
+        this.minAngleRad=constants.lowerLimit;
+        this.maxAngleRad=constants.upperLimit;
+        this.conversionFactor=constants.conversionFactor;
+        this.encoderOffsetRad=constants.offset;
         this.mainNum=constants.mainNum;
         this.name=constants.name;
 
