@@ -26,29 +26,25 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private final String name;
 
     public FlywheelTemplate(
-        int mainNum,
+        boolean isEnabled,
         PIDController controller,
         SimpleMotorFeedforward feedforward,
-        double maxSpeed,
-        double minSpeed,
-        double conversionFactor,
-        String name,
-        boolean isEnabled,
+        SubsystemConstants constants,
         MotorConstants...motorConstants
     ){
         this.controller=controller;
         this.feedforward=feedforward;
-        this.maxSpeed=maxSpeed;
-        this.minSpeed=minSpeed;
-        this.conversionFactor=conversionFactor;
-        this.mainNum=mainNum;
-        this.name=name;
+        this.maxSpeed=constants.upperLimit;
+        this.minSpeed=constants.lowerLimit;
+        this.conversionFactor=constants.conversionFactor;
+        this.mainNum=constants.mainNum;
+        this.name=constants.name;
 
         this.motors = new MotorBase[motorConstants.length];
         
-        for (MotorConstants constants : motorConstants) {
-            constants.subsystem=this;
-            constants.isEnabled=isEnabled;
+        for (MotorConstants m_motorConstants : motorConstants) {
+            m_motorConstants.subsystem=this;
+            m_motorConstants.isEnabled=isEnabled;
         }
 
         for (int i = 0; i < motorConstants.length; i++) {

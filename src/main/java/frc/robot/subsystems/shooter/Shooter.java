@@ -7,10 +7,20 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
-import frc.utility.motor.MotorConstants.ZeroPowerMode;
 import frc.utility.template.FlywheelTemplate;
+import frc.utility.template.SubsystemConstants;
+import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Shooter extends FlywheelTemplate {
+    private static final SubsystemConstants constants = new SubsystemConstants()
+        .withConversionFactor(1)
+        .withEncoderType(EncoderType.INTEGRATED)
+        .withLowerLimit(0)
+        .withUpperLimit(0)
+        .withName("Shooter")
+        .withOffset(0)
+        .withMainNum(0);
+    
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
@@ -20,15 +30,10 @@ public class Shooter extends FlywheelTemplate {
         .withStatorCurrentLimit(70);
 
     public Shooter(boolean isEnabled) {
-        super(
-            0,
+        super(isEnabled,
             new PIDController(0, 0, 0), 
             new SimpleMotorFeedforward(0, 0, 0), 
-            0, 
-            0, 
-            1, 
-            "Shooter", 
-            isEnabled,
+            constants, 
             motorConstants);
     }
 }

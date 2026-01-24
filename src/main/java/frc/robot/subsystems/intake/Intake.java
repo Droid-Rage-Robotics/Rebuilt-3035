@@ -8,8 +8,19 @@ import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.template.FlywheelTemplate;
+import frc.utility.template.SubsystemConstants;
+import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Intake extends FlywheelTemplate {
+    private static final SubsystemConstants constants = new SubsystemConstants()
+        .withConversionFactor(1)
+        .withEncoderType(EncoderType.INTEGRATED)
+        .withLowerLimit(0)
+        .withUpperLimit(0)
+        .withName("Intake")
+        .withOffset(0)
+        .withMainNum(0);
+
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
@@ -19,15 +30,10 @@ public class Intake extends FlywheelTemplate {
         .withStatorCurrentLimit(70);
 
     public Intake(boolean isEnabled) {
-        super(
-            0,
+        super(isEnabled,
             new PIDController(0, 0, 0), 
             new SimpleMotorFeedforward(0, 0, 0), 
-            0, 
-            0, 
-            1, 
-            "Intake", 
-            isEnabled,
+            constants, 
             motorConstants);
     }
 }
