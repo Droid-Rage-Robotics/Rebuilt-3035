@@ -1,5 +1,7 @@
 package frc.utility.template;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -11,13 +13,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.utility.LimelightEx;
 import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.encoder.CANcoderEx;
+import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorBase;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
+import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class TurretTemplate extends SubsystemBase implements Dashboard {
     private final MotorBase[] motors;
-    private final int mainNum;
+    private final Optional<CANcoderEx> encoder;
     private final LimelightEx limelight;
 
     private final ProfiledPIDController controller;
@@ -26,6 +31,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     private final double minAngleRad;
     private final double maxAngleRad;
     private final double conversionFactor;
+    private final int mainNum;
     private final double encoderOffsetRad;
 
     private final boolean isEnabled;
@@ -33,34 +39,41 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     private Rotation2d goalAngle = Rotation2d.fromRadians(0);
 
     public TurretTemplate(
-        int mainNum,
+        boolean isEnabled,
         LimelightEx limelight,
         ProfiledPIDController controller,
         SimpleMotorFeedforward feedforward,
-        double minAngleRad,
-        double maxAngleRad,
-        double conversionFactor,
-        double encoderOffsetRad,
-        boolean isEnabled,
+        SubsystemConstants constants,
+        EncoderConstants encoderConstants,
         MotorConstants... motorConstants
     ) {
-        this.mainNum=mainNum;
+        this.mainNum=constants.mainNum;
         this.limelight=limelight;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.minAngleRad=minAngleRad;
-        this.maxAngleRad=maxAngleRad;
-        this.conversionFactor=conversionFactor;
-        this.encoderOffsetRad=encoderOffsetRad;
+        this.minAngleRad=constants.lowerLimit;
+        this.maxAngleRad=constants.upperLimit;
+        this.conversionFactor=constants.conversionFactor;
+        this.encoderOffsetRad=constants.offset;
         this.isEnabled=isEnabled;
 
         controller.enableContinuousInput(-Math.PI, Math.PI);
 
+        if (constants.encoderType == EncoderType.ABSOLUTE) {
+            if (encoderConstants == null) {
+                throw new NullPointerException("Encoder constants required for absolute encoder");
+            }
+            this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
+        } else {
+            this.encoder = Optional.empty();
+        }
+        
+        
         this.motors = new MotorBase[motorConstants.length];
         
-        for (MotorConstants constants : motorConstants) {
-            constants.subsystem=this;
-            constants.isEnabled=isEnabled;
+        for (MotorConstants m_motorConstants : motorConstants) {
+            m_motorConstants.subsystem=this;
+            m_motorConstants.isEnabled=isEnabled;
         }
 
         for (int i = 0; i < motorConstants.length; i++) {
@@ -160,13 +173,18 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Sensor Access ---------------- */
 
     public Rotation2d getCurrentAngle() {
-        double motorPos = motors[mainNum].getPosition(); // motor units
-        double angleRad = motorPos * conversionFactor + encoderOffsetRad;
+        var raw = encoder
+            .map(enc -> enc.getAbsolutePosition())
+            .orElse(motors[mainNum].getPosition());
+
+        double angleRad = raw * conversionFactor + encoderOffsetRad;
         return new Rotation2d(angleRad);
     }
 
     public double getVelocity() {
-        return motors[mainNum].getVelocity() * conversionFactor;
+        return encoder
+            .map(enc -> enc.getVelocity() * conversionFactor)
+            .orElse(motors[mainNum].getVelocity() * conversionFactor);
     }
     
     public double getVoltage() {
