@@ -1,18 +1,19 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
-import frc.utility.motor.MotorConstants.ZeroPowerMode;
 import frc.utility.template.FlywheelTemplate;
 
 public class Indexer extends FlywheelTemplate{
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
-        .withIdleMode(ZeroPowerMode.Brake)
+        .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
         .withSupplyCurrentLimit(70)
         .withStatorCurrentLimit(70);

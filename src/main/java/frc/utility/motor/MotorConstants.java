@@ -149,11 +149,8 @@ public class MotorConstants {
      * @param mode
      * @return MotorConstants (for call chaining)
      */
-    public MotorConstants withIdleMode(ZeroPowerMode mode) {
-        config.MotorOutput.NeutralMode = switch (mode) {
-            case Brake -> NeutralModeValue.Brake;
-            case Coast -> NeutralModeValue.Coast;
-        };
+    public MotorConstants withIdleMode(NeutralModeValue mode) {
+        config.MotorOutput.NeutralMode=mode;
         return this;
     }
 

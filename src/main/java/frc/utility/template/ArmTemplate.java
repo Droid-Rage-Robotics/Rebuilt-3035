@@ -181,8 +181,8 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     
     protected void setVoltage(double voltage) {
         double angle = getCurrentAngle().getRadians();
-        if ((angle >= maxAngleRad && voltage > 0) ||
-            (angle <= minAngleRad && voltage < 0)) {
+        if ((angle > maxAngleRad && voltage > 0) ||
+            (angle < minAngleRad && voltage < 0)) {
             voltage = 0;
         }
         for (MotorBase motor: motors) {
