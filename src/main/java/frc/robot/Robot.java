@@ -19,21 +19,37 @@ import frc.robot.SysID.SysID.Measurement;
 import frc.robot.commands.SysId.ManualSysIdRoutine;
 import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.autos.AutoChooser;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeWheel;
+import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterWheel;
+import frc.robot.subsystems.shooter.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.utility.DashboardUtils;
 import frc.utility.DashboardUtils.MatchValue;
+import frc.utility.MatchTimerSpeaker;
 
 public class Robot extends TimedRobot {
     private final Vision vision = new Vision();
-    private final SwerveDrive drive = new SwerveDrive(true, vision);//-10 Works
+    private final SwerveDrive drive = new SwerveDrive(true, vision);
+    // private final Intake intake = new Intake(
+    //     new Pivot (false),
+    //     new IntakeWheel(false)
+    // );
+    // private final Indexer indexer = new Indexer(false);
+    // private final Shooter shooter = new Shooter(
+    //     new Turret(false),
+    //     new Hood(false),
+    //     new ShooterWheel(false),
+    //     vision
+    // );
     private final CANdle candle = new CANdle(0);
     
-    // private Climb climb = new Climb(false);
-
     private final CommandXboxController driver =
 		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
-	
 	private final CommandXboxController operator =		
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 
@@ -48,6 +64,7 @@ public class Robot extends TimedRobot {
 
     // public boolean teleopRan;
     private Command autonomousCommand;
+    private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker(); //TODO: Remove the wav files from deploy to check if it kills the robot; make it not die if file is not found
   
     @Override
     public void robotInit() {
@@ -69,6 +86,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         DashboardUtils.onRobotPeriodic();
+
         // if(DriverStation.isEStopped()){ //Robot Estopped
         //     light.flashingColors(light.red, light.white);
         // }
@@ -92,7 +110,7 @@ public class Robot extends TimedRobot {
         // autonomousCommand = new InstantCommand();
 
         if (autonomousCommand != null) {
-            autonomousCommand.schedule();
+            CommandScheduler.getInstance().schedule(autonomousCommand);
         }
     }
 
@@ -114,21 +132,13 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-
-        // elevator.resetEncoder();
-
         SignalLogger.start(); // CTRE Signal Logger
         
         // if (autonomousCommand != null) {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-
-        // drive.changeAllianceRotation(); // NO USE
-        
         // robotContainer.configureTeleOpBindings(drive, elevator, carriage, climb, vision);
-        // robotContainer.configureTeleOpBindings(drive, elevator, carriage, vision);
-
         robotContainer.testDrive(driver, drive, vision);
 
         
@@ -137,19 +147,11 @@ public class Robot extends TimedRobot {
 
         // robotContainer.sysID(driveSysID);
         // robotContainer.sysID(sysID);
-        // robotContainer.sysID(driver, elevator.getSysIdRoutine(),carriage);
     }
 
     @Override
     public void teleopPeriodic() {
-        // matchTime.set(DriverStation.getMatchTime());
 
-        // while(true){
-		// 	// new OperatorXboxControllerRumble(driver, RumbleType.kBothRumble, 2, 1);
-   		// 	driver.getHID().setRumble(RumbleType.kBothRumble, 0);
-        
-		// } 
-    
     }
 
     @Override
