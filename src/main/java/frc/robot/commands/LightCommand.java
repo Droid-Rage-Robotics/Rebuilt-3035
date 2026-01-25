@@ -24,7 +24,7 @@ public class LightCommand extends Command {
     private LightState shootState = LightState.PAUSE;
     private Timer intakeTimer = new Timer();
     private Timer elementInTimer = new Timer();
-    private boolean didWeWin = true;
+    // private boolean didWeWin = true;
 
     public LightCommand(Light light) {
         this.light = light;
@@ -66,38 +66,36 @@ public class LightCommand extends Command {
         }
     }
 
-    public void setPeriod(){
-        switch (DriverStation.getGameSpecificMessage()) {
-            case "R": //Red won Auto
-                didWeWin = DriverStation.getAlliance().get()== DriverStation.Alliance.Red;
-                break;
-            case "B": //Blue won Auto
-                didWeWin = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
-                break;
-        }
-    }
-
-    public void shiftLights(){
+    public void shiftLights(){ //TODO: Test
         double matchTime = DriverStation.getMatchTime();
-        if(didWeWin)
-        if(matchTime<30){
-            light.setShiftHalf(light.orange); //Endgame and Auto Shift
-        } else if (matchTime<55&&matchTime>30){
-            light.setShiftHalf(light.white); //Shift 4 
-        } else if (matchTime < 55 && matchTime > 30) {
-            light.setShiftHalf(light.orange); // Shift 3
-        } else if (matchTime<55&&matchTime>30){
-            light.setShiftHalf(light.white); //Shift 2
-        } else if (matchTime<55&&matchTime>30){
-            light.setShiftHalf(light.orange); //Shift 1 
-        } 
-
-
-
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            light.setShiftHalf(light.orange); //Opponent Shift
-        } else {
-            light.setShiftHalf(light.white); //Alliance Shift
+        if(DroidRageConstants.didWeWin){
+            if (matchTime < 30) {
+                light.setShiftHalf(light.orange); // Endgame and Auto Shift
+            } else if (matchTime < 55 && matchTime > 30) {
+                light.setShiftHalf(light.orange); // Shift 4
+            } else if (matchTime < 80 && matchTime > 55) {
+                light.setShiftHalf(light.white); // Shift 3
+            } else if (matchTime < 105 && matchTime > 80) {
+                light.setShiftHalf(light.orange); // Shift 2
+            } else if (matchTime < 130 && matchTime > 105) {
+                light.setShiftHalf(light.white); // Shift 1
+            } else if (matchTime > 130) {
+                light.setShiftHalf(light.orange); // Transition Shift
+            }
+        } else{
+            if (matchTime < 30) {
+                light.setShiftHalf(light.orange); // Endgame and Auto Shift
+            } else if (matchTime < 55 && matchTime > 30) {
+                light.setShiftHalf(light.white); // Shift 4
+            } else if (matchTime < 80 && matchTime > 55) {
+                light.setShiftHalf(light.orange); // Shift 3
+            } else if (matchTime < 105 && matchTime > 80) {
+                light.setShiftHalf(light.white); // Shift 2
+            } else if (matchTime < 130 && matchTime > 105) {
+                light.setShiftHalf(light.orange); // Shift 1
+            } else if (matchTime > 130) {
+                light.setShiftHalf(light.orange); // Transition Shift
+            }
         }
     }
     @Override

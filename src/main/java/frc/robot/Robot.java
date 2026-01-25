@@ -69,7 +69,6 @@ public class Robot extends TimedRobot {
   
     @Override
     public void robotInit() {
-        candle.setControl(new RainbowAnimation(8, 67));
         SignalLogger.setPath("/home/lvuser/logs/ctre/");
         DashboardUtils.Config.Match = MatchValue.PRACTICE;
         DashboardUtils.onRobotInit();
@@ -125,8 +124,16 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousExit(){
         SignalLogger.stop();
+        switch (DriverStation.getGameSpecificMessage()) { // Set didWeWin for Lights
+            case "R": // Red won Auto
+                DroidRageConstants.didWeWin = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+                break;
+            case "B": // Blue won Auto
+                DroidRageConstants.didWeWin = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
+                break;
+        }
         if (autonomousCommand != null) {
-        autonomousCommand.cancel();
+            autonomousCommand.cancel();
         }
     }
 

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.SysID.DriveSysID;
 import frc.robot.SysID.SysID;
+import frc.robot.commands.LightCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.Turn180Degrees;
 import frc.robot.commands.SysId.SysIdCommand;
@@ -21,6 +22,7 @@ import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.drive.TeleopAlign;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.manual.Turning;
+import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.vision.Vision;
 
@@ -36,29 +38,16 @@ public class RobotContainer {
 
 	public void configureTeleOpBindings(
 		SwerveDrive drive,
-		Vision vision
+		Vision vision,
+		Light light
 		) {
-		// // Slow Mode and Gyro Reset in the Default Command
-		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver, elevator));
-		// // drive.setDefaultCommand(new Turning(drive, driver, elevator));
-		// // elevator.setDefaultCommand(new ManualElevator(elevator, operator::getRightY));
-		// operator.y()
-		// 	.onTrue(new TeleopCommands().goL4(elevator, carriage));
-		
-		
-
-
-		// rumble.onTrue(
-        // new StartEndCommand(
-        //         () -> {
-        //           driver.setRumble(RumbleType.kLeftRumble, 1.0);
-        //           driver.setRumble(RumbleType.kRightRumble, 1.0);
-        //         },
-        //         () -> {
-        //           driver.setRumble(RumbleType.kLeftRumble, 0.0);
-        //           driver.setRumble(RumbleType.kRightRumble, 0.0);
-        //         })
-        //     .withTimeout(0.5));
+			// Slow Mode and Gyro Reset in the Default Command
+			// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+			// drive.setDefaultCommand(new Turning(drive, driver));
+			// climb.setDefaultCommand(new ClimbTeleop(climb, operator::getRightY));
+			// light.setDefaultCommand(new LightCommand(light));
+			// operator.y()
+			// 	.onTrue(new TeleopCommands().goL4(elevator, carriage));
 	}
 
 	public void testDrive(CommandXboxController driver, SwerveDrive drive, Vision vision) {
