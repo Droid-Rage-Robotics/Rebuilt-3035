@@ -61,7 +61,7 @@ public class DashboardUtils {
     private static final List<Dashboard> dashboardPublishers = new ArrayList<>();
     private static final List<Periodic> periodicPublishers = new ArrayList<>();
 
-    private static final Alert batteryAlert = new Alert("Battery Voltage", AlertType.kWarning);
+    private static final Alert batteryAlert = new Alert("Battery Voltage", AlertType.kError);
     private static final Elastic.Notification notification = new Elastic.Notification();
     private static final PowerDistribution powerDistribution = new PowerDistribution();
     
