@@ -24,7 +24,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     protected final MotorBase[] motors;
     protected final ProfiledPIDController controller;
     protected final ArmFeedforward feedforward;
-    // protected final DigitalInput limitSwitch;
     private final double minAngleRad;
     private final double maxAngleRad;
     private final double conversionFactor;
@@ -60,8 +59,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         } else {
             this.encoder = Optional.empty();
         }
-
-        // if (constants.hasLimitSwitch)
 
         this.motors = new MotorBase[motorConstants.length];
         
@@ -208,5 +205,9 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     public boolean atSetpoint(){
         return controller.atSetpoint();
+    }
+    
+    public double getSetpointError() {
+        return controller.getPositionError();
     }
 }
