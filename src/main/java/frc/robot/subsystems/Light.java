@@ -1,146 +1,114 @@
 package frc.robot.subsystems;
 
+
+import com.ctre.phoenix6.controls.ColorFlowAnimation;
+import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.LarsonAnimation;
+import com.ctre.phoenix6.controls.RainbowAnimation;
+import com.ctre.phoenix6.controls.RgbFadeAnimation;
+import com.ctre.phoenix6.controls.SingleFadeAnimation;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.StrobeAnimation;
+import com.ctre.phoenix6.controls.TwinkleAnimation;
+import com.ctre.phoenix6.controls.TwinkleOffAnimation;
+import com.ctre.phoenix6.signals.AnimationDirectionValue;
+import com.ctre.phoenix6.signals.RGBWColor;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.utility.CANdleEx;
 
 public class Light extends SubsystemBase {
-    //You can only make one addressable led
-    private final AddressableLED ledOne;
-    private final AddressableLEDBuffer bufferOne;
-    // private final AddressableLED ledTwo;
-    // private final AddressableLEDBuffer bufferTwo;
-    // private final ShuffleboardValue<String> lightWriter = ShuffleboardValue.create
-    //     ("Color", "Light Color", Light.class.getSimpleName())
-    //     .build();
-    
-    private int LED_COUNT_ONE = 13;   //Number of LEDS on Strip (Can have multiple strips)
-    // private int LED_COUNT_TWO = 39;   //Number of LEDS on Strip (Can have multiple strips)
-    public final Color red = Color.kRed, 
-                      batteryBlue = Color.kMidnightBlue,
-                      orange = Color.kOrange, //Has Ring 
-                      purple = Color.kPurple,
-                      yellow = Color.kOrangeRed,
-                      blue = Color.kBlue, //Decoration
-                      green = Color.kGreen, //Ready to Shoot?
-                      white = Color.kWhite; //Aligned?
-    
-    class SwitchLED{
-      private boolean on = true;
-      private double lastChange;
-    }
-    class FlashingColor{
-      private long waitTime = 200, 
-                    startTime = System.currentTimeMillis();
-      private int stage = 0;
-    }
-    private SwitchLED switchLED;
-    private FlashingColor flashingColor;
-    // private Rainbow rainbow;
-    
-    public Light() {
-        ledOne = new AddressableLED(2);
-        bufferOne = new AddressableLEDBuffer(LED_COUNT_ONE);
+	// 0-7: On Board LEDs
+	// 8-#: LED Strip
+	public final Color red = Color.kRed,
+		batteryBlue = Color.kMidnightBlue, //Battery Low
+		orange = Color.kOrange, //Scoring Shift  //TODO:Fix Color
+		green = Color.kGreen, //Ready to Shoot
+		white = Color.kWhite, //Opponent Shift
+		DRBlue = new Color(68,185,243),
+		DROrange = new Color(255, 130, 0);
+	public int LEDlength = 20,
+		startShootNum = 0,
+		endShootNum = LEDlength/2,
+		startShiftNum = endShootNum+1,
+		endShiftNum = LEDlength+8;
+	private final CANdleEx candle;
+	public Light(int deviceID) {
+		candle = CANdleEx.create(deviceID, LEDlength);
+	}
 
-        ledOne.setLength(bufferOne.getLength());
-        ledOne.setData(bufferOne);
-        ledOne.start();
-        flashingColor = new FlashingColor();
+	@Override
+	public void periodic() {
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		periodic();
+	}
+
+	// Animation that fades into and out of a specified color
+    public void setSingleFadeColor(Color color) {
+        candle.setSingleFadeColor(color);
     }
 
-    @Override
-    public void periodic() {
-      // lightWriter.set(bufferOne.getLED(2).toString());
-      ledOne.setData(bufferOne);
-    }
-  
-    @Override
-    public void simulationPeriodic() {
-        periodic();
-    }
-  
-    // public void rainbow() {
-    //     // For every pixel
-    //     for (int i = 0; i < bufferOne.getLength(); i++) {
-    //       // Calculate the hue - hue is easier for rainbows because the color
-    //       // shape is a circle so only one value needs to precess
-    //       final var hue = (rainbow.rainbowFirstPixelHue + (i * 180 / bufferOne.getLength())) % 180;
-    //       // Set the value
-    //       bufferOne.setHSV(i, hue, 255, 128);
-    //     }
-    //     // Increase by to make the rainbow "move"
-    //     rainbow.rainbowFirstPixelHue += 3;
-    //     // Check bounds
-    //     rainbow.rainbowFirstPixelHue %= 180;
-
-    //     // for (int i = 0; i < bufferTwo.getLength(); i++) {
-    //     //   // Calculate the hue - hue is easier for rainbows because the color
-    //     //   // shape is a circle so only one value needs to precess
-    //     //   final var hue = (rainbow.rainbowFirstPixelHue + (i * 180 / bufferTwo.getLength())) % 180;
-    //     //   // Set the value
-    //     //   bufferTwo.setHSV(i, hue, 255, 128);
-    //     // }
-    //     // // Increase by to make the rainbow "move"
-    //     // rainbow.rainbowFirstPixelHue += 3;
-    //     // // Check bounds
-    //     // rainbow.rainbowFirstPixelHue %= 180;
-    // }
-
-
-
-  public void setAlternatingColor(Color colorOne, Color colorTwo) {
-    for (int i = 0; i < bufferOne.getLength(); i++) {
-      if(i%2==0) {bufferOne.setLED(i, colorOne);} 
-    }
-  }
-
-    public void setAllColor(Color color) {
-      // lightWriter.set(color.toString());
-
-      for (int i = 0; i < bufferOne.getLength(); i++) {
-        bufferOne.setLED(i, color);
-      }
-    }
-    public void setAllColor(int r, int g, int b) {
-      for (int i = 0; i < bufferOne.getLength(); i++) {
-        setColor(i, r, g, b);
-      }
+    // Animation that gradually lights the entire LED strip one LED at a time
+    public void setColorFlow(Color color, AnimationDirectionValue direction) {
+        candle.setColorFlow(color, direction);
     }
 
-    public void setColor(int i,int r, int g, int b) {
-        bufferOne.setRGB(i, r, g, b);
-    }
-    public void setColor(int i, Color color) {
-      bufferOne.setLED(i, color);
+    // Animation that looks similar to a flame flickering -Might REMOVE
+    public void setFire(AnimationDirectionValue direction){
+        candle.setFire(direction);
     }
 
-    public void switchLeds() {
-      double timestamp = Timer.getFPGATimestamp();
-      if (timestamp- switchLED.lastChange > 1){
-        switchLED.on = !switchLED.on;
-        switchLED.lastChange = timestamp;
-      }
-      if (switchLED.on){
-        setAlternatingColor(yellow, blue);
-      } else {
-        setAlternatingColor(blue, yellow);
-      }
+    // Animation that bounces a pocket of light across the LED strip -Might REMOVE
+    public void setLarson(Color color){
+        candle.setLarson(color);
     }
 
-    public void flashingColors(Color colorOne, Color colorTwo){
-      if (System.currentTimeMillis() - flashingColor.startTime >= flashingColor.waitTime) {
-        for (int i = 0; i < bufferOne.getLength(); i++) {
-            if (i % 3 == flashingColor.stage) {
-                setColor(i, colorOne);
-                continue;
-            }
-            setColor(i, colorTwo);
-        }
-        flashingColor.stage = flashingColor.stage + 1 > 3 ? 0 : flashingColor.stage + 1;
-        flashingColor.startTime = System.currentTimeMillis();
-      }
+    // Animation that creates a rainbow throughout all the LEDs
+    public void setRainbow(AnimationDirectionValue direction) {
+        candle.setRainbow(direction);
+    }
+
+    //Animation that fades all the LEDs of a strip simultaneously between Red, Green, and Blue -Might REMOVE
+    public void setRGBFade(Color color) {
+        candle.setRGBFade(color);
+    }
+
+    // Sets LEDs to a solid color
+    public void setAll(Color color) {
+        candle.setAll(color, 8, endShiftNum);
+    }
+	
+	public void setShootHalf(Color color) {
+		candle.setAll(color, startShootNum, endShootNum);
+	}
+	
+	public void setShiftHalf(Color color) {
+		candle.setAll(color, startShiftNum, endShiftNum);
+	}
+
+	public void setAlternating(Color colorOne, Color colorTwo) {	//TODO:Test
+		candle.setAlternating(colorOne,colorTwo);
+	}
+
+    // Animation that strobes the LEDs a specified color
+    public void setStrobe(Color color) {
+        candle.setStrobe(color);
+    }
+
+    // Animation that randomly turns LEDs on and off to a certain color
+    public void setTwinkle(Color color) {
+        candle.setTwinkle(color);
+    }
+
+    // Animation that randomly turns on LEDs until it reaches the maximum count, and then turns them all off
+    public void setTwinkleOff(Color color) {
+        candle.setTwinkleOff(color);
     }
 }
-

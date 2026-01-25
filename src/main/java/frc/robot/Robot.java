@@ -20,6 +20,7 @@ import frc.robot.commands.SysId.ManualSysIdRoutine;
 import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.autos.AutoChooser;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeWheel;
@@ -46,7 +47,7 @@ public class Robot extends TimedRobot {
     //     new ShooterWheel(false),
     //     vision
     // );
-    private final CANdle candle = new CANdle(0);
+    private final Light light = new Light(0);
     
     private final CommandXboxController driver =
 		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
