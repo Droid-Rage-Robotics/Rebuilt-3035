@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.subsystems.vision.Vision;
 import frc.utility.LimelightEx;
@@ -41,7 +42,7 @@ public class Shooter {
 }
     
     private static final InterpolatingDoubleTreeMap SCORE_SPEED_MAP = new InterpolatingDoubleTreeMap();
-    privat e static final InterpolatingDoubleTreeMap HOARD_SPEED_MAP = new InterpolatingDoubleTreeMap();
+    private static final InterpolatingDoubleTreeMap HOARD_SPEED_MAP = new InterpolatingDoubleTreeMap();
 
     static{
         //Include all speed values for the shooter (LL Distance, Speed)
@@ -63,8 +64,8 @@ public class Shooter {
 
     private final LimelightEx limelight;
 
-    private static final double LIMELIGHT_HEIGHT;
-    private static final double LIMELIGHT_PITCH;
+    private static final double LIMELIGHT_HEIGHT = 0;
+    private static final double LIMELIGHT_PITCH = 0;
 
     public Shooter (
         Turret turret,
@@ -91,12 +92,20 @@ public class Shooter {
         // Calculate hood angle (using lookup table example)
         double hoodAngle = interpolateHoodAngle(distance);
 
-        // Calculate turret angle
-        double tx = limelight.getTX();
-        double turretAdjustment = tx;
-
         // Command subsystems
         hood.setAngle(hoodAngle);
-        turret.adjustAngle(turretAdjustment);
+
+        /* ---------------- Turret Aiming ---------------- */
+
+        if (limelight.getTV()) {
+            double txDeg = limelight.getTX();
+            Rotation2d currentAngle = turret.getCurrentAngle();
+
+            // Shift the goal by the Limelight error
+            Rotation2d newGoal = currentAngle.minus(Rotation2d.fromDegrees(txDeg));
+            turret.setGoalAngle(newGoal);
+        }
+
+        
     }
 }

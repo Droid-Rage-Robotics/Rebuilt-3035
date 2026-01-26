@@ -156,19 +156,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     public double getPositionSetpoint() {
         return Math.toDegrees(controller.getSetpoint().position);
     }
-
-    /* ---------------- Vision Aiming ---------------- */
-
-    public void aimWithLimelight() {
-        if (!limelight.getTV()) return;
-
-        double txDeg = limelight.getTX();
-        Rotation2d currentAngle = getCurrentAngle();
-
-        // Shift the goal by the Limelight error
-        Rotation2d newGoal = currentAngle.minus(Rotation2d.fromDegrees(txDeg));
-        setGoalAngle(newGoal);
-    }
     
     /* ---------------- Sensor Access ---------------- */
 
