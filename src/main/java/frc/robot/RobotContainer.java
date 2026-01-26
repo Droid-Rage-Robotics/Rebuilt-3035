@@ -22,8 +22,12 @@ import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.drive.TeleopAlign;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.manual.Turning;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.Intake.IntakeValue;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
@@ -38,16 +42,28 @@ public class RobotContainer {
 
 	public void configureTeleOpBindings(
 		SwerveDrive drive,
+		Intake intake,
+		Indexer indexer,
+		Shooter shooter,
 		Vision vision,
 		Light light
 		) {
 			// Slow Mode and Gyro Reset in the Default Command
-			// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+			drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 			// drive.setDefaultCommand(new Turning(drive, driver));
 			// climb.setDefaultCommand(new ClimbTeleop(climb, operator::getRightY));
 			// light.setDefaultCommand(new LightCommand(light));
-			// operator.y()
-			// 	.onTrue(new TeleopCommands().goL4(elevator, carriage));
+			driver.rightTrigger()
+				.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
+				.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+			driver.leftTrigger()
+				.onTrue(intake.setPositionCommand(IntakeValue.OUTTAKE))
+				.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+			
+			
+			
+				operator.y()
+				.onTrue(new InstantCommand(null, null));
 	}
 
 	public void testDrive(CommandXboxController driver, SwerveDrive drive, Vision vision) {

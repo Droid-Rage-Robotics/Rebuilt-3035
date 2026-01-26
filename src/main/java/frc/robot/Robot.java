@@ -24,6 +24,7 @@ import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeWheel;
+import frc.robot.subsystems.intake.Pivot;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
@@ -36,17 +37,17 @@ import frc.utility.MatchTimerSpeaker;
 public class Robot extends TimedRobot {
     private final Vision vision = new Vision();
     private final SwerveDrive drive = new SwerveDrive(true, vision);
-    // private final Intake intake = new Intake(
-    //     new Pivot (false),
-    //     new IntakeWheel(false)
-    // );
-    // private final Indexer indexer = new Indexer(false);
-    // private final Shooter shooter = new Shooter(
-    //     new Turret(false),
-    //     new Hood(false),
-    //     new ShooterWheel(false),
-    //     vision
-    // );
+    private final Intake intake = new Intake(
+        new Pivot(false),
+        new IntakeWheel(false)
+    );
+    private final Indexer indexer = new Indexer(false);
+    private final Shooter shooter = new Shooter(
+        new Turret(false,vision), //ToDO: Remove vision from here
+        new Hood(false),
+        new ShooterWheel(false),
+        vision
+    );
     private final Light light = new Light(0);
     
     private final CommandXboxController driver =
@@ -146,8 +147,8 @@ public class Robot extends TimedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        // robotContainer.configureTeleOpBindings(drive, elevator, carriage, climb, vision);
-        robotContainer.testDrive(driver, drive, vision);
+        robotContainer.configureTeleOpBindings(drive, intake, indexer, shooter, vision, light);
+        // robotContainer.testDrive(driver, drive, vision);
 
         
         // robotContainer.resetClimb(climb);
