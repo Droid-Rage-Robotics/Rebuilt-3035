@@ -87,6 +87,8 @@ public class Shooter implements Dashboard{
 
     private final StructSubscriber<Rotation2d> yawSubscriber;
 
+    private final LimelightEx limelight;
+
     //TODO: Put shooter mode on to Elastic
     public Shooter (
         Turret turret,
@@ -98,6 +100,10 @@ public class Shooter implements Dashboard{
         this.hood=hood;
         this.shooter=shooter;
         this.vision=vision;
+
+        limelight = vision.getTurretLL();
+
+
         
         NetworkTable table = NetworkTableInstance.getDefault().getTable("Drivetrain");
         yawSubscriber = table.getStructTopic("Yaw", Rotation2d.struct).subscribe(new Rotation2d());
