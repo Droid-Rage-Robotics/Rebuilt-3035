@@ -6,6 +6,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -18,6 +19,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -26,15 +31,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.DroidRageConstants;
+import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.drive.SwerveDriveConstants.Speed;
 import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
-import frc.robot.subsystems.drive.SwerveModule.POD;
+import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.utility.DashboardUtils;
 import frc.utility.DashboardUtils.Dashboard;
-import frc.utility.motor.MotorBase.Direction;
+import frc.utility.motor.MotorConstants.Direction;
+import frc.utility.motor.TalonEx;
 import lombok.Getter;
+import lombok.Setter;
 
 //Set Voltage instead of set Power
 //Set them to 90 to 100%
@@ -57,36 +65,62 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
             new Translation2d(-SwerveDriveConfig.WHEEL_BASE.getValue() / 2,
                     -SwerveDriveConfig.TRACK_WIDTH.getValue() / 2) // Back Right --
     );
-    
-    private final SwerveModule frontRight = SwerveModule.create()
-        .withSubsystem(this, POD.FR)
-        .withDriveMotor(3,Direction.Forward, true)
-        .withTurnMotor(1, Direction.Forward, true)
-        .withEncoder(2, SwerveDriveConfig.FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue, 
-        SensorDirectionValue.CounterClockwise_Positive);
-        
-    private final SwerveModule backRight = SwerveModule.create()
-        .withSubsystem(this, POD.BR)
-        .withDriveMotor(6, Direction.Forward, true)
-        .withTurnMotor(4, Direction.Forward, true)
-        .withEncoder(5, SwerveDriveConfig.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue,
-        SensorDirectionValue.CounterClockwise_Positive);
 
-    private final SwerveModule backLeft = SwerveModule.create()
-        .withSubsystem(this, POD.BL)
-        .withDriveMotor(9, Direction.Forward, true)
-        .withTurnMotor(7, Direction.Forward, true)
-        .withEncoder(8, SwerveDriveConfig.BACK_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue, 
-        SensorDirectionValue.CounterClockwise_Positive);
+    private final SwerveModuleConstants frontRight = new SwerveModuleConstants()
+        .withSubsystem(this)
+        .withPodName(POD.FR)
+        .withDriveMotorId(3)
+        .withDriveMotorDirection(Direction.Forward)
+        .withDriveMotorIsEnabled(false)
+        .withTurnMotorId(1)
+        .withTurnMotorDirection(Direction.Forward)
+        .withTurnMotorIsEnabled(false)
+        .withEncoderId(2)
+        .withEncoderDirection(SensorDirectionValue.CounterClockwise_Positive)
+        .withEncoderOffsetRad(SwerveDriveConfig.FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS.getValue());
+
+    private final SwerveModuleConstants backRight = new SwerveModuleConstants()
+        .withSubsystem(this)
+        .withPodName(POD.BR)    
+        .withDriveMotorId(6)
+        .withDriveMotorDirection(Direction.Forward)
+        .withDriveMotorIsEnabled(false)
+        .withTurnMotorId(4)
+        .withTurnMotorDirection(Direction.Forward)
+        .withTurnMotorIsEnabled(false)
+        .withEncoderId(5)
+        .withEncoderDirection(SensorDirectionValue.CounterClockwise_Positive)
+        .withEncoderOffsetRad(SwerveDriveConfig.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS.getValue());
     
-    private final SwerveModule frontLeft = SwerveModule.create()
-        .withSubsystem(this, POD.FL)
-        .withDriveMotor(12, Direction.Forward, true)
-        .withTurnMotor(10, Direction.Forward, true)
-        .withEncoder(11, SwerveDriveConfig.FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS::getValue, 
-        SensorDirectionValue.CounterClockwise_Positive);
+    private final SwerveModuleConstants backLeft = new SwerveModuleConstants()
+        .withSubsystem(this)
+        .withPodName(POD.BL)
+        .withDriveMotorId(9)
+        .withDriveMotorDirection(Direction.Forward)
+        .withDriveMotorIsEnabled(false)
+        .withTurnMotorId(7)
+        .withTurnMotorDirection(Direction.Forward)
+        .withTurnMotorIsEnabled(false)
+        .withEncoderId(8)
+        .withEncoderDirection(SensorDirectionValue.CounterClockwise_Positive)
+        .withEncoderOffsetRad(SwerveDriveConfig.BACK_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS.getValue());
     
-    @Getter private final SwerveModule[] swerveModules = { frontLeft, frontRight, backLeft, backRight };
+    private final SwerveModuleConstants frontLeft = new SwerveModuleConstants()
+        .withSubsystem(this)
+        .withPodName(POD.FL)
+        .withDriveMotorId(12)
+        .withDriveMotorDirection(Direction.Forward)
+        .withDriveMotorIsEnabled(false)
+        .withTurnMotorId(10)
+        .withTurnMotorDirection(Direction.Forward)
+        .withTurnMotorIsEnabled(false)
+        .withEncoderId(11)
+        .withEncoderDirection(SensorDirectionValue.CounterClockwise_Positive)
+        .withEncoderOffsetRad(SwerveDriveConfig.FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS.getValue());
+    
+    private final SwerveModuleConstants[] swerveModuleConstants = { frontLeft, frontRight, backLeft, backRight };
+    
+    @Getter private final SwerveModule[] swerveModules;
     
     private final Pigeon2 pigeon2 = new Pigeon2(13, DroidRageConstants.driveCanBus);
 
@@ -104,17 +138,29 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
     );
 
     private volatile Speed speed = Speed.NORMAL;
-    private volatile TippingState tippingState = TippingState.NO_TIP_CORRECTION;
+    @Getter @Setter private volatile TippingState tippingState = TippingState.NO_TIP_CORRECTION;
 
     private final Field2d field = new Field2d();
     private final Field2d visionField = new Field2d();
 
     private final boolean isEnabled;
     private final Vision vision;
+    // SwerveDrivetrain
 
     public SwerveDrive(boolean isEnabled, Vision vision) {
         this.isEnabled = isEnabled;
         this.vision=vision;
+        
+        this.swerveModules = new SwerveModule[swerveModuleConstants.length];
+        
+        for (SwerveModuleConstants m_swerveModuleConstants: swerveModuleConstants) {
+            m_swerveModuleConstants.driveMotorIsEnabled=isEnabled;
+            m_swerveModuleConstants.turnMotorIsEnabled=isEnabled;
+        }
+
+        for (int i = 0; i < swerveModuleConstants.length; i++) {
+            this.swerveModules[i] = SwerveModule.createWithConstants(swerveModuleConstants[i]);
+        }
         
         for (SwerveModule swerveModule: swerveModules) {
             swerveModule.brakeMode();
@@ -129,9 +175,14 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
             swerveModules[num].setTurnMotorIsEnabled(isEnabled);
         }   
         
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("Drivetrain");
+        yawPublisher = table.getStructTopic("Yaw", Rotation2d.struct).publish();
+        
         DashboardUtils.registerDashboard(this);
     }
 
+    private final StructPublisher<Rotation2d> yawPublisher;
+    
     @Override
     public void elasticInit() {
         SmartDashboard.putData("Drive/Swerve Drive", this);
@@ -140,14 +191,18 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         SmartDashboard.putData("Drive/Vision Pose", visionField);
         SmartDashboard.putBoolean("Drive/Info/isEnabled", isEnabled);
         SmartDashboard.putData("Drive/Data", data);
+
+
+
+        
     }
 
     @Override
     public void practiceWriters() {
-        SmartDashboard.putData("Drive/Angles", frontLeft);
-        SmartDashboard.putData("Drive/Angles", frontRight);
-        SmartDashboard.putData("Drive/Angles", backLeft);
-        SmartDashboard.putData("Drive/Angles", backRight);
+        // SmartDashboard.putData("Drive/Angles", frontLeft);
+        // SmartDashboard.putData("Drive/Angles", frontRight);
+        // SmartDashboard.putData("Drive/Angles", backLeft);
+        // SmartDashboard.putData("Drive/Angles", backRight);
     }
 
     @Override
@@ -157,17 +212,20 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("SwerveDrive");
 
-        builder.addDoubleProperty("Front Left Angle", () -> frontLeft.getTurningPosition(), null);
-        builder.addDoubleProperty("Front Left Velocity", () -> frontLeft.getDriveVelocity(), null);
-
-        builder.addDoubleProperty("Front Right Angle", () -> frontRight.getTurningPosition(), null);
-        builder.addDoubleProperty("Front Right Velocity", () -> frontRight.getDriveVelocity(), null);
-
-        builder.addDoubleProperty("Back Left Angle", () -> backLeft.getTurningPosition(), null);
-        builder.addDoubleProperty("Back Left Velocity", () -> backLeft.getDriveVelocity(), null);
-
-        builder.addDoubleProperty("Back Right Angle", () -> backRight.getTurningPosition(), null);
-        builder.addDoubleProperty("Back Right Velocity", () -> backRight.getDriveVelocity(), null);
+        // Use POD enum for names
+        POD[] pods = {POD.FL, POD.FR, POD.BL, POD.BR};
+        
+        for (int i = 0; i < swerveModules.length; i++) {
+            final int index = i;
+            String podName = pods[i].toString();
+            
+            builder.addDoubleProperty(podName + " Angle", 
+                () -> swerveModules[index].getTurningPosition(), null);
+            builder.addDoubleProperty(podName + " Velocity", 
+                () -> swerveModules[index].getDriveVelocity(), null);
+            builder.addDoubleProperty(podName + " Position", 
+                () -> swerveModules[index].getDrivePos(), null);
+        }
 
         builder.addDoubleProperty("Robot Angle", () -> getRotation2d().getRadians(), null);
     }
@@ -190,6 +248,16 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         field.setRobotPose(getPose());
         
         updateVisionOdometry();
+
+        
+    }
+
+    private void updateTelemetry() {
+        for (SwerveModule module : swerveModules) {
+            module.updateTelemetry();
+        }
+
+        yawPublisher.set(getRotation2d());
     }
 
     @Override
@@ -200,8 +268,8 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
     public void updateVisionOdometry() {
         poseEstimator.update(getRotation2d(), getModulePositions());
 
-        PoseEstimate left = vision.getLeftEstimate();
-        PoseEstimate right = vision.getRightEstimate();
+        PoseEstimate left = vision.getOdoEstimate();
+        // PoseEstimate right = vision.getRightEstimate();
 
         if (left != null && left.tagCount > 0) {
             double dist = vision.closestTagDistance(left);
@@ -216,34 +284,207 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
                 );
             }
 
-        if (right != null && right.tagCount > 0) {
-            double dist = vision.closestTagDistance(right);
-            double std = vision.distanceToStdDev(dist);
-            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+        // if (right != null && right.tagCount > 0) {
+        //     double dist = vision.closestTagDistance(right);
+        //     double std = vision.distanceToStdDev(dist);
+        //     double stdTheta = Math.toRadians(Math.max(5, dist * 4));
 
-            if (vision.isReasonable(getEstimatedPose(), right.pose)) {
-                poseEstimator.addVisionMeasurement(
-                    right.pose,
-                    right.timestampSeconds,
-                    VecBuilder.fill(std, std, stdTheta)
-                );
-            }  
-        }
+        //     if (vision.isReasonable(getEstimatedPose(), right.pose)) {
+        //         poseEstimator.addVisionMeasurement(
+        //             right.pose,
+        //             right.timestampSeconds,
+        //             VecBuilder.fill(std, std, stdTheta)
+        //         );
+        //     }  
+        // }
 
         visionField.setRobotPose(getEstimatedPose());
     }
 
-    public SwerveModulePosition[] getModulePositions() {
-        return new SwerveModulePosition[] {
-            frontLeft.getPosition(),
-            frontRight.getPosition(),
-            backLeft.getPosition(),
-            backRight.getPosition()
-        };
+    
+
+    public double getTranslationalSpeed() {
+        return speed.getTranslationalSpeed();
     }
 
-    public TippingState getTippingState() {
-        return tippingState;
+    public double getAngularSpeed() {
+        return speed.getAngularSpeed();
+    }
+
+    public double getForwardVelocity() {
+        // Index 0 = FL, Index 1 = FR (based on your array order)
+        double frontLeftVel = swerveModules[0].getDriveVelocity();
+        double frontRightVel = swerveModules[1].getDriveVelocity();
+        return (frontLeftVel + frontRightVel) / 2;
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+    }
+
+    public void drive(double xSpeed, double ySpeed, double turnSpeed) {
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+        drive(chassisSpeeds);
+    }
+    public void drive(ChassisSpeeds chassisSpeeds) {
+        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+        setModuleStates(states);
+    }
+
+    public void setModuleStates(SwerveModuleState[] states) {
+        if (!isEnabled) return;
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+            states, 
+            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
+        );
+
+        // swerveModules[1].setState(states[1]);
+        for (int i = 0; i < 4; i++) {
+            swerveModules[i].setState(states[i]);
+        }
+    }
+
+    public void setFeedforwardModuleStates(ChassisSpeeds chassisSpeeds) {
+        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+        setFeedforwardModuleStates(states);
+    }
+    
+    public void setFeedforwardModuleStates(SwerveModuleState[] states) {
+        if (!isEnabled) return;
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+            states, 
+            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
+        );
+
+        for (int i = 0; i < 4; i++) {
+            swerveModules[i].setFeedforwardState(states[i]);
+        }
+    }
+
+    public void stop() {
+        for (SwerveModule swerveModule: swerveModules) {
+            swerveModule.stop();
+        }
+    }
+
+    public void setYaw(double degrees){
+        pigeon2.setYaw(degrees, 5);
+    }
+    
+    public TrapezoidProfile.Constraints getThetaConstraints() {
+        return new TrapezoidProfile.Constraints(
+            SwerveDriveConfig.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND.getValue(),
+            SwerveDriveConfig.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED.getValue());
+    }
+
+    // public void changeAllianceRotation(){//DO THIS AT THE END OF AUTOS ONLY
+    //     //No WORK
+    //     setYaw(getHeading() +90);
+    //     switch (DriverStation.getAlliance().get()) {
+    //         case Red:
+    //             setYaw(getHeading() + 180);
+    //             break;
+    //         case Blue:
+    //             setYaw(getHeading());
+    //             break;
+    //     }
+    // } 
+
+    public boolean isInNeutralZone() {
+        boolean isInNeutralZone = (
+            getPose().getX()>FieldConstants.NEUTRAL_ZONE_START.in(Units.Meters) && 
+            getPose().getX()<FieldConstants.NEUTRAL_ZONE_END.in(Units.Meters)
+        );
+
+        return isInNeutralZone;
+    }
+
+    /* ---------------- SysId Routines ---------------- */
+    
+    public SysIdRoutine getDriveSysId() {
+        return new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, // Use default ramp rate (1 V/s)
+                Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
+                null, // Use default timeout (10 s)
+                (state) -> SignalLogger.writeString("sysid-test-state-SwerveDrive_drive", state.toString())
+            ),
+            new SysIdRoutine.Mechanism(voltage -> {
+                // Apply voltage to all drive and turn motors
+                for (SwerveModule module : swerveModules) {
+                    module.getDriveMotor().setVoltage(voltage);
+                    module.getTurnMotor().setVoltage(voltage);
+                }
+            }, null, this)
+        );
+    }
+
+    public SysIdRoutine getTurnSysId() {
+        return new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, // Use default ramp rate (1 V/s)
+                Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
+                null, // Use default timeout (10 s)
+                (state) -> SignalLogger.writeString("sysid-test-state-SwerveDrive_turn", state.toString())
+            ),
+            new SysIdRoutine.Mechanism(voltage -> {
+                for (SwerveModule module : swerveModules) {
+                    module.getTurnMotor().setVoltage(voltage);
+                }
+            }, null, this)
+        );
+    }
+
+    /* ---------------- Commands ---------------- */
+    
+    public Command setSpeed(Speed speed) {
+        return runOnce(() -> {
+            this.speed = speed;
+        });
+    }
+
+    public Command resetEncoders() {
+        return runOnce(() -> {
+            for (SwerveModule swerveModule: swerveModules) {
+                swerveModule.resetDriveEncoder();
+            }
+        });
+    }
+
+    public Command setYawCommand(double degrees) {
+        return runOnce(
+            () -> setYaw(degrees)
+        );
+    }
+
+    public Command runStop() {
+        return runOnce(this::stop);
+    }
+
+    public Command driveAutoReset(){
+        return runOnce(()->setYawCommand(getRotation2d().rotateBy(Rotation2d.fromDegrees(0)).getDegrees()));
+    }
+
+    /* ---------------- Odometry ---------------- */
+    
+    public ChassisSpeeds getSpeeds() {//Is this Robot Relative
+        return DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates());
+    }
+    
+    public SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[swerveModules.length];
+        for (int i = 0; i < swerveModules.length; i++) {
+            states[i] = swerveModules[i].getState();
+        }
+        return states;
+    }
+    
+    public SwerveModulePosition[] getModulePositions() {
+        SwerveModulePosition[] positions = new SwerveModulePosition[swerveModules.length];
+        for (int i = 0; i < swerveModules.length; i++) {
+            positions[i] = swerveModules[i].getPosition();
+        }
+        return positions;
     }
 
     /**
@@ -302,165 +543,5 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
 
     public Pose2d getEstimatedPose() {
         return poseEstimator.getEstimatedPosition();
-    }
-
-    public double getTranslationalSpeed() {
-        return speed.getTranslationalSpeed();
-    }
-
-    public double getAngularSpeed() {
-        return speed.getAngularSpeed();
-    }
-
-    public double getForwardVelocity() {
-        return (frontLeft.getDriveVelocity() + frontRight.getDriveVelocity()) / 2;
-    }
-
-    public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
-    }
-
-    public void drive(double xSpeed, double ySpeed, double turnSpeed) {
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
-        drive(chassisSpeeds);
-    }
-    public void drive(ChassisSpeeds chassisSpeeds) {
-        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-        setModuleStates(states);
-    }
-
-    public void setModuleStates(SwerveModuleState[] states) {
-        if (!isEnabled) return;
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-            states, 
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
-        );
-
-        // swerveModules[1].setState(states[1]);
-        for (int i = 0; i < 4; i++) {
-            swerveModules[i].setState(states[i]);
-        }
-    }
-
-    public void setFeedforwardModuleStates(ChassisSpeeds chassisSpeeds) {
-        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-        setFeedforwardModuleStates(states);
-    }
-    
-    public void setFeedforwardModuleStates(SwerveModuleState[] states) {
-        if (!isEnabled) return;
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-            states, 
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
-        );
-
-        for (int i = 0; i < 4; i++) {
-            swerveModules[i].setFeedforwardState(states[i]);
-        }
-    }
-
-    public void stop() {
-        for (SwerveModule swerveModule: swerveModules) {
-            swerveModule.stop();
-        }
-    }
-
-    public void setTippingState(TippingState tippingState) {
-        this.tippingState = tippingState;
-    }
-
-    public Command setSpeed(Speed speed) {
-        return runOnce(() -> {
-            this.speed = speed;
-        });
-    }
-
-    public Command resetEncoders() {
-        return runOnce(() -> {
-            for (SwerveModule swerveModule: swerveModules) {
-                swerveModule.resetDriveEncoder();
-            }
-        });
-    }
-
-    public Command setYawCommand(double degrees) {
-        return runOnce(
-            () -> setYaw(degrees)
-        );
-    }
-    public void setYaw(double degrees){
-        pigeon2.setYaw(degrees, 5);
-    }
-
-    public Command runStop() {
-        return runOnce(this::stop);
-    }
-
-    public TrapezoidProfile.Constraints getThetaConstraints() {
-        return new TrapezoidProfile.Constraints(
-            SwerveDriveConfig.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND.getValue(),
-            SwerveDriveConfig.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED.getValue());
-    }
-
-    public Command driveAutoReset(){
-        return runOnce(()->setYawCommand(getRotation2d().rotateBy(Rotation2d.fromDegrees(0)).getDegrees()));
-    }
-
-    public ChassisSpeeds getSpeeds() {//Is this Robot Relative
-        return DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates());
-    }
-    public SwerveModuleState[] getModuleStates() {
-        SwerveModuleState[] states = new SwerveModuleState[swerveModules.length];
-        for (int i = 0; i < swerveModules.length; i++) {
-            states[i] = swerveModules[i].getState();
-        }
-        return states;
-    }
-
-    // public void changeAllianceRotation(){//DO THIS AT THE END OF AUTOS ONLY
-    //     //No WORK
-    //     setYaw(getHeading() +90);
-    //     switch (DriverStation.getAlliance().get()) {
-    //         case Red:
-    //             setYaw(getHeading() + 180);
-    //             break;
-    //         case Blue:
-    //             setYaw(getHeading());
-    //             break;
-    //     }
-    // } 
-
-    public SysIdRoutine getDriveSysId() {
-        return new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null, // Use default ramp rate (1 V/s)
-                Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
-                null, // Use default timeout (10 s)
-                (state) -> SignalLogger.writeString("sysid-test-state-SwerveDrive_drive", state.toString())
-            ),
-            new SysIdRoutine.Mechanism(voltage -> {
-                // Apply voltage to all drive and turn motors
-                for (SwerveModule module : swerveModules) {
-                    module.getDriveMotor().setVoltage(voltage);
-                    module.getTurnMotor().setVoltage(voltage);
-                }
-            }, null, this)
-        );
-    }
-
-    public SysIdRoutine getTurnSysId() {
-        return new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null, // Use default ramp rate (1 V/s)
-                Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
-                null, // Use default timeout (10 s)
-                (state) -> SignalLogger.writeString("sysid-test-state-SwerveDrive_turn", state.toString())
-            ),
-            new SysIdRoutine.Mechanism(voltage -> {
-                for (SwerveModule module : swerveModules) {
-                    module.getTurnMotor().setVoltage(voltage);
-                }
-            }, null, this)
-        );
     }
 }
