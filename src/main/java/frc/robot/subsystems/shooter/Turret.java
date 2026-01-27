@@ -19,8 +19,8 @@ public class Turret extends TurretTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.ABSOLUTE)
-        .withLowerLimit(0)
-        .withUpperLimit(0)
+        .withLowerLimit(0) //Degree
+        .withUpperLimit(0) //Degree
         .withName("Turret")
         .withOffset(0)
         .withMainNum(0);
@@ -39,9 +39,8 @@ public class Turret extends TurretTemplate {
         .withConversionFactor(1)
         .withDirection(SensorDirectionValue.Clockwise_Positive);
     
-    public Turret(boolean isEnabled, Vision vision) {
+    public Turret(boolean isEnabled) {
         super(isEnabled, 
-            vision.getLeftLimelight(), 
             new ProfiledPIDController(0, 0, 0, 
             new TrapezoidProfile.Constraints(0, 0)), 
             new SimpleMotorFeedforward(0, 0, 0), 
