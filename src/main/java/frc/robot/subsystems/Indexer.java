@@ -10,8 +10,23 @@ import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.template.FlywheelTemplate;
 import frc.utility.template.SubsystemConstants;
 import frc.utility.template.SubsystemConstants.EncoderType;
+import lombok.Getter;
 
 public class Indexer extends FlywheelTemplate{
+
+    public enum IndexerValue {
+        INTAKE(0),
+        OUTTAKE(0),
+        STOP(0),
+        HOLD(0);
+
+        @Getter private final double indexerValue;
+
+        private IndexerValue(double indexerValue) {
+            this.indexerValue = indexerValue;
+        }
+    } 
+    
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
