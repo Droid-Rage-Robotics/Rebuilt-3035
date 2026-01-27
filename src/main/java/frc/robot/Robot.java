@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
     );
     private final Indexer indexer = new Indexer(false);
     private final Shooter shooter = new Shooter(
-        new Turret(false,vision), //ToDO: Remove vision from here
+        new Turret(false),
         new Hood(false),
         new ShooterWheel(false),
         vision
@@ -56,13 +56,12 @@ public class Robot extends TimedRobot {
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 
     // private final CycleTracker cycleTracker = new CycleTracker();
-    // private final Light light = new Light();*
 
     // private final DriveSysID driveSysID = new DriveSysID(drive.getSwerveModules(), drive);
     // private final SysID sysID = new SysID(carriage.getIntake().getMotor(), carriage.getIntake());
 
     private final RobotContainer robotContainer = new RobotContainer(driver, operator);
-    // private final AutoChooser autoChooser = new AutoChooser(drive, elevator, carriage, vision);
+    private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer,shooter, light);
 
     // public boolean teleopRan;
     private Command autonomousCommand;
