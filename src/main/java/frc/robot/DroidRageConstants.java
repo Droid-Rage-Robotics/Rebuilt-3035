@@ -1,9 +1,13 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ctre.phoenix6.CANBus;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -71,8 +75,8 @@ public final class DroidRageConstants {
 
     public static final CANBus driveCanBus = new CANBus("drive");
     public static final CANBus rioCanBus = new CANBus();
-    public static final String leftLimelight = "limelight-left";
-    public static final String rightLimelight = "limelight-right";
+    public static final String odoLL = "odoLL";
+    public static final String turretLL = "turretLL";
 
     public enum Control{
         PID,
@@ -90,4 +94,13 @@ public final class DroidRageConstants {
     //TODO: Do you get battery Voltage?
     
     public static boolean didWeWin = true; //Win Auto?
+
+    public static class FieldConstants {
+        public static final Distance FUNNEL_RADIUS = Inches.of(24);
+        public static final Distance FUNNEL_HEIGHT = Inches.of(72 - 56.4);
+
+        public static final Distance NEUTRAL_ZONE_START = Inches.of(0);
+        public static final Distance NEUTRAL_ZONE_END = Inches.of(0);
+
+    }
 }
