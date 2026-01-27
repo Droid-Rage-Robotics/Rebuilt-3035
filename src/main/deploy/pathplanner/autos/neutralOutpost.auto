@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToNeutralOutpost"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NeutralToTrenchOutpost"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToTowerOutpost"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
