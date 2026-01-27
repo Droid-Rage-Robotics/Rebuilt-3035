@@ -61,7 +61,7 @@
     "rotation": 88.26429541107169
   },
   "reversed": false,
-  "folder": "crossNeutralOutpost",
+  "folder": "outpost",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -2.290610042638565
