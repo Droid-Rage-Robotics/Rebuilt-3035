@@ -3,6 +3,8 @@
   "robotLength": 0.87,
   "holonomicMode": true,
   "pathFolders": [
+    "crossNeutralDepot",
+    "crossNeutralOutpost",
     "depot",
     "middle",
     "neutral",
