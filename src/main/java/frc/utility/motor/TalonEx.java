@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
+import frc.utility.motor.MotorConstants.Direction;
 
 public class TalonEx extends MotorBase {
     private final TalonFX motor;
@@ -148,11 +149,8 @@ public class TalonEx extends MotorBase {
      * @param mode
      * @return TalonEx (for call chaining)
      */
-    public TalonEx withIdleMode(ZeroPowerMode mode) {
-        config.MotorOutput.NeutralMode= switch (mode) {
-            case Brake -> NeutralModeValue.Brake;
-            case Coast -> NeutralModeValue.Coast;
-        };
+    public TalonEx withIdleMode(NeutralModeValue mode) {
+        config.MotorOutput.NeutralMode=mode;
         return this;
     }
 
