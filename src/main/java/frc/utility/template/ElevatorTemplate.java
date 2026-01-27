@@ -1,11 +1,20 @@
 package frc.utility.template;
 
+import static edu.wpi.first.units.Units.*;
+
+import java.util.Optional;
+
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -17,213 +26,103 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.DroidRageConstants.Control;
 import frc.utility.DashboardUtils;
 import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.encoder.CANcoderEx;
+import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorBase;
+import frc.utility.motor.MotorConstants;
+import frc.utility.motor.TalonEx;
+import frc.utility.template.SubsystemConstants.EncoderType;
 
+//TODO: Update
 public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final MotorBase[] motors;
-    private final PIDController controller;
-    private final ProfiledPIDController profiledController;
+    private final Optional<CANcoderEx> encoder;
+    private final ProfiledPIDController controller;
     private final ElevatorFeedforward feedforward;
-    private final DigitalInput limitSwitch;
-    private final Control control;
+
     private final double maxPosition;
     private final double minPosition;
     private final double conversionFactor;
     private final int mainNum;
-    private double calculatedVoltage = 0;
-    private double calculatedPID = 0;
-    private double calculatedFF = 0;
+    private final double encoderOffsetRad;
+
+    private final boolean isEnabled;
+
+    private Distance goalPosition = Meters.zero();
 
     
     public ElevatorTemplate(
-        MotorBase[] motors,
-        double kP,
-        double kI,
-        double kD,
+        boolean isEnabled,
+        ProfiledPIDController controller,
         ElevatorFeedforward feedforward,
-        TrapezoidProfile.Constraints constraints,
-        double maxHeight,
-        double minHeight,
-        double conversionFactor,
-        Control control,
-        String name,
-        int mainNum,
-        boolean isEnabled
+        SubsystemConstants constants,
+        EncoderConstants encoderConstants,
+        MotorConstants... motorConstants
     ) {
-        switch (control) {
-            case TRAPEZOID_PROFILE:
-                this.motors=motors;
-                this.limitSwitch = null;
-                this.feedforward=feedforward;
-                this.control=control;
-                this.maxPosition=maxHeight;
-                this.minPosition=minHeight;
-                this.conversionFactor=conversionFactor;
-                this.mainNum=mainNum;
-                
-                this.controller = null;
-                this.profiledController = new ProfiledPIDController(kP, kI, kD, constraints);
+        this.mainNum=constants.mainNum;
+        this.controller=controller;
+        this.feedforward=feedforward;
+        this.maxPosition=constants.lowerLimit;
+        this.minPosition=constants.upperLimit;
+        this.conversionFactor=constants.conversionFactor;
+        this.encoderOffsetRad=constants.offset;
+        this.isEnabled=isEnabled;
 
-                for (MotorBase motor: motors) {
-                    motor.withIsEnabled(isEnabled);
-                }
+        if (constants.encoderType == EncoderType.ABSOLUTE) {
+            if (encoderConstants == null) {
+                throw new NullPointerException("Encoder constants required for absolute encoder");
+            }
+            this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
+        } else {
+            this.encoder = Optional.empty();
+        }
 
-                DashboardUtils.registerDashboard(this);
-                break;
+        this.motors = new MotorBase[motorConstants.length];
         
-            default:
-                this.motors=motors;
-                this.limitSwitch=null;
-                this.feedforward=feedforward;
-                this.control=control;
-                this.maxPosition=maxHeight;
-                this.minPosition=minHeight;
-                this.conversionFactor=conversionFactor;
-                this.mainNum=mainNum;
-            
-                this.controller = new PIDController(kP, kI, kD);
-                this.profiledController = null;
+        for (MotorConstants m_motorConstants : motorConstants) {
+            m_motorConstants.subsystem=this;
+            m_motorConstants.isEnabled=isEnabled;
+        }
 
-                for (MotorBase motor: motors) {
-                    motor.withIsEnabled(isEnabled);
-                }
-
-                DashboardUtils.registerDashboard(this);
-                break;
+        for (int i = 0; i < motorConstants.length; i++) {
+            this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
     }
 
-    public ElevatorTemplate(
-        MotorBase[] motors,
-        DigitalInput limitSwitch,
-        double kP,
-        double kI,
-        double kD,
-        ElevatorFeedforward feedforward,
-        TrapezoidProfile.Constraints constraints,
-        double maxHeight,
-        double minHeight,
-        double conversionFactor,
-        Control control,
-        String name,
-        int mainNum,
-        boolean isEnabled
-    ) {
-        switch (control) {
-            case TRAPEZOID_PROFILE:
-                this.motors=motors;
-                this.limitSwitch=limitSwitch;
-                this.feedforward=feedforward;
-                this.control=control;
-                this.maxPosition=maxHeight;
-                this.minPosition=minHeight;
-                this.conversionFactor=conversionFactor;
-                this.mainNum=mainNum;
-                
-                this.controller = null;
-                this.profiledController = new ProfiledPIDController(kP, kI, kD, constraints);
-
-                for (MotorBase motor: motors) {
-                    motor.withIsEnabled(isEnabled);
-                }
-
-                DashboardUtils.registerDashboard(this);
-                break;
-        
-            default:
-                this.motors=motors;
-                this.limitSwitch=limitSwitch;
-                this.feedforward=feedforward;
-                this.control=control;
-                this.maxPosition=maxHeight;
-                this.minPosition=minHeight;
-                this.conversionFactor=conversionFactor;
-                this.mainNum=mainNum;
-            
-                this.controller = new PIDController(kP, kI, kD);
-                this.profiledController = null;
-
-                for (MotorBase motor: motors) {
-                    motor.withIsEnabled(isEnabled);
-                }
-
-                DashboardUtils.registerDashboard(this);
-                break;
-        }
-    }
+    /* ---------------- Dashboard ---------------- */
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData("Elevator", this);
-        SmartDashboard.putData("Elevator/Reset Encoder", runOnce(this::resetEncoder));
+        SmartDashboard.putData(getName(), this);
+        SmartDashboard.putData(getName() + "/Reset Encoder", runOnce(this::resetEncoder));
     }
 
-    @Override
-    public void practiceWriters() {
-        
-    }
+    @Override public void practiceWriters() {}
+    @Override public void alerts() {}
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        switch(control) {
-            case TRAPEZOID_PROFILE, SYS_ID:
-                builder.addDoubleProperty("Goal Position", this::getGoalPosition, null);
-                builder.addDoubleProperty("Current Position", this::getPosition, null);
-                builder.addDoubleProperty("Position Setpoint", this::getPositionSetpoint, null);
-                builder.addDoubleProperty("Velocity Setpoint", this::getVelocitySetpoint, null);
-                builder.addDoubleProperty("Current Velocity", this::getVelocity, null);    
-                builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);            
-                builder.addDoubleProperty("Calculated Voltage", () -> calculatedVoltage, null);
-                builder.addDoubleProperty("Calculated FF", () -> calculatedFF, null);
-                builder.addDoubleProperty("Calculated PID", () -> calculatedPID, null);
-                builder.addDoubleProperty("Position Error", profiledController::getPositionError, null);
-                break;
-
-            default:
-                builder.addDoubleProperty("Target Position", controller::getSetpoint, null);
-                builder.addDoubleProperty("Current Position", motors[mainNum]::getPosition, null);
-                builder.addDoubleProperty("Applied Voltage", () -> calculatedVoltage, null);
-                break;
-        }        
+        builder.addDoubleProperty("Goal Position (inches)", () -> getGoalPosition().in(Inches), null);
+        builder.addDoubleProperty("Current Angle (inches)", () -> getCurrentAngle().getDegrees(), null);
+        builder.addDoubleProperty("Position Setpoint (inches)", () -> Units.metersToInches(getPositionSetpoint()), null);
+        builder.addDoubleProperty("Velocity Setpoint (m/s)", this::getVelocitySetpoint, null);
+        builder.addDoubleProperty("Current Velocity (m/s)", () -> Math.toDegrees(getVelocity()), null);
+        builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
+        builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
     }
+
+    /* ---------------- Periodic Control Loop ---------------- */
 
     @Override
     public void periodic() {
-        switch(control){
-            case PID:
-                setVoltage(controller.calculate(getPosition(), controller.getSetpoint()));
-                // setVoltage((controller.calculate(getEncoderPosition(), getTargetPosition())) + .37);
-                //.37 is kG ^^
-                break;
-            case FEEDFORWARD:
-                setVoltage(controller.calculate(getPosition(), controller.getSetpoint())
-                +feedforward.calculate(controller.getSetpoint())); //To Change #
-                //ks * Math.signum(velocity) + kg + kv * velocity + ka * acceleration; ^^
-                break;
-            // case FEEDFORWARD:
-            //     setVoltage(controller.calculate(getEncoderPosition(), controller.getSetpoint())
-            //     +feedforward.calculateWithVelocities(1, 1));
-            //     break;
+        double currentAngleRad = getCurrentAngle().getRadians();
 
-            case TRAPEZOID_PROFILE:
-                calculatedPID = profiledController.calculate(getPosition());
+        double pidOut = controller.calculate(currentAngleRad);
+        var setpoint = controller.getSetpoint();
 
-                calculatedFF = feedforward.calculate(profiledController.getSetpoint().velocity);
+        double ffOut = feedforward.calculate(setpoint.velocity);
 
-                setVoltage(calculatedFF + calculatedPID);
-
-                break;
-            case SYS_ID: break;
-        }
-        
-        if(limitSwitch != null) {
-            if(limitSwitch.get()) {
-                setVoltage(0);
-            }
-        }
-
-        // //Ensures that the encoder is always positive
-        if (getPosition()<0) resetEncoder();
+        setVoltage(pidOut + ffOut);
     }
 
     @Override
@@ -231,63 +130,70 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         periodic();
     }
 
-    public Command setTargetPositionCommand(double target){
-        return new InstantCommand(()->setTargetPosition(target));
+    /* ---------------- Commands ---------------- */
+
+    public Command setTargetPositionCommand(double inches) {
+        return new InstantCommand(() -> setTargetPositionInches(inches), this);
     }
 
-    /*
-     * Use this for initialization
-     */
-    public void setTargetPosition(double target) {
-        switch (control) {
-            case PID,FEEDFORWARD:
-                if(target>maxPosition||target<minPosition) {
-                    return;
-                } else {
-                    controller.setSetpoint(target);
-                }
-                break;
-            case TRAPEZOID_PROFILE:
-                if(target>maxPosition||target<minPosition) {
-                    return;
-                } else {
-                    profiledController.setGoal(target);
-                }
-                break;
-            case SYS_ID: break;
-        }
+    /* ---------------- Manual Goal Control ---------------- */
+
+    public void setTargetPositionInches(double inches) {
+        setGoalPosition(Inches.of(inches));
     }
-    
-    public double getGoalPosition(){
-        switch (control) {
-            case TRAPEZOID_PROFILE: return profiledController.getGoal().position;
-            default: return controller.getSetpoint();
-        }
+
+    public void setGoalPosition(Distance position) {
+        double clamped = MathUtil.clamp(
+            position.in(Meters),
+            minPosition,
+            maxPosition
+        );
+
+        goalPosition = Distance.ofBaseUnits(clamped, Meters);
+        controller.setGoal(clamped);
+    }
+
+    public Distance getGoalPosition() {
+        return goalPosition;
     }
 
     public double getVelocitySetpoint() {
-        return switch (control) {
-            case TRAPEZOID_PROFILE -> profiledController.getSetpoint().velocity;
-            default -> 0;
-        };
+        return Math.toDegrees(controller.getSetpoint().velocity);
     }
 
     public double getPositionSetpoint() {
-        return switch (control) {
-            case TRAPEZOID_PROFILE -> profiledController.getSetpoint().position;
-            default -> 0;
-        };
-    }
-    
-    protected void setVoltage(double voltage) {
-        for (MotorBase motor: motors) {
-            motor.setVoltage(voltage);
-        }
+        return Math.toDegrees(controller.getSetpoint().position);
     }
 
-    protected void setVoltage(Voltage voltage) {
-        for (MotorBase motor: motors) {
+    
+    /* ---------------- Sensor Access ---------------- */
+
+    public Rotation2d getCurrentAngle() {
+        var raw = encoder
+            .map(enc -> enc.getAbsolutePosition())
+            .orElse(motors[mainNum].getPosition());
+
+        double angleRad = raw * conversionFactor + encoderOffsetRad;
+        return new Rotation2d(angleRad);
+    }
+
+    public double getVelocity() {
+        return encoder
+            .map(enc -> enc.getVelocity() * conversionFactor)
+            .orElse(motors[mainNum].getVelocity() * conversionFactor);
+    }
+    
+    public double getVoltage() {
+        return motors[mainNum].getVoltage();
+    }
+
+    /* ---------------- Motor Control ---------------- */
+
+    public void setVoltage(double voltage) {
+        if (isEnabled) {
+            for (MotorBase motor: motors) {
             motor.setVoltage(voltage);
+        }
         }
     }
     
@@ -297,43 +203,17 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         }
     }
 
-    public double getPosition() {
-        return motors[mainNum].getPosition() * conversionFactor;
-    }
-
-    public double getVelocity() {
-        return motors[mainNum].getVelocity() * conversionFactor;
-    }
-
-    public double getVoltage() {
-        return motors[mainNum].getVoltage();
-    }
-
-    public MotorBase getMotor() {
+    /* ---------------- Utility ---------------- */
+    
+    public MotorBase getMotor(){
         return motors[mainNum];
     }
-
+    
     public MotorBase[] getAllMotor() {
         return motors;
     }
 
-    public boolean atSetpoint(){
-        switch (control) {
-            case TRAPEZOID_PROFILE: return profiledController.atSetpoint();
-            default: return controller.atSetpoint();
-        }
+    public boolean atGoal(){
+        return controller.atGoal();
     }
-
-    public SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null, // Use default ramp rate (1 V/s)
-                null, // Use default step voltage (7 volts)
-                null, // Use default timeout (10 s)
-                (state) -> SignalLogger.writeString("sysid-test-state-Elevator", state.toString()) // Log state with Phoenix SignalLogger class
-            ), new SysIdRoutine.Mechanism(this::setVoltage, null, this));
-    }
-
-    @Override
-    public void alerts() {}
 }

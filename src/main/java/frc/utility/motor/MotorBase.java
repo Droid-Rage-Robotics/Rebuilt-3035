@@ -7,40 +7,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.utility.DashboardUtils.Dashboard;
 
 public abstract class MotorBase implements Dashboard {
-    /**
-     * Determines the direction that the motor will
-     * rotate when given a positive control request
-     */
-    public enum Direction {
-        /**
-         * Clockwise rotation is positive for the motor.
-         */
-        Forward,
-        /**
-         * Counterclockwise rotation is positive for the
-         * motor.
-         */
-        Reversed,
-    }
-
-    /**
-     * Determines motor behavior when not recieving
-     * commands for voltage/power
-     */
-    public enum ZeroPowerMode {
-        /**
-         * Motor will resist movement when not recieving
-         * commands for voltage/power.
-         */
-        Brake,
-
-        /**
-         * Motor will allow free movement when not recieving
-         * commands for voltage/power.
-         */
-        Coast,
-    }
-
     public abstract void setVoltage(double voltage);
     public abstract void setVoltage(Voltage voltage);
     public abstract void setPower(double value);

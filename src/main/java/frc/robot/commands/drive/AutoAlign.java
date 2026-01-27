@@ -42,12 +42,12 @@ public class AutoAlign extends Command {
 				}
 				break;
 			case RIGHT:
-				if (!vision.getTV(DroidRageConstants.rightLimelight)) {
+				if (!vision.getTV(DroidRageConstants.turretLL)) {
 					return;
 				}
 				break;
 			case MIDDLE:
-				if (!vision.getTV(DroidRageConstants.rightLimelight) &&
+				if (!vision.getTV(DroidRageConstants.turretLL) &&
 						(!vision.getTV(DroidRageConstants.leftLimelight))) {
 					return;
 				}

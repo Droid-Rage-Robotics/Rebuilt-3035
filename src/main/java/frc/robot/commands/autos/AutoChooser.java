@@ -9,17 +9,23 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.drive.SwerveDriveConstants;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.vision.Vision;
 import frc.utility.DashboardUtils;
 import frc.utility.DashboardUtils.Dashboard;
 
 public class AutoChooser implements Dashboard {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-    public AutoChooser(SwerveDrive drive){
+    public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Shooter shooter, Light light){
         createAutoBuilder(drive);
-        
+        addTuningAuto(drive);
+
         DashboardUtils.registerDashboard(this);
     }
     
@@ -36,6 +42,10 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("StrafeLeft", TuningAutos.strafeLeft(drive));
         autoChooser.addOption("LessForwardTest", TuningAutos.lessForwardTest(drive));
         // autoChooser.addOption("ForwardAndBack", TuningAutos.forwardAndBackTest(drive));
+    }
+
+    public static void addMiddleAuto(SwerveDrive drive, Intake intake, Indexer indexer, Shooter shooter, Light light){
+
     }
 
     public static void addAutos() {}

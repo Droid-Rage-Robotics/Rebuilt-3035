@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -10,25 +11,22 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
+import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
 import frc.utility.encoder.CANcoderEx;
-import frc.utility.motor.MotorBase.Direction;
-import frc.utility.motor.MotorBase.ZeroPowerMode;
+import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.motor.TalonEx;
 import lombok.Getter;
 
 public class SwerveModule implements Sendable {
-    public enum POD{
-        FL,
-        BL,
-        FR,
-        BR
-    }
-
     public static class Constants {
         public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
         public static final double DRIVE_MOTOR_GEAR_RATIO = 1/6.75;//(50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0)=5.35714285714
@@ -52,60 +50,49 @@ public class SwerveModule implements Sendable {
         public static final double TURN_SUPPLY_CURRENT_LIMIT = 80;
     }
 
-    @Getter private TalonEx driveMotor;
-    @Getter private TalonEx turnMotor;
+    @Getter private final TalonEx driveMotor;
+    @Getter private final TalonEx turnMotor;
 
-    // private CANcoder turnEncoder;
-    private CANcoderEx turnEncoder;
-    // private CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+    private final CANcoderEx turnEncoder;
 
-    private PIDController turningPIDController;
-    private SimpleMotorFeedforward driveFeedforward;
+    private final PIDController turningPIDController;
+    private final SimpleMotorFeedforward driveFeedforward;
 
-    private Subsystem subsystem;
-    private SwerveModule.POD podName;
+    private final Subsystem subsystem;
+    private final POD pod;
 
-    private SwerveModule() {}
+    private final StructPublisher<Rotation2d> turnPositionPub;
+    private final StructPublisher<SwerveModuleState> moduleStatePub;
+    private final StructPublisher<SwerveModulePosition> modulePositionPub;
+    private final DoublePublisher driveVelocityPub;
 
-    public static SwerveModule create() {
-        return new SwerveModule();
-    }
 
-    public SwerveModule withSubsystem(Subsystem subsystem, SwerveModule.POD pod) {
-        this.podName=pod;
-        this.subsystem=subsystem;
-        return this;
-    }
+    private SwerveModule(SwerveModuleConstants constants) {
+        this.subsystem=constants.subsystem;
+        this.pod=constants.podName;
 
-    public SwerveModule withDriveMotor(int driveMotorId, Direction direction, boolean isEnabled) {
-        driveMotor = TalonEx.create(driveMotorId, DroidRageConstants.driveCanBus)
-            .withDirection(direction)
-            .withIdleMode(ZeroPowerMode.Brake)
+        driveMotor = TalonEx.create(constants.driveMotorId, DroidRageConstants.driveCanBus)
+            .withDirection(constants.driveMotorDirection)
+            .withIdleMode(NeutralModeValue.Brake)
             .withConversionFactor(Constants.DRIVE_ENCODER_ROT_2_METER)
             .withSubsystem(subsystem)
-            .withIsEnabled(isEnabled)
+            .withIsEnabled(constants.driveMotorIsEnabled)
             .withSupplyCurrentLimit(Constants.DRIVE_SUPPLY_CURRENT_LIMIT)
             .withStatorCurrentLimit(Constants.DRIVE_STATOR_CURRENT_LIMIT);
-        return this;
-    }
 
-    public SwerveModule withTurnMotor(int turnMotorId, Direction direction, boolean isEnabled) {
-        turnMotor = TalonEx.create(turnMotorId, DroidRageConstants.driveCanBus)
-            .withDirection(direction)
-            .withIdleMode(ZeroPowerMode.Coast)
+        turnMotor = TalonEx.create(constants.turnMotorId, DroidRageConstants.driveCanBus)
+            .withDirection(constants.turnMotorDirection)
+            .withIdleMode(NeutralModeValue.Coast)
             .withConversionFactor(Constants.TURN_ENCODER_ROT_2_RAD)
             .withSubsystem(subsystem)
-            .withIsEnabled(isEnabled)
+            .withIsEnabled(constants.turnMotorIsEnabled)
             .withSupplyCurrentLimit(Constants.TURN_SUPPLY_CURRENT_LIMIT);
-        return this;
-    }
 
-    public SwerveModule withEncoder(int absoluteEncoderId, Supplier<Double> absoluteEncoderOffsetRad, SensorDirectionValue direction) {
-        turnEncoder = CANcoderEx.create(absoluteEncoderId, DroidRageConstants.driveCanBus)
+        turnEncoder = CANcoderEx.create(constants.encoderId, DroidRageConstants.driveCanBus)
             .withDirection(SensorDirectionValue.CounterClockwise_Positive)
-            .withMagnetOffset(absoluteEncoderOffsetRad.get()/Constants.TURN_ENCODER_ROT_2_RAD)
+            .withMagnetOffset(constants.encoderOffsetRad/Constants.TURN_ENCODER_ROT_2_RAD)
             .withAbsoluteSensorDiscontinuityPoint(0.5);
-        
+
         turningPIDController = new PIDController(SwerveDriveConfig.TURN_KP.getValue(), 0.0, 0.0);
         turningPIDController.enableContinuousInput(-Math.PI, Math.PI);// Was -Math.PI, Math.PI but changed to 0 and 2PI
         
@@ -113,15 +100,34 @@ public class SwerveModule implements Sendable {
                 SwerveDriveConfig.DRIVE_KV.getValue());
 
         resetDriveEncoder();
-        return this;
+
+        String baseTopic = "SwerveModules/" + pod.getName();
+
+        var nt = NetworkTableInstance.getDefault();
+        turnPositionPub = nt.getStructTopic(baseTopic + "/TurnPosition", Rotation2d.struct).publish();
+        moduleStatePub = nt.getStructTopic(baseTopic + "/State", SwerveModuleState.struct).publish();
+        modulePositionPub = nt.getStructTopic(baseTopic + "/Position", SwerveModulePosition.struct).publish();
+        driveVelocityPub = nt.getDoubleTopic(baseTopic + "/DriveVelocity").publish();
+    }
+
+    public void updateTelemetry() {
+        turnPositionPub.set(new Rotation2d(getTurningPosition()));
+        moduleStatePub.set(getState());
+        modulePositionPub.set(getPosition());
+        driveVelocityPub.set(getDriveVelocity());
+    }
+    
+
+    public static SwerveModule createWithConstants(SwerveModuleConstants constants) {
+        return new SwerveModule(constants);
     }
 
     public double getDrivePos() {
         return driveMotor.getPosition();
     }
 
-    public String getPodName() {
-        return podName.toString();
+    public String getPod() {
+        return pod.toString();
     }
     
     public double getTurningPosition() {
@@ -166,62 +172,12 @@ public class SwerveModule implements Sendable {
         turnMotor.setPower(turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()));
     }
 
-    // private SlewRateLimiter speedLimiter = new SlewRateLimiter()
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty(getPod(), () -> getTurningPosition(), null);
+    }
 
-    // public SwerveModuleState clampStateForHeight(SwerveModuleState state) {
-    //     double scale = getHeightScale();
-    
-    //     double maxSpeed = Constants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND * scale;
-    
-    //     // Limit speed
-    //     double limitedSpeed = MathUtil.clamp(
-    //         state.speedMetersPerSecond,
-    //         -maxSpeed,
-    //         maxSpeed
-    //     );
-    
-    //     return new SwerveModuleState(limitedSpeed, state.angle);
-    // }
-
-    // private double lastSpeed = 0;
-
-    // public double clampAcceleration(double desiredSpeed) {
-    //     double scale = getHeightScale();
-
-    //     // double maxAccel = Constants.PHYSICAL_MAX_ACCELERATION_ * scale;
-
-    //     double maxAccel = 0;
-
-    //     double dt = 0.02; // 20ms loop
-
-    //     double maxDelta = maxAccel * dt;
-
-    //     double delta = desiredSpeed - lastSpeed;
-
-    //     if (delta > maxDelta) delta = maxDelta;
-    //     if (delta < -maxDelta) delta = -maxDelta;
-
-    //     lastSpeed += delta;
-    //     return lastSpeed;
-    // }
-
-    
-
-    // public void setFeedforwardStated(SwerveModuleState state) {
-    //     SwerveModuleState desiredState = state;
-    //     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
-    //         stop();
-    //         return;
-    //     }
-        
-    //     desiredState.optimize(getState().angle);
-
-        
-
-    //     driveMotor.setVoltage(driveFeedforward.calculate(state.speedMetersPerSecond));
-    //     turnMotor.setPower(turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()));
-    // }
-
+    /* ---------------- Utility ---------------- */
 
     public void stop(){
         driveMotor.setPower(0);
@@ -229,18 +185,18 @@ public class SwerveModule implements Sendable {
     }
 
     public void coastMode() {
-        driveMotor.withIdleMode(ZeroPowerMode.Coast);
-        turnMotor.withIdleMode(ZeroPowerMode.Coast);
+        driveMotor.withIdleMode(NeutralModeValue.Coast);
+        turnMotor.withIdleMode(NeutralModeValue.Coast);
     }
 
     public void brakeMode() {
-        driveMotor.withIdleMode(ZeroPowerMode.Brake);
-        turnMotor.withIdleMode(ZeroPowerMode.Brake);
+        driveMotor.withIdleMode(NeutralModeValue.Brake);
+        turnMotor.withIdleMode(NeutralModeValue.Brake);
     }
 
     public void brakeAndCoastMode() {
-        driveMotor.withIdleMode(ZeroPowerMode.Brake);
-        turnMotor.withIdleMode(ZeroPowerMode.Coast);
+        driveMotor.withIdleMode(NeutralModeValue.Brake);
+        turnMotor.withIdleMode(NeutralModeValue.Coast);
     }
 
     public void getTurnVoltage(){
@@ -255,8 +211,5 @@ public class SwerveModule implements Sendable {
         driveMotor.withIsEnabled(isEnabled);
     }
 
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty(getPodName(), () -> getTurningPosition(), null);
-    }
+    
 }

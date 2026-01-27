@@ -23,8 +23,6 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 public class TurretTemplate extends SubsystemBase implements Dashboard {
     private final MotorBase[] motors;
     private final Optional<CANcoderEx> encoder;
-    private final LimelightEx limelight;
-
     private final ProfiledPIDController controller;
     private final SimpleMotorFeedforward feedforward;
 
@@ -40,7 +38,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
     public TurretTemplate(
         boolean isEnabled,
-        LimelightEx limelight,
         ProfiledPIDController controller,
         SimpleMotorFeedforward feedforward,
         SubsystemConstants constants,
@@ -48,11 +45,10 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         MotorConstants... motorConstants
     ) {
         this.mainNum=constants.mainNum;
-        this.limelight=limelight;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.minAngleRad=constants.lowerLimit;
-        this.maxAngleRad=constants.upperLimit;
+        this.minAngleRad=Math.toRadians(constants.lowerLimit);
+        this.maxAngleRad=Math.toRadians(constants.upperLimit);
         this.conversionFactor=constants.conversionFactor;
         this.encoderOffsetRad=constants.offset;
         this.isEnabled=isEnabled;
@@ -157,18 +153,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         return Math.toDegrees(controller.getSetpoint().position);
     }
 
-    /* ---------------- Vision Aiming ---------------- */
-
-    public void aimWithLimelight() {
-        if (!limelight.getTV()) return;
-
-        double txDeg = limelight.getTX();
-        Rotation2d currentAngle = getCurrentAngle();
-
-        // Shift the goal by the Limelight error
-        Rotation2d newGoal = currentAngle.minus(Rotation2d.fromDegrees(txDeg));
-        setGoalAngle(newGoal);
-    }
     
     /* ---------------- Sensor Access ---------------- */
 

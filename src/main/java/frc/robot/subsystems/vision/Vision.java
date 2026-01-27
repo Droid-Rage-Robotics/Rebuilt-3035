@@ -20,163 +20,71 @@ import frc.utility.LimelightEx;
 import lombok.Getter;
 
 public class Vision extends SubsystemBase implements Dashboard{
-    public enum Location {
-        // Naming convention is Limelight_Pole_Level_TagID
-
-        RIGHT_R_L4_17(2.14, -19.94), // Default -blue done
-        RIGHT_R_L4_18(2.1, -19.8), // done
-        RIGHT_R_L4_19(1.87, -20.24), // done 1.87, -20.24
-        RIGHT_R_L4_20(1.2, -19.35), // done 1.2, -19.35
-        RIGHT_R_L4_21(1.71, -18.83), // done
-        RIGHT_R_L4_22(2.01, -19.9), // done
-
-        RIGHT_R_L4_6(2.16, -20.57), // red//done
-        RIGHT_R_L4_7(1.84, -19.13), // done
-        RIGHT_R_L4_8(1.64, -22.18), // done
-        RIGHT_R_L4_9(2.28, -19.06), // done
-        RIGHT_R_L4_10(1.6, -16.61), // done
-        RIGHT_R_L4_11(1.88, -18.38), // done
-
-        RIGHT_R_LEFT(0, 0),
-
-        // RIGHT_R_L3(RIGHT_R_L4),
-        // RIGHT_R_L2(RIGHT_R_L4),
-
-        // ALGAE_R(0,0),
-
-        LEFT_L_L4_17(-0.19, 19.41), // Default -blue //done
-        LEFT_L_L4_18(.05, 18.89), // done iffy
-        LEFT_L_L4_19(-0.29, 22.12), // dne  -0.29, 22.12
-        LEFT_L_L4_20(-0.14, 20.87), // DOne
-        LEFT_L_L4_21(-0.25, 18.9), // done
-        LEFT_L_L4_22(-0.1, 18.5), // done
-
-        LEFT_L_L4_6(-0.38, 19.7), // red - done - BAD BAD
-        LEFT_L_L4_7(-0.06, 19.38), // done
-        LEFT_L_L4_8(-0.24, 17.81), // done
-        LEFT_L_L4_9(-0.06, 17.67), // done
-        LEFT_L_L4_10(-0.3, 19.4), // done
-        LEFT_L_L4_11(-0.06, 20.36), // done
-
-        LEFT_L_RIGHT(0,0),
-
-        // LEFT_L_L3(LEFT_L_L4),
-        // LEFT_L_L2(LEFT_L_L4),
-
-        // ALGAE_L(0, 0)
-
-        RIGHT_A(1,-3),
-        LEFT_A(-.5,4.5),
-
-        ;
-
-        private double distance, angle;
-
-        private Location(double distance, double angle) {
-            this.distance = distance;
-            this.angle = angle;
-        }
-
-        private Location(Location location) {
-            this.distance = location.distance;
-            this.angle = location.angle;
-        }
-
-        public double getDistance() {
-            return distance;
-        }
-
-        public double getAngle() {
-            return angle;
-        }
-    }
-
     public enum MountPose {
-        R_FORWARD(0.2267388258),
-        R_SIDE(0.30880893),
-        R_UP(0.2228530468),
-        R_ROLL(0),
-        R_PITCH(20),
-        R_YAW(45),
+        ODO_FORWARD(0.2267388258),
+        ODO_SIDE(0.30880893),
+        ODO_UP(0.2228530468),
+        ODO_ROLL(0),
+        ODO_PITCH(20),
+        ODO_YAW(45),
+        
+        TURRET_FORWARD(0.2267388258),
+        TURRET_SIDE(0.30880893),
+        TURRET_UP(0.2228530468),
+        TURRET_ROLL(0),
+        TURRET_PITCH(20),
+        TURRET_YAW(45);
 
-        L_FORWARD(0.2267388258),
-        L_SIDE(-0.30880893),
-        L_UP(0.2228530468),
-        L_ROLL(0),
-        L_PITCH(20),
-        L_YAW(-45);
-
-        private final double value;
+        @Getter private final double value;
 
         private MountPose(double value) {
             this.value=value;
-        }
-
-        public double getValue() {
-            return value;
         }
     }
     
     public static class Constants {
         public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
-        public static final double MAX_POSITION_JUMP = 1.0;  // meters
-        public static final double MAX_ROTATION_JUMP = 45.0; // degrees
     }
 
-    public int targetIds[];
-    public PIDController rotController = new PIDController(.095, 0, 0);// .1
-    public PIDController xController = new PIDController(.11, 0, 0);// .1
-    private int bluePipeline = 0, redPipeline = 1, leftPipeline =2, leftFrontPipeline=3,rightPipeline =4, rightFrontPipeline=5;
-    public final AtomicBoolean isAlign = new AtomicBoolean(false);
+    public int targetHubIds[], targetOdoIds[];
+    private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
     // Set Up the team number - http://limelight.local:5801/
 
-    @Getter private final LimelightEx rightLimelight = LimelightEx.create(DroidRageConstants.rightLimelight) // webgui at 10.30.35.12:5801
+    @Getter private final LimelightEx odoLL = LimelightEx.create(DroidRageConstants.odoLL) // webgui at 10.30.35.12:5801
         .withStreamMode_Standard()
         .withCropWindow(-1, 1, -1, 1);
-    
-    @Getter private final LimelightEx leftLimelight = LimelightEx.create(DroidRageConstants.leftLimelight) // webgui at 10.30.35.11:5801
+    @Getter private final LimelightEx turretLL = LimelightEx.create(DroidRageConstants.turretLL) // webgui at 10.30.35.12:5801
         .withStreamMode_Standard()
         .withCropWindow(-1, 1, -1, 1);
+
 
     // Initialize Limelight network tables
     public Vision() {
-        // Change the camera pose relative to robot center (x forward, y left, z up,
-        // degrees)
-
-        rightLimelight.setMountPose(
-            MountPose.R_FORWARD.getValue(), // Forward offset (meters)
-            MountPose.R_SIDE.getValue(), // Side offset (meters)
-            MountPose.R_UP.getValue(), // Height offset (meters)
-            MountPose.R_ROLL.getValue(), // Roll (degrees)
-            MountPose.R_PITCH.getValue(), // Pitch (degrees)
-            MountPose.R_YAW.getValue() // Yaw (degrees)
+        // Change the camera pose relative to robot center (x forward, y left, z up, degrees)
+        odoLL.setMountPose(
+            MountPose.ODO_FORWARD.getValue(), // Forward offset (meters)
+            MountPose.ODO_SIDE.getValue(), // Side offset (meters)
+            MountPose.ODO_UP.getValue(), // Height offset (meters)
+            MountPose.ODO_ROLL.getValue(), // Roll (degrees)
+            MountPose.ODO_PITCH.getValue(), // Pitch (degrees)
+            MountPose.ODO_YAW.getValue() // Yaw (degrees)
         );
-        // Change the camera pose relative to robot center (x forward, y left, z up,
-        // degrees)
-        leftLimelight.setMountPose(
-            MountPose.L_FORWARD.getValue(), // Forward offset (meters)
-            MountPose.L_SIDE.getValue(), // Side offset (meters)
-            MountPose.L_UP.getValue(), // Height offset (meters)
-            MountPose.L_ROLL.getValue(), // Roll (degrees)
-            MountPose.L_PITCH.getValue(), // Pitch (degrees)
-            MountPose.L_YAW.getValue() // Yaw (degrees)
+        turretLL.setMountPose(
+            MountPose.TURRET_FORWARD.getValue(), // Forward offset (meters) - Will Change; Should not cause issues
+            MountPose.TURRET_SIDE.getValue(), // Side offset (meters) - Will Change; Should not cause issues
+            MountPose.TURRET_UP.getValue(), // Height offset (meters) - Will Change; Should not cause issues
+            MountPose.TURRET_ROLL.getValue(), // Roll (degrees)
+            MountPose.TURRET_PITCH.getValue(), // Pitch (degrees)
+            MountPose.TURRET_YAW.getValue() // Yaw (degrees) - Will Change; Should not cause issues
         );
-
-        // for (int port = 5800; port <= 5809; port++) {
-        //     PortForwarder.add(port, "limelight.local", port);
-        // }
-
-        // setUpVision();
-        rotController.setTolerance(.7);//.5
-        xController.setTolerance(.7);//.4
 
         DashboardUtils.registerDashboard(this);
     }
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData("Left Limelight", leftLimelight);
-        SmartDashboard.putData("Right Limelight", rightLimelight);
+        SmartDashboard.putData("ODO_LL", odoLL);
+        SmartDashboard.putData("Turret_LL", turretLL);
     }
 
     @Override
@@ -190,36 +98,18 @@ public class Vision extends SubsystemBase implements Dashboard{
 
     public void setUpVision() {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
-            targetIds = new int[] { 6, 7, 8, 9, 10, 11 };
-            leftLimelight.setPipelineIndex(redPipeline);
-            rightLimelight.setPipelineIndex(redPipeline);
+            targetHubIds = new int[] { 2,3,4,5,8,9,10,11};
+            targetOdoIds= new int [] {}; //TODO:Set Up
+            odoLL.setPipelineIndex(odoPipeline);
+            turretLL.setPipelineIndex(redHubPipeline);
 
         } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            targetIds = new int[] { 17, 18, 19, 20, 21, 22 };
-            leftLimelight.setPipelineIndex(bluePipeline);
-            rightLimelight.setPipelineIndex(bluePipeline);
-        }
-    }
+            targetHubIds = new int[] { 18,19,20,21,24,25,26,27};
+            targetOdoIds = new int[] {};// TODO:Set Up
 
-    public void setUpLeftVision(){
-        targetIds = new int[] {6,19 };
-        leftLimelight.setPipelineIndex(leftPipeline);
-        rightLimelight.setPipelineIndex(leftPipeline);
-    }
-    public void setUpLeftFrontVision(){
-        targetIds = new int[] {20,11};
-        leftLimelight.setPipelineIndex(leftFrontPipeline);
-        rightLimelight.setPipelineIndex(leftFrontPipeline);
-    }
-    public void setUpRightVision(){
-        targetIds = new int[] {8,17};
-        leftLimelight.setPipelineIndex(rightPipeline);
-        rightLimelight.setPipelineIndex(rightPipeline);
-    }
-    public void setUpRightFrontVision(){
-        targetIds = new int[] {9,22};
-        leftLimelight.setPipelineIndex(rightFrontPipeline);
-        rightLimelight.setPipelineIndex(rightFrontPipeline);
+            odoLL.setPipelineIndex(odoPipeline);
+            turretLL.setPipelineIndex(blueHubPipeline);
+        }
     }
 
     @Override
@@ -233,10 +123,10 @@ public class Vision extends SubsystemBase implements Dashboard{
      * @return Horizontal offset angle in degrees
      */
     public double getTX(String name) {
-        if (name == DroidRageConstants.leftLimelight) {
-            return leftLimelight.getTX();
+        if (name == DroidRageConstants.odoLL) {
+            return odoLL.getTX();
         } else {
-            return rightLimelight.getTX();
+            return turretLL.getTX();
         }
     }
 
@@ -246,10 +136,10 @@ public class Vision extends SubsystemBase implements Dashboard{
      * @return Target area percentage (0-100)
      */
     public double getTA(String name) {
-        if (name == DroidRageConstants.leftLimelight) {
-            return leftLimelight.getTA();
+        if (name == DroidRageConstants.odoLL) {
+            return odoLL.getTA();
         } else {
-            return rightLimelight.getTA();
+            return turretLL.getTA();
         }
     }
 
@@ -259,10 +149,10 @@ public class Vision extends SubsystemBase implements Dashboard{
      * @return Vertical offset angle in degrees
      */
     public double getTY(String name) {
-        if (name == DroidRageConstants.leftLimelight) {
-            return leftLimelight.getTY();
+        if (name == DroidRageConstants.odoLL) {
+            return odoLL.getTY();
         } else {
-            return rightLimelight.getTY();
+            return turretLL.getTY();
         }
     }
 
@@ -272,30 +162,18 @@ public class Vision extends SubsystemBase implements Dashboard{
      * @return True if a valid target is present, false otherwise
      */
     public boolean getTV(String name) {
-        if (name == DroidRageConstants.leftLimelight) {
-            return leftLimelight.getTV();
+        if (name == DroidRageConstants.odoLL) {
+            return odoLL.getTV();
         } else {
-            return rightLimelight.getTV();
+            return turretLL.getTV();
         }
     }
 
-    /** The name will be which piepline to use based on which alignment direction */
-    // public boolean isID(String name){
-    // for (int element : targetIds) {
-    // if (element == LimelightHelpers.getFiducialID(name)) {
-    // isIDWriter.set(true);
-    // return true;
-    // }
-    // }
-    // isIDWriter.set(false);
-    // return false;
-    // }
-
     public int getID(String name) {
-        if (name == DroidRageConstants.leftLimelight) {
-            return (int) leftLimelight.getID();
+        if (name == DroidRageConstants.odoLL) {
+            return (int) odoLL.getID();
         } else {
-            return (int) rightLimelight.getID();
+            return (int) turretLL.getID();
         }
     }
     
@@ -348,21 +226,6 @@ public class Vision extends SubsystemBase implements Dashboard{
         return distance;
     }
     
-    public RawFiducial[] getRawFiducials() {
-        return switch (DroidRageConstants.alignmentMode) {
-            case LEFT -> leftLimelight.getRawFiducials();
-            case RIGHT -> rightLimelight.getRawFiducials();
-            case MIDDLE -> {
-                if (getTV(DroidRageConstants.leftLimelight)) {
-                    yield leftLimelight.getRawFiducials();
-                } else if (getTV(DroidRageConstants.rightLimelight)) {
-                    yield rightLimelight.getRawFiducials();
-                } else {
-                    yield null;
-                }
-            }
-        };
-    }
     
     public double distanceToStdDev(double distMeters) {
         double MIN_STD = 0.05; // 5cm close
@@ -398,8 +261,8 @@ public class Vision extends SubsystemBase implements Dashboard{
      * 
      * @return a new PoseEstimate
      */
-    public PoseEstimate getLeftEstimate() {
-        return leftLimelight.getBotPoseEstimate_wpiBlue_MegaTag2();
+    public PoseEstimate getOdoEstimate() {
+        return odoLL.getBotPoseEstimate_wpiBlue_MegaTag2();
     }
 
     /**
@@ -409,147 +272,7 @@ public class Vision extends SubsystemBase implements Dashboard{
      * 
      * @return a new PoseEstimate
      */
-    public PoseEstimate getRightEstimate() {
-        return rightLimelight.getBotPoseEstimate_wpiBlue_MegaTag2();
-    }
-
-    public Location getLeftLocation(String name) {
-        int look = getID(name);
-        if(DroidRageConstants.alignmentMode==Alignment.MIDDLE){
-            return Vision.Location.LEFT_A;
-        } else if(DroidRageConstants.alignmentMode == Alignment.RIGHT){
-            return Vision.Location.LEFT_L_RIGHT;
-        }
-        switch (look) {
-            case 17:
-                return Vision.Location.LEFT_L_L4_17;
-            case 18:
-                return Vision.Location.LEFT_L_L4_18;
-            case 19:
-                return Vision.Location.LEFT_L_L4_19;
-            case 20:
-                return Vision.Location.LEFT_L_L4_20;
-            case 21:
-                return Vision.Location.LEFT_L_L4_21;
-            case 22:
-                return Vision.Location.LEFT_L_L4_22;
-
-            case 6:
-                return Vision.Location.LEFT_L_L4_6;
-            case 7:
-                return Vision.Location.LEFT_L_L4_7;
-            case 8:
-                return Vision.Location.LEFT_L_L4_8;
-            case 9:
-                return Vision.Location.LEFT_L_L4_9;
-            case 10:
-                return Vision.Location.LEFT_L_L4_10;
-            case 11:
-                return Vision.Location.LEFT_L_L4_11;
-
-            default:
-                return Vision.Location.LEFT_L_L4_17;
-        }
-
-    }
-
-    public Location getRightLocation(String name) {
-        int look = getID(name);
-        if (DroidRageConstants.alignmentMode == Alignment.MIDDLE) {
-            return Vision.Location.RIGHT_A;
-        } else if (DroidRageConstants.alignmentMode == Alignment.LEFT) {
-            return Vision.Location.RIGHT_R_LEFT;
-        }
-        switch (look) {
-            case 17:
-                return Vision.Location.RIGHT_R_L4_17;
-            case 18:
-                return Vision.Location.RIGHT_R_L4_18;
-            case 19:
-                return Vision.Location.RIGHT_R_L4_19;
-            case 20:
-                return Vision.Location.RIGHT_R_L4_20;
-            case 21:
-                return Vision.Location.RIGHT_R_L4_21;
-            case 22:
-                return Vision.Location.RIGHT_R_L4_22;
-
-            case 6:
-                return Vision.Location.RIGHT_R_L4_6;
-            case 7:
-                return Vision.Location.RIGHT_R_L4_7;
-            case 8:
-                return Vision.Location.RIGHT_R_L4_8;
-            case 9:
-                return Vision.Location.RIGHT_R_L4_9;
-            case 10:
-                return Vision.Location.RIGHT_R_L4_10;
-            case 11:
-                return Vision.Location.RIGHT_R_L4_11;
-            default:
-                return Vision.Location.RIGHT_R_L4_17;
-        }
-    }
-
-    /**
-     * @return angular velocity to align with an april tag
-     */
-    public double aim() {
-        double targetingAngularVelocity = 0;
-        switch (DroidRageConstants.alignmentMode) {
-            case LEFT:
-                targetingAngularVelocity = rotController.calculate(
-                        getTX(DroidRageConstants.leftLimelight),
-                        getLeftLocation(DroidRageConstants.leftLimelight).getAngle());
-                break;
-            case RIGHT:
-                targetingAngularVelocity = rotController.calculate(
-                        getTX(DroidRageConstants.rightLimelight),
-                        getRightLocation(DroidRageConstants.rightLimelight).getAngle());
-                break;
-            case MIDDLE:
-                if (getTV(DroidRageConstants.leftLimelight)) {
-                    targetingAngularVelocity = rotController.calculate(
-                        getTX(DroidRageConstants.leftLimelight),
-                        getLeftLocation(DroidRageConstants.leftLimelight).getAngle());
-                } else if (getTV(DroidRageConstants.rightLimelight)) {
-                    targetingAngularVelocity = rotController.calculate(
-                        getTX(DroidRageConstants.rightLimelight),
-                        getRightLocation(DroidRageConstants.rightLimelight).getAngle());
-                }
-        }
-        return targetingAngularVelocity;
-    }
-
-    /**
-     * @return forward speed to reach an april tag
-     */
-    public double range() {
-        double targetingForwardSpeed = 0;
-        switch (DroidRageConstants.alignmentMode) {
-            case LEFT:
-                targetingForwardSpeed = xController.calculate(
-                        getTY(DroidRageConstants.leftLimelight),
-                        getLeftLocation(DroidRageConstants.leftLimelight).getDistance());
-                break;
-            case RIGHT:
-                targetingForwardSpeed = xController.calculate(
-                        getTY(DroidRageConstants.rightLimelight),
-                        getRightLocation(DroidRageConstants.rightLimelight).getDistance());
-                break;
-            case MIDDLE:
-                if (getTV(DroidRageConstants.leftLimelight)) {
-					targetingForwardSpeed = xController.calculate(
-                        getTY(DroidRageConstants.leftLimelight),
-                        getLeftLocation(DroidRageConstants.leftLimelight).getDistance());
-				} else if (getTV(DroidRageConstants.rightLimelight)) {
-                    targetingForwardSpeed = xController.calculate(
-                        getTY(DroidRageConstants.rightLimelight),
-                        getRightLocation(DroidRageConstants.rightLimelight).getDistance());
-                }
-                
-                break;
-        }
-        return targetingForwardSpeed;
-    }
+    // public PoseEstimate getRightEstimate() {
+    //     return odoLL.getBotPoseEstimate_wpiBlue_MegaTag2();
+    // }
 }
