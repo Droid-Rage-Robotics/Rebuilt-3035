@@ -98,7 +98,7 @@ public class DashboardUtils {
             }
         }
 
-        if (DroidRageConstants.BatteryLow) {
+        if (DroidRageConstants.BatteryLow.get()) {
             Elastic.sendNotification(notification
                 .withLevel(Elastic.NotificationLevel.ERROR)
                 .withTitle("Battery")
@@ -114,7 +114,7 @@ public class DashboardUtils {
      * in {@code Robot.disabledPeriodic()}
      */
     public static void onDisabledPeriodic() {
-        if (DroidRageConstants.BatteryLow) {
+        if (DroidRageConstants.BatteryLow.get()) {
             batteryAlert.set(true);
             batteryAlert.setText("Battery Voltage Low");
         } else {

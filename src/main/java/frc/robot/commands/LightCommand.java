@@ -34,7 +34,7 @@ public class LightCommand extends Command {
     public void initialize() {
         intakeTimer.start();
         elementInTimer.start();
-        if (DroidRageConstants.BatteryLow) {
+        if (DroidRageConstants.BatteryLow.get()) {
             shootState = LightState.BATTERY_LOW; //ToDo: Is this different enough from the other light
             light.setAll(light.batteryBlue);
         } else {

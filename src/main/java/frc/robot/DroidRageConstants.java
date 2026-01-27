@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.CANBus;
 
@@ -33,19 +34,11 @@ public final class DroidRageConstants {
         alignmentWriter.set(alignmentMode.toString());
     }
 
-    private static final AtomicReference<String> elementWriter = new AtomicReference<>(Element.NONE.toString());
-    //All possible elements
-        public enum Element{
-        ALGAE,
-        CORAL,
-        NONE
-    }
 
     public static final Sendable robotMisc = new Sendable() {
         @Override
         public void initSendable(SendableBuilder builder) {
             builder.addStringProperty("Vision Alignment", alignmentWriter::get, null);
-            builder.addStringProperty("Element", elementWriter::get, null);
         };
     };
 
@@ -77,21 +70,13 @@ public final class DroidRageConstants {
     public static final CANBus rioCanBus = new CANBus();
     public static final String odoLL = "odoLL";
     public static final String turretLL = "turretLL";
-
-    public enum Control{
-        PID,
-        FEEDFORWARD,
-        TRAPEZOID_PROFILE,
-        SYS_ID
-    }
     
     public interface MutableSupplier<T> {
         T get();
         void set(T value);
     }
 
-    public static boolean BatteryLow = RobotController.getBatteryVoltage()<12.5;
-    //TODO: Do you get battery Voltage?
+    public static Supplier<Boolean> BatteryLow = () -> RobotController.getBatteryVoltage()<12.5;
     
     public static boolean didWeWin = true; //Win Auto?
 
