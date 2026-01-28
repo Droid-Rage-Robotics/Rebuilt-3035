@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.utility.motor.MotorConstants.Direction;
 import lombok.Getter;
 
-public class SwerveModuleConstants {
+public final class SwerveModuleConstants {
     public enum POD{
         FL("Front Left"),
         BL("Back Left"),

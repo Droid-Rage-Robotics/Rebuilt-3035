@@ -9,7 +9,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
 
-public class MotorConstants {
+public final class MotorConstants {
     /**
      * Determines the direction that the motor will
      * rotate when given a positive control request

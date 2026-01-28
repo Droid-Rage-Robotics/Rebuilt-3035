@@ -4,7 +4,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-public class EncoderConstants {
+public final class EncoderConstants {
     private final CANcoderConfiguration config = new CANcoderConfiguration();
 
     public Integer deviceId;

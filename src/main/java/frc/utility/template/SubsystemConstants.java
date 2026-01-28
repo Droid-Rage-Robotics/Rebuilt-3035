@@ -1,6 +1,6 @@
 package frc.utility.template;
 
-public class SubsystemConstants {
+public final class SubsystemConstants {
     public enum EncoderType {
         INTEGRATED,
         ABSOLUTE
