@@ -45,6 +45,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
+import frc.utility.TelemetryUtils.TelemetryUpdater;
 import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.motor.TalonEx;
 import lombok.Getter;
@@ -52,7 +53,7 @@ import lombok.Setter;
 
 //Set Voltage instead of set Power
 //Set them to 90 to 100%
-public class SwerveDrive extends SubsystemBase implements Dashboard {
+public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUpdater {
     public enum TippingState {
         NO_TIP_CORRECTION,
         ANTI_TIP,
@@ -148,6 +149,10 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
     private final Vision vision;
     // SwerveDrivetrain
 
+    private final NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("Drivetrain");
+    private final StructPublisher<Rotation2d> yawPublisher;
+
+
     public SwerveDrive(boolean isEnabled, Vision vision) {
         this.isEnabled = isEnabled;
         this.vision=vision;
@@ -176,8 +181,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
             swerveModules[num].setTurnMotorIsEnabled(isEnabled);
         }   
         
-        // NetworkTable table = NetworkTableInstance.getDefault().getTable("Drivetrain");
-        // yawPublisher = table.getStructTopic("Yaw", Rotation2d.struct).publish();
+        yawPublisher = networkTable.getStructTopic("Yaw", Rotation2d.struct).publish();
 
         odometry = new SwerveDriveOdometry (
             DRIVE_KINEMATICS, 
@@ -210,7 +214,6 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         TelemetryUtils.registerDashboard(this);
     }
 
-    // private final StructPublisher<Rotation2d> yawPublisher;
 
     
     
@@ -270,6 +273,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         }
     };
      
+    
     @Override
     public void periodic() {
         odometry.update(
@@ -284,6 +288,22 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
 
         field.setRobotPose(getPose());
         
+        
+        
+        
+        // updateVisionOdometry();
+
+
+        
+    }
+
+
+    @Override
+    public void updateTelemetry() {
+        for (SwerveModule module : swerveModules) {
+            module.updateTelemetry();
+        }
+
         Logger.recordOutput("Drive/Pose3d", getPose3d());
         Logger.recordOutput("Drive/Pose", getPose());
         Logger.recordOutput("Drive/PoseEstimate3d", getEstimatedPose3d());
@@ -292,22 +312,9 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         Logger.recordOutput("Drive/Rotation2d", getRotation2d());
         Logger.recordOutput("Drive/States", getModuleStates());
         Logger.recordOutput("Drive/Speeds", getChassisSpeeds());
-        
-        
-        // updateVisionOdometry();
 
-        // updateTelemetry();
-
-        
+        yawPublisher.set(getRotation2d());
     }
-
-    // private void updateTelemetry() {
-    //     for (SwerveModule module : swerveModules) {
-    //         module.updateTelemetry();
-    //     }
-
-    //     yawPublisher.set(getRotation2d());
-    // }
 
     @Override
     public void simulationPeriodic() {

@@ -64,6 +64,7 @@ public class TelemetryUtils {
 
     private static final List<Dashboard> dashboardPublishers = new ArrayList<>();
     private static final List<Periodic> periodicPublishers = new ArrayList<>();
+    private static final List<TelemetryUpdater> telemetryUpdaters = new ArrayList<>();
 
     private static final Alert batteryAlert = new Alert("Battery Voltage", AlertType.kError);
     private static final Elastic.Notification notification = new Elastic.Notification();
@@ -80,13 +81,24 @@ public class TelemetryUtils {
     
     /**
      * Call this function to register a class's {@code periodic()} method
-     * to be run at robot startup
+     * to be run periodically
      * 
      * <p>DO NOT USE THIS IN A SUBSYSTEM!!!
      * @param value set to {@code this} while in a class
      */
     public static void registerPeriodic(Periodic value) {
         periodicPublishers.add(value);
+    }
+
+    /**
+     * Call this function to register a class's {@code updateTelemetry()} method
+     * to be run periodically
+     * 
+     * <p>DO NOT USE THIS IN A SUBSYSTEM!!!
+     * @param value set to {@code this} while in a class
+     */
+    public static void registerTelemetry(TelemetryUpdater value) {
+        telemetryUpdaters.add(value);
     }
     
     /**
@@ -133,6 +145,10 @@ public class TelemetryUtils {
     public static void onRobotPeriodic() {
         for (Periodic pub : periodicPublishers) {
             pub.periodic();
+        }
+
+        for (TelemetryUpdater pub : telemetryUpdaters) {
+            pub.updateTelemetry();
         }
     }
 }

@@ -1,17 +1,23 @@
 package frc.utility;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
+import frc.utility.TelemetryUtils.TelemetryUpdater;
 
-public class LimelightEx implements Sendable{
+public class LimelightEx implements Sendable, TelemetryUpdater{
     private final String name;
 
     private LimelightEx(String name) {
         this.name=name;
+
+        TelemetryUtils.registerTelemetry(this);
     }
 
     public static LimelightEx create(String name) {
@@ -56,16 +62,6 @@ public class LimelightEx implements Sendable{
         return this;
     }
 
-    /**
-     * Gets the Pose2d for easy use with Odometry vision pose estimator
-     * (addVisionMeasurement)
-     * 
-     * @return a Pose2d object
-     */
-    public Pose2d getBotPose2d() {
-        return LimelightHelpers.getBotPose2d(name);
-    }
-
     public void setPipelineIndex(int pipelineIndex) {
         LimelightHelpers.setPipelineIndex(name, pipelineIndex);
     }
@@ -91,6 +87,23 @@ public class LimelightEx implements Sendable{
      */
     public PoseEstimate getBotPoseEstimate_wpiBlue_MegaTag2() {
         return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+    }
+
+    /**
+     * (Recommended) Gets the robot's 3D pose in the WPILib Blue Alliance Coordinate System.
+     * @return Pose3d object representing the robot's position and orientation in Blue Alliance field space
+     */
+    public Pose3d getBotPose3d_wpiBlue() {
+        return LimelightHelpers.getBotPose3d_wpiBlue(name);
+    }
+
+    /**
+     * Gets the Pose2d for easy use with Odometry vision pose estimator
+     * (addVisionMeasurement)
+     * 
+     */
+    public Pose2d getBotPose2d_wpiBlue() {
+        return LimelightHelpers.getBotPose2d_wpiBlue(name);
     }
 
     /**
@@ -153,5 +166,15 @@ public class LimelightEx implements Sendable{
         builder.addDoubleProperty("tY", this::getTY, null);
         builder.addBooleanProperty("tV", this::getTV, null);
         builder.addDoubleProperty("ID", this::getID, null);  
+    }
+
+    @Override
+    public void updateTelemetry() {
+        Logger.recordOutput(name+"/tA", getTA());
+        Logger.recordOutput(name+"/tX", getTX());
+        Logger.recordOutput(name+"/tY", getTY());
+        Logger.recordOutput(name+"/tV", getTV());
+        Logger.recordOutput(name+"/ID", getID());
+
     }
 }

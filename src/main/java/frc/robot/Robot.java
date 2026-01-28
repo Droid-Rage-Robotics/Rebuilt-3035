@@ -76,7 +76,12 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         // SignalLogger.setPath("/home/lvuser/logs/ctre/");
-        TelemetryUtils.Config.Match = MatchValue.PRACTICE;
+        if (DriverStation.isFMSAttached()) {
+            TelemetryUtils.Config.Match = MatchValue.COMPETITION;
+        } else {
+            TelemetryUtils.Config.Match = MatchValue.PRACTICE;
+        }
+        
         TelemetryUtils.onRobotInit();
 
         Logger.addDataReceiver(new NT4Publisher());
