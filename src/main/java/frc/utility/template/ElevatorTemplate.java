@@ -23,7 +23,6 @@ import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
-//TODO: Update
 public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final TalonEx[] motors;
     private final Optional<CANcoderEx> encoder;
