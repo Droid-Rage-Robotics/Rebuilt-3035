@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -27,7 +28,8 @@ public class IntakeWheel extends FlywheelTemplate {
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
         .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70);
+        .withStatorCurrentLimit(70)
+        .withMotorType(MotorType.KrakenX60);
 
     public IntakeWheel(boolean isEnabled) {
         super(isEnabled,

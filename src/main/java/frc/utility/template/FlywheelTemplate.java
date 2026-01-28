@@ -1,9 +1,20 @@
 package frc.utility.template;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -17,6 +28,8 @@ import frc.utility.motor.TalonEx;
 
 public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private final MotorBase[] motors;
+    private final TalonFXSimState[] motorSimStates;
+
     private final PIDController controller;
     private final SimpleMotorFeedforward feedforward;
     private final double maxSpeed;
@@ -24,6 +37,12 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private final double conversionFactor;
     private final int mainNum;
     private final String name;
+
+    private final FlywheelSim simulation;
+
+    private final LinearSystem<N1, N1, N1> flywheelSystem;
+
+    private final DCMotor gearbox;
 
     public FlywheelTemplate(
         boolean isEnabled,
@@ -50,6 +69,28 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         for (int i = 0; i < motorConstants.length; i++) {
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
+
+        this.motorSimStates = new TalonFXSimState[motors.length];
+
+        for (int i = 0; i < motors.length; i++) {
+            this.motorSimStates[i] = motors[i].getSimState();
+        }
+
+        for (TalonFXSimState simState : motorSimStates) {
+            simState.setMotorType(motorConstants[mainNum].motorType);
+        }
+
+        gearbox = switch (motorConstants[mainNum].motorType) {
+            case KrakenX44 -> DCMotor.getKrakenX44(motorConstants.length);
+            case KrakenX60 -> DCMotor.getKrakenX60(motorConstants.length);
+        };
+        
+        flywheelSystem =  LinearSystemId.createFlywheelSystem(
+            gearbox, 0.001, constants.gearRatio
+        );
+        
+
+        simulation = new FlywheelSim(flywheelSystem, gearbox);
 
         DashboardUtils.registerDashboard(this);
     }
@@ -85,7 +126,22 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void simulationPeriodic() {
-        periodic();
+        double loopTime = 0.020;
+
+        for (TalonFXSimState simState : motorSimStates) {
+            simState.setSupplyVoltage(RobotController.getBatteryVoltage());
+            simState.setRotorVelocity(simulation.getAngularVelocity());
+                
+        }
+
+        simulation.setInputVoltage(motorSimStates[mainNum].getMotorVoltage());
+        // Next, we update it. The standard loop time is 20ms.
+        simulation.update(loopTime);
+        
+        // SimBattery estimates loaded battery voltages
+        RoboRioSim.setVInVoltage(
+            BatterySim.calculateDefaultBatteryLoadedVoltage(simulation.getCurrentDrawAmps()));
+  
     }
 
     /* ---------------- Commands ---------------- */

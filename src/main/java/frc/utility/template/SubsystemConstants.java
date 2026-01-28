@@ -14,10 +14,17 @@ public class SubsystemConstants {
     public double conversionFactor;
     public double offset;
 
+    public double gearRatio;
+
     public boolean hasLimitSwitch;
 
     public SubsystemConstants withEncoderType(EncoderType value) {
         this.encoderType=value;
+        return this;
+    }
+
+    public SubsystemConstants withGearRatio(double value) {
+        this.gearRatio=value;
         return this;
     }
 
