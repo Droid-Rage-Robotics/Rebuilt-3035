@@ -149,9 +149,6 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
     private final Vision vision;
     // SwerveDrivetrain
 
-    private final NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("Drivetrain");
-    private final StructPublisher<Rotation2d> yawPublisher;
-
 
     public SwerveDrive(boolean isEnabled, Vision vision) {
         this.isEnabled = isEnabled;
@@ -179,9 +176,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         for(int num = 0; num<4; num++){
             swerveModules[num].setDriveMotorIsEnabled(isEnabled);
             swerveModules[num].setTurnMotorIsEnabled(isEnabled);
-        }   
-        
-        yawPublisher = networkTable.getStructTopic("Yaw", Rotation2d.struct).publish();
+        }
 
         odometry = new SwerveDriveOdometry (
             DRIVE_KINEMATICS, 
@@ -209,7 +204,6 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
             getModulePositions(), 
             new Pose3d()
         );
-        
         
         TelemetryUtils.registerDashboard(this);
     }
@@ -312,8 +306,6 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         Logger.recordOutput("Drive/Rotation2d", getRotation2d());
         Logger.recordOutput("Drive/States", getModuleStates());
         Logger.recordOutput("Drive/Speeds", getChassisSpeeds());
-
-        yawPublisher.set(getRotation2d());
     }
 
     @Override

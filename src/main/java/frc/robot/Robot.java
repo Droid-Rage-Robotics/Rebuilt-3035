@@ -26,6 +26,7 @@ import frc.robot.commands.autos.AutoChooser;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.drive.Telemetry;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeWheel;
 import frc.robot.subsystems.intake.Pivot;
@@ -41,6 +42,8 @@ import frc.utility.MatchTimerSpeaker;
 public class Robot extends LoggedRobot {
     private final Vision vision = new Vision();
     private final SwerveDrive drive = new SwerveDrive(true, vision);
+
+    private final Telemetry telemetry = new Telemetry(drive);
     // private final Intake intake = new Intake(
     //     new Pivot(false),
     //     new IntakeWheel(false)

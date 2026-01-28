@@ -94,7 +94,6 @@ public class TelemetryUtils {
      * Call this function to register a class's {@code updateTelemetry()} method
      * to be run periodically
      * 
-     * <p>DO NOT USE THIS IN A SUBSYSTEM!!!
      * @param value set to {@code this} while in a class
      */
     public static void registerTelemetry(TelemetryUpdater value) {
