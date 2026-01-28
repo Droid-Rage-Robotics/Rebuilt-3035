@@ -1,18 +1,24 @@
 package frc.utility;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.subsystems.vision.LimelightHelpers;
+import frc.robot.subsystems.vision.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
 
 public class LimelightEx implements Sendable, TelemetryUpdater{
     private final String name;
+    private AprilTagFieldLayout fieldLayout;
 
     private LimelightEx(String name) {
         this.name=name;
@@ -59,6 +65,11 @@ public class LimelightEx implements Sendable, TelemetryUpdater{
 
     public LimelightEx withIdFilter(int[] ids) {
         LimelightHelpers.SetFiducialIDFiltersOverride(name, ids);
+        return this;
+    }
+
+    public LimelightEx withFieldLayout(AprilTagFieldLayout fieldLayout) {
+        this.fieldLayout=fieldLayout;
         return this;
     }
 
@@ -152,11 +163,16 @@ public class LimelightEx implements Sendable, TelemetryUpdater{
      * @return True if a valid target is present, false otherwise
      */
     public boolean getTV() {
+        LimelightHelpers.getTargetPose_RobotSpace(name);
         return LimelightHelpers.getTV(name);
     }
     
     public double getID() {
         return LimelightHelpers.getFiducialID(name);
+    }
+
+    public Pose3d getTargetPose_FieldSpace() {
+        return fieldLayout.getTagPose(((int)getID())).get();
     }
  
     @Override

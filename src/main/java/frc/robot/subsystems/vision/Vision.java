@@ -52,9 +52,11 @@ public class Vision extends SubsystemBase implements Dashboard{
 
     @Getter private final LimelightEx odoLL = LimelightEx.create(DroidRageConstants.odoLL) // webgui at 10.30.35.12:5801
         .withStreamMode_Standard()
+        .withFieldLayout(Constants.FIELD_LAYOUT)
         .withCropWindow(-1, 1, -1, 1);
     @Getter private final LimelightEx turretLL = LimelightEx.create(DroidRageConstants.turretLL) // webgui at 10.30.35.12:5801
         .withStreamMode_Standard()
+        .withFieldLayout(Constants.FIELD_LAYOUT)
         .withCropWindow(-1, 1, -1, 1);
 
 
@@ -85,6 +87,8 @@ public class Vision extends SubsystemBase implements Dashboard{
     public void elasticInit() {
         SmartDashboard.putData("ODO_LL", odoLL);
         SmartDashboard.putData("Turret_LL", turretLL);
+
+        
     }
 
     @Override
