@@ -2,16 +2,16 @@ package frc.utility.template;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.utility.motor.MotorBase;
+import frc.utility.motor.TalonEx;
 
 //Works
 public class SetPower {
-    private final MotorBase[] motors;
+    private final TalonEx[] motors;
     // private final ShuffleboardValue<Double> powerWriter;
     private final int mainNum;
 
     public SetPower(
-        MotorBase[] motors,
+        TalonEx[] motors,
         String name,
         int mainNum
     ){
@@ -31,16 +31,16 @@ public class SetPower {
      */
     public void setTargetPower(double power) {
         // powerWriter.set(power);
-        for (MotorBase motor: motors) {
+        for (TalonEx motor: motors) {
             motor.setPower(power);
         }
     }
    
-    public MotorBase getMotor() {
+    public TalonEx getMotor() {
         return motors[mainNum];
     }
 
-    public MotorBase[] getAllMotor() {
+    public TalonEx[] getAllMotor() {
         return motors;
     } 
 }

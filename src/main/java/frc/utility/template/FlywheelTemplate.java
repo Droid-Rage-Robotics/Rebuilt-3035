@@ -22,12 +22,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
-import frc.utility.motor.MotorBase;
+import frc.utility.motor.TalonEx;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
 
 public class FlywheelTemplate extends SubsystemBase implements Dashboard {
-    private final MotorBase[] motors;
+    private final TalonEx[] motors;
     private final TalonFXSimState[] motorSimStates;
 
     private final PIDController controller;
@@ -59,7 +59,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         this.mainNum=constants.mainNum;
         this.name=constants.name;
 
-        this.motors = new MotorBase[motorConstants.length];
+        this.motors = new TalonEx[motorConstants.length];
         
         for (MotorConstants m_motorConstants : motorConstants) {
             m_motorConstants.subsystem=this;
@@ -181,24 +181,24 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Motor Control ---------------- */
     
     protected void setVoltage(double voltage) {
-        for (MotorBase motor: motors) {
+        for (TalonEx motor: motors) {
             motor.setVoltage(voltage);
         }
     }
     
     public void resetEncoder() {
-        for (MotorBase motor: motors) {
+        for (TalonEx motor: motors) {
             motor.resetEncoder(0);
         }
     }
 
     /* ---------------- Utility ---------------- */
 
-    public MotorBase getMotor() {
+    public TalonEx getMotor() {
         return motors[mainNum];
     }
 
-    public MotorBase[] getAllMotor() {
+    public TalonEx[] getAllMotor() {
         return motors;
     }
 

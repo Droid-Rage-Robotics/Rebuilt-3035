@@ -10,11 +10,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
+import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.motor.MotorConstants.Direction;
 
-public class TalonEx extends MotorBase {
+public class TalonEx implements Dashboard {
     private final TalonFX motor;
     private final TalonFXConfiguration config;
     private final TalonFXConfigurator configurator;
@@ -23,14 +26,8 @@ public class TalonEx extends MotorBase {
     private double conversionFactor = 1;
     private Subsystem subsystem;
     private boolean isEnabled;
-    
-    private TalonEx(int deviceId, CANBus canBus) {
-        this.motor = new TalonFX(deviceId, canBus);
-        this.canBus = canBus;
-        this.deviceId=deviceId;
-        this.config = new TalonFXConfiguration(); // Use to change configs
-        this.configurator = motor.getConfigurator(); // Use to apply configs
-    }
+
+    private final Alert tempAlert;
 
     private TalonEx(MotorConstants constants) {
         this.motor = new TalonFX(constants.deviceId, constants.canBus);
@@ -40,27 +37,8 @@ public class TalonEx extends MotorBase {
         this.config = constants.getConfig();
         this.configurator = motor.getConfigurator();
         configurator.apply(config);
-    }
 
-    /**
-     * Creates a new TalonEx instance with the specified
-     * device id and canbus
-     * @param deviceId
-     * @param canBus
-     * @return a new TalonEx instance
-     */
-    public static TalonEx create(int deviceId, CANBus canBus) {
-        return new TalonEx(deviceId, canBus);
-    }
-
-    /**
-     * Creates a new TalonEx instance with the specified
-     * device id and the default (rio) canbus.
-     * @param deviceId
-     * @return a new TalonEx instance
-     */
-    public static TalonEx create(int deviceId) {
-        return new TalonEx(deviceId, DroidRageConstants.rioCanBus);
+        tempAlert = new Alert("Temperature Warning: Motor " + deviceId +" at " + constants.subsystem, AlertType.kWarning);
     }
 
     public static TalonEx createWithConstants(MotorConstants constants) {
@@ -72,7 +50,6 @@ public class TalonEx extends MotorBase {
      * @param isEnabled
      * @return TalonEx (for call chaining)
      */
-    @Override
     public TalonEx withIsEnabled(boolean isEnabled) {
         this.isEnabled=isEnabled;
         return this;
@@ -161,12 +138,10 @@ public class TalonEx extends MotorBase {
      * applied.
      * @return the velocity of the motor
      */
-    @Override
     public double getVelocity() {
         return motor.getVelocity().getValueAsDouble() * conversionFactor;
     }
 
-    @Override
     public TalonFXSimState getSimState() {
         return motor.getSimState();
     }
@@ -177,7 +152,6 @@ public class TalonEx extends MotorBase {
      * Custom conversion factors are automatically applied.
      * @return the positon of the motor
      */
-    @Override
     public double getPosition() {
         return motor.getPosition().getValueAsDouble() * conversionFactor;
     }
@@ -187,7 +161,6 @@ public class TalonEx extends MotorBase {
      * Default units are in Celsius.
      * @return the temperature as a double
      */
-    @Override
     public double getTemp() {
         return motor.getDeviceTemp().getValueAsDouble();
     }
@@ -196,7 +169,6 @@ public class TalonEx extends MotorBase {
      * Used to get the applied voltage to the motor.
      * @return the applied voltage to the motor
      */
-    @Override
     public double getVoltage() {
         return motor.getMotorVoltage().getValueAsDouble();
     }
@@ -213,7 +185,6 @@ public class TalonEx extends MotorBase {
      * Used to get the device id of the motor.
      * @return the device id as an int
      */
-    @Override
     public int getDeviceId() {
         return deviceId;
     }
@@ -241,7 +212,6 @@ public class TalonEx extends MotorBase {
      * specific position in rotations.
      * @param value
      */
-    @Override
     public void resetEncoder(double value) {
         motor.setPosition(value);
     }
@@ -251,7 +221,6 @@ public class TalonEx extends MotorBase {
      * nothing if the motor is disabled.
      * @param voltage voltage
      */
-    @Override
     public void setVoltage(double voltage) {
         if (isEnabled) {
             motor.setVoltage(voltage);
@@ -263,7 +232,6 @@ public class TalonEx extends MotorBase {
      * nothing if the motor is disabled.
      * @param voltage voltage
      */
-    @Override
     public void setVoltage(Voltage voltage) {
         if (isEnabled) {
             motor.setVoltage(voltage.in(Volts));
@@ -275,7 +243,6 @@ public class TalonEx extends MotorBase {
      * as opposed to manually setting the voltage.
      * @param power speed in the range of -1 to 1
      */
-    @Override
     public void setPower(double power) {
         if (isEnabled) {
             motor.set(power);
@@ -285,9 +252,28 @@ public class TalonEx extends MotorBase {
     /**
      * Disables the motor and sets the voltage to 0.
      */
-    @Override
     public void stop() {
         withIsEnabled(false);
         motor.setVoltage(0);
+    }
+
+
+    @Override
+    public void alerts() {
+        if (getTemp() < 35) {
+            tempAlert.set(true);
+        } else {
+            tempAlert.set(false);
+        }
+    }
+    
+    @Override
+    public void elasticInit() {
+        
+    }
+
+    @Override
+    public void practiceWriters() {
+        
     }
 }

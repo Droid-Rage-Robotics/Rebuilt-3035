@@ -18,14 +18,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.encoder.EncoderConstants;
-import frc.utility.motor.MotorBase;
+import frc.utility.motor.TalonEx;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 //TODO: Update
 public class ElevatorTemplate extends SubsystemBase implements Dashboard {
-    private final MotorBase[] motors;
+    private final TalonEx[] motors;
     private final Optional<CANcoderEx> encoder;
     private final ProfiledPIDController controller;
     private final ElevatorFeedforward feedforward;
@@ -67,7 +67,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
             this.encoder = Optional.empty();
         }
 
-        this.motors = new MotorBase[motorConstants.length];
+        this.motors = new TalonEx[motorConstants.length];
         
         for (MotorConstants m_motorConstants : motorConstants) {
             m_motorConstants.subsystem=this;
@@ -181,25 +181,25 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     public void setVoltage(double voltage) {
         if (isEnabled) {
-            for (MotorBase motor: motors) {
+            for (TalonEx motor: motors) {
             motor.setVoltage(voltage);
         }
         }
     }
     
     public void resetEncoder() {
-        for (MotorBase motor: motors) {
+        for (TalonEx motor: motors) {
             motor.resetEncoder(0);
         }
     }
 
     /* ---------------- Utility ---------------- */
     
-    public MotorBase getMotor(){
+    public TalonEx getMotor(){
         return motors[mainNum];
     }
     
-    public MotorBase[] getAllMotor() {
+    public TalonEx[] getAllMotor() {
         return motors;
     }
 

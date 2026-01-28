@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.utility.motor.MotorBase;
+import frc.utility.motor.TalonEx;
 
 public class SysID {
     /**
@@ -53,7 +53,7 @@ public class SysID {
      * @param subsystem the subsystem of the motors
      * @param unit sets the unit to be used: {@code Measurement.ANGLE} or {@code Measurement.DISTANCE}
      */
-    public SysID(MotorBase motor, Subsystem subsystem, Measurement unit) {
+    public SysID(TalonEx motor, Subsystem subsystem, Measurement unit) {
         switch(unit){
         case ANGLE:
             routine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(motor::setVoltage, log -> {
@@ -83,7 +83,7 @@ public class SysID {
      * @param motor the TalonEx to run SysId on
      * @param subsystem the subsystem of the motor
      */
-    public SysID(MotorBase motor, Subsystem subsystem) {
+    public SysID(TalonEx motor, Subsystem subsystem) {
         routine = new SysIdRoutine(
             new SysIdRoutine.Config(
                 null, // Use default ramp rate (1 V/s)
@@ -103,7 +103,7 @@ public class SysID {
      * @param subsystem the subsystem of the motors
      * @param unit sets the unit to be used: {@code Measurement.ANGLE} or {@code Measurement.DISTANCE}
      */
-    public SysID(MotorBase[] motor, Subsystem subsystem, Measurement unit) {
+    public SysID(TalonEx[] motor, Subsystem subsystem, Measurement unit) {
         switch(unit){
         case ANGLE:
             routine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism((motor[0]::setVoltage), log -> {

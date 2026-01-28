@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.DroidRageConstants;
 
 public class MotorConstants {
     /**
@@ -46,7 +47,7 @@ public class MotorConstants {
     private final TalonFXConfiguration config = new TalonFXConfiguration();
     
     public int deviceId;
-    public CANBus canBus;
+    public CANBus canBus = DroidRageConstants.rioCanBus;
     public double conversionFactor = 1;
     public Subsystem subsystem;
     public boolean isEnabled;

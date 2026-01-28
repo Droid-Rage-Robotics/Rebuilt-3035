@@ -23,6 +23,7 @@ import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
 import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.motor.MotorConstants.Direction;
+import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
 import lombok.Getter;
 
@@ -50,6 +51,9 @@ public class SwerveModule implements Sendable {
         public static final double TURN_SUPPLY_CURRENT_LIMIT = 80;
     }
 
+    private final MotorConstants driveMotorConstants;
+    private final MotorConstants turnMotorConstants;
+
     @Getter private final TalonEx driveMotor;
     @Getter private final TalonEx turnMotor;
 
@@ -71,7 +75,9 @@ public class SwerveModule implements Sendable {
         this.subsystem=constants.subsystem;
         this.pod=constants.podName;
 
-        driveMotor = TalonEx.create(constants.driveMotorId, DroidRageConstants.driveCanBus)
+        driveMotorConstants = new MotorConstants()
+            .withDeviceId(constants.driveMotorId)
+            .withCANBus(DroidRageConstants.driveCanBus)
             .withDirection(constants.driveMotorDirection)
             .withIdleMode(NeutralModeValue.Brake)
             .withConversionFactor(Constants.DRIVE_ENCODER_ROT_2_METER)
@@ -80,13 +86,19 @@ public class SwerveModule implements Sendable {
             .withSupplyCurrentLimit(Constants.DRIVE_SUPPLY_CURRENT_LIMIT)
             .withStatorCurrentLimit(Constants.DRIVE_STATOR_CURRENT_LIMIT);
 
-        turnMotor = TalonEx.create(constants.turnMotorId, DroidRageConstants.driveCanBus)
+        driveMotor = TalonEx.createWithConstants(driveMotorConstants);
+
+        turnMotorConstants = new MotorConstants()
+            .withDeviceId(constants.turnMotorId)
+            .withCANBus(DroidRageConstants.driveCanBus)
             .withDirection(constants.turnMotorDirection)
             .withIdleMode(NeutralModeValue.Coast)
             .withConversionFactor(Constants.TURN_ENCODER_ROT_2_RAD)
             .withSubsystem(subsystem)
             .withIsEnabled(constants.turnMotorIsEnabled)
             .withSupplyCurrentLimit(Constants.TURN_SUPPLY_CURRENT_LIMIT);
+
+        turnMotor = TalonEx.createWithConstants(driveMotorConstants);
 
         turnEncoder = CANcoderEx.create(constants.encoderId, DroidRageConstants.driveCanBus)
             .withDirection(SensorDirectionValue.CounterClockwise_Positive)

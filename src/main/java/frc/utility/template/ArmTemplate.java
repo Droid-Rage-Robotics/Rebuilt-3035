@@ -15,13 +15,13 @@ import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.encoder.EncoderConstants;
-import frc.utility.motor.MotorBase;
+import frc.utility.motor.TalonEx;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ArmTemplate extends SubsystemBase implements Dashboard {
-    protected final MotorBase[] motors;
+    protected final TalonEx[] motors;
     protected final ProfiledPIDController controller;
     protected final ArmFeedforward feedforward;
     private final double minAngleRad;
@@ -60,7 +60,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
             this.encoder = Optional.empty();
         }
 
-        this.motors = new MotorBase[motorConstants.length];
+        this.motors = new TalonEx[motorConstants.length];
         
         for (MotorConstants m_motorConstants : motorConstants) {
             m_motorConstants.subsystem=this;
@@ -182,24 +182,24 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
             (angle < minAngleRad && voltage < 0)) {
             voltage = 0;
         }
-        for (MotorBase motor: motors) {
+        for (TalonEx motor: motors) {
             motor.setVoltage(voltage);
     }
 }
     
     public void resetEncoder() {
-        for (MotorBase motor: motors) {
+        for (TalonEx motor: motors) {
             motor.resetEncoder(0);
         }
     }
 
     /* ---------------- Utility ---------------- */
 
-    public MotorBase getMotor(){
+    public TalonEx getMotor(){
         return motors[mainNum];
     }
     
-    public MotorBase[] getAllMotor() {
+    public TalonEx[] getAllMotor() {
         return motors;
     }
 
