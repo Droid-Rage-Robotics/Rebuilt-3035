@@ -4,18 +4,11 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class MotorConstants {
-    private final TalonFXConfiguration config = new TalonFXConfiguration();
-    
-    public int deviceId;
-    public CANBus canBus;
-    public double conversionFactor = 1;
-    public Subsystem subsystem;
-    public boolean isEnabled;
-    
     /**
      * Determines the direction that the motor will
      * rotate when given a positive control request
@@ -49,7 +42,15 @@ public class MotorConstants {
          */
         Coast,
     }
+
+    private final TalonFXConfiguration config = new TalonFXConfiguration();
     
+    public int deviceId;
+    public CANBus canBus;
+    public double conversionFactor = 1;
+    public Subsystem subsystem;
+    public boolean isEnabled;
+    public MotorType motorType;
 
     /**
      * Used to enable/disable the motor.
@@ -58,6 +59,11 @@ public class MotorConstants {
      */
     public MotorConstants withIsEnabled(boolean isEnabled) {
         this.isEnabled=isEnabled;
+        return this;
+    }
+
+    public MotorConstants withMotorType(MotorType motorType) {
+        this.motorType=motorType;
         return this;
     }
 

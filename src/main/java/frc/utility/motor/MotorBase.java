@@ -1,5 +1,6 @@
 package frc.utility.motor;
 
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -19,6 +20,7 @@ public abstract class MotorBase implements Dashboard {
     public abstract void resetEncoder(double value);
     public abstract void stop();
     public abstract MotorBase withIsEnabled(boolean isEnabled);
+    public abstract TalonFXSimState getSimState();
 
     private final Alert tempAlert = new Alert("Temperature Warning: Motor " + getDeviceId() +" at " + getSubsystem(), AlertType.kWarning);
 

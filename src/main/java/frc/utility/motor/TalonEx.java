@@ -8,7 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
@@ -164,6 +164,11 @@ public class TalonEx extends MotorBase {
     @Override
     public double getVelocity() {
         return motor.getVelocity().getValueAsDouble() * conversionFactor;
+    }
+
+    @Override
+    public TalonFXSimState getSimState() {
+        return motor.getSimState();
     }
 
     /**
