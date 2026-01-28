@@ -14,8 +14,8 @@ import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.Alignment;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
-import frc.utility.DashboardUtils;
-import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.TelemetryUtils;
+import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.LimelightEx;
 import lombok.Getter;
 
@@ -78,7 +78,7 @@ public class Vision extends SubsystemBase implements Dashboard{
             MountPose.TURRET_YAW.getValue() // Yaw (degrees) - Will Change; Should not cause issues
         );
 
-        DashboardUtils.registerDashboard(this);
+        TelemetryUtils.registerDashboard(this);
     }
 
     @Override
@@ -115,66 +115,6 @@ public class Vision extends SubsystemBase implements Dashboard{
     @Override
     public void simulationPeriodic() {
         periodic();
-    }
-
-    /**
-     * Gets the horizontal offset from the crosshair to the target in degrees.
-     * @param limelightName Name of the Limelight camera ("" for default)
-     * @return Horizontal offset angle in degrees
-     */
-    public double getTX(String name) {
-        if (name == DroidRageConstants.odoLL) {
-            return odoLL.getTX();
-        } else {
-            return turretLL.getTX();
-        }
-    }
-
-    /**
-     * Gets the target area as a percentage of the image (0-100%).
-     * @param limelightName Name of the Limelight camera ("" for default) 
-     * @return Target area percentage (0-100)
-     */
-    public double getTA(String name) {
-        if (name == DroidRageConstants.odoLL) {
-            return odoLL.getTA();
-        } else {
-            return turretLL.getTA();
-        }
-    }
-
-    /**
-     * Gets the vertical offset from the crosshair to the target in degrees.
-     * @param limelightName Name of the Limelight camera ("" for default)
-     * @return Vertical offset angle in degrees
-     */
-    public double getTY(String name) {
-        if (name == DroidRageConstants.odoLL) {
-            return odoLL.getTY();
-        } else {
-            return turretLL.getTY();
-        }
-    }
-
-    /**
-     * Does the Limelight have a valid target?
-     * @param limelightName Name of the Limelight camera ("" for default)
-     * @return True if a valid target is present, false otherwise
-     */
-    public boolean getTV(String name) {
-        if (name == DroidRageConstants.odoLL) {
-            return odoLL.getTV();
-        } else {
-            return turretLL.getTV();
-        }
-    }
-
-    public int getID(String name) {
-        if (name == DroidRageConstants.odoLL) {
-            return (int) odoLL.getID();
-        } else {
-            return (int) turretLL.getID();
-        }
     }
     
     /**
@@ -264,15 +204,4 @@ public class Vision extends SubsystemBase implements Dashboard{
     public PoseEstimate getOdoEstimate() {
         return odoLL.getBotPoseEstimate_wpiBlue_MegaTag2();
     }
-
-    /**
-     * Gets the MegaTag2 Pose2d and timestamp from the right limelight for use with WPILib pose estimator
-     * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
-     * Make sure you are calling setRobotOrientation() before calling this method.
-     * 
-     * @return a new PoseEstimate
-     */
-    // public PoseEstimate getRightEstimate() {
-    //     return odoLL.getBotPoseEstimate_wpiBlue_MegaTag2();
-    // }
 }

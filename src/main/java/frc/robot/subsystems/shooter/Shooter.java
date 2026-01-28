@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.utility.LimelightEx;
-import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.TelemetryUtils.Dashboard;
 
 public class Shooter implements Dashboard{
     public enum ShooterMode {
@@ -144,7 +144,7 @@ public class Shooter implements Dashboard{
     }
 
     public void getShooterSpeed(){
-        shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(vision.getTY(DroidRageConstants.turretLL)));
+        shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
     }
     
     public void aim() {

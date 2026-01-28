@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 
-public class DashboardUtils {
+public class TelemetryUtils {
     /**
      * Determines whether writers placed in {@code practiceWriters()}
      * are enabled or disabled
@@ -35,7 +35,7 @@ public class DashboardUtils {
         public static MatchValue Match = MatchValue.PRACTICE;
     }
 
-    public interface Dashboard{
+    public interface Dashboard {
         /**
          * Place all elastic configs in here to be run at robot startup
          */
@@ -52,6 +52,10 @@ public class DashboardUtils {
          * Place any logic for alerts here to be run periodically
          */
         public void alerts();
+    }
+
+    public interface TelemetryUpdater {
+        public void updateTelemetry();
     }
 
     public interface Periodic {

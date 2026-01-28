@@ -43,8 +43,8 @@ import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
 import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
-import frc.utility.DashboardUtils;
-import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.TelemetryUtils;
+import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.motor.TalonEx;
 import lombok.Getter;
@@ -207,7 +207,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         );
         
         
-        DashboardUtils.registerDashboard(this);
+        TelemetryUtils.registerDashboard(this);
     }
 
     // private final StructPublisher<Rotation2d> yawPublisher;
@@ -292,6 +292,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         Logger.recordOutput("Drive/Rotation2d", getRotation2d());
         Logger.recordOutput("Drive/States", getModuleStates());
         Logger.recordOutput("Drive/Speeds", getChassisSpeeds());
+        
         
         // updateVisionOdometry();
 

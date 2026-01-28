@@ -16,8 +16,8 @@ import frc.robot.subsystems.drive.SwerveDriveConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
-import frc.utility.DashboardUtils;
-import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.TelemetryUtils;
+import frc.utility.TelemetryUtils.Dashboard;
 
 public class AutoChooser implements Dashboard {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -26,7 +26,7 @@ public class AutoChooser implements Dashboard {
         createAutoBuilder(drive);
         addTuningAuto(drive);
 
-        DashboardUtils.registerDashboard(this);
+        TelemetryUtils.registerDashboard(this);
     }
     
     public  Command getAutonomousCommand() {

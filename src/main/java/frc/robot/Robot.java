@@ -34,8 +34,8 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 import frc.robot.subsystems.vision.Vision;
-import frc.utility.DashboardUtils;
-import frc.utility.DashboardUtils.MatchValue;
+import frc.utility.TelemetryUtils;
+import frc.utility.TelemetryUtils.MatchValue;
 import frc.utility.MatchTimerSpeaker;
 
 public class Robot extends LoggedRobot {
@@ -76,8 +76,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         // SignalLogger.setPath("/home/lvuser/logs/ctre/");
-        DashboardUtils.Config.Match = MatchValue.PRACTICE;
-        DashboardUtils.onRobotInit();
+        TelemetryUtils.Config.Match = MatchValue.PRACTICE;
+        TelemetryUtils.onRobotInit();
 
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
@@ -96,7 +96,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        DashboardUtils.onRobotPeriodic();
+        TelemetryUtils.onRobotPeriodic();
 
         // if(DriverStation.isEStopped()){ //Robot Estopped
         //     light.flashingColors(light.red, light.white);
@@ -108,7 +108,7 @@ public class Robot extends LoggedRobot {
     
     @Override
     public void disabledPeriodic() {
-        DashboardUtils.onDisabledPeriodic();
+        TelemetryUtils.onDisabledPeriodic();
     }
 
     @Override

@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.utility.DashboardUtils;
-import frc.utility.DashboardUtils.Dashboard;
+import frc.utility.TelemetryUtils;
+import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.motor.MotorBase;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
@@ -92,7 +92,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
 
         simulation = new FlywheelSim(flywheelSystem, gearbox);
 
-        DashboardUtils.registerDashboard(this);
+        TelemetryUtils.registerDashboard(this);
     }
 
     /* ---------------- Dashboard ---------------- */
