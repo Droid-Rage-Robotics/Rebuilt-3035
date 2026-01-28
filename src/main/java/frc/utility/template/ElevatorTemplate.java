@@ -20,7 +20,6 @@ import frc.utility.encoder.CANcoderEx;
 import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.TalonEx;
 import frc.utility.motor.MotorConstants;
-import frc.utility.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ElevatorTemplate extends SubsystemBase implements Dashboard {

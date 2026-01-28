@@ -13,7 +13,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.DroidRageConstants;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.motor.MotorConstants.Direction;
 

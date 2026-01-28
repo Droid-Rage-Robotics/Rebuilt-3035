@@ -1,8 +1,6 @@
 package frc.utility.template;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -24,7 +22,6 @@ import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.motor.TalonEx;
 import frc.utility.motor.MotorConstants;
-import frc.utility.motor.TalonEx;
 
 public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private final TalonEx[] motors;

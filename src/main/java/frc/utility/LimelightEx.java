@@ -1,7 +1,5 @@
 package frc.utility;
 
-import java.util.Optional;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -10,8 +8,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.subsystems.vision.LimelightHelpers;
-import frc.robot.subsystems.vision.LimelightHelpers.LimelightResults;
-import frc.robot.subsystems.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
