@@ -69,8 +69,7 @@ public class Robot extends LoggedRobot {
 
     // public boolean teleopRan;
     private Command autonomousCommand;
-    // private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker(); //TODO: Remove the wav files from deploy to check if it kills the robot; make it not die if file is not found
-  
+    // private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker();
     
 
     @Override
