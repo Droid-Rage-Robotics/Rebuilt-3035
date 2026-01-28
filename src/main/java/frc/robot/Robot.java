@@ -1,5 +1,9 @@
 package frc.robot;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
@@ -34,21 +38,21 @@ import frc.utility.DashboardUtils;
 import frc.utility.DashboardUtils.MatchValue;
 import frc.utility.MatchTimerSpeaker;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
     private final Vision vision = new Vision();
     private final SwerveDrive drive = new SwerveDrive(true, vision);
-    private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
-    );
-    private final Indexer indexer = new Indexer(false);
-    private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
-        new ShooterWheel(false),
-        vision
-    );
-    private final Light light = new Light(0);
+    // private final Intake intake = new Intake(
+    //     new Pivot(false),
+    //     new IntakeWheel(false)
+    // );
+    // private final Indexer indexer = new Indexer(false);
+    // private final Shooter shooter = new Shooter(
+    //     new Turret(false),
+    //     new Hood(false),
+    //     new ShooterWheel(false),
+    //     vision
+    // );
+    // private final Light light = new Light(0);
     
     private final CommandXboxController driver =
 		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
@@ -61,17 +65,24 @@ public class Robot extends TimedRobot {
     // private final SysID sysID = new SysID(carriage.getIntake().getMotor(), carriage.getIntake());
 
     private final RobotContainer robotContainer = new RobotContainer(driver, operator);
-    private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer,shooter, light);
+    // private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer,shooter, light);
 
     // public boolean teleopRan;
     private Command autonomousCommand;
-    private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker(); //TODO: Remove the wav files from deploy to check if it kills the robot; make it not die if file is not found
+    // private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker(); //TODO: Remove the wav files from deploy to check if it kills the robot; make it not die if file is not found
   
+    
+
     @Override
     public void robotInit() {
-        SignalLogger.setPath("/home/lvuser/logs/ctre/");
+        // SignalLogger.setPath("/home/lvuser/logs/ctre/");
         DashboardUtils.Config.Match = MatchValue.PRACTICE;
         DashboardUtils.onRobotInit();
+
+        Logger.addDataReceiver(new NT4Publisher());
+        Logger.start();
+
+        
 
         // // Starts recording to data log
         // DataLogManager.start();
@@ -140,18 +151,20 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        SignalLogger.start(); // CTRE Signal Logger
+
+        // MatchTimerSpeaker.playSound("songs/plswork.mp3");
+        // SignalLogger.start(); // CTRE Signal Logger
         
         // if (autonomousCommand != null) {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        robotContainer.configureTeleOpBindings(drive, intake, indexer, shooter, vision, light);
-        // robotContainer.testDrive(driver, drive, vision);
+        // robotContainer.configureTeleOpBindings(drive, intake, indexer, shooter, vision, light);
+        robotContainer.testDrive(driver, drive, vision);
 
         
         // robotContainer.resetClimb(climb);
-        vision.setUpVision(); //Has to be here to set up Limelight Pipelines
+        // vision.setUpVision(); //Has to be here to set up Limelight Pipelines
 
         // robotContainer.sysID(driveSysID);
         // robotContainer.sysID(sysID);

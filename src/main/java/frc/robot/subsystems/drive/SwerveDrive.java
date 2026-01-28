@@ -2,6 +2,8 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -10,12 +12,16 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -124,18 +130,13 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
     
     private final Pigeon2 pigeon2 = new Pigeon2(13, DroidRageConstants.driveCanBus);
 
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry (
-        DRIVE_KINEMATICS, 
-        new Rotation2d(0), 
-        getModulePositions()
-    );
+    private final SwerveDriveOdometry odometry;
 
-    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
-        DRIVE_KINEMATICS, 
-        getRotation2d(), 
-        getModulePositions(), 
-        new Pose2d()
-    );
+    private final SwerveDriveOdometry3d odometry3d;
+
+    private final SwerveDrivePoseEstimator poseEstimator;
+
+    private final SwerveDrivePoseEstimator3d poseEstimator3d;
 
     private volatile Speed speed = Speed.NORMAL;
     @Getter @Setter private volatile TippingState tippingState = TippingState.NO_TIP_CORRECTION;
@@ -175,13 +176,43 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
             swerveModules[num].setTurnMotorIsEnabled(isEnabled);
         }   
         
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("Drivetrain");
-        yawPublisher = table.getStructTopic("Yaw", Rotation2d.struct).publish();
+        // NetworkTable table = NetworkTableInstance.getDefault().getTable("Drivetrain");
+        // yawPublisher = table.getStructTopic("Yaw", Rotation2d.struct).publish();
+
+        odometry = new SwerveDriveOdometry (
+            DRIVE_KINEMATICS, 
+            new Rotation2d(0), 
+            getModulePositions()
+        );
+
+        odometry3d = new SwerveDriveOdometry3d(
+            DRIVE_KINEMATICS, 
+            new Rotation3d(), 
+            getModulePositions(),
+            new Pose3d()
+        );
+
+        poseEstimator = new SwerveDrivePoseEstimator(
+            DRIVE_KINEMATICS, 
+            getRotation2d(), 
+            getModulePositions(), 
+            new Pose2d()
+        );
+
+        poseEstimator3d = new SwerveDrivePoseEstimator3d(
+            DRIVE_KINEMATICS, 
+            getRotation3d(), 
+            getModulePositions(), 
+            new Pose3d()
+        );
+        
         
         DashboardUtils.registerDashboard(this);
     }
 
-    private final StructPublisher<Rotation2d> yawPublisher;
+    // private final StructPublisher<Rotation2d> yawPublisher;
+
+    
     
     @Override
     public void elasticInit() {
@@ -192,6 +223,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         SmartDashboard.putBoolean("Drive/Info/isEnabled", isEnabled);
         SmartDashboard.putData("Drive/Data", data);
 
+        
 
 
         
@@ -245,20 +277,36 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
             getModulePositions()
         );
 
+        odometry3d.update(
+            getRotation3d(), 
+            getModulePositions()
+        );
+
         field.setRobotPose(getPose());
         
-        updateVisionOdometry();
+        Logger.recordOutput("Drive/Pose3d", getPose3d());
+        Logger.recordOutput("Drive/Pose", getPose());
+        Logger.recordOutput("Drive/PoseEstimate3d", getEstimatedPose3d());
+        Logger.recordOutput("Drive/PoseEstimate", getEstimatedPose());
+        Logger.recordOutput("Drive/Rotation3d", getRotation3d());
+        Logger.recordOutput("Drive/Rotation2d", getRotation2d());
+        Logger.recordOutput("Drive/States", getModuleStates());
+        Logger.recordOutput("Drive/Speeds", getChassisSpeeds());
+        
+        // updateVisionOdometry();
+
+        // updateTelemetry();
 
         
     }
 
-    private void updateTelemetry() {
-        for (SwerveModule module : swerveModules) {
-            module.updateTelemetry();
-        }
+    // private void updateTelemetry() {
+    //     for (SwerveModule module : swerveModules) {
+    //         module.updateTelemetry();
+    //     }
 
-        yawPublisher.set(getRotation2d());
-    }
+    //     yawPublisher.set(getRotation2d());
+    // }
 
     @Override
     public void simulationPeriodic() {
@@ -268,35 +316,27 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
     public void updateVisionOdometry() {
         poseEstimator.update(getRotation2d(), getModulePositions());
 
-        PoseEstimate left = vision.getOdoEstimate();
-        // PoseEstimate right = vision.getRightEstimate();
+        poseEstimator3d.update(getRotation3d(), getModulePositions());
 
-        if (left != null && left.tagCount > 0) {
-            double dist = vision.closestTagDistance(left);
+        PoseEstimate estimate = vision.getOdoEstimate();
+
+        if (estimate != null && estimate.tagCount > 0) {
+            double dist = vision.closestTagDistance(estimate);
             double std = vision.distanceToStdDev(dist);
             double stdTheta = Math.toRadians(Math.max(5, dist * 4));
 
-            if (vision.isReasonable(getEstimatedPose(), left.pose))
+            if (vision.isReasonable(getEstimatedPose(), estimate.pose))
                 poseEstimator.addVisionMeasurement(
-                    left.pose,
-                    left.timestampSeconds,
+                    estimate.pose,
+                    estimate.timestampSeconds,
                     VecBuilder.fill(std, std, stdTheta)
                 );
-            }
 
-        // if (right != null && right.tagCount > 0) {
-        //     double dist = vision.closestTagDistance(right);
-        //     double std = vision.distanceToStdDev(dist);
-        //     double stdTheta = Math.toRadians(Math.max(5, dist * 4));
-
-        //     if (vision.isReasonable(getEstimatedPose(), right.pose)) {
-        //         poseEstimator.addVisionMeasurement(
-        //             right.pose,
-        //             right.timestampSeconds,
-        //             VecBuilder.fill(std, std, stdTheta)
-        //         );
-        //     }  
-        // }
+                poseEstimator3d.addVisionMeasurement(
+                    new Pose3d(estimate.pose), 
+                    estimate.timestampSeconds,
+                    VecBuilder.fill(std, std, std, stdTheta));
+        }
 
         visionField.setRobotPose(getEstimatedPose());
     }
@@ -359,6 +399,10 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         for (int i = 0; i < 4; i++) {
             swerveModules[i].setFeedforwardState(states[i]);
         }
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates());
     }
 
     public void stop() {
@@ -537,11 +581,23 @@ public class SwerveDrive extends SubsystemBase implements Dashboard {
         return Rotation2d.fromDegrees(pigeon2.getYaw().getValueAsDouble());
     }
 
+    public Rotation3d getRotation3d() {
+        return new Rotation3d(pigeon2.getRoll().getValue(), pigeon2.getPitch().getValue(), pigeon2.getYaw().getValue());
+    }
+    
+    public Pose3d getPose3d() {
+        return odometry3d.getPoseMeters();
+    }
+
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
 
     public Pose2d getEstimatedPose() {
         return poseEstimator.getEstimatedPosition();
+    }
+
+    public Pose3d getEstimatedPose3d() {
+        return poseEstimator3d.getEstimatedPosition();
     }
 }
