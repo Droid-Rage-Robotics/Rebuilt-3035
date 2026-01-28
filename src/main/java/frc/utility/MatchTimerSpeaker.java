@@ -1,9 +1,8 @@
-
 package frc.utility;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -12,56 +11,53 @@ import java.io.IOException;
 public class MatchTimerSpeaker extends SubsystemBase {
     private double timeRemaining = 0; // time in seconds
 
-    public MatchTimerSpeaker() {
-    }
+    private int lastPlayedSecond = -1;
 
     @Override
     public void periodic() {
         timeRemaining = DriverStation.getMatchTime();
-
         if (timeRemaining != -1.0) {
-                switch((int) timeRemaining) {
+            int currentSecond = (int) timeRemaining;
+            
+            // Only play if we haven't already played for this second
+            if (currentSecond != lastPlayedSecond) {
+                switch(currentSecond) {
                     case 60: 
-                        playSound("src/main/deploy/songs/60.wav");
+                        playSound("songs/60.wav");
                         break;
                     case 30:
-                        playSound("src/main/deploy/songs/30.wav");
+                        playSound("songs/30.wav");
                         break;
                     case 15:
-                        playSound("src/main/deploy/songs/15.wav");
+                        playSound("songs/15.wav");
                         break;
                     case 10:
-                        playSound("src/main/deploy/songs/10.wav");
+                        playSound("songs/10.wav");
                         break;
                     case 5:
-                        playSound("src/main/deploy/songs/5.wav");
+                        playSound("songs/5.wav");
                         break;
                     case 4:
-                        playSound("src/main/deploy/songs/4.wav");
+                        playSound("songs/4.wav");
                         break;
                     case 3:
-                        playSound("src/main/deploy/songs/3.wav");
+                        playSound("songs/3.wav");
                         break;
                     case 2:
-                        playSound("src/main/deploy/songs/2.wav");
+                        playSound("songs/2.wav");
                         break;
                     case 1:
-                        playSound("src/main/deploy/songs/1.wav");
+                        playSound("songs/1.wav");
                         break;
                 }
-        }
-
-        //Double Check this does not interfere with other things
-        try {
-            Thread.sleep(1000); // Check every 100ms
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                lastPlayedSecond = currentSecond;
+            }
         }
     }
     
     private static void playSound(String filePath) {
         try {
-            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(filePath));
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(Filesystem.getDeployDirectory(), filePath));
             Clip clip = AudioSystem.getClip();
             clip.open(audio);
             clip.start();
