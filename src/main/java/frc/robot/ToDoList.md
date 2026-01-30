@@ -14,10 +14,10 @@ Mount April Tags on hub
 
 Test new motor setup
 
+Tune turret
+
 test turrent for full 360 degrees Need to make sure that the turret knows that it cant go past 270 degrees of movement and turns around. - lucky
 
 video taping from behind the limelight so u can see the tag and limelight in the same frame -lucky
 
-Turrent seeks hub when it can't see the april tag again. (Look in general direction using odometry)
-
-Tune turrent
+Turret seeks hub when it can't see the april tag again. (Look in general direction using odometry)
