@@ -8,8 +8,10 @@ Are we or are we not using Field Centric turning? - Might wait till bot is built
 
 
 Test:
-Test Candle Lights, take videos, and share
+Test Candle Lights, take videos, and share (Current can't, unable to connect to the LED due to too small wire)
+
 Mount April Tags on hub
+
 Test new motor setup
 
 test turrent for full 360 degrees Need to make sure that the turret knows that it cant go past 270 degrees of movement and turns around. - lucky
@@ -17,3 +19,5 @@ test turrent for full 360 degrees Need to make sure that the turret knows that i
 video taping from behind the limelight so u can see the tag and limelight in the same frame -lucky
 
 Turrent seeks hub when it can't see the april tag again. (Look in general direction using odometry)
+
+Tune turrent
