@@ -9,7 +9,5 @@ Are we or are we not using Field Centric turning? - Might wait till bot is built
 
 Test:
 Test Candle Lights, take videos, and share
-Test Wav Files/ Match Time Speaker
 Mount April Tags on hub
-Setup a motor and limelight to test turret code
 Test new motor setup
