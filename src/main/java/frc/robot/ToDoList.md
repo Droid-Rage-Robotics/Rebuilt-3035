@@ -8,7 +8,7 @@ Are we or are we not using Field Centric turning? - Might wait till bot is built
 
 
 Test:
-Test Candle Lights, take videos, and share (Current can't, unable to connect to the LED due to too small wire)
+Test Candle Lights, take videos, and share (Unable to connect to the LED due to too small wire)
 
 Mount April Tags on hub
 
