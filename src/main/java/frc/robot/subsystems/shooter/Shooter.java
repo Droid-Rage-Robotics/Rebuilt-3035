@@ -34,7 +34,7 @@ public class Shooter implements Dashboard, Sendable{
         HOLD, //Maintain current position
         OPPOSITE, //Face opposite intake
         SCORE, //Hub Scoring
-        HOARD
+        HOARD // shooting on alliance side
     }
     private enum TargetHeight {
         TAG_2(2, 0),
