@@ -11,6 +11,8 @@ import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 
 public final class DroidRageConstants {
@@ -83,4 +85,6 @@ public final class DroidRageConstants {
         public static final Distance NEUTRAL_ZONE_END = Inches.of(0);
 
     }
+
+    public static Alliance alliance = DriverStation.Alliance.Blue; //Default to Blue
 }

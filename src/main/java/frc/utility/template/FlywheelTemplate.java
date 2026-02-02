@@ -1,5 +1,7 @@
 package frc.utility.template;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -8,6 +10,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -102,7 +105,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Target Speed", controller::getSetpoint, null);
-        builder.addDoubleProperty("Current Speed", this::getVelocity, null);
+        builder.addDoubleProperty("Current Speed", () -> this.getVelocity().in(RotationsPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
     }
 
@@ -117,7 +120,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void periodic() {
         setVoltage(
-            controller.calculate(getVelocity(), controller.getSetpoint())
+            controller.calculate(getVelocity().in(RotationsPerSecond), controller.getSetpoint())
             +feedforward.calculate(controller.getSetpoint()));
     }
 
@@ -167,8 +170,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
 
     /* ---------------- Sensor Access ---------------- */
 
-    public double getVelocity() {
-        return motors[mainNum].getVelocity() * conversionFactor;
+    public AngularVelocity getVelocity() {
+        return motors[mainNum].getVelocity().times(conversionFactor);
     }
     
     public double getVoltage() {

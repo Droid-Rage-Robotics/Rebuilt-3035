@@ -9,6 +9,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -131,14 +134,13 @@ public class TalonEx implements Dashboard {
     }
 
     /**
-     * Used to get the velocity of the motor. Default units
-     * with default conversion factor of 1 are in rotations
-     * per second. Custom conversion factors are automatically
+     * Used to get the velocity of the motor. 
+     * Custom conversion factors are automatically
      * applied.
      * @return the velocity of the motor
      */
-    public double getVelocity() {
-        return motor.getVelocity().getValueAsDouble() * conversionFactor;
+    public AngularVelocity getVelocity() {
+        return motor.getVelocity().getValue().times(conversionFactor);
     }
 
     public TalonFXSimState getSimState() {
@@ -146,13 +148,13 @@ public class TalonEx implements Dashboard {
     }
 
     /**
-     * Used to get the position of the motor. Default units
-     * with default conversion factor of 1 are in rotations.
-     * Custom conversion factors are automatically applied.
+     * Used to get the position of the motor.
+     * Custom conversion factors are automatically 
+     * applied.
      * @return the positon of the motor
      */
-    public double getPosition() {
-        return motor.getPosition().getValueAsDouble() * conversionFactor;
+    public Angle getPosition() {
+        return motor.getPosition().getValue().times(conversionFactor);
     }
 
     /**

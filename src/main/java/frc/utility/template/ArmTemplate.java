@@ -1,11 +1,13 @@
 package frc.utility.template;
 
-import java.util.Optional;
+import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +28,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     private final double minAngleRad;
     private final double maxAngleRad;
     private final double conversionFactor;
-    private final double encoderOffsetRad;
     protected final int mainNum;
     protected final String name;
     private final Optional<CANcoderEx> encoder;
@@ -46,7 +47,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         this.minAngleRad=constants.lowerLimit;
         this.maxAngleRad=constants.upperLimit;
         this.conversionFactor=constants.conversionFactor;
-        this.encoderOffsetRad=constants.offset;
         this.mainNum=constants.mainNum;
         this.name=constants.name;
 
@@ -92,7 +92,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         builder.addDoubleProperty("Current Angle (deg)", () -> getCurrentAngle().getDegrees(), null);
         builder.addDoubleProperty("Position Setpoint (deg)", this::getPositionSetpoint, null);
         builder.addDoubleProperty("Velocity Setpoint (deg/s)", this::getVelocitySetpoint, null);
-        builder.addDoubleProperty("Current Velocity (deg/s)", () -> Math.toDegrees(getVelocity()), null);
+        builder.addDoubleProperty("Current Velocity (rot/s)", () -> getVelocity().in(RotationsPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
         builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
     }
@@ -155,18 +155,17 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Sensor Access ---------------- */
 
     public Rotation2d getCurrentAngle() {
-        var raw = encoder
+        var rot = encoder
             .map(enc -> enc.getAbsolutePosition())
             .orElse(motors[mainNum].getPosition());
 
-        double angleRad = raw * conversionFactor + encoderOffsetRad;
-        return new Rotation2d(angleRad);
+        return Rotation2d.fromRotations(rot.in(Rotations) * conversionFactor);
     }
 
-    public double getVelocity() {
+    public AngularVelocity getVelocity() {
         return encoder
-            .map(enc -> enc.getVelocity() * conversionFactor)
-            .orElse(motors[mainNum].getVelocity() * conversionFactor);
+            .map(enc -> enc.getVelocity().times(conversionFactor))
+            .orElse(motors[mainNum].getVelocity().times(conversionFactor)); 
     }
     
     public double getVoltage() {

@@ -101,13 +101,13 @@ public class Vision extends SubsystemBase implements Dashboard{
     public void periodic() {}
 
     public void setUpVision() {
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
+        if (DroidRageConstants.alliance == Alliance.Red) {
             targetHubIds = new int[] { 2,3,4,5,8,9,10,11};
             targetOdoIds= new int [] {}; //TODO:Set Up
             odoLL.setPipelineIndex(odoPipeline);
             turretLL.setPipelineIndex(redHubPipeline);
 
-        } else if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        } else if (DroidRageConstants.alliance == Alliance.Blue) {
             targetHubIds = new int[] { 18,19,20,21,24,25,26,27};
             targetOdoIds = new int[] {};// TODO:Set Up
 

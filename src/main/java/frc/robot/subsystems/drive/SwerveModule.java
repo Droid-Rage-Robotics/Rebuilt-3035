@@ -1,5 +1,9 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -135,7 +139,7 @@ public class SwerveModule implements Sendable {
     }
 
     public double getDrivePos() {
-        return driveMotor.getPosition();
+        return driveMotor.getPosition().in(Rotations);
     }
 
     public String getPod() {
@@ -143,11 +147,11 @@ public class SwerveModule implements Sendable {
     }
     
     public double getTurningPosition() {
-        return turnEncoder.getAbsolutePosition()*Constants.TURN_ENCODER_ROT_2_RAD;
+        return turnEncoder.getAbsolutePosition().in(Radians);
     }
 
     public double getDriveVelocity(){
-        return driveMotor.getVelocity();
+        return driveMotor.getVelocity().in(RotationsPerSecond);
     }
 
     public void resetDriveEncoder(){

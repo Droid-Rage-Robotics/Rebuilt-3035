@@ -1,16 +1,19 @@
 package frc.utility.template;
 
-import java.util.Optional;
+import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.encoder.EncoderConstants;
@@ -28,7 +31,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     private final double maxAngleRad;
     private final double conversionFactor;
     private final int mainNum;
-    private final double encoderOffsetRad;
 
     private final boolean isEnabled;
 
@@ -48,10 +50,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         this.minAngleRad=Math.toRadians(constants.lowerLimit);
         this.maxAngleRad=Math.toRadians(constants.upperLimit);
         this.conversionFactor=constants.conversionFactor;
-        this.encoderOffsetRad=constants.offset;
         this.isEnabled=isEnabled;
-
-        controller.enableContinuousInput(-Math.PI, Math.PI);
 
         if (constants.encoderType == EncoderType.ABSOLUTE) {
             if (encoderConstants == null) {
@@ -73,6 +72,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         for (int i = 0; i < motorConstants.length; i++) {
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
+        
+        TelemetryUtils.registerDashboard(this);
     }
 
     /* ---------------- Dashboard ---------------- */
@@ -92,9 +93,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         builder.addDoubleProperty("Current Angle (deg)", () -> getCurrentAngle().getDegrees(), null);
         builder.addDoubleProperty("Position Setpoint (deg)", this::getPositionSetpoint, null);
         builder.addDoubleProperty("Velocity Setpoint (deg/s)", this::getVelocitySetpoint, null);
-        builder.addDoubleProperty("Current Velocity (deg/s)", () -> Math.toDegrees(getVelocity()), null);
+        builder.addDoubleProperty("Current Velocity (rot/s)", ()-> getVelocity().in(RotationsPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
-        builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
+        builder.addDoubleProperty("Position Error (deg)", this::getPositionError, null);
     }
 
     /* ---------------- Periodic Control Loop ---------------- */
@@ -128,18 +129,37 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         setGoalAngle(Rotation2d.fromDegrees(degrees));
     }
 
-    public void setGoalAngle(Rotation2d angle) {
-        double clamped = MathUtil.clamp(
-            angle.getRadians(),
-            minAngleRad,
-            maxAngleRad
-        );
-
+    public synchronized void setGoalAngle(Rotation2d angle) {
+        double angleRad = angle.getRadians();
+        
+        // Check if within valid range - if so, use as-is
+        if (angleRad >= minAngleRad && angleRad <= maxAngleRad) {
+            goalAngle = new Rotation2d(angleRad);
+            controller.setGoal(goalAngle.getRadians());
+            return;
+        }
+        
+        // Out of range - try flipping 180°
+        double flippedAngle = angleRad + Math.PI;
+        
+        // Normalize flipped angle to [-π, π]
+        flippedAngle = MathUtil.angleModulus(flippedAngle);
+        
+        // Check if flipped angle is within range
+        if (flippedAngle >= minAngleRad && flippedAngle <= maxAngleRad) {
+            goalAngle = new Rotation2d(flippedAngle);
+            controller.setGoal(goalAngle.getRadians());
+            return;
+        }
+        
+        // Neither original nor flipped works - clamp to nearest limit
+        // This is a fallback that shouldn't normally happen
+        double clamped = MathUtil.clamp(angleRad, minAngleRad, maxAngleRad);
         goalAngle = new Rotation2d(clamped);
-        controller.setGoal(clamped);
+        controller.setGoal(goalAngle.getRadians());
     }
 
-    public Rotation2d getGoalAngle() {
+    public synchronized Rotation2d getGoalAngle() {
         return goalAngle;
     }
 
@@ -151,22 +171,25 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         return Math.toDegrees(controller.getSetpoint().position);
     }
 
+    public double getPositionError() {
+        return Math.toDegrees(controller.getPositionError());
+    }
+
     
     /* ---------------- Sensor Access ---------------- */
 
     public Rotation2d getCurrentAngle() {
-        var raw = encoder
+        var rot = encoder
             .map(enc -> enc.getAbsolutePosition())
             .orElse(motors[mainNum].getPosition());
 
-        double angleRad = raw * conversionFactor + encoderOffsetRad;
-        return new Rotation2d(angleRad);
+        return Rotation2d.fromRotations(rot.in(Rotations) * conversionFactor);
     }
 
-    public double getVelocity() {
+    public AngularVelocity getVelocity() {
         return encoder
-            .map(enc -> enc.getVelocity() * conversionFactor)
-            .orElse(motors[mainNum].getVelocity() * conversionFactor);
+            .map(enc -> enc.getVelocity().times(conversionFactor))
+            .orElse(motors[mainNum].getVelocity().times(conversionFactor)); 
     }
     
     public double getVoltage() {
@@ -187,6 +210,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         for (TalonEx motor: motors) {
             motor.resetEncoder(0);
         }
+        setGoalAngle(Rotation2d.kZero);
     }
 
     /* ---------------- Utility ---------------- */

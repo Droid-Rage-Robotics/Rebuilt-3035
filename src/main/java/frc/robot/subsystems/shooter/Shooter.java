@@ -210,7 +210,7 @@ public class Shooter implements Dashboard, Sendable{
             Rotation2d currentAngle = turret.getCurrentAngle();
 
             // Shift the goal by the Limelight error
-            Rotation2d newGoal = currentAngle.minus(Rotation2d.fromDegrees(txDeg));
+            Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
             turret.setGoalAngle(newGoal);
         }
     }
@@ -218,7 +218,7 @@ public class Shooter implements Dashboard, Sendable{
     private void hoardAiming() {
          // 1. Determine target field angle based on alliance
         Rotation2d targetFieldAngle;
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
+        if (DroidRageConstants.alliance == Alliance.Red) {
             targetFieldAngle = Rotation2d.fromDegrees(0.0); // Point toward red
         } else {
             targetFieldAngle = Rotation2d.fromDegrees(180.0); // Point toward blue
