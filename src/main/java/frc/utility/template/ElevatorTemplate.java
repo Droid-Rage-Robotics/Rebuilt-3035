@@ -3,13 +3,12 @@ package frc.utility.template;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,12 +31,10 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final double minPosition;
     private final double conversionFactor;
     private final int mainNum;
-    private final double encoderOffsetRad;
 
     private final boolean isEnabled;
 
     private Distance goalPosition = Meters.zero();
-
     
     public ElevatorTemplate(
         boolean isEnabled,
@@ -53,7 +50,6 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.maxPosition=constants.lowerLimit;
         this.minPosition=constants.upperLimit;
         this.conversionFactor=constants.conversionFactor;
-        this.encoderOffsetRad=constants.offset;
         this.isEnabled=isEnabled;
 
         if (constants.encoderType == EncoderType.ABSOLUTE) {
@@ -91,10 +87,10 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Goal Position (inches)", () -> getGoalPosition().in(Inches), null);
-        builder.addDoubleProperty("Current Angle (inches)", () -> getCurrentAngle().getDegrees(), null);
+        builder.addDoubleProperty("Current Position (inches)", () -> getPosition().in(Inches), null);
         builder.addDoubleProperty("Position Setpoint (inches)", () -> Units.metersToInches(getPositionSetpoint()), null);
         builder.addDoubleProperty("Velocity Setpoint (m/s)", this::getVelocitySetpoint, null);
-        builder.addDoubleProperty("Current Velocity (m/s)", () -> Math.toDegrees(getVelocity()), null);
+        builder.addDoubleProperty("Current Velocity (m/s)", () -> getVelocity().in(MetersPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
         builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
     }
@@ -103,9 +99,9 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void periodic() {
-        double currentAngleRad = getCurrentAngle().getRadians();
+        double meter = getPosition().in(Meters);
 
-        double pidOut = controller.calculate(currentAngleRad);
+        double pidOut = controller.calculate(meter);
         var setpoint = controller.getSetpoint();
 
         double ffOut = feedforward.calculate(setpoint.velocity);
@@ -156,19 +152,17 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     
     /* ---------------- Sensor Access ---------------- */
 
-    public Rotation2d getCurrentAngle() {
-        var raw = encoder
-            .map(enc -> enc.getAbsolutePosition())
-            .orElse(motors[mainNum].getPosition());
-
-        double angleRad = raw * conversionFactor + encoderOffsetRad;
-        return new Rotation2d(angleRad);
+    public Distance getPosition() {
+        return Meters.of(encoder
+            .map(enc -> enc.getAbsolutePosition().in(Radians) * conversionFactor)
+            .orElse(motors[mainNum].getPosition().in(Radians) * conversionFactor)
+        );
     }
 
-    public double getVelocity() {
-        return encoder
-            .map(enc -> enc.getVelocity() * conversionFactor)
-            .orElse(motors[mainNum].getVelocity() * conversionFactor);
+    public LinearVelocity getVelocity() {
+        return MetersPerSecond.of(encoder
+            .map(enc -> enc.getVelocity().in(RadiansPerSecond) * conversionFactor)
+            .orElse(motors[mainNum].getVelocity().in(RadiansPerSecond) * conversionFactor));
     }
     
     public double getVoltage() {

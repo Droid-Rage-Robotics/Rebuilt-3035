@@ -210,7 +210,7 @@ public class Shooter implements Dashboard, Sendable{
             Rotation2d currentAngle = turret.getCurrentAngle();
 
             // Shift the goal by the Limelight error
-            Rotation2d newGoal = currentAngle.minus(Rotation2d.fromDegrees(txDeg));
+            Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
             turret.setGoalAngle(newGoal);
         }
     }

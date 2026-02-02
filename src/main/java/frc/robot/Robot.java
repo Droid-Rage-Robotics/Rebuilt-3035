@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -18,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.SysID.SysID;
-import frc.robot.SysID.SysID.Measurement;
+// import frc.robot.SysID.SysID;
+// import frc.robot.SysID.SysID.Measurement;
 import frc.robot.commands.SysId.ManualSysIdRoutine;
 import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.autos.AutoChooser;
@@ -30,18 +31,21 @@ import frc.robot.subsystems.drive.Telemetry;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeWheel;
 import frc.robot.subsystems.intake.Pivot;
+import frc.robot.subsystems.shooter.CrapTurret;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
+import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.subsystems.vision.Vision;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.MatchValue;
+import frc.utility.LimelightEx;
 import frc.utility.MatchTimerSpeaker;
 
 public class Robot extends LoggedRobot {
     private final Vision vision = new Vision();
-    private final SwerveDrive drive = new SwerveDrive(true, vision);
+    private final SwerveDrive drive = new SwerveDrive(false, vision);
 
     private final Telemetry telemetry = new Telemetry(drive);
     // private final Intake intake = new Intake(
@@ -74,6 +78,9 @@ public class Robot extends LoggedRobot {
     private Command autonomousCommand;
     // private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker();
     
+    private final CrapTurret crap = new CrapTurret(true);
+
+    private final LimelightEx crapLimelight = LimelightEx.create("limelight-right");
 
     @Override
     public void robotInit() {
@@ -98,6 +105,9 @@ public class Robot extends LoggedRobot {
         
         // vision.setUpVision();
         SmartDashboard.putData("Robot Misc", DroidRageConstants.robotMisc);
+
+        crap.resetEncoder();
+
     }
     
     @Override
@@ -175,11 +185,22 @@ public class Robot extends LoggedRobot {
 
         // robotContainer.sysID(driveSysID);
         // robotContainer.sysID(sysID);
+
+        crap.resetEncoder();
     }
 
     @Override
     public void teleopPeriodic() {
+        if (LimelightHelpers.getTV("limelight-right")) {
+            double txDeg = LimelightHelpers.getTX("limelight-right");
+            Rotation2d currentAngle = crap.getCurrentAngle();
 
+            // Shift the goal by the Limelight error
+            Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
+            crap.setGoalAngle(newGoal);
+        } else {
+            crap.setGoalAngle(crap.getCurrentAngle());
+        }
     }
 
     @Override
