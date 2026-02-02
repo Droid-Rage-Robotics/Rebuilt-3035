@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.DroidRageConstants;
 
 public class CycleTracker {
     private final String filePath;
@@ -16,7 +17,7 @@ public class CycleTracker {
         String eventName = DriverStation.getEventName(); // Example: "Week1Regional"
         String matchType = DriverStation.getMatchType().toString(); // Example: "Qualification"
         int matchNumber = DriverStation.getMatchNumber(); // Example: 5
-        String alliance = DriverStation.getAlliance().toString(); // Example: "Red"
+        String alliance = DroidRageConstants.alliance.toString(); // Example: "Red"
 
         // Create a file-safe string
         return String.format("/home/lvuser/logs/%s_%s_Match%d_%s.txt",

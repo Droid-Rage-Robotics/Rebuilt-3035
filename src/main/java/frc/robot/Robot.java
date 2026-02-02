@@ -108,6 +108,7 @@ public class Robot extends LoggedRobot {
 
         crap.resetEncoder();
 
+        DroidRageConstants.alliance = DriverStation.getAlliance().get();
     }
     
     @Override
@@ -154,10 +155,10 @@ public class Robot extends LoggedRobot {
         SignalLogger.stop();
         switch (DriverStation.getGameSpecificMessage()) { // Set didWeWin for Lights
             case "R": // Red won Auto
-                DroidRageConstants.didWeWin = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+                DroidRageConstants.didWeWin = DroidRageConstants.alliance == DriverStation.Alliance.Red;
                 break;
             case "B": // Blue won Auto
-                DroidRageConstants.didWeWin = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
+                DroidRageConstants.didWeWin = DroidRageConstants.alliance == DriverStation.Alliance.Blue;
                 break;
         }
         if (autonomousCommand != null) {
