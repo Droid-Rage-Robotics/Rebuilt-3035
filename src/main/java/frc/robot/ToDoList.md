@@ -8,8 +8,19 @@ Are we or are we not using Field Centric turning? - Might wait till bot is built
 
 
 Test:
-Test Candle Lights, take videos, and share
-Test Wav Files/ Match Time Speaker
+Test Candle Lights, take videos, and share (Unable to connect to the LED due to too small wire)
+
 Mount April Tags on hub
-Setup a motor and limelight to test turret code
+
 Test new motor setup
+
+Tune turret
+
+test turrent for full 360 degrees Need to make sure that the turret knows that it cant go past 270 degrees of movement and turns around. - lucky
+
+video taping from behind the limelight so u can see the tag and limelight in the same frame -lucky
+
+Turret seeks hub when it can't see the april tag. (Look in general direction using odometry) - lucky
+
+Maybe make it function like this bot https://www.instagram.com/reel/DUFUoRaiSyr/?igsh=MWFtc3Bjd3RhOHdxdg== - dalberto
+(could make it so when it reaches the max rotational distance we give it make it do 180 the other way?)
