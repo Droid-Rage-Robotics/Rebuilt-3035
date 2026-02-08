@@ -45,9 +45,9 @@ import frc.utility.MatchTimerSpeaker;
 
 public class Robot extends LoggedRobot {
     private final Vision vision = new Vision();
-    private final SwerveDrive drive = new SwerveDrive(false, vision);
+    // private final SwerveDrive drive = new SwerveDrive(false, vision);
 
-    private final Telemetry telemetry = new Telemetry(drive);
+    // private final Telemetry telemetry = new Telemetry(drive);
     // private final Intake intake = new Intake(
     //     new Pivot(false),
     //     new IntakeWheel(false)
@@ -68,6 +68,8 @@ public class Robot extends LoggedRobot {
 
     // private final CycleTracker cycleTracker = new CycleTracker();
 
+    // private final CANdle candle = new CANdle(0);
+
     // private final DriveSysID driveSysID = new DriveSysID(drive.getSwerveModules(), drive);
     // private final SysID sysID = new SysID(carriage.getIntake().getMotor(), carriage.getIntake());
 
@@ -78,9 +80,9 @@ public class Robot extends LoggedRobot {
     private Command autonomousCommand;
     // private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker();
     
-    private final CrapTurret crap = new CrapTurret(true);
+    // private final CrapTurret crap = new CrapTurret(true);
 
-    private final LimelightEx crapLimelight = LimelightEx.create("limelight-right");
+    // private final LimelightEx crapLimelight = LimelightEx.create("limelight-right");
 
     @Override
     public void robotInit() {
@@ -96,6 +98,8 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
 
+        // candle.setControl(new RainbowAnimation(0, 399));
+
         
 
         // // Starts recording to data log
@@ -106,7 +110,7 @@ public class Robot extends LoggedRobot {
         // vision.setUpVision();
         SmartDashboard.putData("Robot Misc", DroidRageConstants.robotMisc);
 
-        crap.resetEncoder();
+        // crap.resetEncoder();
 
         DroidRageConstants.alliance = DriverStation.getAlliance().get();
     }
@@ -178,7 +182,7 @@ public class Robot extends LoggedRobot {
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
         // robotContainer.configureTeleOpBindings(drive, intake, indexer, shooter, vision, light);
-        robotContainer.testDrive(driver, drive, vision);
+        // robotContainer.testDrive(driver, drive, vision);
 
         
         // robotContainer.resetClimb(climb);
@@ -187,21 +191,21 @@ public class Robot extends LoggedRobot {
         // robotContainer.sysID(driveSysID);
         // robotContainer.sysID(sysID);
 
-        crap.resetEncoder();
+        // crap.resetEncoder();
     }
 
     @Override
     public void teleopPeriodic() {
-        if (LimelightHelpers.getTV("limelight-right")) {
-            double txDeg = LimelightHelpers.getTX("limelight-right");
-            Rotation2d currentAngle = crap.getCurrentAngle();
+        // if (LimelightHelpers.getTV("limelight-right")) {
+        //     double txDeg = LimelightHelpers.getTX("limelight-right");
+        //     Rotation2d currentAngle = crap.getCurrentAngle();
 
-            // Shift the goal by the Limelight error
-            Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
-            crap.setGoalAngle(newGoal);
-        } else {
-            crap.setGoalAngle(crap.getCurrentAngle());
-        }
+        //     // Shift the goal by the Limelight error
+        //     Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
+        //     crap.setGoalAngle(newGoal);
+        // } else {
+        //     crap.setGoalAngle(crap.getCurrentAngle());
+        // }
     }
 
     @Override
