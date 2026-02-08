@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -29,6 +30,32 @@ public class HubShooterMath {
     
     public static Distance getDistanceToTarget(Pose2d robot, Translation3d target) {
         return Meters.of(robot.getTranslation().getDistance(target.toTranslation2d()));
+    }
+
+
+    /**
+     * Calculate the turret angle needed to aim at a field target
+     * @param robotPose Current robot pose from Limelight odometry
+     * @param targetPosition Target position on field (Translation3d)
+     * @return Turret angle in degrees relative to robot front (0° = forward)
+     */
+    public static Rotation2d calculateTurretAngle(Pose2d robotPose, Translation3d targetPosition) {
+        // Extract robot's 2D position
+        Translation2d robotPosition = robotPose.getTranslation();
+        
+        // Get 2D target position (ignore height for angle calculation)
+        Translation2d target2d = targetPosition.toTranslation2d();
+        
+        // Calculate vector from robot to target
+        Translation2d robotToTarget = target2d.minus(robotPosition);
+        
+        // Get angle to target in field coordinates
+        Rotation2d angleToTarget = new Rotation2d(robotToTarget.getX(), robotToTarget.getY());
+        
+        // Subtract robot heading to get turret angle relative to robot
+        Rotation2d turretAngle = angleToTarget.minus(robotPose.getRotation());
+        
+        return turretAngle;
     }
 
     // see https://www.desmos.com/geometry/l4edywkmha
