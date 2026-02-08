@@ -8,11 +8,15 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.encoder.CANcoderEx;
@@ -201,8 +205,16 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     public void setVoltage(double voltage) {
         if (isEnabled) {
             for (TalonEx motor: motors) {
-            motor.setVoltage(voltage);
+                motor.setVoltage(voltage);
+            }
         }
+    }
+
+    public void setVoltage(Voltage voltage) {
+        if (isEnabled) {
+            for (TalonEx motor: motors) {
+                motor.setVoltage(voltage);
+            }
         }
     }
     
@@ -213,6 +225,47 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         setGoalAngle(Rotation2d.kZero);
     }
 
+    /* ---------------- SysId ---------------- */
+
+    private SysIdRoutine getSysIdRoutine() {
+        return new SysIdRoutine(new SysIdRoutine.Config(), 
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                    // Only apply voltage if within safe bounds
+                    double currentAngle = getCurrentAngle().getRadians();
+                    if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
+                        setVoltage(voltage);
+                    } else {
+                        setVoltage(0); // Stop if at limits
+                    }
+                }, 
+                (log) -> {
+                    log.motor("motor")
+                        .voltage(Volts.of(getVoltage()))
+                        .angularPosition(this.getCurrentAngle().getMeasure())
+                        .angularVelocity(this.getVelocity());
+                }, 
+                this
+            )
+        );
+    }
+
+    public Command getSysIdCommand() {
+        return new SequentialCommandGroup(
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
+                .until(this::isAtUpperLimit),
+            new WaitCommand(0.1),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse)
+                .until(this::isAtLowerLimit),
+            new WaitCommand(0.1),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward)
+                .until(this::isAtUpperLimit),
+            new WaitCommand(0.1),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
+                .until(this::isAtLowerLimit)
+        );
+    }
+    
     /* ---------------- Utility ---------------- */
     
     public TalonEx getMotor(){
@@ -225,5 +278,13 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
     public boolean atGoal(){
         return controller.atGoal();
+    }
+
+    private boolean isAtUpperLimit() {
+        return getCurrentAngle().getRadians() >= maxAngleRad - 0.05; // 0.05 rad buffer
+    }
+
+    private boolean isAtLowerLimit() {
+        return getCurrentAngle().getRadians() <= minAngleRad + 0.05; // 0.05 rad buffer
     }
 }

@@ -1,6 +1,6 @@
 package frc.utility.template;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
@@ -10,7 +10,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -20,7 +22,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.motor.TalonEx;
@@ -44,6 +49,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
 
     private final DCMotor gearbox;
 
+    private final boolean isEnabled;
+
     public FlywheelTemplate(
         boolean isEnabled,
         PIDController controller,
@@ -51,6 +58,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         SubsystemConstants constants,
         MotorConstants...motorConstants
     ){
+        this.isEnabled=isEnabled;
         this.controller=controller;
         this.feedforward=feedforward;
         this.maxSpeed=constants.upperLimit;
@@ -170,6 +178,10 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
 
     /* ---------------- Sensor Access ---------------- */
 
+    public Angle getCurrentAngle() {
+        return motors[mainNum].getPosition().times(conversionFactor);
+    }
+
     public AngularVelocity getVelocity() {
         return motors[mainNum].getVelocity().times(conversionFactor);
     }
@@ -185,11 +197,48 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
             motor.setVoltage(voltage);
         }
     }
+
+    public void setVoltage(Voltage voltage) {
+        if (isEnabled) {
+            for (TalonEx motor: motors) {
+                motor.setVoltage(voltage);
+            }
+        }
+    }
     
     public void resetEncoder() {
         for (TalonEx motor: motors) {
             motor.resetEncoder(0);
         }
+    }
+
+    /* ---------------- SysId ---------------- */
+
+    private SysIdRoutine getSysIdRoutine() {
+        return new SysIdRoutine(new SysIdRoutine.Config(), 
+            new SysIdRoutine.Mechanism(
+                this::setVoltage,
+                (log) -> {
+                    log.motor("motor")
+                        .voltage(Volts.of(getVoltage()))
+                        .angularPosition(this.getCurrentAngle())
+                        .angularVelocity(this.getVelocity());
+                }, 
+                this
+            )
+        );
+    }
+
+    public Command getSysIdCommand() {
+        return new SequentialCommandGroup(
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward),
+            new WaitCommand(0.1),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse),
+            new WaitCommand(0.1),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward),
+            new WaitCommand(0.1),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
+        );
     }
 
     /* ---------------- Utility ---------------- */
@@ -205,7 +254,6 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     public boolean atSetpoint() {
         return controller.atSetpoint();
     }
-
 }
 
 // isElementIn = this::(getTargetPosition() - getEncoderPosition() > 40);

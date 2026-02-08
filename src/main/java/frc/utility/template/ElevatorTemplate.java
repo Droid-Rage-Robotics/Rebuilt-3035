@@ -9,11 +9,15 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.encoder.EncoderConstants;
@@ -178,11 +182,60 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         }
         }
     }
+
+    public void setVoltage(Voltage voltage) {
+        if (isEnabled) {
+            for (TalonEx motor: motors) {
+                motor.setVoltage(voltage);
+            }
+        }
+    }
     
     public void resetEncoder() {
         for (TalonEx motor: motors) {
             motor.resetEncoder(0);
         }
+    }
+
+    /* ---------------- SysId ---------------- */
+
+    private SysIdRoutine getSysIdRoutine() {
+        return new SysIdRoutine(new SysIdRoutine.Config(), 
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                    // Only apply voltage if within safe bounds
+                    double currentPos = getPosition().in(Meters);
+                    if (currentPos >= minPosition || currentPos <= maxPosition) {
+                        setVoltage(voltage);
+                    } else {
+                        setVoltage(0); // Stop if at limits
+                    }
+                }, 
+                (log) -> {
+                    log.motor("motor")
+                        .voltage(Volts.of(getVoltage()))
+                        .linearPosition(this.getPosition())
+                        .linearVelocity(this.getVelocity());
+                }, 
+                this
+            )
+        );
+    }
+
+    public Command getSysIdCommand() {
+        return new SequentialCommandGroup(
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
+                .until(this::isAtUpperLimit),
+            new WaitCommand(0.1),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse)
+                .until(this::isAtLowerLimit),
+            new WaitCommand(0.1),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward)
+                .until(this::isAtUpperLimit),
+            new WaitCommand(0.1),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
+                .until(this::isAtLowerLimit)
+        );
     }
 
     /* ---------------- Utility ---------------- */
@@ -197,5 +250,13 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     public boolean atGoal(){
         return controller.atGoal();
+    }
+
+    private boolean isAtUpperLimit() {
+        return getPosition().in(Meters) >= maxPosition - 0.05; // 0.05 cm buffer
+    }
+
+    private boolean isAtLowerLimit() {
+        return getPosition().in(Meters) <= minPosition + 0.05; // 0.05 cm buffer
     }
 }
