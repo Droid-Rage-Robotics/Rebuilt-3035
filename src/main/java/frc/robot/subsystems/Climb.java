@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants.Direction;
@@ -32,8 +33,8 @@ public class Climb extends ElevatorTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(0)
-        .withUpperLimit(0)
+        .withLowerLimit(Units.inchesToMeters(0))
+        .withUpperLimit(Units.inchesToMeters(0))
         .withName("Turret")
         .withOffset(0)
         .withMainNum(0);
