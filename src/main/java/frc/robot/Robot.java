@@ -31,7 +31,6 @@ import frc.robot.subsystems.drive.Telemetry;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeWheel;
 import frc.robot.subsystems.intake.Pivot;
-import frc.robot.subsystems.shooter.CrapTurret;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
