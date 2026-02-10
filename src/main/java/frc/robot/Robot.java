@@ -25,6 +25,7 @@ import frc.robot.commands.SysId.ManualSysIdRoutine;
 import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.autos.AutoChooser;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.drive.Telemetry;
@@ -32,6 +33,8 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeWheel;
 import frc.robot.subsystems.intake.Pivot;
 import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.shooter.Kicker;
+import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
@@ -51,7 +54,9 @@ public class Robot extends LoggedRobot {
     //     new Pivot(false),
     //     new IntakeWheel(false)
     // );
-    // private final Indexer indexer = new Indexer(false);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
+    
     // private final Shooter shooter = new Shooter(
     //     new Turret(false),
     //     new Hood(false),
@@ -98,6 +103,8 @@ public class Robot extends LoggedRobot {
         Logger.start();
 
         // candle.setControl(new RainbowAnimation(0, 399));
+
+        
 
         
 
@@ -191,6 +198,12 @@ public class Robot extends LoggedRobot {
         // robotContainer.sysID(sysID);
 
         // crap.resetEncoder();
+
+        driver.a().onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+            .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+        driver.a().onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+            .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+
     }
 
     @Override
