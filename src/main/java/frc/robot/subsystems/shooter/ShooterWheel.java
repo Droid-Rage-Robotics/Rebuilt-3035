@@ -21,7 +21,15 @@ public class ShooterWheel extends FlywheelTemplate {
         .withOffset(0)
         .withMainNum(0);
     
-    private static final MotorConstants motorConstants = new MotorConstants() 
+    private static final MotorConstants rightMotor = new MotorConstants() 
+        .withCANBus(DroidRageConstants.rioCanBus)
+        .withDirection(Direction.Forward)
+        .withIdleMode(NeutralModeValue.Brake)
+        .withConversionFactor( 1)
+        .withSupplyCurrentLimit(70)
+        .withStatorCurrentLimit(70);
+
+    private static final MotorConstants leftMotor = new MotorConstants() 
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
@@ -34,6 +42,6 @@ public class ShooterWheel extends FlywheelTemplate {
             new PIDController(0, 0, 0), 
             new SimpleMotorFeedforward(0, 0, 0), 
             constants, 
-            motorConstants);
+            rightMotor, leftMotor);
     }
 }
