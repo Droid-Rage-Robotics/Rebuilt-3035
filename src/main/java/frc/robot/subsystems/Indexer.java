@@ -13,7 +13,6 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 import lombok.Getter;
 
 public class Indexer extends FlywheelTemplate{
-
     public enum IndexerValue {
         INTAKE(0),
         OUTTAKE(0),
@@ -28,7 +27,7 @@ public class Indexer extends FlywheelTemplate{
     } 
     
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1)
+        .withConversionFactor(1/3)
         .withEncoderType(EncoderType.INTEGRATED)
         .withLowerLimit(0)
         .withUpperLimit(0)
@@ -36,7 +35,7 @@ public class Indexer extends FlywheelTemplate{
         .withOffset(0)
         .withMainNum(0);
     
-    private static final MotorConstants motorConstants = new MotorConstants() 
+    private static final MotorConstants motor = new MotorConstants() 
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
@@ -49,6 +48,6 @@ public class Indexer extends FlywheelTemplate{
             new PIDController(0, 0, 0), 
             new SimpleMotorFeedforward(0, 0, 0), 
             constants, 
-            motorConstants);
+            motor);
     }
 }
