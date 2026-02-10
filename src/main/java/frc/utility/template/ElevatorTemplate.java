@@ -14,6 +14,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -35,6 +36,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final double minPosition;
     private final double conversionFactor;
     private final int mainNum;
+    private final SubsystemConstants constants;
 
     private final boolean isEnabled;
 
@@ -48,6 +50,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         EncoderConstants encoderConstants,
         MotorConstants... motorConstants
     ) {
+        this.constants=constants;
         this.mainNum=constants.mainNum;
         this.controller=controller;
         this.feedforward=feedforward;
@@ -82,7 +85,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void elasticInit() {
         SmartDashboard.putData(getName(), this);
-        SmartDashboard.putData(getName() + "/Reset Encoder", runOnce(this::resetEncoder));
+        SmartDashboard.putData(getName() + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override public void practiceWriters() {}
@@ -192,9 +195,23 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     }
     
     public void resetEncoder() {
-        for (TalonEx motor: motors) {
-            motor.resetEncoder(0);
+        if (hasExternalEncoder()) {
+            return;
+        } else {
+            for (TalonEx motor: motors) {
+                motor.resetEncoder(0);
+            }
+            setGoalPosition(Meters.zero());
         }
+    }
+
+    public Command resetEncoderCommand() {
+        return new RunCommand(this::resetEncoder) {
+            @Override
+            public boolean runsWhenDisabled() {
+                return true;
+            }
+        };
     }
 
     /* ---------------- SysId ---------------- */
@@ -258,5 +275,9 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     private boolean isAtLowerLimit() {
         return getPosition().in(Meters) <= minPosition + 0.05; // 0.05 cm buffer
+    }
+
+    private boolean hasExternalEncoder() {
+        return constants.encoderType == EncoderType.ABSOLUTE;
     }
 }

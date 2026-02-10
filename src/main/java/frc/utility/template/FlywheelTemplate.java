@@ -205,12 +205,6 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
             }
         }
     }
-    
-    public void resetEncoder() {
-        for (TalonEx motor: motors) {
-            motor.resetEncoder(0);
-        }
-    }
 
     /* ---------------- SysId ---------------- */
 

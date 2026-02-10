@@ -13,6 +13,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -36,6 +37,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     protected final String name;
     private final Optional<CANcoderEx> encoder;
     private final boolean isEnabled;
+    private final SubsystemConstants constants;
 
     private Rotation2d goalAngle = Rotation2d.fromRadians(0);
 
@@ -48,6 +50,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         MotorConstants... motorConstants
     ){
         this.isEnabled=isEnabled;
+        this.constants=constants;
         this.controller=controller;
         this.feedforward=feedforward;
         this.minAngleRad=constants.lowerLimit;
@@ -84,6 +87,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void elasticInit() {
         SmartDashboard.putData(name, this);
+        SmartDashboard.putData(getName() + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override
@@ -200,10 +204,24 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     }
     
     public void resetEncoder() {
-        for (TalonEx motor: motors) {
-            motor.resetEncoder(0);
+        if (hasExternalEncoder()) {
+            return;
+        } else {
+            for (TalonEx motor: motors) {
+                motor.resetEncoder(0);
+            }
+            setGoalAngle(Rotation2d.kZero);
         }
-    } 
+    }
+
+    public Command resetEncoderCommand() {
+        return new RunCommand(this::resetEncoder) {
+            @Override
+            public boolean runsWhenDisabled() {
+                return true;
+            }
+        };
+    }
 
     /* ---------------- SysId ---------------- */
 
@@ -274,5 +292,9 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     private boolean isAtLowerLimit() {
         return getCurrentAngle().getRadians() <= minAngleRad + 0.05; // 0.05 rad buffer
+    }
+
+    private boolean hasExternalEncoder() {
+        return constants.encoderType == EncoderType.ABSOLUTE;
     }
 }
