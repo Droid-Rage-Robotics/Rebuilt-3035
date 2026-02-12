@@ -32,10 +32,23 @@ import frc.utility.motor.TalonEx;
 import lombok.Getter;
 
 public class SwerveModule implements Sendable {
+    public enum GearRatio {
+        R1(7.03),
+        R2(6.03),
+        R3(5.27),
+        TURN(26.09);
+
+        @Getter private double conversionFactor;
+
+        private GearRatio(double gearRatio) {
+            this.conversionFactor=(1/gearRatio);
+        }
+    }
+    
     public static class Constants {
         public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
-        public static final double DRIVE_MOTOR_GEAR_RATIO = 1/6.75;//(50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0)=5.35714285714
-        public static final double TURN_MOTOR_GEAR_RATIO = 1/ 21.42;
+        public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();
+        public static final double TURN_MOTOR_GEAR_RATIO = GearRatio.TURN.getConversionFactor();
 
         public static final double DRIVE_ENCODER_ROT_2_METER = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS;
         public static final double DRIVE_ENCODER_RPM_2_METER_PER_SEC = DRIVE_ENCODER_ROT_2_METER / 60;
