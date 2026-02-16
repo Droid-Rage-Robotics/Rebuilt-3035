@@ -5,8 +5,6 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 
 public class TelemetryUtils {
@@ -68,7 +66,7 @@ public class TelemetryUtils {
 
     private static final Alert batteryAlert = new Alert("Battery Voltage", AlertType.kError);
     private static final Elastic.Notification notification = new Elastic.Notification();
-    private static final PowerDistribution powerDistribution = new PowerDistribution();
+    // private static final PowerDistribution powerDistribution = new PowerDistribution();
     
     /**
      * Call this function to register the subsystem's {@code elasticInit()} method
@@ -121,7 +119,7 @@ public class TelemetryUtils {
                 .withDisplaySeconds(10.0));
         }
 
-        SmartDashboard.putData("Distribution", powerDistribution);
+        // SmartDashboard.putData("Distribution", powerDistribution);
     }
 
     /**
