@@ -2,22 +2,13 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -33,8 +24,6 @@ import frc.utility.motor.MotorConstants;
 
 public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private final TalonEx[] motors;
-    // private final TalonFXSimState[] motorSimStates;
-
     private final PIDController controller;
     private final SimpleMotorFeedforward feedforward;
     private final double maxSpeed;
@@ -42,12 +31,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private final double conversionFactor;
     private final int mainNum;
     private final String name;
-
-    // private final FlywheelSim simulation;
-
-    // private final LinearSystem<N1, N1, N1> flywheelSystem;
-
-    // private final DCMotor gearbox;
+    private final SysIdRoutine sysIdRoutine;
+    private boolean sysIdActive = false;
 
     private final boolean isEnabled;
 
@@ -78,29 +63,9 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
 
-        // this.motorSimStates = new TalonFXSimState[motors.length];
-
-        // for (int i = 0; i < motors.length; i++) {
-        //     this.motorSimStates[i] = motors[i].getSimState();
-        // }
-
-        // for (TalonFXSimState simState : motorSimStates) {
-        //     simState.setMotorType(motorConstants[mainNum].motorType);
-        // }
-
-        // gearbox = switch (motorConstants[mainNum].motorType) {
-        //     case KrakenX44 -> DCMotor.getKrakenX44(motorConstants.length);
-        //     case KrakenX60 -> DCMotor.getKrakenX60(motorConstants.length);
-        // };
-        
-        // flywheelSystem =  LinearSystemId.createFlywheelSystem(
-        //     gearbox, 0.001, constants.gearRatio
-        // );
-        
-
-        // simulation = new FlywheelSim(flywheelSystem, gearbox);
-
         TelemetryUtils.registerDashboard(this);
+
+        sysIdRoutine = getSysIdRoutine();
     }
 
     /* ---------------- Dashboard ---------------- */
@@ -127,30 +92,13 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     
     @Override
     public void periodic() {
-        setVoltage(
-            controller.calculate(getVelocity().in(RotationsPerSecond), controller.getSetpoint())
-            +feedforward.calculate(controller.getSetpoint()));
+        if (!sysIdActive) {
+            setVoltage(
+                controller.calculate(getVelocity().in(RotationsPerSecond), controller.getSetpoint())
+                +feedforward.calculate(controller.getSetpoint())
+            );
+        }
     }
-
-    // @Override
-    // public void simulationPeriodic() {
-    //     double loopTime = 0.020;
-
-    //     for (TalonFXSimState simState : motorSimStates) {
-    //         simState.setSupplyVoltage(RobotController.getBatteryVoltage());
-    //         simState.setRotorVelocity(simulation.getAngularVelocity());
-                
-    //     }
-
-    //     simulation.setInputVoltage(motorSimStates[mainNum].getMotorVoltage());
-    //     // Next, we update it. The standard loop time is 20ms.
-    //     simulation.update(loopTime);
-        
-    //     // SimBattery estimates loaded battery voltages
-    //     RoboRioSim.setVInVoltage(
-    //         BatterySim.calculateDefaultBatteryLoadedVoltage(simulation.getCurrentDrawAmps()));
-  
-    // }
 
     /* ---------------- Commands ---------------- */
 
@@ -193,8 +141,10 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Motor Control ---------------- */
     
     protected void setVoltage(double voltage) {
-        for (TalonEx motor: motors) {
-            motor.setVoltage(voltage);
+        if (isEnabled) {
+            for (TalonEx motor: motors) {
+                motor.setVoltage(voltage);
+            }
         }
     }
 
@@ -209,7 +159,9 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- SysId ---------------- */
 
     private SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(new SysIdRoutine.Config(), 
+        motors[mainNum].getMotor().getVelocity().setUpdateFrequency(100);
+        return new SysIdRoutine(
+            new SysIdRoutine.Config(), 
             new SysIdRoutine.Mechanism(
                 this::setVoltage,
                 (log) -> {
@@ -225,13 +177,15 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
 
     public Command getSysIdCommand() {
         return new SequentialCommandGroup(
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward),
-            new WaitCommand(0.1),
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse),
-            new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward),
-            new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
+            new InstantCommand(() -> sysIdActive = true),
+            sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward),
+            new WaitCommand(3),
+            sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse),
+            new WaitCommand(3),
+            sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward),
+            new WaitCommand(3),
+            sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse),
+            new InstantCommand(() -> sysIdActive = false)
         );
     }
 
