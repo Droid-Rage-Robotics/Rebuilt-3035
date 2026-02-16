@@ -37,5 +37,6 @@ public class Telemetry implements TelemetryUpdater {
         yawPublisher.set(drive.getRotation2d());
         posePublisher.set(drive.getPose());
         pose3dPublisher.set(drive.getPose3d());
+        chassisSpeedsPublisher.set(drive.getChassisSpeeds());
     }
 }

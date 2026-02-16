@@ -8,8 +8,6 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
@@ -25,9 +23,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -47,7 +42,6 @@ import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
 import frc.utility.motor.MotorConstants.Direction;
-import frc.utility.motor.TalonEx;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -228,10 +222,9 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
 
     @Override
     public void practiceWriters() {
-        // SmartDashboard.putData("Drive/Angles", frontLeft);
-        // SmartDashboard.putData("Drive/Angles", frontRight);
-        // SmartDashboard.putData("Drive/Angles", backLeft);
-        // SmartDashboard.putData("Drive/Angles", backRight);
+        for (SwerveModule swerveModule: swerveModules) {
+            SmartDashboard.putData("Drive/Angle/" + swerveModule.getPod(), swerveModule);
+        }
     }
 
     @Override

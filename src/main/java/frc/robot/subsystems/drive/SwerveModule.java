@@ -4,11 +4,8 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,13 +17,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
 import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
 import frc.utility.encoder.CANcoderEx;
-import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.TalonEx;
 import lombok.Getter;
@@ -115,7 +110,7 @@ public class SwerveModule implements Sendable {
             .withIsEnabled(constants.turnMotorIsEnabled)
             .withSupplyCurrentLimit(Constants.TURN_SUPPLY_CURRENT_LIMIT);
 
-        turnMotor = TalonEx.createWithConstants(driveMotorConstants);
+        turnMotor = TalonEx.createWithConstants(turnMotorConstants);
 
         turnEncoder = CANcoderEx.create(constants.encoderId, DroidRageConstants.driveCanBus)
             .withDirection(SensorDirectionValue.CounterClockwise_Positive)
