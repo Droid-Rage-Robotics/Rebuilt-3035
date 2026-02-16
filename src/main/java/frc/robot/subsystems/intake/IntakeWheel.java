@@ -23,7 +23,8 @@ public class IntakeWheel extends FlywheelTemplate {
         .withMainNum(0);
 
     private static final MotorConstants motorConstants = new MotorConstants() 
-        .withCANBus(DroidRageConstants.rioCanBus)
+        .withDeviceId(15)
+        .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)

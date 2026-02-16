@@ -36,7 +36,8 @@ public class Indexer extends FlywheelTemplate{
         .withMainNum(0);
     
     private static final MotorConstants motor = new MotorConstants() 
-        .withCANBus(DroidRageConstants.rioCanBus)
+        .withDeviceId(14)
+        .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
