@@ -223,7 +223,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
     @Override
     public void practiceWriters() {
         for (SwerveModule swerveModule: swerveModules) {
-            SmartDashboard.putData("Drive/Angle/" + swerveModule.getPod(), swerveModule);
+            SmartDashboard.putData("Drive/Angle", swerveModule);
         }
     }
 
