@@ -123,14 +123,14 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     /* ---------------- Commands ---------------- */
 
-    public Command setTargetPositionCommand(double inches) {
-        return new InstantCommand(() -> setTargetPositionInches(inches), this);
+    public Command setTargetPositionCommand(Distance value) {
+        return new InstantCommand(() -> setTargetPosition(value), this);
     }
 
     /* ---------------- Manual Goal Control ---------------- */
 
-    public void setTargetPositionInches(double inches) {
-        setGoalPosition(Inches.of(inches));
+    public void setTargetPosition(Distance value) {
+        setGoalPosition(value);
     }
 
     public void setGoalPosition(Distance position) {

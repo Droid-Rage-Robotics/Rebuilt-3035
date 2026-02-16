@@ -1,6 +1,8 @@
 package frc.robot;
 
 
+import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +24,7 @@ import frc.robot.commands.Turn180Degrees;
 // import frc.robot.commands.drive.TeleopAlign;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Light;
@@ -68,17 +71,17 @@ public class RobotContainer {
 				.onTrue(intake.setPositionCommand(IntakeValue.OUTTAKE))
 				.onFalse(intake.setPositionCommand(IntakeValue.STOP));
 
-			// operator.rightTrigger()
-    		// 	.onTrue(climb.setClimbPositionCommand(ClimbValue.CLIMB))
-    		// 	.onFalse(climb.setClimbPositionCommand(ClimbValue.START));
+			operator.rightTrigger()
+    			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
+    			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
     			
-			// operator.rightBumper()
-    		// 	.onTrue(indexer.setIndexerCommand(IndexerValue.INTAKE))
-   			// 	.onFalse(indexer.setIndexerCommand(IndexerValue.STOP));
+			operator.rightBumper()
+    			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+   				.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
-			// operator.leftBumper()
-			// 	.onTrue(kicker.setKickerCommand(KickerValue.INTAKE))
-			// 	.onFalse(indexer.setKickerCommand(IndexerValue.STOP));
+			operator.leftBumper()
+				.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+				.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
 			operator.a()
     			.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
