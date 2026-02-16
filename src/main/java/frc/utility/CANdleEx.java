@@ -143,4 +143,8 @@ public class CANdleEx {
             new TwinkleOffAnimation(8, totalLength)
                 .withColor(new RGBWColor(color)));
     }
+
+    public int getDeviceId() {
+        return deviceId;
+    }
 }
