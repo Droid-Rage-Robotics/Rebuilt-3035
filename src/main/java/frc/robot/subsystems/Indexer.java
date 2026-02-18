@@ -14,8 +14,8 @@ import lombok.Getter;
 
 public class Indexer extends FlywheelTemplate{
     public enum IndexerValue {
-        INTAKE(0),
-        OUTTAKE(0),
+        INTAKE(30),
+        OUTTAKE(-30),
         STOP(0),
         HOLD(0);
 
@@ -24,13 +24,13 @@ public class Indexer extends FlywheelTemplate{
         private IndexerValue(double indexerValue) {
             this.indexerValue = indexerValue;
         }
-    } 
+    }
     
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1/3)
+        .withConversionFactor(1.0/3.0)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(0)
-        .withUpperLimit(0)
+        .withLowerLimit(-50)
+        .withUpperLimit(50)
         .withName("Indexer")
         .withOffset(0)
         .withMainNum(0);
@@ -46,8 +46,8 @@ public class Indexer extends FlywheelTemplate{
 
     public Indexer(boolean isEnabled) {
         super(isEnabled,
-            new PIDController(0, 0, 0), 
-            new SimpleMotorFeedforward(0, 0, 0), 
+            new PIDController(0.032889, 0, 0), 
+            new SimpleMotorFeedforward(0.34224, 0.37116, 0.0095347), 
             constants, 
             motor);
     }

@@ -10,13 +10,12 @@ import lombok.Getter;
 
 public class Intake {
     public enum IntakeValue{
-        STOP(0,0),
+        STOP(125,0),
 
-        INTAKE(0,0),
-        OUTTAKE(0,0),
+        INTAKE(125,-100),
+        OUTTAKE(0,100),
 
-        HOLD(0,0)
-
+        HOLD(0,20)
         ;
 
         /*
@@ -46,7 +45,7 @@ public class Intake {
     public Intake(Pivot pivot, IntakeWheel intakeWheel){
         this.pivot = pivot;
         this.intakeWheel = intakeWheel;
-        pivot.setTargetPositionDegrees(IntakeValue.STOP.pivotAngle);
+        pivot.setTargetPositionDegrees(0);
         intakeWheel.setTargetVelocity(IntakeValue.STOP.intakeSpeed);
         position = IntakeValue.STOP;
         SmartDashboard.putString("Carriage/Position", "INTAKE_HPS");

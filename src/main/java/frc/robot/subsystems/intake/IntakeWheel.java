@@ -16,8 +16,8 @@ public class IntakeWheel extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(0)
-        .withUpperLimit(0)
+        .withLowerLimit(-30)
+        .withUpperLimit(30)
         .withName("Intake")
         .withOffset(0)
         .withMainNum(0);
@@ -34,8 +34,8 @@ public class IntakeWheel extends FlywheelTemplate {
 
     public IntakeWheel(boolean isEnabled) {
         super(isEnabled,
-            new PIDController(0, 0, 0), 
-            new SimpleMotorFeedforward(0, 0, 0), 
+            new PIDController(0.015741, 0, 0), 
+            new SimpleMotorFeedforward(0.50353, 0.12171, 0.0036507), 
             constants, 
             motorConstants);
     }
