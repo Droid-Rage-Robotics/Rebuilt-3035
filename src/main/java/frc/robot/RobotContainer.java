@@ -67,30 +67,46 @@ public class RobotContainer {
 			driver.rightTrigger()
 				.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
 				.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+				// .onFalse(new ParallelCommandGroup(
+				// 	intake.getPivot().setTargetPositionCommand(IntakeValue.OUTTAKE.getPivotAngle()),
+				// 	new SequentialCommandGroup(
+				// 		intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()),
+				// 		new WaitCommand(0.75),
+				// 		intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()),
+				// 		new WaitCommand(1),
+				// 		new ParallelCommandGroup(
+				// 			intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()),
+				// 			intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed())
+				// 		)
+				// 	)
+					
+
+				// ));
+				// .onFalse(intake.setPositionCommand(IntakeValue.OUTTAKE));
 			driver.leftTrigger()
 				.onTrue(intake.setPositionCommand(IntakeValue.OUTTAKE))
 				.onFalse(intake.setPositionCommand(IntakeValue.STOP));
 
-			operator.rightTrigger()
-    			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
-    			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+			// operator.rightTrigger()
+    		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
+    		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
     			
 			operator.rightBumper()
     			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
    				.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
-			operator.leftBumper()
-				.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-				.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+			operator.rightBumper()
+				.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+				.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-			operator.a()
-    			.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
-			operator.b()
-    			.onTrue(shooter.setShooterModeCommand(ShooterMode.OPPOSITE));
-			operator.x()
-				.onTrue(shooter.setShooterModeCommand(ShooterMode.SCORE));
-			operator.y()
-				.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
+			// operator.a()
+    		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
+			// operator.b()
+    		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.OPPOSITE));
+			// operator.x()
+			// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.SCORE));
+			// operator.y()
+			// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
 				
 	}
 
