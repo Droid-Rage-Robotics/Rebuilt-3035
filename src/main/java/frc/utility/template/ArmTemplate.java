@@ -13,7 +13,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -215,7 +214,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     }
 
     public Command resetEncoderCommand() {
-        return new RunCommand(this::resetEncoder) {
+        return new InstantCommand(this::resetEncoder) {
             @Override
             public boolean runsWhenDisabled() {
                 return true;
