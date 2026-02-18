@@ -34,6 +34,7 @@ public class Turret extends TurretTemplate {
         .withMainNum(0);
     
     private static final MotorConstants motorConstants = new MotorConstants() 
+        .withDeviceId(2)
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
@@ -42,7 +43,7 @@ public class Turret extends TurretTemplate {
         .withStatorCurrentLimit(70);
     
     private static final EncoderConstants encoderConstants = new EncoderConstants()
-        .withDeviceId(0)    
+        .withDeviceId(3)    
         .withCANBus(DroidRageConstants.rioCanBus)
         .withConversionFactor(1)
         .withDirection(SensorDirectionValue.Clockwise_Positive);
