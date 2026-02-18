@@ -70,8 +70,9 @@ public final class DroidRageConstants {
 
     public static final CANBus driveCanBus = new CANBus("drive");
     public static final CANBus rioCanBus = new CANBus();
-    public static final String odoLL = "odoLL";
-    public static final String turretLL = "turretLL";
+    public static final String leftLL = "limelight-left";
+    public static final String rightLL = "limelight-right";
+    public static final String middleLL = "limelight-middle";
     
     public interface MutableSupplier<T> {
         T get();
