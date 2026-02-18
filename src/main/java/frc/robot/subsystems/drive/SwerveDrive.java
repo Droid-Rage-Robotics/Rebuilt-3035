@@ -275,13 +275,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
 
         field.setRobotPose(getPose());
         
-        
-        
-        
-        // updateVisionOdometry();
-
-
-        
+        updateVisionOdometry();
     }
 
 
@@ -308,29 +302,47 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
 
     public void updateVisionOdometry() {
         poseEstimator.update(getRotation2d(), getModulePositions());
-
         poseEstimator3d.update(getRotation3d(), getModulePositions());
 
-        PoseEstimate estimate = vision.getOdoEstimate();
+        PoseEstimate left = vision.getLeftEstimate();
+        PoseEstimate right = vision.getRightEstimate();
 
-        if (estimate != null && estimate.tagCount > 0) {
-            double dist = vision.closestTagDistance(estimate);
+        if (left != null && left.tagCount > 0) {
+            double dist = vision.closestTagDistance(left);
             double std = vision.distanceToStdDev(dist);
             double stdTheta = Math.toRadians(Math.max(5, dist * 4));
 
-            if (vision.isReasonable(getEstimatedPose(), estimate.pose))
+            if (vision.isReasonable(getEstimatedPose(), left.pose))
                 poseEstimator.addVisionMeasurement(
-                    estimate.pose,
-                    estimate.timestampSeconds,
+                    left.pose,
+                    left.timestampSeconds,
                     VecBuilder.fill(std, std, stdTheta)
                 );
 
                 poseEstimator3d.addVisionMeasurement(
-                    new Pose3d(estimate.pose), 
-                    estimate.timestampSeconds,
+                    new Pose3d(right.pose), 
+                    right.timestampSeconds,
                     VecBuilder.fill(std, std, std, stdTheta));
-        }
+            }
 
+        if (right != null && right.tagCount > 0) {
+            double dist = vision.closestTagDistance(right);
+            double std = vision.distanceToStdDev(dist);
+            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+
+            if (vision.isReasonable(getEstimatedPose(), right.pose)) {
+                poseEstimator.addVisionMeasurement(
+                    right.pose,
+                    right.timestampSeconds,
+                    VecBuilder.fill(std, std, stdTheta)
+                );
+
+                poseEstimator3d.addVisionMeasurement(
+                    new Pose3d(right.pose), 
+                    right.timestampSeconds,
+                    VecBuilder.fill(std, std, std, stdTheta));
+            }  
+        }
         visionField.setRobotPose(getEstimatedPose());
     }
 
