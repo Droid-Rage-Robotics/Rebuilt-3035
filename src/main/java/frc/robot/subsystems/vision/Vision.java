@@ -6,6 +6,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,19 +23,19 @@ import lombok.Getter;
 
 public class Vision extends SubsystemBase implements Dashboard{
     public enum MountPose {
-        ODO_FORWARD(0.2267388258),
-        ODO_SIDE(0.30880893),
-        ODO_UP(0.2228530468),
-        ODO_ROLL(0),
-        ODO_PITCH(20),
-        ODO_YAW(45),
+        LEFT_FORWARD(Units.inchesToMeters(-10)),
+        LEFT_SIDE(Units.inchesToMeters(-10.25)),
+        LEFT_UP(Units.inchesToMeters(7.35)),
+        LEFT_ROLL(0),
+        LEFT_PITCH(55),
+        LEFT_YAW(-40),
         
-        TURRET_FORWARD(0.2267388258),
-        TURRET_SIDE(0.30880893),
-        TURRET_UP(0.2228530468),
-        TURRET_ROLL(0),
-        TURRET_PITCH(20),
-        TURRET_YAW(45);
+        RIGHT_FORWARD(Units.inchesToMeters(-10)),
+        RIGHT_SIDE(Units.inchesToMeters(10.25)),
+        RIGHT_UP(Units.inchesToMeters(7.35)),
+        RIGHT_ROLL(0),
+        RIGHT_PITCH(55),
+        RIGHT_YAW(40);
 
         @Getter private final double value;
 
@@ -50,11 +52,11 @@ public class Vision extends SubsystemBase implements Dashboard{
     private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
     // Set Up the team number - http://limelight.local:5801/
 
-    @Getter private final LimelightEx odoLL = LimelightEx.create(DroidRageConstants.odoLL) // webgui at 10.30.35.12:5801
+    @Getter private final LimelightEx leftLL = LimelightEx.create(DroidRageConstants.leftLL) // webgui at 10.30.35.12:5801
         .withStreamMode_Standard()
         .withFieldLayout(Constants.FIELD_LAYOUT)
         .withCropWindow(-1, 1, -1, 1);
-    @Getter private final LimelightEx turretLL = LimelightEx.create(DroidRageConstants.turretLL) // webgui at 10.30.35.12:5801
+    @Getter private final LimelightEx rightLL = LimelightEx.create(DroidRageConstants.rightLL) // webgui at 10.30.35.12:5801
         .withStreamMode_Standard()
         .withFieldLayout(Constants.FIELD_LAYOUT)
         .withCropWindow(-1, 1, -1, 1);
@@ -63,21 +65,21 @@ public class Vision extends SubsystemBase implements Dashboard{
     // Initialize Limelight network tables
     public Vision() {
         // Change the camera pose relative to robot center (x forward, y left, z up, degrees)
-        odoLL.setMountPose(
-            MountPose.ODO_FORWARD.getValue(), // Forward offset (meters)
-            MountPose.ODO_SIDE.getValue(), // Side offset (meters)
-            MountPose.ODO_UP.getValue(), // Height offset (meters)
-            MountPose.ODO_ROLL.getValue(), // Roll (degrees)
-            MountPose.ODO_PITCH.getValue(), // Pitch (degrees)
-            MountPose.ODO_YAW.getValue() // Yaw (degrees)
+        leftLL.setMountPose(
+            MountPose.LEFT_FORWARD.getValue(), // Forward offset (meters)
+            MountPose.LEFT_SIDE.getValue(), // Side offset (meters)
+            MountPose.LEFT_UP.getValue(), // Height offset (meters)
+            MountPose.LEFT_ROLL.getValue(), // Roll (degrees)
+            MountPose.LEFT_PITCH.getValue(), // Pitch (degrees)
+            MountPose.LEFT_YAW.getValue() // Yaw (degrees)
         );
-        turretLL.setMountPose(
-            MountPose.TURRET_FORWARD.getValue(), // Forward offset (meters) - Will Change; Should not cause issues
-            MountPose.TURRET_SIDE.getValue(), // Side offset (meters) - Will Change; Should not cause issues
-            MountPose.TURRET_UP.getValue(), // Height offset (meters) - Will Change; Should not cause issues
-            MountPose.TURRET_ROLL.getValue(), // Roll (degrees)
-            MountPose.TURRET_PITCH.getValue(), // Pitch (degrees)
-            MountPose.TURRET_YAW.getValue() // Yaw (degrees) - Will Change; Should not cause issues
+        rightLL.setMountPose(
+            MountPose.RIGHT_FORWARD.getValue(), // Forward offset (meters) - Will Change; Should not cause issues
+            MountPose.RIGHT_SIDE.getValue(), // Side offset (meters) - Will Change; Should not cause issues
+            MountPose.RIGHT_UP.getValue(), // Height offset (meters) - Will Change; Should not cause issues
+            MountPose.RIGHT_ROLL.getValue(), // Roll (degrees)
+            MountPose.RIGHT_PITCH.getValue(), // Pitch (degrees)
+            MountPose.RIGHT_YAW.getValue() // Yaw (degrees) - Will Change; Should not cause issues
         );
 
         TelemetryUtils.registerDashboard(this);
@@ -85,8 +87,8 @@ public class Vision extends SubsystemBase implements Dashboard{
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData("ODO_LL", odoLL);
-        SmartDashboard.putData("Turret_LL", turretLL);
+        SmartDashboard.putData("Left_LL", leftLL);
+        SmartDashboard.putData("Right_LL", rightLL);
 
         
     }
@@ -104,15 +106,15 @@ public class Vision extends SubsystemBase implements Dashboard{
         if (DroidRageConstants.alliance == Alliance.Red) {
             targetHubIds = new int[] { 2,3,4,5,8,9,10,11};
             targetOdoIds= new int [] {}; //TODO:Set Up
-            odoLL.setPipelineIndex(odoPipeline);
-            turretLL.setPipelineIndex(redHubPipeline);
+            leftLL.setPipelineIndex(odoPipeline);
+            rightLL.setPipelineIndex(redHubPipeline);
 
         } else if (DroidRageConstants.alliance == Alliance.Blue) {
             targetHubIds = new int[] { 18,19,20,21,24,25,26,27};
             targetOdoIds = new int[] {};// TODO:Set Up
 
-            odoLL.setPipelineIndex(odoPipeline);
-            turretLL.setPipelineIndex(blueHubPipeline);
+            leftLL.setPipelineIndex(odoPipeline);
+            rightLL.setPipelineIndex(blueHubPipeline);
         }
     }
 
@@ -205,7 +207,18 @@ public class Vision extends SubsystemBase implements Dashboard{
      * 
      * @return a new PoseEstimate
      */
-    public PoseEstimate getOdoEstimate() {
-        return odoLL.getBotPoseEstimate_wpiBlue_MegaTag2();
+    public PoseEstimate getLeftEstimate() {
+        return leftLL.getBotPoseEstimate_wpiBlue_MegaTag2();
+    }
+
+    /**
+     * Gets the MegaTag2 Pose2d and timestamp from the left limelight for use with WPILib pose estimator
+     * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
+     * Make sure you are calling setRobotOrientation() before calling this method.
+     * 
+     * @return a new PoseEstimate
+     */
+    public PoseEstimate getRightEstimate() {
+        return rightLL.getBotPoseEstimate_wpiBlue_MegaTag2();
     }
 }
