@@ -15,6 +15,8 @@ public class Telemetry implements TelemetryUpdater {
     private final StructPublisher<Rotation2d> yawPublisher;
     private final StructPublisher<Pose2d> posePublisher;
     private final StructPublisher<Pose3d> pose3dPublisher;
+    private final StructPublisher<Pose2d> estPublisher;
+    private final StructPublisher<Pose3d> est3dPublisher;
     private final StructPublisher<ChassisSpeeds> chassisSpeedsPublisher;
 
 
@@ -22,10 +24,11 @@ public class Telemetry implements TelemetryUpdater {
 
     public Telemetry(SwerveDrive drive) {
         this.drive=drive;
-
         yawPublisher = networkTable.getStructTopic("Yaw", Rotation2d.struct).publish();
         posePublisher = networkTable.getStructTopic("Pose2d", Pose2d.struct).publish();
         pose3dPublisher = networkTable.getStructTopic("Pose3d", Pose3d.struct).publish();
+        estPublisher = networkTable.getStructTopic("EstPose2d", Pose2d.struct).publish();
+        est3dPublisher = networkTable.getStructTopic("EstPose3d", Pose3d.struct).publish();
         chassisSpeedsPublisher = networkTable.getStructTopic("ChassisSpeeds", ChassisSpeeds.struct).publish();
 
 
@@ -37,6 +40,8 @@ public class Telemetry implements TelemetryUpdater {
         yawPublisher.set(drive.getRotation2d());
         posePublisher.set(drive.getPose());
         pose3dPublisher.set(drive.getPose3d());
+        estPublisher.set(drive.getEstimatedPose());
+        est3dPublisher.set(drive.getEstimatedPose3d());
         chassisSpeedsPublisher.set(drive.getChassisSpeeds());
     }
 }
