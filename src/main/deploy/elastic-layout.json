@@ -35,19 +35,6 @@
             }
           },
           {
-            "title": "limelight-right",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 384.0,
-            "height": 384.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-right",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
             "title": "Gyro",
             "x": 1024.0,
             "y": 0.0,
@@ -90,7 +77,8 @@
               "show_trajectories": true,
               "field_rotation": 0.0,
               "robot_color": 4294198070,
-              "trajectory_color": 4294967295
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
             }
           },
           {
@@ -110,7 +98,21 @@
               "show_trajectories": true,
               "field_rotation": 0.0,
               "robot_color": 4294198070,
-              "trajectory_color": 4294967295
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
             }
           }
         ]
@@ -257,7 +259,8 @@
                 "properties": {
                   "topic": "/SmartDashboard/Climb/Reset Encoder",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": true,
+                  "maximize_button_space": false
                 }
               },
               {
@@ -341,7 +344,7 @@
       "grid_layout": {
         "layouts": [
           {
-            "title": "Right Limelight",
+            "title": "Right_LL",
             "x": 1408.0,
             "y": 0.0,
             "width": 256.0,
@@ -359,7 +362,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Right Limelight/ID",
+                  "topic": "/SmartDashboard/Right_LL/ID",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -373,7 +376,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Right Limelight/tA",
+                  "topic": "/SmartDashboard/Right_LL/tA",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -387,7 +390,7 @@
                 "height": 128.0,
                 "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Right Limelight/tV",
+                  "topic": "/SmartDashboard/Right_LL/tV",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4283215696,
@@ -404,7 +407,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Right Limelight/tX",
+                  "topic": "/SmartDashboard/Right_LL/tX",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -418,7 +421,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Right Limelight/tY",
+                  "topic": "/SmartDashboard/Right_LL/tY",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -427,7 +430,7 @@
             ]
           },
           {
-            "title": "Left Limelight",
+            "title": "Left_LL",
             "x": 0.0,
             "y": 0.0,
             "width": 256.0,
@@ -445,7 +448,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Left Limelight/ID",
+                  "topic": "/SmartDashboard/Left_LL/ID",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -459,7 +462,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Left Limelight/tA",
+                  "topic": "/SmartDashboard/Left_LL/tA",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -473,7 +476,7 @@
                 "height": 128.0,
                 "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Left Limelight/tV",
+                  "topic": "/SmartDashboard/Left_LL/tV",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4283215696,
@@ -490,7 +493,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Left Limelight/tX",
+                  "topic": "/SmartDashboard/Left_LL/tX",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -504,7 +507,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Left Limelight/tY",
+                  "topic": "/SmartDashboard/Left_LL/tY",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -531,18 +534,33 @@
               "show_trajectories": true,
               "field_rotation": 0.0,
               "robot_color": 4294198070,
-              "trajectory_color": 4294967295
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "botpose_orb_wpiblue",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 640.0,
+            "height": 256.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/limelight-left/botpose_orb_wpiblue",
+              "period": 0.06,
+              "data_type": "double[]",
+              "show_submit_button": false
             }
           }
         ]
       }
     },
     {
-      "name": "Carriage",
+      "name": "Indexer",
       "grid_layout": {
         "layouts": [
           {
-            "title": "Elevator",
+            "title": "Indexer",
             "x": 0.0,
             "y": 0.0,
             "width": 256.0,
@@ -553,19 +571,6 @@
             },
             "children": [
               {
-                "title": "Reset Encoder",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator/Reset Encoder",
-                  "period": 0.06,
-                  "show_type": true
-                }
-              },
-              {
                 "title": "Applied Voltage",
                 "x": 0.0,
                 "y": 0.0,
@@ -573,172 +578,53 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Elevator/Applied Voltage",
+                  "topic": "/SmartDashboard/Indexer/Applied Voltage",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
                 }
               },
               {
-                "title": "Current Position",
+                "title": "Current Speed",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Elevator/Current Position",
+                  "topic": "/SmartDashboard/Indexer/Current Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
                 }
               },
               {
-                "title": "Target Position",
+                "title": "Target Speed",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Elevator/Target Position",
+                  "topic": "/SmartDashboard/Indexer/Target Speed",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
                 }
               }
             ]
-          },
-          {
-            "title": "Carriage",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "Position",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Carriage/Position",
-                  "period": 0.06,
-                  "data_type": "string",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Pivot",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 512.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "Enabled",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Pivot/Enabled",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Current Position (Degrees)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Pivot/Current Position (Degrees)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Current Position (Radians)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Pivot/Current Position (Radians)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Applied Voltage",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Pivot/Applied Voltage",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Target Position (Degrees)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Pivot/Target Position (Degrees)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Target Position (Radians)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Pivot/Target Position (Radians)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          },
+          }
+        ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Intake",
+      "grid_layout": {
+        "layouts": [
           {
             "title": "Intake",
-            "x": 768.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
             "height": 384.0,
@@ -748,20 +634,17 @@
             },
             "children": [
               {
-                "title": "Enabled",
+                "title": "Applied Voltage",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Boolean Box",
+                "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Intake/Enabled",
+                  "topic": "/SmartDashboard/Intake/Applied Voltage",
                   "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
+                  "data_type": "double",
+                  "show_submit_button": false
                 }
               },
               {
@@ -779,16 +662,16 @@
                 }
               },
               {
-                "title": "Applied Voltage",
+                "title": "Position",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Intake/Applied Voltage",
+                  "topic": "/SmartDashboard/Intake/Position",
                   "period": 0.06,
-                  "data_type": "double",
+                  "data_type": "string",
                   "show_submit_button": false
                 }
               },
@@ -809,7 +692,7 @@
             ]
           },
           {
-            "title": "Arm",
+            "title": "Pivot",
             "x": 256.0,
             "y": 0.0,
             "width": 256.0,
@@ -820,48 +703,17 @@
             },
             "children": [
               {
-                "title": "Enabled",
+                "title": "Reset Encoder",
                 "x": 0.0,
                 "y": 0.0,
-                "width": 128.0,
+                "width": 256.0,
                 "height": 128.0,
-                "type": "Boolean Box",
+                "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Arm/Enabled",
+                  "topic": "/SmartDashboard/Pivot/Reset Encoder",
                   "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Current Position (Degrees)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Arm/Current Position (Degrees)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Current Position (Radians)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Arm/Current Position (Radians)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
+                  "show_type": true,
+                  "maximize_button_space": false
                 }
               },
               {
@@ -872,35 +724,63 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Arm/Applied Voltage",
+                  "topic": "/SmartDashboard/Pivot/Applied Voltage",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
                 }
               },
               {
-                "title": "Target Position (Degrees)",
+                "title": "Current Angle (deg)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Arm/Target Position (Degrees)",
+                  "topic": "/SmartDashboard/Pivot/Current Angle (deg)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
                 }
               },
               {
-                "title": "Target Position (Radians)",
+                "title": "Goal Angle (deg)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Arm/Target Position (Radians)",
+                  "topic": "/SmartDashboard/Pivot/Goal Angle (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position Error (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Pivot/Position Error (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position Setpoint (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Pivot/Position Setpoint (deg)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -909,22 +789,327 @@
             ]
           }
         ],
-        "containers": [
+        "containers": []
+      }
+    },
+    {
+      "name": "Kicker",
+      "grid_layout": {
+        "layouts": [
           {
-            "title": "Element",
-            "x": 1024.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "title": "Kicker",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
             "properties": {
-              "topic": "/SmartDashboard/Robot Misc/Element",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Applied Voltage",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Kicker/Applied Voltage",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Current Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Kicker/Current Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Target Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Kicker/Target Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           }
-        ]
+        ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Shooter",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Hood",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 512.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Reset Encoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Hood/Reset Encoder",
+                  "period": 0.06,
+                  "show_type": true,
+                  "maximize_button_space": false
+                }
+              },
+              {
+                "title": "Applied Voltage",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hood/Applied Voltage",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Current Angle (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hood/Current Angle (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Goal Angle (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hood/Goal Angle (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position Error (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hood/Position Error (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position Setpoint (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hood/Position Setpoint (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Shooter",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Applied Voltage",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Applied Voltage",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Current Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Current Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Target Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Target Speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Turret",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 512.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Applied Voltage",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/Applied Voltage",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Current Angle (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/Current Angle (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Goal Angle (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/Goal Angle (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position Error (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/Position Error (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position Setpoint (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/Position Setpoint (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Reset Encoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Turret/Reset Encoder",
+                  "period": 0.06,
+                  "show_type": true,
+                  "maximize_button_space": false
+                }
+              }
+            ]
+          }
+        ],
+        "containers": []
       }
     }
   ]
