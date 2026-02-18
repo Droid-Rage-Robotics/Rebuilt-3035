@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SysId.ManualSysIdRoutine;
 import frc.robot.commands.SysId.SysIdRoutineCommand;
 import frc.robot.commands.autos.AutoChooser;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Light;
@@ -47,23 +48,27 @@ import frc.utility.MatchTimerSpeaker;
 
 public class Robot extends LoggedRobot {
     private final Vision vision = new Vision();
-    // private final SwerveDrive drive = new SwerveDrive(false, vision);
+    private final SwerveDrive drive = new SwerveDrive(false, vision);
 
-    // private final Telemetry telemetry = new Telemetry(drive);
-    // private final Intake intake = new Intake(
-    //     new Pivot(false),
-    //     new IntakeWheel(false)
-    // );
+    private final Telemetry telemetry = new Telemetry(drive);
+    private final Climb climb = new Climb(false);
+    private final Intake intake = new Intake(
+        new Pivot(false),
+        new IntakeWheel(false)
+    );
     private final Indexer indexer = new Indexer(false);
+    // private final IntakeWheel intakeWheel = new IntakeWheel(true);
     private final Kicker kicker = new Kicker(false);
+
+    // private final Pivot pivot = new Pivot(false);
     
-    // private final Shooter shooter = new Shooter(
-    //     new Turret(false),
-    //     new Hood(false),
-    //     new ShooterWheel(false),
-    //     vision
-    // );
-    // private final Light light = new Light(0);
+    private final Shooter shooter = new Shooter(
+        new Turret(true),
+        new Hood(false),
+        new ShooterWheel(false),
+        vision
+    );
+    private final Light light = new Light(0);
     
     private final CommandXboxController driver =
 		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
@@ -71,8 +76,6 @@ public class Robot extends LoggedRobot {
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 
     // private final CycleTracker cycleTracker = new CycleTracker();
-
-    // private final CANdle candle = new CANdle(0);
 
     // private final DriveSysID driveSysID = new DriveSysID(drive.getSwerveModules(), drive);
     // private final SysID sysID = new SysID(carriage.getIntake().getMotor(), carriage.getIntake());
@@ -83,10 +86,6 @@ public class Robot extends LoggedRobot {
     // public boolean teleopRan;
     private Command autonomousCommand;
     // private MatchTimerSpeaker matchTimeSpeaker = new MatchTimerSpeaker();
-    
-    // private final CrapTurret crap = new CrapTurret(true);
-
-    // private final LimelightEx crapLimelight = LimelightEx.create("limelight-right");
 
     @Override
     public void robotInit() {
@@ -187,7 +186,7 @@ public class Robot extends LoggedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        // robotContainer.configureTeleOpBindings(drive, intake, indexer, shooter, vision, light);
+        // robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
         // robotContainer.testDrive(driver, drive, vision);
 
         
@@ -199,31 +198,39 @@ public class Robot extends LoggedRobot {
 
         // crap.resetEncoder();
 
-        driver.a().onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-            .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-        driver.a().onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-            .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+        
+        // driver.a().onTrue(shooter.getTurret().getSysIdCommand());
+        driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(90))
+            .onFalse(shooter.getTurret().setTargetPositionCommand(0));
+
+        driver.x().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
+            .onFalse(shooter.getTurret().setTargetPositionCommand(0));
+
+        // driver.a().onTrue(pivot.setTargetPositionCommand(100));
+        // driver.b().onTrue(pivot.setTargetPositionCommand(0));
+
+
+        // SmartDashboard.putData("sysid", indexer.getSysIdCommand());
+
+        // driver.a().onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+        //     .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+        // driver.a().onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+        //     .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+
+        // driver.b().onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+        //     .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+        // driver.b().onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+        //     .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+
 
     }
 
     @Override
-    public void teleopPeriodic() {
-        // if (LimelightHelpers.getTV("limelight-right")) {
-        //     double txDeg = LimelightHelpers.getTX("limelight-right");
-        //     Rotation2d currentAngle = crap.getCurrentAngle();
-
-        //     // Shift the goal by the Limelight error
-        //     Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
-        //     crap.setGoalAngle(newGoal);
-        // } else {
-        //     crap.setGoalAngle(crap.getCurrentAngle());
-        // }
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void teleopExit(){
         SignalLogger.stop();
-        // cycleTracker.printAllData();
     }
     
     @Override
