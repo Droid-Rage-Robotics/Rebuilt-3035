@@ -89,10 +89,9 @@ public class Shooter implements Dashboard, Sendable{
 
     }
 
-    private final Turret turret;
-    private final Hood hood;
-    private final ShooterWheel shooter;
-    private final Vision vision;
+    @Getter private final Turret turret;
+    @Getter private final Hood hood;
+    @Getter private final ShooterWheel shooter;
     
     private final double IDLE_RPM = 0;
     private final double OPP_ANGLE = 0;
@@ -126,9 +125,8 @@ public class Shooter implements Dashboard, Sendable{
         this.turret=turret;
         this.hood=hood;
         this.shooter=shooter;
-        this.vision=vision;
 
-        limelight = vision.getTurretLL();
+        limelight = vision.getRightLL();
     }
 
     @Override
