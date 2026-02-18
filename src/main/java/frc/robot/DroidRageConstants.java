@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.CANBus;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -25,6 +26,10 @@ public final class DroidRageConstants {
     public static Alignment alignmentMode = Alignment.LEFT;
 
     private static final AtomicReference<String> alignmentWriter = new AtomicReference<>(alignmentMode.toString());
+
+    public static final AngularVelocity KRAKEN_X60_MAX_VELOCITY = RotationsPerSecond.of(6000.0/60.0);
+    public static final AngularVelocity KRAKEN_X44_MAX_VELOCITY = RotationsPerSecond.of(7750.0/60.0);
+
 
     public static void setAlignment(Alignment alignment){
         alignmentMode = alignment;
