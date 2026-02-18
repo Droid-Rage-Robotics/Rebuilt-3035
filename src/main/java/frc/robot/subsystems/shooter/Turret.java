@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -17,6 +19,7 @@ import frc.robot.subsystems.drive.SwerveDrive;
 import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
+import frc.utility.motor.TalonEx;
 import frc.utility.template.SubsystemConstants;
 import frc.utility.template.SubsystemConstants.EncoderType;
 import frc.utility.template.TurretTemplate;
@@ -25,10 +28,10 @@ public class Turret extends TurretTemplate {
     
     private static Translation2d hubPos = new Translation2d(0, 0);//TODO: Changes based on the alliance
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1)
-        .withEncoderType(EncoderType.ABSOLUTE)
-        .withLowerLimit(0) //Degree
-        .withUpperLimit(0) //Degree
+        .withConversionFactor(3.0/50.0)
+        .withEncoderType(EncoderType.INTEGRATED)
+        .withLowerLimit(-135) //Degree
+        .withUpperLimit(135) //Degree
         .withName("Turret")
         .withOffset(0)
         .withMainNum(0);
@@ -38,23 +41,22 @@ public class Turret extends TurretTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1)
         .withSupplyCurrentLimit(70)
         .withStatorCurrentLimit(70);
     
-    private static final EncoderConstants encoderConstants = new EncoderConstants()
-        .withDeviceId(3)    
-        .withCANBus(DroidRageConstants.rioCanBus)
-        .withConversionFactor(1)
-        .withDirection(SensorDirectionValue.Clockwise_Positive);
+    // private static final EncoderConstants encoderConstants = new EncoderConstants()
+    //     .withDeviceId(3)    
+    //     .withCANBus(DroidRageConstants.rioCanBus)
+    //     .withConversionFactor(1)
+    //     .withDirection(SensorDirectionValue.Clockwise_Positive);
     
     public Turret(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(0, 0, 0, 
-            new TrapezoidProfile.Constraints(0, 0)), 
-            new SimpleMotorFeedforward(0, 0, 0), 
+            new ProfiledPIDController(1.1597, 0, 0, 
+            new TrapezoidProfile.Constraints(1, 1)), 
+            new SimpleMotorFeedforward(0.11055, 1.6667, 0.15809), 
             constants, 
-            encoderConstants,            
+            null,            
             motorConstants);
     }
 

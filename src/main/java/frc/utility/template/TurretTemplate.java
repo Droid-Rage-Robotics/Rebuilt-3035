@@ -3,6 +3,7 @@ package frc.utility.template;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -21,8 +22,8 @@ import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.encoder.EncoderConstants;
-import frc.utility.motor.TalonEx;
 import frc.utility.motor.MotorConstants;
+import frc.utility.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class TurretTemplate extends SubsystemBase implements Dashboard {
@@ -186,11 +187,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Sensor Access ---------------- */
 
     public Rotation2d getCurrentAngle() {
-        var rot = encoder
-            .map(enc -> enc.getAbsolutePosition())
-            .orElse(motors[mainNum].getPosition());
-
-        return Rotation2d.fromRotations(rot.in(Rotations) * conversionFactor);
+        return new Rotation2d(encoder
+            .map(enc -> enc.getAbsolutePosition().times(conversionFactor))
+            .orElse(motors[mainNum].getPosition().times(conversionFactor)));
     }
 
     public AngularVelocity getVelocity() {
@@ -244,16 +243,22 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- SysId ---------------- */
 
     private SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(new SysIdRoutine.Config(), 
+        return new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, // Use default ramp rate (1 V/s)
+                Volts.of(2), // Reduce dynamic step voltage to 4 to prevent brownout
+                Seconds.of(3), // Use default timeout (10 s)
+                null
+            ), 
             new SysIdRoutine.Mechanism(
                 (voltage) -> {
                     // Only apply voltage if within safe bounds
-                    double currentAngle = getCurrentAngle().getRadians();
-                    if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
+                    // double currentAngle = getCurrentAngle().getRadians();
+                    // if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
                         setVoltage(voltage);
-                    } else {
-                        setVoltage(0); // Stop if at limits
-                    }
+                    // } else {
+                    //     setVoltage(0); // Stop if at limits
+                    // }
                 }, 
                 (log) -> {
                     log.motor("motor")
@@ -268,17 +273,17 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
     public Command getSysIdCommand() {
         return new SequentialCommandGroup(
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
-                .until(this::isAtUpperLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward),
+                // .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse)
-                .until(this::isAtLowerLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse),
+                // .until(this::isAtLowerLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward)
-                .until(this::isAtUpperLimit),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward),
+                // .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
             getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
-                .until(this::isAtLowerLimit)
+                // .until(this::isAtLowerLimit)
         );
     }
     
