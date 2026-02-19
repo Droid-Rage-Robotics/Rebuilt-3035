@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -33,8 +34,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
-import frc.robot.subsystems.drive.SwerveDriveConstants.Speed;
-import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
+import frc.robot.subsystems.drive.DriveConstants.Speed;
+import frc.robot.subsystems.drive.DriveConstants.SwerveDriveConfig;
 import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
@@ -141,8 +142,6 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
 
     private final boolean isEnabled;
     private final Vision vision;
-    // SwerveDrivetrain
-
 
     public SwerveDrive(boolean isEnabled, Vision vision) {
         this.isEnabled = isEnabled;
@@ -212,12 +211,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         SmartDashboard.putData("Drive/Drive Pose", field);
         SmartDashboard.putData("Drive/Vision Pose", visionField);
         SmartDashboard.putBoolean("Drive/Info/isEnabled", isEnabled);
-        SmartDashboard.putData("Drive/Data", data);
-
-        
-
-
-        
+        SmartDashboard.putData("Drive/Data", data); 
     }
 
     @Override
@@ -292,12 +286,6 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         Logger.recordOutput("Drive/Rotation3d", getRotation3d());
         Logger.recordOutput("Drive/Rotation2d", getRotation2d());
         Logger.recordOutput("Drive/States", getModuleStates());
-        Logger.recordOutput("Drive/Speeds", getChassisSpeeds());
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        periodic();
     }
 
     public void updateVisionOdometry() {
@@ -346,8 +334,6 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         visionField.setRobotPose(getEstimatedPose());
     }
 
-    
-
     public double getTranslationalSpeed() {
         return speed.getTranslationalSpeed();
     }
@@ -367,47 +353,59 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
     }
 
-    public void drive(double xSpeed, double ySpeed, double turnSpeed) {
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
-        drive(chassisSpeeds);
-    }
-    public void drive(ChassisSpeeds chassisSpeeds) {
-        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-        setModuleStates(states);
-    }
+    // public void drive(double xSpeed, double ySpeed, double turnSpeed) {
+    //     ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+    //     drive(chassisSpeeds);
+    // }
 
-    public void setModuleStates(SwerveModuleState[] states) {
-        if (!isEnabled) return;
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-            states, 
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
-        );
+    // public void setModuleStates(SwerveModuleState[] states) {
+    //     if (!isEnabled) return;
+    //     SwerveDriveKinematics.desaturateWheelSpeeds(
+    //         states, 
+    //         DriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
+    //     );
 
-        // swerveModules[1].setState(states[1]);
-        for (int i = 0; i < 4; i++) {
-            swerveModules[i].setState(states[i]);
-        }
-    }
-
-    public void setFeedforwardModuleStates(ChassisSpeeds chassisSpeeds) {
-        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-        setFeedforwardModuleStates(states);
-    }
+    //     // swerveModules[1].setState(states[1]);
+    //     for (int i = 0; i < 4; i++) {
+    //         swerveModules[i].setState(states[i]);
+    //     }
+    // }
     
-    public void setFeedforwardModuleStates(SwerveModuleState[] states) {
+    // public void setFeedforwardModuleStates(SwerveModuleState[] states) {
+    //     if (!isEnabled) return;
+    //     SwerveDriveKinematics.desaturateWheelSpeeds(
+    //         states, 
+    //         DriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
+    //     );
+
+    //     for (int i = 0; i < 4; i++) {
+    //         swerveModules[i].setFeedforwardState(states[i]);
+    //     }
+    // }
+
+    /**
+     * Runs the drive at the desired velocity.
+     *
+     * @param speeds Speeds in meters/sec
+     */
+    public void runVelocity(ChassisSpeeds speeds) {
         if (!isEnabled) return;
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-            states, 
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()
-        );
+        // Calculate module setpoints
+        ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, DroidRageConstants.LOOP_PERIOD_SECS);
+        SwerveModuleState[] setpointStates = DRIVE_KINEMATICS.toSwerveModuleStates(discreteSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.ATTAINABLE_MAX_SPEED);
 
+        // Log unoptimized setpoints and setpoint speeds
+        Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+        Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
+
+        // Send setpoints to modules
         for (int i = 0; i < 4; i++) {
-            swerveModules[i].setFeedforwardState(states[i]);
+            swerveModules[i].setFeedforwardState(setpointStates[i]);
         }
-    }
 
-    public ChassisSpeeds getChassisSpeeds() {
-        return DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates());
+        // Log optimized setpoints (runSetpoint mutates each state)
+        Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
     }
 
     public void stop() {
@@ -425,20 +423,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
             SwerveDriveConfig.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND.getValue(),
             SwerveDriveConfig.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED.getValue());
     }
-
-    // public void changeAllianceRotation(){//DO THIS AT THE END OF AUTOS ONLY
-    //     //No WORK
-    //     setYaw(getHeading() +90);
-    //     switch (DriverStation.getAlliance().get()) {
-    //         case Red:
-    //             setYaw(getHeading() + 180);
-    //             break;
-    //         case Blue:
-    //             setYaw(getHeading());
-    //             break;
-    //     }
-    // } 
-
+    
     public boolean isInNeutralZone() {
         boolean isInNeutralZone = (
             getPose().getX()>FieldConstants.NEUTRAL_ZONE_START.in(Units.Meters) && 
@@ -516,10 +501,14 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
 
     /* ---------------- Odometry ---------------- */
     
+    /** Returns the measured chassis speeds of the robot. */
+    @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
     public ChassisSpeeds getSpeeds() {//Is this Robot Relative
         return DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates());
     }
     
+    /** Returns the module states (turn angles and drive velocities) for all of the modules. */ 
+    @AutoLogOutput(key = "SwerveStates/Measured")
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[swerveModules.length];
         for (int i = 0; i < swerveModules.length; i++) {
@@ -528,6 +517,7 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         return states;
     }
     
+    /** Returns the module positions (turn angles and drive positions) for all of the modules. */
     public SwerveModulePosition[] getModulePositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[swerveModules.length];
         for (int i = 0; i < swerveModules.length; i++) {

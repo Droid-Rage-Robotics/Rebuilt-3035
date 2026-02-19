@@ -1,19 +1,20 @@
 package frc.robot.commands.manual;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.drive.SwerveDrive.TippingState;
-import frc.robot.subsystems.drive.SwerveDriveConstants;
-import frc.robot.subsystems.drive.SwerveDriveConstants.DriveOptions;
-import frc.robot.subsystems.drive.SwerveDriveConstants.Speed;
+import frc.robot.subsystems.drive.DriveConstants.DriveOptions;
+import frc.robot.subsystems.drive.DriveConstants.Speed;
 
 public class SwerveDriveTeleop extends Command {
     private final SwerveDrive drive;
@@ -117,35 +118,23 @@ public class SwerveDriveTeleop extends Command {
         if (Math.abs(ySpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) ySpeed = 0;
         if (Math.abs(turnSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) turnSpeed = 0;
 
-        double translationalSpeed;
-
-        // if (elevator.getPosition() >= (0.15 * Elevator.Constants.MAX_HEIGHT)) {
-        //     translationalSpeed = 1.0 - (elevator.getPosition() / Elevator.Constants.MAX_HEIGHT) * 0.95;
-
-        //     translationalSpeed = MathUtil.clamp(translationalSpeed, 0.01, drive.getTranslationalSpeed());
-        // }
-        // else {
-            translationalSpeed = drive.getTranslationalSpeed();
-        // }
+        double translationalSpeed = drive.getTranslationalSpeed();
         
         // Smooth driving and apply speed
         xSpeed = 
             (xSpeed *
-           SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()) * 
+            DriveConstants.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) * 
             translationalSpeed;
         ySpeed = 
             (ySpeed *
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()) *
+            DriveConstants.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) *
             translationalSpeed;
         turnSpeed = 
             turnSpeed *
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND.getValue() * 
+            DriveConstants.ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) * 
             drive.getAngularSpeed();
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
-
-        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-        drive.setModuleStates(states);
+        drive.runVelocity(new ChassisSpeeds(xSpeed, ySpeed, turnSpeed));
     }
 
     @Override

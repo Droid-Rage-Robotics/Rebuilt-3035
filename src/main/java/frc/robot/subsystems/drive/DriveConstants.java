@@ -1,22 +1,61 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import lombok.Getter;
 
-public class SwerveDriveConstants {
+public class DriveConstants {
+    public enum GearRatio {
+        R1(7.03),
+        R2(6.03),
+        R3(5.27),
+        TURN(26.09);
+
+        @Getter private double conversionFactor;
+
+        private GearRatio(double gearRatio) {
+            this.conversionFactor=(1.0/gearRatio);
+        }
+    }
+
+    public static class ModuleConstants {
+        public static final Distance WHEEL_DIAMETER = Inches.of(4);
+        public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();
+        public static final double TURN_MOTOR_GEAR_RATIO = GearRatio.TURN.getConversionFactor();
+
+        public static final double DRIVE_ENCODER_ROT_2_METER = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER.in(Meters);
+        public static final double DRIVE_ENCODER_RPM_2_METER_PER_SEC = DRIVE_ENCODER_ROT_2_METER / 60;
+        public static final double READINGS_PER_REVOLUTION = 1;//4096
+
+        //Used for the CANCoder
+        public static final double TURN_ENCODER_ROT_2_RAD = 2 * Math.PI / READINGS_PER_REVOLUTION;
+        public static final double TURN_ENCODER_ROT_2_RAD_SEC = TURN_ENCODER_ROT_2_RAD/60;
+
+        /* Current Limits */
+        public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35;
+        public static final double DRIVE_STATOR_CURRENT_LIMIT = 75;
+        public static final double TURN_SUPPLY_CURRENT_LIMIT = 80;
+    }
+
+    public static final LinearVelocity ATTAINABLE_MAX_SPEED = MetersPerSecond.of(4.47);
+    public static final AngularVelocity ATTAINABLE_MAX_SPEED_ANG = RadiansPerSecond.of(2 * (2 * Math.PI));
+
+
     public enum SwerveDriveConfig {
-        PHYSICAL_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND(2 * (2 * Math.PI)),
-        PHYSICAL_MAX_SPEED_METERS_PER_SECOND(4.47),
-        
         TRACK_WIDTH(Units.inchesToMeters(28.5)),//Units.inchesToMeters(28.5)
         WHEEL_BASE(Units.inchesToMeters(28.5)),//Units.inchesToMeters(28.5)
 
         MAX_ACCELERATION_UNITS_PER_SECOND(10),
         MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND(10),
 
-        MAX_SPEED_METERS_PER_SECOND(PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue() / 4),
-        MAX_ANGULAR_SPEED_RADIANS_PER_SECOND(PHYSICAL_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND.getValue() / 10),
+        MAX_SPEED_METERS_PER_SECOND(ATTAINABLE_MAX_SPEED.in(MetersPerSecond) / 4),
+        MAX_ANGULAR_SPEED_RADIANS_PER_SECOND(ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) / 10),
         MAX_ACCELERATION_METERS_PER_SECOND_SQUARED(1),
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED(1), // 1 / 8 of a full rotation per second per second),
 
@@ -63,15 +102,9 @@ public class SwerveDriveConstants {
         }
     }
 
-    public static final PIDConstants TRANSLATIONAL_PID = new PIDConstants(
-        SwerveDriveConstants.SwerveDriveConfig.TRANSLATIONAL_KP.getValue(), 
-        SwerveDriveConstants.SwerveDriveConfig.TRANSLATIONAL_KI.getValue(), 
-        SwerveDriveConstants.SwerveDriveConfig.TRANSLATIONAL_KD.getValue());
+    public static final PIDConstants TRANSLATIONAL_PID = new PIDConstants(7,0,0);
 
-    public static final PIDConstants THETA_PID = new PIDConstants(
-        SwerveDriveConstants.SwerveDriveConfig.THETA_KP.getValue(), 
-        SwerveDriveConstants.SwerveDriveConfig.THETA_KI.getValue(), 
-        SwerveDriveConstants.SwerveDriveConfig.THETA_KD.getValue());
+    public static final PIDConstants THETA_PID = new PIDConstants(5,0,0);
 
     public enum DriveOptions { 
         IS_FIELD_ORIENTED(true),

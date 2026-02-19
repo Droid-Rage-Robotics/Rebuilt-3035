@@ -27,8 +27,10 @@ public final class DroidRageConstants {
 
     private static final AtomicReference<String> alignmentWriter = new AtomicReference<>(alignmentMode.toString());
 
-    public static final AngularVelocity KRAKEN_X60_MAX_VELOCITY = RotationsPerSecond.of(6000.0/60.0);
-    public static final AngularVelocity KRAKEN_X44_MAX_VELOCITY = RotationsPerSecond.of(7750.0/60.0);
+    public static final AngularVelocity KRAKEN_X60_MAX_VELOCITY = RPM.of(6000);
+    public static final AngularVelocity KRAKEN_X44_MAX_VELOCITY = RPM.of(7750);
+
+    public static final double LOOP_PERIOD_SECS = 0.02;
 
 
     public static void setAlignment(Alignment alignment){

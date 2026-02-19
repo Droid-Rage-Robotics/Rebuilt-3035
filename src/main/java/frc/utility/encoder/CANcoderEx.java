@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.DroidRageConstants;
@@ -157,6 +158,10 @@ public class CANcoderEx {
 
     public Angle getAbsolutePosition() {
         return encoder.getAbsolutePosition().getValue();
+    }
+
+    public Rotation2d getRotation2d() {
+        return new Rotation2d(encoder.getAbsolutePosition().getValue());
     }
 
     public AngularVelocity getVelocity() {

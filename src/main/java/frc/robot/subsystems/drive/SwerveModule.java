@@ -1,8 +1,6 @@
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -11,7 +9,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -19,7 +16,8 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.drive.SwerveDriveConstants.SwerveDriveConfig;
+import frc.robot.subsystems.drive.DriveConstants.ModuleConstants;
+import frc.robot.subsystems.drive.DriveConstants.SwerveDriveConfig;
 import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.motor.MotorConstants;
@@ -27,42 +25,6 @@ import frc.utility.motor.TalonEx;
 import lombok.Getter;
 
 public class SwerveModule implements Sendable {
-    public enum GearRatio {
-        R1(7.03),
-        R2(6.03),
-        R3(5.27),
-        TURN(26.09);
-
-        @Getter private double conversionFactor;
-
-        private GearRatio(double gearRatio) {
-            this.conversionFactor=(1/gearRatio);
-        }
-    }
-    
-    public static class Constants {
-        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
-        public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();
-        public static final double TURN_MOTOR_GEAR_RATIO = GearRatio.TURN.getConversionFactor();
-
-        public static final double DRIVE_ENCODER_ROT_2_METER = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS;
-        public static final double DRIVE_ENCODER_RPM_2_METER_PER_SEC = DRIVE_ENCODER_ROT_2_METER / 60;
-        public static final double READINGS_PER_REVOLUTION = 1;//4096
-
-        //Used for the CANCoder
-        public static final double TURN_ENCODER_ROT_2_RAD = 2 * Math.PI / READINGS_PER_REVOLUTION;
-        public static final double TURN_ENCODER_ROT_2_RAD_SEC = TURN_ENCODER_ROT_2_RAD/60;
-
-        //0.5 Change this to make the robot turn the turn motor as fast as possible
-        //If strafing, the robot drifts to he front/back, then increase
-                //.115
-
-
-        public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35;//50, 40
-        public static final double DRIVE_STATOR_CURRENT_LIMIT = 75;   //90, 80
-        public static final double TURN_SUPPLY_CURRENT_LIMIT = 80;
-    }
-
     private final MotorConstants driveMotorConstants;
     private final MotorConstants turnMotorConstants;
 
@@ -92,11 +54,11 @@ public class SwerveModule implements Sendable {
             .withCANBus(DroidRageConstants.driveCanBus)
             .withDirection(constants.driveMotorDirection)
             .withIdleMode(NeutralModeValue.Brake)
-            .withConversionFactor(Constants.DRIVE_ENCODER_ROT_2_METER)
+            .withConversionFactor(ModuleConstants.DRIVE_ENCODER_ROT_2_METER)
             .withSubsystem(subsystem)
             .withIsEnabled(constants.driveMotorIsEnabled)
-            .withSupplyCurrentLimit(Constants.DRIVE_SUPPLY_CURRENT_LIMIT)
-            .withStatorCurrentLimit(Constants.DRIVE_STATOR_CURRENT_LIMIT);
+            .withSupplyCurrentLimit(ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT)
+            .withStatorCurrentLimit(ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT);
 
         driveMotor = TalonEx.createWithConstants(driveMotorConstants);
 
@@ -105,16 +67,16 @@ public class SwerveModule implements Sendable {
             .withCANBus(DroidRageConstants.driveCanBus)
             .withDirection(constants.turnMotorDirection)
             .withIdleMode(NeutralModeValue.Coast)
-            .withConversionFactor(Constants.TURN_ENCODER_ROT_2_RAD)
+            .withConversionFactor(ModuleConstants.TURN_ENCODER_ROT_2_RAD)
             .withSubsystem(subsystem)
             .withIsEnabled(constants.turnMotorIsEnabled)
-            .withSupplyCurrentLimit(Constants.TURN_SUPPLY_CURRENT_LIMIT);
+            .withSupplyCurrentLimit(ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT);
 
         turnMotor = TalonEx.createWithConstants(turnMotorConstants);
 
         turnEncoder = CANcoderEx.create(constants.encoderId, DroidRageConstants.driveCanBus)
             .withDirection(SensorDirectionValue.CounterClockwise_Positive)
-            .withMagnetOffset(constants.encoderOffsetRad/Constants.TURN_ENCODER_ROT_2_RAD)
+            .withMagnetOffset(constants.encoderOffsetRad/ModuleConstants.TURN_ENCODER_ROT_2_RAD)
             .withAbsoluteSensorDiscontinuityPoint(0.5);
 
         turningPIDController = new PIDController(SwerveDriveConfig.TURN_KP.getValue(), 0.0, 0.0);
@@ -135,7 +97,6 @@ public class SwerveModule implements Sendable {
     }
 
     public void updateTelemetry() {
-        turnPositionPub.set(new Rotation2d(getTurningPosition()));
         moduleStatePub.set(getState());
         modulePositionPub.set(getPosition());
         driveVelocityPub.set(getDriveVelocity());
@@ -174,16 +135,16 @@ public class SwerveModule implements Sendable {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
     }
 
-    public void setState(SwerveModuleState state) {
-        SwerveModuleState desiredState = state;
-        if (Math.abs(state.speedMetersPerSecond) < 0.001) {
-            stop();
-            return;
-        }
-        desiredState.optimize(getState().angle);
-        driveMotor.setPower(state.speedMetersPerSecond / SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue());
-        turnMotor.setPower((turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()))*1);
-    }
+    // public void setState(SwerveModuleState state) {
+    //     SwerveModuleState desiredState = state;
+    //     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
+    //         stop();
+    //         return;
+    //     }
+    //     desiredState.optimize(getState().angle);
+    //     driveMotor.setPower(state.speedMetersPerSecond / DriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue());
+    //     turnMotor.setPower((turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()))*1);
+    // }
 
     public void setFeedforwardState(SwerveModuleState state) {
         SwerveModuleState desiredState = state;

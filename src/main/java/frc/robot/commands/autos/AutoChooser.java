@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Light;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
-import frc.robot.subsystems.drive.SwerveDriveConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
@@ -62,14 +62,11 @@ public class AutoChooser implements Dashboard {
                 drive::getPose,
                 drive::resetOdometry,
                 drive::getSpeeds,
-                drive::setFeedforwardModuleStates,
+                drive::runVelocity,
                 new PPHolonomicDriveController(
-                        new PIDConstants(SwerveDriveConstants.SwerveDriveConfig.TRANSLATIONAL_KP.getValue(), 
-                    SwerveDriveConstants.SwerveDriveConfig.TRANSLATIONAL_KI.getValue(), 
-                    SwerveDriveConstants.SwerveDriveConfig.TRANSLATIONAL_KD.getValue()),  // Translation PID constants
-                new PIDConstants(SwerveDriveConstants.SwerveDriveConfig.THETA_KP.getValue(), 
-                    SwerveDriveConstants.SwerveDriveConfig.THETA_KI.getValue(), 
-                    SwerveDriveConstants.SwerveDriveConfig.THETA_KD.getValue())),  // Rotation PID constants
+                    DriveConstants.TRANSLATIONAL_PID,
+                    DriveConstants.THETA_PID
+                ),  
                 config,
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red

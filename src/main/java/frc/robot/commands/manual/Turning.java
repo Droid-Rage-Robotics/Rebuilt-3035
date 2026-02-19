@@ -1,11 +1,12 @@
 package frc.robot.commands.manual;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,9 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.drive.SwerveDrive.TippingState;
-import frc.robot.subsystems.drive.SwerveDriveConstants;
-import frc.robot.subsystems.drive.SwerveDriveConstants.DriveOptions;
-import frc.robot.subsystems.drive.SwerveDriveConstants.Speed;
+import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.DriveConstants.DriveOptions;
+import frc.robot.subsystems.drive.DriveConstants.Speed;
 import frc.utility.ControllerUtils;
 
 public class Turning extends Command {
@@ -169,21 +170,18 @@ public class Turning extends Command {
         // Smooth driving and apply speed
         xSpeed = 
             (xSpeed *
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()) * 
+            DriveConstants.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) * 
             translationalSpeed;
         ySpeed = 
             (ySpeed *
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_SPEED_METERS_PER_SECOND.getValue()) *
+            DriveConstants.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) *
             translationalSpeed;
         turnSpeed = 
             turnSpeed *
-            SwerveDriveConstants.SwerveDriveConfig.PHYSICAL_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND.getValue() * 
+            DriveConstants.ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) * 
             drive.getAngularSpeed();
 
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
-
-        SwerveModuleState[] states = SwerveDrive.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-        drive.setModuleStates(states);
+        drive.runVelocity(new ChassisSpeeds(xSpeed, ySpeed, turnSpeed));
     }
 
     @Override
