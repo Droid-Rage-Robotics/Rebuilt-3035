@@ -99,6 +99,10 @@ public class RobotContainer {
 				.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 				.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
+			operator.rightBumper()
+				.onTrue(shooter.getShooter().setTargetVelocityCommand(-50))
+				.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
+
 			// operator.a()
     		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
 			// operator.b()

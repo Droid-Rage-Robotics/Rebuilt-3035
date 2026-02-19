@@ -56,16 +56,16 @@ public class Robot extends LoggedRobot {
         new Pivot(false),
         new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(false);
+    private final Indexer indexer = new Indexer(true);
     // private final IntakeWheel intakeWheel = new IntakeWheel(true);
-    private final Kicker kicker = new Kicker(false);
+    private final Kicker kicker = new Kicker(true);
 
     // private final Pivot pivot = new Pivot(false);
     
     private final Shooter shooter = new Shooter(
-        new Turret(true),
+        new Turret(false),
         new Hood(false),
-        new ShooterWheel(false),
+        new ShooterWheel(true),
         vision
     );
     private final Light light = new Light(0);
@@ -186,7 +186,7 @@ public class Robot extends LoggedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        // robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
+        robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
         // robotContainer.testDrive(driver, drive, vision);
 
         
@@ -199,12 +199,12 @@ public class Robot extends LoggedRobot {
         // crap.resetEncoder();
 
         
-        // driver.a().onTrue(shooter.getTurret().getSysIdCommand());
-        driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(90))
-            .onFalse(shooter.getTurret().setTargetPositionCommand(0));
+        // driver.a().onTrue(shooter.getShooter().getSysIdCommand());
+        // driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(90))
+        //     .onFalse(shooter.getTurret().setTargetPositionCommand(0));
 
-        driver.x().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
-            .onFalse(shooter.getTurret().setTargetPositionCommand(0));
+        // driver.x().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
+        //     .onFalse(shooter.getTurret().setTargetPositionCommand(0));
 
         // driver.a().onTrue(pivot.setTargetPositionCommand(100));
         // driver.b().onTrue(pivot.setTargetPositionCommand(0));
