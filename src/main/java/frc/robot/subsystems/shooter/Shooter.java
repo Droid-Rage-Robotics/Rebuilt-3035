@@ -109,24 +109,16 @@ public class Shooter implements Dashboard, Sendable{
     private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose2d", Pose2d.struct).subscribe(new Pose2d());
     private final StructSubscriber<ChassisSpeeds> chassisSpeedsSub = driveTable.getStructTopic("ChassisSpeeds", ChassisSpeeds.struct).subscribe(new ChassisSpeeds());
 
-
-
-
-    private final LimelightEx limelight;
-
     @Getter @Setter private ShooterMode shooterMode;
 
     public Shooter (
         Turret turret,
         Hood hood,
-        ShooterWheel shooter,
-        Vision vision
+        ShooterWheel shooter
     ) {
         this.turret=turret;
         this.hood=hood;
         this.shooter=shooter;
-
-        limelight = vision.getRightLL();
     }
 
     @Override
@@ -173,20 +165,20 @@ public class Shooter implements Dashboard, Sendable{
     }
 
     public void getShooterSpeed(){
-        shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
+        // shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
     }
     
     public void aim() {
-        if (limelight.getTV()) {
-            ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
-                poseSub.get(), 
-                chassisSpeedsSub.get(), 
-                limelight.getTargetPose_FieldSpace().getTranslation(), 
-                1
-            );
+        // if (limelight.getTV()) {
+        //     ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
+        //         poseSub.get(), 
+        //         chassisSpeedsSub.get(), 
+        //         limelight.getTargetPose_FieldSpace().getTranslation(), 
+        //         1
+        //     );
 
-            hood.setGoalAngle(new Rotation2d(shot.getHoodAngle()));
-        }
+        //     hood.setGoalAngle(new Rotation2d(shot.getHoodAngle()));
+        // }
 
         // var tof = Einstein.calculateTimeOfFlight(getShooterExitVelocity(), null, 0);
 
@@ -203,14 +195,14 @@ public class Shooter implements Dashboard, Sendable{
     }
 
     private void turretAim() {
-        if (limelight.getTV()) {
-            double txDeg = limelight.getTX();
-            Rotation2d currentAngle = turret.getCurrentAngle();
+        // if (limelight.getTV()) {
+        //     double txDeg = limelight.getTX();
+        //     Rotation2d currentAngle = turret.getCurrentAngle();
 
-            // Shift the goal by the Limelight error
-            Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
-            turret.setGoalAngle(newGoal);
-        }
+        //     // Shift the goal by the Limelight error
+        //     Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
+        //     turret.setGoalAngle(newGoal);
+        // }
     }
 
     private void hoardAiming() {
