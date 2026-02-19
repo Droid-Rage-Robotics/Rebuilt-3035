@@ -16,15 +16,16 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Hood extends ArmTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1)
+        .withConversionFactor(1.0/60.0)
         .withEncoderType(EncoderType.INTEGRATED)
         .withLowerLimit(0)
-        .withUpperLimit(0)
+        .withUpperLimit(35)
         .withName("Hood")
         .withOffset(0)
         .withMainNum(0);
 
     private static final MotorConstants motorConstants = new MotorConstants() 
+        .withDeviceId(6)
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
@@ -34,9 +35,9 @@ public class Hood extends ArmTemplate {
 
     public Hood(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(0, 0, 0,
-            new TrapezoidProfile.Constraints(0, 0)), 
-            new ArmFeedforward(0, 0, 0), 
+            new ProfiledPIDController(0.3236, 0, 0,
+            new TrapezoidProfile.Constraints(1, 1)), 
+            new ArmFeedforward(0.4334, 0,0.28114, 2.0731), 
             constants, 
             null, 
             motorConstants);

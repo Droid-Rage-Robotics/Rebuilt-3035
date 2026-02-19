@@ -224,17 +224,23 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     /* ---------------- SysId ---------------- */
 
-    private SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(new SysIdRoutine.Config(), 
+    public SysIdRoutine getSysIdRoutine() {
+        return new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, // Use default ramp rate (1 V/s)
+                Volts.of(0.5), // Reduce dynamic step voltage to 4 to prevent brownout
+                null, // Use default timeout (10 s)
+                null
+            ), 
             new SysIdRoutine.Mechanism(
                 (voltage) -> {
                     // Only apply voltage if within safe bounds
-                    double currentAngle = getCurrentAngle().getRadians();
-                    if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
+                    // double currentAngle = getCurrentAngle().getRadians();
+                    // if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
                         setVoltage(voltage);
-                    } else {
-                        setVoltage(0); // Stop if at limits
-                    }
+                    // } else {
+                    //     setVoltage(0); // Stop if at limits
+                    // }
                 }, 
                 (log) -> {
                     log.motor("motor")
@@ -249,17 +255,17 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     public Command getSysIdCommand() {
         return new SequentialCommandGroup(
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
-                .until(this::isAtUpperLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward),
+                // .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse)
-                .until(this::isAtLowerLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse),
+                // .until(this::isAtLowerLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward)
-                .until(this::isAtUpperLimit),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward),
+                // .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
             getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
-                .until(this::isAtLowerLimit)
+                // .until(this::isAtLowerLimit)
         );
     }
     

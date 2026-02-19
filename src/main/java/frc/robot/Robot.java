@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import frc.robot.SysID.SysID;
 // import frc.robot.SysID.SysID.Measurement;
 import frc.robot.commands.SysId.ManualSysIdRoutine;
@@ -56,17 +57,16 @@ public class Robot extends LoggedRobot {
         new Pivot(false),
         new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(true);
+    private final Indexer indexer = new Indexer(false);
     // private final IntakeWheel intakeWheel = new IntakeWheel(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Kicker kicker = new Kicker(false);
 
     // private final Pivot pivot = new Pivot(false);
     
     private final Shooter shooter = new Shooter(
         new Turret(false),
-        new Hood(false),
-        new ShooterWheel(true),
-        vision
+        new Hood(true),
+        new ShooterWheel(false)
     );
     private final Light light = new Light(0);
     
@@ -198,10 +198,22 @@ public class Robot extends LoggedRobot {
 
         // crap.resetEncoder();
 
+        // var routine = shooter.getHood().getSysIdRoutine();
+
+        // driver.a().whileTrue(routine.dynamic(SysIdRoutine.Direction.kForward));
+
+        // driver.b().whileTrue(routine.dynamic(SysIdRoutine.Direction.kReverse));
+
+        // driver.y().whileTrue(routine.quasistatic(SysIdRoutine.Direction.kReverse));
+
+        // driver.x().whileTrue(routine.quasistatic(SysIdRoutine.Direction.kForward));
         
-        // driver.a().onTrue(shooter.getShooter().getSysIdCommand());
+        // driver.a().onTrue(shooter.getHood().getSysIdCommand());
         // driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(90))
         //     .onFalse(shooter.getTurret().setTargetPositionCommand(0));
+
+        // driver.b().onTrue(shooter.getHood().setTargetPositionCommand(35))
+        //     .onFalse(shooter.getHood().setTargetPositionCommand(0));
 
         // driver.x().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
         //     .onFalse(shooter.getTurret().setTargetPositionCommand(0));
