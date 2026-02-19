@@ -56,17 +56,14 @@ public class Robot extends LoggedRobot {
         new Pivot(false),
         new IntakeWheel(false)
     );
+    
     private final Indexer indexer = new Indexer(false);
-    // private final IntakeWheel intakeWheel = new IntakeWheel(true);
     private final Kicker kicker = new Kicker(false);
 
-    // private final Pivot pivot = new Pivot(false);
-    
     private final Shooter shooter = new Shooter(
         new Turret(true),
         new Hood(false),
-        new ShooterWheel(false),
-        vision
+        new ShooterWheel(false)
     );
     private final Light light = new Light(0);
     
