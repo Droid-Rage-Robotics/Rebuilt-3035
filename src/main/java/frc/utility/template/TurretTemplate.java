@@ -11,7 +11,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -43,6 +48,10 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
     private Rotation2d goalAngle = Rotation2d.fromRadians(0);
 
+    private final MechanismLigament2d ligament;
+    private final Mechanism2d mechanism;
+    private final MechanismRoot2d center;
+
     public TurretTemplate(
         boolean isEnabled,
         ProfiledPIDController controller,
@@ -59,6 +68,19 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         this.maxAngleRad=Math.toRadians(constants.upperLimit);
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
+
+        mechanism = new Mechanism2d(constants.width, 10);
+
+        center = mechanism.getRoot("center", 5, 5);
+
+        ligament = new MechanismLigament2d(
+            constants.name + "Ligma", 
+            constants.length/2, 
+            0, 
+            1, 
+            new Color8Bit(Color.kRed));
+
+        center.append(ligament);
 
         if (constants.encoderType == EncoderType.ABSOLUTE) {
             if (encoderConstants == null) {
@@ -89,6 +111,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void elasticInit() {
         SmartDashboard.putData(getName(), this);
+        SmartDashboard.putData(getName() + "/Mechanism", mechanism);
         SmartDashboard.putData(getName() + "/Reset Encoder", resetEncoderCommand());
     }
 
@@ -104,12 +127,16 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         builder.addDoubleProperty("Current Velocity (rot/s)", ()-> getVelocity().in(RotationsPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
         builder.addDoubleProperty("Position Error (deg)", this::getPositionError, null);
+        
+        // mechanism.initSendable(builder);
     }
 
     /* ---------------- Periodic Control Loop ---------------- */
 
     @Override
     public void periodic() {
+        ligament.setAngle(getCurrentAngle());
+
         double currentAngleRad = getCurrentAngle().getRadians();
 
         double pidOut = controller.calculate(currentAngleRad);

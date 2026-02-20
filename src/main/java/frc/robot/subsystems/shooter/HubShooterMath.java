@@ -25,7 +25,8 @@ public class HubShooterMath {
     public static final double VEL_POWER = 0.3; // raises goal velocity to power
     public static final LinearVelocity BASE_VEL = InchesPerSecond.of(50); // added to final velocity
     public static final Transform3d ROBOT_TO_TURRET_TRANSFORM =
-        new Transform3d(new Translation3d(Inches.zero(), Inches.zero(), Inches.of(18)), Rotation3d.kZero);
+        new Transform3d(new Translation3d(Inches.zero(), Inches.of(6.613), Inches.of(-13.25)), 
+                        new Rotation3d(Rotations.of(0), Rotations.of(0), Degrees.of(180)));
     
     
     public static Distance getDistanceToTarget(Pose2d robot, Translation3d target) {

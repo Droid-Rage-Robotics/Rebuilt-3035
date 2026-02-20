@@ -17,6 +17,9 @@ public final class SubsystemConstants {
     public double gearRatio;
 
     public boolean hasLimitSwitch;
+    
+    public double length;
+    public double width;
 
     public SubsystemConstants withEncoderType(EncoderType value) {
         this.encoderType=value;
@@ -25,6 +28,15 @@ public final class SubsystemConstants {
 
     public SubsystemConstants withGearRatio(double value) {
         this.gearRatio=value;
+        return this;
+    }
+
+    public SubsystemConstants withLength(double value) {
+        this.length=value;
+        return this;
+    }
+    public SubsystemConstants withWidth(double value) {
+        this.width=value;
         return this;
     }
 
