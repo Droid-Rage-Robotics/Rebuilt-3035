@@ -4,6 +4,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -154,6 +155,10 @@ public class CANcoderEx {
     public CANcoderEx withConfiguration(CANcoderConfiguration config) {
         encoder.getConfigurator().apply(config);
         return this;
+    }
+
+    public CANcoderSimState getSimState() {
+        return encoder.getSimState();
     }
 
     public Angle getAbsolutePosition() {
