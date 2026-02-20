@@ -14,8 +14,8 @@ import lombok.Getter;
 
 public class Indexer extends FlywheelTemplate{
     public enum IndexerValue {
-        INTAKE(40),
-        OUTTAKE(-40),
+        INTAKE(50),
+        OUTTAKE(-50),
         STOP(0),
         HOLD(0);
 

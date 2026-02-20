@@ -91,17 +91,27 @@ public class RobotContainer {
     		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
     		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
     			
-			operator.rightBumper()
+			driver.rightBumper()
     			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
    				.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
-			operator.rightBumper()
+			driver.rightBumper()
 				.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 				.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-			operator.rightBumper()
-				.onTrue(shooter.getShooter().setTargetVelocityCommand(-50))
+			driver.rightBumper()
+				.onTrue(shooter.getShooter().setTargetVelocityCommand(-55))
 				.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
+
+			driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
+			    .onFalse(shooter.getTurret().setTargetPositionCommand(0));
+
+			driver.leftBumper().onTrue(shooter.getHood().setTargetPositionCommand(10))
+			    .onFalse(shooter.getHood().setTargetPositionCommand(0));
+
+			driver.x().onTrue(shooter.getTurret().setTargetPositionCommand(45))
+			    .onFalse(shooter.getTurret().setTargetPositionCommand(0));
+
 
 			// operator.a()
     		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions

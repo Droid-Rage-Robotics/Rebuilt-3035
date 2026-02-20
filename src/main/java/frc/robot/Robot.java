@@ -64,8 +64,8 @@ public class Robot extends LoggedRobot {
     // private final Pivot pivot = new Pivot(false);
     
     private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
+        new Turret(true),
+        new Hood(true),
         new ShooterWheel(true)
     );
     private final Light light = new Light(0);
@@ -117,7 +117,7 @@ public class Robot extends LoggedRobot {
 
         // crap.resetEncoder();
 
-        DroidRageConstants.alliance = DriverStation.getAlliance().get();
+        // DroidRageConstants.alliance = DriverStation.getAlliance().get();
     }
     
     @Override
@@ -186,8 +186,8 @@ public class Robot extends LoggedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
-        // robotContainer.testDrive(driver, drive, vision);
+        // robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
+        robotContainer.testDrive(driver, drive, vision);
 
         
         // robotContainer.resetClimb(climb);
