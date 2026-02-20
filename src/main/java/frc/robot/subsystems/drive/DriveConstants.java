@@ -17,9 +17,11 @@ public class DriveConstants {
         R3(5.27),
         TURN(26.09);
 
-        @Getter private double conversionFactor;
+        @Getter private final double conversionFactor;
+        @Getter private final double gearRatio;
 
         private GearRatio(double gearRatio) {
+            this.gearRatio=gearRatio;
             this.conversionFactor=(1.0/gearRatio);
         }
     }

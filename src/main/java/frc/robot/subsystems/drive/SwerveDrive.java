@@ -1,6 +1,6 @@
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -27,6 +27,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -238,9 +239,9 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
             builder.addDoubleProperty(podName + " Angle", 
                 () -> swerveModules[index].getTurningPosition(), null);
             builder.addDoubleProperty(podName + " Velocity", 
-                () -> swerveModules[index].getDriveVelocity(), null);
+                () -> swerveModules[index].getDriveVelocity().in(MetersPerSecond), null);
             builder.addDoubleProperty(podName + " Position", 
-                () -> swerveModules[index].getDrivePos(), null);
+                () -> swerveModules[index].getDrivePosition().in(Meters), null);
         }
 
         builder.addDoubleProperty("Robot Angle", () -> getRotation2d().getRadians(), null);
@@ -251,8 +252,18 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         public void initSendable(SendableBuilder builder) {
             builder.addStringProperty("TippingState", () -> tippingState.name(), null);
             builder.addStringProperty("Speed", () -> speed.name(), null);
+            
         }
+
+        
     };
+
+    // NTSendable dd = new NTSendable() {
+    //     @Override
+    //     public void initSendable(NTSendableBuilder builder) {
+    //         builder.
+    //     }
+    // };
      
     
     @Override
@@ -272,6 +283,23 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
         updateVisionOdometry();
     }
 
+    private double simYawRad = 0.0;
+
+    @Override
+    public void simulationPeriodic() {
+        periodic();
+
+        for (SwerveModule module : swerveModules) {
+            module.simulationPeriodic();
+        }
+
+        pigeon2.getSimState().setSupplyVoltage(RobotController.getBatteryVoltage());
+        
+        simYawRad += getSpeeds().omegaRadiansPerSecond * DroidRageConstants.LOOP_PERIOD_SECS;
+
+        pigeon2.getSimState().setRawYaw((Math.toDegrees(simYawRad)));
+        
+    }
 
     @Override
     public void updateTelemetry() {
@@ -344,8 +372,8 @@ public class SwerveDrive extends SubsystemBase implements Dashboard, TelemetryUp
 
     public double getForwardVelocity() {
         // Index 0 = FL, Index 1 = FR (based on your array order)
-        double frontLeftVel = swerveModules[0].getDriveVelocity();
-        double frontRightVel = swerveModules[1].getDriveVelocity();
+        double frontLeftVel = swerveModules[0].getDriveVelocity().in(MetersPerSecond);
+        double frontRightVel = swerveModules[1].getDriveVelocity().in(MetersPerSecond);
         return (frontLeftVel + frontRightVel) / 2;
     }
 

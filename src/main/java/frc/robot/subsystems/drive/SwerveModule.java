@@ -2,20 +2,31 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
+import frc.robot.subsystems.drive.DriveConstants.GearRatio;
 import frc.robot.subsystems.drive.DriveConstants.ModuleConstants;
 import frc.robot.subsystems.drive.DriveConstants.SwerveDriveConfig;
 import frc.robot.subsystems.drive.SwerveModuleConstants.POD;
@@ -42,7 +53,23 @@ public class SwerveModule implements Sendable {
     private final StructPublisher<Rotation2d> turnPositionPub;
     private final StructPublisher<SwerveModuleState> moduleStatePub;
     private final StructPublisher<SwerveModulePosition> modulePositionPub;
-    private final DoublePublisher driveVelocityPub;
+
+    private final AtomicReference<Double> driveVoltage = new AtomicReference<Double>(0.0);
+    private final AtomicReference<Double> turnPower = new AtomicReference<Double>(0.0);
+
+
+    private static final DCMotor driveMotorModel = DCMotor.getKrakenX60(1);
+    private static final DCMotor turnMotorModel = DCMotor.getKrakenX44(1);
+
+    private final DCMotorSim driveSim = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(driveMotorModel, 0.025, DriveConstants.GearRatio.R3.getGearRatio()),
+        driveMotorModel
+    );
+  
+    private final DCMotorSim turnSim = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(turnMotorModel, 0.004, DriveConstants.GearRatio.TURN.getGearRatio()),
+        turnMotorModel
+    );
 
 
     private SwerveModule(SwerveModuleConstants constants) {
@@ -93,13 +120,34 @@ public class SwerveModule implements Sendable {
         turnPositionPub = nt.getStructTopic(baseTopic + "/TurnPosition", Rotation2d.struct).publish();
         moduleStatePub = nt.getStructTopic(baseTopic + "/State", SwerveModuleState.struct).publish();
         modulePositionPub = nt.getStructTopic(baseTopic + "/Position", SwerveModulePosition.struct).publish();
-        driveVelocityPub = nt.getDoubleTopic(baseTopic + "/DriveVelocity").publish();
+    }
+
+    public void simulationPeriodic() {
+        var batteryVoltage = RobotController.getBatteryVoltage();
+        
+        driveMotor.getSimState().setSupplyVoltage(batteryVoltage);
+        turnMotor.getSimState().setSupplyVoltage(batteryVoltage);
+        turnEncoder.getSimState().setSupplyVoltage(batteryVoltage);
+        
+        driveSim.setInputVoltage(MathUtil.clamp(driveVoltage.get(), -batteryVoltage, batteryVoltage));
+        turnSim.setInput(MathUtil.clamp(turnPower.get(), -batteryVoltage, batteryVoltage));
+        
+        driveSim.update(DroidRageConstants.LOOP_PERIOD_SECS);
+        turnSim.update(DroidRageConstants.LOOP_PERIOD_SECS);
+
+        driveMotor.getSimState().setRawRotorPosition(driveSim.getAngularPosition());
+        turnMotor.getSimState().setRawRotorPosition(turnSim.getAngularPosition());
+        turnEncoder.getSimState().setRawPosition(turnSim.getAngularPosition().times(GearRatio.TURN.getConversionFactor()));
+
+        driveMotor.getSimState().setRotorVelocity(driveSim.getAngularVelocity());
+        turnMotor.getSimState().setRotorVelocity(turnSim.getAngularVelocity());
+        turnEncoder.getSimState().setVelocity(turnSim.getAngularVelocity().times(GearRatio.TURN.getConversionFactor()));
+
     }
 
     public void updateTelemetry() {
         moduleStatePub.set(getState());
         modulePositionPub.set(getPosition());
-        driveVelocityPub.set(getDriveVelocity());
     }
     
 
@@ -107,8 +155,8 @@ public class SwerveModule implements Sendable {
         return new SwerveModule(constants);
     }
 
-    public double getDrivePos() {
-        return driveMotor.getPosition().in(Rotations);
+    public Distance getDrivePosition() {
+        return Meters.of(driveMotor.getPosition().in(Radians) * ModuleConstants.WHEEL_DIAMETER.in(Meters)/2);
     }
 
     public String getPod() {
@@ -119,8 +167,12 @@ public class SwerveModule implements Sendable {
         return turnEncoder.getAbsolutePosition().in(Radians);
     }
 
-    public double getDriveVelocity(){
-        return driveMotor.getVelocity().in(RotationsPerSecond);
+    public Rotation2d getRotation2d() {
+        return turnEncoder.getRotation2d();
+    }
+
+    public LinearVelocity getDriveVelocity(){
+        return MetersPerSecond.of(driveMotor.getVelocity().in(RadiansPerSecond) * ModuleConstants.WHEEL_DIAMETER.in(Meters)/2);
     }
 
     public void resetDriveEncoder(){
@@ -128,11 +180,11 @@ public class SwerveModule implements Sendable {
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(getDrivePos(), new Rotation2d(getTurningPosition()));
+        return new SwerveModulePosition(getDrivePosition(), getRotation2d());
     }
 
     public SwerveModuleState getState(){
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+        return new SwerveModuleState(getDriveVelocity(), getRotation2d());
     }
 
     // public void setState(SwerveModuleState state) {
@@ -153,8 +205,12 @@ public class SwerveModule implements Sendable {
             return;
         }
         desiredState.optimize(getState().angle);
-        driveMotor.setVoltage(driveFeedforward.calculate(state.speedMetersPerSecond));
-        turnMotor.setPower(turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()));
+        
+        driveVoltage.set(driveFeedforward.calculate(state.speedMetersPerSecond));
+        turnPower.set(turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()));
+        
+        driveMotor.setVoltage(driveVoltage.get());
+        turnMotor.setPower(turnPower.get());
     }
 
     @Override
