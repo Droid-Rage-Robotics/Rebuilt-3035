@@ -12,6 +12,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -141,6 +142,18 @@ public class TalonEx implements Dashboard {
      */
     public AngularVelocity getVelocity() {
         return motor.getVelocity().getValue().times(conversionFactor);
+    }
+
+    public Current getStatorCurrent() {
+        return motor.getStatorCurrent().getValue();
+    }
+
+    public Current getSupplyCurrent() {
+        return motor.getSupplyCurrent().getValue();
+    }
+
+    public Current getTorqueCurrent() {
+        return motor.getTorqueCurrent().getValue();
     }
 
     public TalonFXSimState getSimState() {
