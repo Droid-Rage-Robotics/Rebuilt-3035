@@ -1,5 +1,6 @@
 package frc.utility;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class ControllerUtils {
@@ -16,7 +17,16 @@ public class ControllerUtils {
             angleDegrees += 360;
         }
         
+    
         return angleDegrees;
+
+
+    }
+
+    public Rotation2d getRightStickRotation2d(CommandXboxController controller) {
+        var rot = new Rotation2d(controller.getRightX(), controller.getRightY());
+        rot = rot.plus(Rotation2d.fromDegrees(90));
+        return rot;
     }
 
     public static double getLeftStickDeg(CommandXboxController controller) {
