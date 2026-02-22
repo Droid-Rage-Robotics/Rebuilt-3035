@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -80,6 +81,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         builder.addDoubleProperty("Target Speed", controller::getSetpoint, null);
         builder.addDoubleProperty("Current Speed", () -> this.getVelocity().in(RotationsPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
+        builder.addDoubleProperty("Torque Current", () -> getCurrent().in(Amp), null);
     }
 
     @Override
@@ -136,6 +138,10 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     
     public double getVoltage() {
         return motors[mainNum].getVoltage();
+    }
+
+    public Current getCurrent() {
+        return motors[mainNum].getStatorCurrent();
     }
 
     /* ---------------- Motor Control ---------------- */

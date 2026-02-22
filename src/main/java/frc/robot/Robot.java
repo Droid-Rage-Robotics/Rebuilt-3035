@@ -54,8 +54,8 @@ public class Robot extends LoggedRobot {
     private final Telemetry telemetry = new Telemetry(drive);
     private final Climb climb = new Climb(false);
     private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
     private final Indexer indexer = new Indexer(true);
     // private final IntakeWheel intakeWheel = new IntakeWheel(true);
@@ -64,7 +64,7 @@ public class Robot extends LoggedRobot {
     // private final Pivot pivot = new Pivot(false);
     
     private final Shooter shooter = new Shooter(
-        new Turret(true),
+        new Turret(false),
         new Hood(true),
         new ShooterWheel(true)
     );
@@ -186,8 +186,8 @@ public class Robot extends LoggedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        // robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
-        robotContainer.testDrive(driver, drive, vision);
+        robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
+        // robotContainer.testDrive(driver, drive, vision);
 
         
         // robotContainer.resetClimb(climb);

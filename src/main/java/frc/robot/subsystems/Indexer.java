@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -15,7 +17,7 @@ import lombok.Getter;
 public class Indexer extends FlywheelTemplate{
     public enum IndexerValue {
         INTAKE(50),
-        OUTTAKE(-50),
+        OUTTAKE(-25),
         STOP(0),
         HOLD(0);
 
@@ -39,10 +41,10 @@ public class Indexer extends FlywheelTemplate{
         .withDeviceId(14)
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Forward)
-        .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1)
-        .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70);
+        .withIdleMode(NeutralModeValue.Coast)
+        .withConversionFactor( 1);
+        // .withSupplyCurrentLimit(70)
+        // .withStatorCurrentLimit(70);
 
     public Indexer(boolean isEnabled) {
         super(isEnabled,
@@ -51,4 +53,13 @@ public class Indexer extends FlywheelTemplate{
             constants, 
             motor);
     }
+
+    // @Override
+    // public void periodic() {
+    //     super.periodic();
+
+    //     if (getCurrent().in(Amps) >= 100) {
+    //         setTargetVelocity(-getTargetVelocity());
+    //     }
+    // }
 }

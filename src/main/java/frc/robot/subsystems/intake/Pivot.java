@@ -17,7 +17,7 @@ public class Pivot extends ArmTemplate {
         .withConversionFactor(1.0/54.0)
         .withEncoderType(EncoderType.INTEGRATED)
         .withLowerLimit(0)
-        .withUpperLimit(Units.degreesToRadians(150))
+        .withUpperLimit(Units.degreesToRadians(130))
         .withName("Pivot")
         .withOffset(0)
         .withMainNum(0);
@@ -27,14 +27,14 @@ public class Pivot extends ArmTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withConversionFactor(1)
         .withDirection(Direction.Forward)
-        .withIdleMode(NeutralModeValue.Brake)
+        .withIdleMode(NeutralModeValue.Coast)
         .withStatorCurrentLimit(70)
         .withSupplyCurrentLimit(70);
 
 
     public Pivot(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(3.5599, 0, 0,
+            new ProfiledPIDController(5, 0, 0,
             new TrapezoidProfile.Constraints(2, 4)), 
             new ArmFeedforward(0.74109, 0.27134, 3.1928, 0.21903), 
             constants, 

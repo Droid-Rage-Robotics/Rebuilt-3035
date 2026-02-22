@@ -35,9 +35,9 @@ public class ShooterWheel extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1)
-        .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70);
+        .withConversionFactor( 1);
+        // .withSupplyCurrentLimit(70)
+        // .withStatorCurrentLimit(70);
 
     public ShooterWheel(boolean isEnabled) {
         super(isEnabled,
