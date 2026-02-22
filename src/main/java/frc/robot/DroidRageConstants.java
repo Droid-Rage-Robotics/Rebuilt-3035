@@ -93,6 +93,14 @@ public final class DroidRageConstants {
         public static final Distance NEUTRAL_ZONE_END = Inches.of(0);
 
     }
+    
+
+    public enum SimState {
+        REAL,
+        SIM
+    }
+
+    public static SimState simState = SimState.REAL;
 
     public static Alliance alliance = DriverStation.Alliance.Blue; //Default to Blue
 }
