@@ -15,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Distance;
@@ -45,17 +44,18 @@ public class SwerveModule implements Sendable {
     private final CANcoderEx turnEncoder;
 
     private final PIDController turningPIDController;
+    
+    private final PIDController drivePIDController;
     private final SimpleMotorFeedforward driveFeedforward;
 
     private final Subsystem subsystem;
     private final POD pod;
 
-    private final StructPublisher<Rotation2d> turnPositionPub;
     private final StructPublisher<SwerveModuleState> moduleStatePub;
     private final StructPublisher<SwerveModulePosition> modulePositionPub;
 
     private final AtomicReference<Double> driveVoltage = new AtomicReference<Double>(0.0);
-    private final AtomicReference<Double> turnPower = new AtomicReference<Double>(0.0);
+    private final AtomicReference<Double> turnVoltage = new AtomicReference<Double>(0.0);
 
 
     private static final DCMotor driveMotorModel = DCMotor.getKrakenX60(1);
@@ -107,17 +107,20 @@ public class SwerveModule implements Sendable {
             .withAbsoluteSensorDiscontinuityPoint(0.5);
 
         turningPIDController = new PIDController(SwerveDriveConfig.TURN_KP.getValue(), 0.0, 0.0);
-        turningPIDController.enableContinuousInput(-Math.PI, Math.PI);// Was -Math.PI, Math.PI but changed to 0 and 2PI
+        turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
         
-        driveFeedforward = new SimpleMotorFeedforward(SwerveDriveConfig.DRIVE_KS.getValue(),
-                SwerveDriveConfig.DRIVE_KV.getValue());
+        
+        drivePIDController = new PIDController(0, 0, 0);
+        driveFeedforward = new SimpleMotorFeedforward(
+            SwerveDriveConfig.DRIVE_KS.getValue(),
+            SwerveDriveConfig.DRIVE_KV.getValue()
+        );
 
         resetDriveEncoder();
 
         String baseTopic = "SwerveModules/" + pod.getName();
 
-        var nt = NetworkTableInstance.getDefault();
-        turnPositionPub = nt.getStructTopic(baseTopic + "/TurnPosition", Rotation2d.struct).publish();
+        var nt = NetworkTableInstance.getDefault().getTable("Drivetrain");
         moduleStatePub = nt.getStructTopic(baseTopic + "/State", SwerveModuleState.struct).publish();
         modulePositionPub = nt.getStructTopic(baseTopic + "/Position", SwerveModulePosition.struct).publish();
     }
@@ -130,7 +133,7 @@ public class SwerveModule implements Sendable {
         turnEncoder.getSimState().setSupplyVoltage(batteryVoltage);
         
         driveSim.setInputVoltage(MathUtil.clamp(driveVoltage.get(), -batteryVoltage, batteryVoltage));
-        turnSim.setInput(MathUtil.clamp(turnPower.get(), -batteryVoltage, batteryVoltage));
+        turnSim.setInputVoltage(MathUtil.clamp(turnVoltage.get(), -batteryVoltage, batteryVoltage));
         
         driveSim.update(DroidRageConstants.LOOP_PERIOD_SECS);
         turnSim.update(DroidRageConstants.LOOP_PERIOD_SECS);
@@ -199,6 +202,8 @@ public class SwerveModule implements Sendable {
     // }
 
     public void setFeedforwardState(SwerveModuleState state) {
+        var currentState = getState();
+        
         SwerveModuleState desiredState = state;
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
@@ -206,11 +211,16 @@ public class SwerveModule implements Sendable {
         }
         desiredState.optimize(getState().angle);
         
-        driveVoltage.set(driveFeedforward.calculate(state.speedMetersPerSecond));
-        turnPower.set(turningPIDController.calculate(getTurningPosition(), desiredState.angle.getRadians()));
+        driveVoltage.set(
+            drivePIDController.calculate(currentState.speedMetersPerSecond, desiredState.speedMetersPerSecond)
+            +driveFeedforward.calculate(desiredState.speedMetersPerSecond));
+        
+        turnVoltage.set(
+            turningPIDController.calculate(currentState.angle.getRadians(), desiredState.angle.getRadians())
+        );
         
         driveMotor.setVoltage(driveVoltage.get());
-        turnMotor.setPower(turnPower.get());
+        turnMotor.setVoltage(turnVoltage.get());
     }
 
     @Override
