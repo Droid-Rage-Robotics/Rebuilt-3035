@@ -10,10 +10,10 @@ import lombok.Getter;
 
 public class Intake {
     public enum IntakeValue{
-        STOP(125,0),
+        STOP(15,0),
 
-        INTAKE(125,-100),
-        OUTTAKE(0,100),
+        INTAKE(126,-55),
+        OUTTAKE(126,55),
 
         HOLD(0,20)
         ;

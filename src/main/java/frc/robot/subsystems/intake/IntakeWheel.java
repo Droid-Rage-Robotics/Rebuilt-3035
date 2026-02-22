@@ -16,8 +16,8 @@ public class IntakeWheel extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(-30)
-        .withUpperLimit(30)
+        .withLowerLimit(-100)
+        .withUpperLimit(100)
         .withName("Intake")
         .withOffset(0)
         .withMainNum(0);
