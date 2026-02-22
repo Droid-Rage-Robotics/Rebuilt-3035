@@ -3,10 +3,12 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
@@ -156,7 +158,7 @@ public class Shooter implements Dashboard, Sendable{
                 getShooterSpeed(); //Based on limelight
                 break;
             case SCORE:
-                turretAim();
+                aim();
                 break;
             case HOARD:
                 hoardAiming();
@@ -170,14 +172,21 @@ public class Shooter implements Dashboard, Sendable{
     
     public void aim() {
         // if (limelight.getTV()) {
-        //     ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
-        //         poseSub.get(), 
-        //         chassisSpeedsSub.get(), 
-        //         limelight.getTargetPose_FieldSpace().getTranslation(), 
-        //         1
-        //     );
+        ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
+            poseSub.get(), 
+            chassisSpeedsSub.get(), 
+            new Translation3d(4,2,7), 
+            1
+        );
 
-        //     hood.setGoalAngle(new Rotation2d(shot.getHoodAngle()));
+        hood.setGoalAngle(new Rotation2d(shot.getHoodAngle()));
+
+        shooter.setTargetVelocity(HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).in(RotationsPerSecond));
+
+        turret.setGoalAngle(HubShooterMath.calculateTurretAngle(poseSub.get(), new Translation3d(4,2,7)));
+        
+        
+
         // }
 
         // var tof = Einstein.calculateTimeOfFlight(getShooterExitVelocity(), null, 0);
