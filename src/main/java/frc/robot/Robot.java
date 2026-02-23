@@ -5,73 +5,19 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.RainbowAnimation;
-import com.ctre.phoenix6.hardware.CANdle;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-// import frc.robot.SysID.SysID;
-// import frc.robot.SysID.SysID.Measurement;
-import frc.robot.commands.SysId.ManualSysIdRoutine;
-import frc.robot.commands.SysId.SysIdRoutineCommand;
-import frc.robot.commands.autos.AutoChooser;
-import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Indexer.IndexerValue;
-import frc.robot.subsystems.Light;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeWheel;
-import frc.robot.subsystems.intake.Pivot;
-import frc.robot.subsystems.shooter.Hood;
-import frc.robot.subsystems.shooter.Kicker;
-import frc.robot.subsystems.shooter.Kicker.KickerValue;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterWheel;
-import frc.robot.subsystems.shooter.Turret;
-import frc.robot.subsystems.vision.LimelightHelpers;
-import frc.robot.subsystems.vision.Vision;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.MatchValue;
-import frc.utility.LimelightEx;
-import frc.utility.MatchTimerSpeaker;
 
 public class Robot extends LoggedRobot {
-    private final Vision vision = new Vision();
-    // private final SwerveDrive drive = new SwerveDrive(true, vision);
-
-    // private final Telemetry telemetry = new Telemetry(drive);
-    private final Climb climb = new Climb(false);
-    private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
-    );
-    private final Indexer indexer = new Indexer(false);
-    private final Kicker kicker = new Kicker(false);
-
-    private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
-        new ShooterWheel(false)
-    );
-    private final Light light = new Light(0);
-    
-    private final CommandXboxController driver =
-		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
-	private final CommandXboxController operator =		
-        new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
-    private final RobotContainer robotContainer = new RobotContainer(driver, operator);
+    private final RobotContainer robotContainer = new RobotContainer();
 
     // private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer,shooter, light);
+
+    private final CommandScheduler commandScheduler = CommandScheduler.getInstance();
 
     private Command autonomousCommand;
 
@@ -89,12 +35,6 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
 
-        // candle.setControl(new RainbowAnimation(0, 399));
-
-        
-
-        
-
         // // Starts recording to data log
         // DataLogManager.start();
         // // Record both DS control and joystick data
@@ -103,14 +43,12 @@ public class Robot extends LoggedRobot {
         // vision.setUpVision();
         // SmartDashboard.putData("Robot Misc", DroidRageConstants.robotMisc);
 
-        // crap.resetEncoder();
-
         // DroidRageConstants.alliance = DriverStation.getAlliance().get();
     }
     
     @Override
     public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
+        commandScheduler.run();
         TelemetryUtils.onRobotPeriodic();
 
         // if(DriverStation.isEStopped()){ //Robot Estopped
@@ -128,7 +66,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        CommandScheduler.getInstance().cancelAll();
+        commandScheduler.cancelAll();
 
         // SignalLogger.start(); // CTRE Signal Logger
 
@@ -136,7 +74,7 @@ public class Robot extends LoggedRobot {
         // autonomousCommand = new InstantCommand();
 
         if (autonomousCommand != null) {
-            CommandScheduler.getInstance().schedule(autonomousCommand);
+            commandScheduler.schedule(autonomousCommand);
         }
     }
 
@@ -165,17 +103,15 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
-        CommandScheduler.getInstance().cancelAll();
-
-        // MatchTimerSpeaker.playSound("songs/plswork.mp3");
+        commandScheduler.cancelAll();
         // SignalLogger.start(); // CTRE Signal Logger
         
         // if (autonomousCommand != null) {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        // robotContainer.configureTeleOpBindings(drive, intake, climb, indexer, kicker, shooter, vision, light);
-        // robotContainer.testDrive(driver, drive, vision);
+        // robotContainer.configureTeleOpBindings();
+        // robotContainer.testDrive();
     }
 
     @Override
@@ -188,7 +124,7 @@ public class Robot extends LoggedRobot {
     
     @Override
     public void testInit() {
-        CommandScheduler.getInstance().cancelAll();
+        commandScheduler.cancelAll();
     }
 
     @Override

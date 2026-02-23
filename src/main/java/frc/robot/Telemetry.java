@@ -1,5 +1,9 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
@@ -19,17 +23,17 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.subsystems.drive.SwerveConfig;
 
 public class Telemetry {
-    private final double MaxSpeed;
+    private final double MaxSpeed = SwerveConfig.ATTAINABLE_MAX_SPEED.in(MetersPerSecond);
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
      * 
      * @param maxSpeed Maximum speed in meters per second
      */
-    public Telemetry(double maxSpeed) {
-        MaxSpeed = maxSpeed;
+    public Telemetry() {
         SignalLogger.start();
 
         /* Set up the module state Mechanism2d telemetry */
@@ -102,6 +106,14 @@ public class Telemetry {
         SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
         SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+
+        /* Log to AdvantageScope */ // TODO: check thread safety
+        // Logger.recordOutput("DriveState/Pose", state.Pose);
+        // Logger.recordOutput("DriveState/Speeds", state.Speeds);
+        // Logger.recordOutput("DriveState/ModuleStates", state.ModuleStates);
+        // Logger.recordOutput("DriveState/ModuleTargets", state.ModuleTargets);
+        // Logger.recordOutput("DriveState/ModulePositions", state.ModulePositions);
+        // Logger.recordOutput("DriveState/OdometryPeriod", state.OdometryPeriod);
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");

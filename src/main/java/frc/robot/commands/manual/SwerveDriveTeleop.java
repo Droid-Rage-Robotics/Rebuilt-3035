@@ -1,128 +1,136 @@
-// package frc.robot.commands.manual;
+package frc.robot.commands.manual;
 
-// import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.*;
 
-// import java.util.function.Supplier;
+import java.util.function.Supplier;
 
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.kinematics.ChassisSpeeds;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-// import frc.robot.DroidRageConstants;
-// import frc.robot.subsystems.drive.SwerveDrive;
-// import frc.robot.subsystems.drive.SwerveDrive.TippingState;
-// import frc.robot.subsystems.drive.SwerveDriveConstants.Speed;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
-// public class SwerveDriveTeleop extends Command {
-//     private final SwerveDrive drive;
-//     // private final Elevator elevator;
-//     private final Supplier<Double> x, y, turn;
-//     private volatile double xSpeed, ySpeed, turnSpeed;
-//     private Rotation2d heading;
-//     private static final PIDController antiTipY = 
-//         new PIDController(0.006, 0, 0.0005);
-//     private static final PIDController antiTipX = 
-//         new PIDController(0.006, 0, 0.0005);
-//     // private SlewRateLimiter xLimiter = new SlewRateLimiter(SwerveDriveConstants.SwerveDriveConfig.MAX_ACCELERATION_UNITS_PER_SECOND.getValue());
-//     // private SlewRateLimiter yLimiter = new SlewRateLimiter(SwerveDriveConstants.SwerveDriveConfig.MAX_ACCELERATION_UNITS_PER_SECOND.getValue());
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.DroidRageConstants;
+import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.drive.SwerveConfig;
+import frc.robot.subsystems.drive.SwerveConfig.Speed;
+import frc.robot.subsystems.drive.DriveConstants.DriveOptions;
 
-//     public SwerveDriveTeleop(SwerveDrive drive, CommandXboxController driver) {
-//         this.drive = drive;
-//         // this.elevator = elevator;
-//         this.x = driver::getLeftX;
-//         this.y = driver::getLeftY;
-//         this.turn = driver::getRightX;
-//         antiTipX.setTolerance(2);
-//         antiTipY.setTolerance(2);
+public class SwerveDriveTeleop extends Command {
+    private final SwerveDrive drive;
 
-//         driver.rightBumper().whileTrue(drive.setSpeed(Speed.SLOW))//SLOW
-//             .whileFalse(drive.setSpeed(Speed.NORMAL));//NORMAL
-//         // driver.rightBumper().whileTrue(drive.setSpeed(Speed.SUPER_SLOW))
-//             // .whileFalse(drive.setSpeed(Speed.SLOW));
+    private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric()
+        // .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-//         driver.b().onTrue(drive.setYawCommand(0));
+    private final SwerveRequest.RobotCentric robotCentricRequest = new SwerveRequest.RobotCentric()
+        // .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-//         addRequirements(drive);
-//     }
+    private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+    
 
-//     @Override
-//     public void initialize() {
-        
-//     }
+    
+    private final Supplier<Double> x, y, turn;
+    private volatile double xSpeed, ySpeed, turnSpeed;
+    private Rotation2d heading;
+    private static final PIDController antiTipY = 
+        new PIDController(0.006, 0, 0.0005);
+    private static final PIDController antiTipX = 
+        new PIDController(0.006, 0, 0.0005);
+    // private SlewRateLimiter xLimiter = new SlewRateLimiter(SwerveDriveConstants.SwerveDriveConfig.MAX_ACCELERATION_UNITS_PER_SECOND.getValue());
+    // private SlewRateLimiter yLimiter = new SlewRateLimiter(SwerveDriveConstants.SwerveDriveConfig.MAX_ACCELERATION_UNITS_PER_SECOND.getValue());
 
-//     @Override
-//     public void execute() {
-//         xSpeed = -y.get(); //Forward
-//         ySpeed = -x.get(); //Strafe
-//         turnSpeed = -turn.get(); //Turn
+    public SwerveDriveTeleop(SwerveDrive drive, CommandXboxController driver) {
+        this.drive = drive;
+        this.x = driver::getLeftX;
+        this.y = driver::getLeftY;
+        this.turn = driver::getRightX;
+        antiTipX.setTolerance(2);
+        antiTipY.setTolerance(2);
 
+        driver.rightBumper().whileTrue(drive.setSpeed(Speed.SLOW))//SLOW
+            .whileFalse(drive.setSpeed(Speed.NORMAL));//NORMAL
+        // driver.rightBumper().whileTrue(drive.setSpeed(Speed.SUPER_SLOW))
+            // .whileFalse(drive.setSpeed(Speed.SLOW));
 
-//         // Square inputs
-//         if (DriveOptions.IS_SQUARED_INPUTS.get()) {
-//             xSpeed = DroidRageConstants.squareInput(xSpeed);
-//             ySpeed = DroidRageConstants.squareInput(ySpeed);
-//             turnSpeed = DroidRageConstants.squareInput(turnSpeed);
-//         }
+        driver.b().onTrue(new InstantCommand(drive::seedFieldCentric));
 
-//         // Apply Field Oriented
-//         if (DriveOptions.IS_FIELD_ORIENTED.get()) {
-//             double modifiedXSpeed = xSpeed;
-//             double modifiedYSpeed = ySpeed;
+        addRequirements(drive);
+    }
 
-            
-//             heading = drive.getRotation2d();
+    @Override
+    public void initialize() {}
 
-//             modifiedXSpeed = xSpeed * heading.getCos() + ySpeed * heading.getSin();
-//             modifiedYSpeed = -xSpeed * heading.getSin() + ySpeed * heading.getCos();
-            
+    @Override
+    public void execute() {
+        xSpeed = -y.get(); //Forward
+        ySpeed = -x.get(); //Strafe
+        turnSpeed = -turn.get(); //Turn
 
-//             xSpeed = modifiedXSpeed;
-//             ySpeed = modifiedYSpeed;
-//         }
+        // Square inputs
+        if (DriveOptions.IS_SQUARED_INPUTS.get()) {
+            xSpeed = DroidRageConstants.squareInput(xSpeed);
+            ySpeed = DroidRageConstants.squareInput(ySpeed);
+            turnSpeed = DroidRageConstants.squareInput(turnSpeed);
+        }
 
-//         // Apply Anti-Tip
-//         double xTilt = drive.getRoll(); //Is this Roll or pitch
-//         double yTilt = drive.getPitch();// Is this Roll or pitch
+        // // Apply Anti-Tip
+        // double xTilt = drive.getRoll(); //Is this Roll or pitch
+        // double yTilt = drive.getPitch();// Is this Roll or pitch
 
-//         if(drive.getTippingState()==TippingState.ANTI_TIP) {//Need to take into account on the direction of the tip
-//             if (Math.abs(xTilt) > 10)
-//                 xSpeed = -antiTipX.calculate(xTilt, 0);
-//             if (Math.abs(yTilt) >10)
-//                 ySpeed = -antiTipY.calculate(yTilt, 0);
-//         }
+        // if(drive.getTippingState()==TippingState.ANTI_TIP) {//Need to take into account on the direction of the tip
+        //     if (Math.abs(xTilt) > 10)
+        //         xSpeed = -antiTipX.calculate(xTilt, 0);
+        //     if (Math.abs(yTilt) >10)
+        //         ySpeed = -antiTipY.calculate(yTilt, 0);
+        // }
 
-//         // Apply deadzone
-//         if (Math.abs(xSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) xSpeed = 0;
-//         if (Math.abs(ySpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) ySpeed = 0;
-//         if (Math.abs(turnSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) turnSpeed = 0;
+        // Apply deadzone
+        if (Math.abs(xSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) xSpeed = 0;
+        if (Math.abs(ySpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) ySpeed = 0;
+        if (Math.abs(turnSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) turnSpeed = 0;
 
-//         double translationalSpeed = drive.getTranslationalSpeed();
-        
-//         // Smooth driving and apply speed
-//         xSpeed = 
-//             (xSpeed *
-//             DriveConstants.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) * 
-//             translationalSpeed;
-//         ySpeed = 
-//             (ySpeed *
-//             DriveConstants.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) *
-//             translationalSpeed;
-//         turnSpeed = 
-//             turnSpeed *
-//             DriveConstants.ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) * 
-//             drive.getAngularSpeed();
+        // Smooth driving and apply speed
+        xSpeed = 
+            (xSpeed *
+            SwerveConfig.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) * 
+            drive.getTranslationalSpeed();
+        ySpeed = 
+            (ySpeed *
+            SwerveConfig.ATTAINABLE_MAX_SPEED.in(MetersPerSecond)) *
+            drive.getTranslationalSpeed();
+        turnSpeed = 
+            turnSpeed *
+            SwerveConfig.ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) * 
+            drive.getAngularSpeed();
 
-//         drive.runVelocity(new ChassisSpeeds(xSpeed, ySpeed, turnSpeed));
-//     }
+        if (DriveOptions.IS_FIELD_ORIENTED.get()) {
+            drive.setControl(
+                fieldCentricRequest
+                    .withVelocityX(xSpeed)
+                    .withVelocityY(ySpeed)
+                    .withRotationalRate(turnSpeed)
+            );
+        } else {
+            drive.setControl(
+                robotCentricRequest
+                    .withVelocityX(xSpeed)
+                    .withVelocityY(ySpeed)
+                    .withRotationalRate(turnSpeed)
+            );
+        }
+    }
 
-//     @Override
-//     public void end(boolean interrupted) {
-//         drive.stop();
-//     }
+    @Override
+    public void end(boolean interrupted) {
+        drive.setControl(brakeRequest);
+    }
 
-//     @Override
-//     public boolean isFinished() {
-//         return false;
-//     }
-// }
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+}

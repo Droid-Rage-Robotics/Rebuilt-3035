@@ -5,16 +5,16 @@ import java.util.HashMap;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.SwerveDrive;
 
 public class PathPlannerFollow {
-    private final CommandSwerveDrivetrain drive;
+    private final SwerveDrive drive;
     private final String autoName;
     private double maxVelocity = 0.3;
     private double acceleration = 0.5;
     private HashMap<String, Command> eventMap = new HashMap<>();
 
-    private PathPlannerFollow(CommandSwerveDrivetrain drive, String autoName, double maxVelocity, double acceleration, HashMap<String, Command> eventMap) {
+    private PathPlannerFollow(SwerveDrive drive, String autoName, double maxVelocity, double acceleration, HashMap<String, Command> eventMap) {
         this.drive = drive;
         this.autoName = autoName;
         this.maxVelocity = maxVelocity;
@@ -22,12 +22,12 @@ public class PathPlannerFollow {
         this.eventMap = eventMap;
     }
 
-    private PathPlannerFollow(CommandSwerveDrivetrain drive, String patautoNamehName) {
+    private PathPlannerFollow(SwerveDrive drive, String patautoNamehName) {
         this.drive = drive;
         this.autoName = patautoNamehName;
     }
 
-    public static PathPlannerFollow create(CommandSwerveDrivetrain drive, String autoName) {
+    public static PathPlannerFollow create(SwerveDrive drive, String autoName) {
         return new PathPlannerFollow(drive, autoName);
     }
 

@@ -11,28 +11,13 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import lombok.Getter;
 
 public class DriveConstants {
-    public enum GearRatio {
-        R1(7.03),
-        R2(6.03),
-        R3(5.27),
-        TURN(26.09);
-
-        @Getter private final double conversionFactor;
-        @Getter private final double gearRatio;
-
-        private GearRatio(double gearRatio) {
-            this.gearRatio=gearRatio;
-            this.conversionFactor=(1.0/gearRatio);
-        }
-    }
-
     public static class ModuleConstants {
         public static final Distance WHEEL_DIAMETER = Inches.of(4);
-        public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();
-        public static final double TURN_MOTOR_GEAR_RATIO = GearRatio.TURN.getConversionFactor();
+        // public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();
+        // public static final double TURN_MOTOR_GEAR_RATIO = GearRatio.TURN.getConversionFactor();
 
-        public static final double DRIVE_ENCODER_ROT_2_METER = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER.in(Meters);
-        public static final double DRIVE_ENCODER_RPM_2_METER_PER_SEC = DRIVE_ENCODER_ROT_2_METER / 60;
+        // public static final double DRIVE_ENCODER_ROT_2_METER = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER.in(Meters);
+        // public static final double DRIVE_ENCODER_RPM_2_METER_PER_SEC = DRIVE_ENCODER_ROT_2_METER / 60;
         public static final double READINGS_PER_REVOLUTION = 1;//4096
 
         //Used for the CANCoder
@@ -45,9 +30,6 @@ public class DriveConstants {
         public static final double TURN_SUPPLY_CURRENT_LIMIT = 80;
     }
 
-    public static final LinearVelocity ATTAINABLE_MAX_SPEED = MetersPerSecond.of(4.47);
-    public static final AngularVelocity ATTAINABLE_MAX_SPEED_ANG = RadiansPerSecond.of(2 * (2 * Math.PI));
-
 
     public enum SwerveDriveConfig {
         TRACK_WIDTH(Units.inchesToMeters(28.5)),//Units.inchesToMeters(28.5)
@@ -56,8 +38,8 @@ public class DriveConstants {
         MAX_ACCELERATION_UNITS_PER_SECOND(10),
         MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND(10),
 
-        MAX_SPEED_METERS_PER_SECOND(ATTAINABLE_MAX_SPEED.in(MetersPerSecond) / 4),
-        MAX_ANGULAR_SPEED_RADIANS_PER_SECOND(ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) / 10),
+        MAX_SPEED_METERS_PER_SECOND(SwerveConfig.ATTAINABLE_MAX_SPEED.in(MetersPerSecond) / 4),
+        MAX_ANGULAR_SPEED_RADIANS_PER_SECOND(SwerveConfig.ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) / 10),
         MAX_ACCELERATION_METERS_PER_SECOND_SQUARED(1),
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED(1), // 1 / 8 of a full rotation per second per second),
 
@@ -122,23 +104,5 @@ public class DriveConstants {
         }
     }
 
-    public enum Speed {
-        TURBO(1, 1),
-        NORMAL(1.6, 1.6),//3.5, 1 //1,.4
-        SLOW(.2, 0.2),
-        SUPER_SLOW(0.05, 0.05),
-        ;
-        private final double translationalValue;
-        private final double angularValue;
-        private Speed(double translationalSpeed, double angularSpeed) {
-            this.translationalValue = translationalSpeed;
-            this.angularValue = angularSpeed;
-        }
-        public double getTranslationalSpeed() {
-            return translationalValue;
-        }
-        public double getAngularSpeed() {
-            return angularValue;
-        }
-    }
+    
 }

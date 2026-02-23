@@ -11,10 +11,10 @@ import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.SwerveDrive;
 
 public class PathPlannerPathFollow {
-    private final CommandSwerveDrivetrain drive;
+    private final SwerveDrive drive;
     private final String pathName;
     private double maxVelocity = 0.3;
     private double acceleration = 0.5;
@@ -22,7 +22,7 @@ public class PathPlannerPathFollow {
 
     
 
-    private PathPlannerPathFollow(CommandSwerveDrivetrain drive, String pathName, double maxVelocity, double acceleration, HashMap<String, Command> eventMap) {
+    private PathPlannerPathFollow(SwerveDrive drive, String pathName, double maxVelocity, double acceleration, HashMap<String, Command> eventMap) {
         this.drive = drive;
         this.pathName = pathName;
         this.maxVelocity = maxVelocity;
@@ -30,12 +30,12 @@ public class PathPlannerPathFollow {
         this.eventMap = eventMap;
     }
 
-    private PathPlannerPathFollow(CommandSwerveDrivetrain drive, String pathName) {
+    private PathPlannerPathFollow(SwerveDrive drive, String pathName) {
         this.drive = drive;
         this.pathName = pathName;
     }
 
-    public static PathPlannerPathFollow create(CommandSwerveDrivetrain drive, String pathName) {
+    public static PathPlannerPathFollow create(SwerveDrive drive, String pathName) {
         return new PathPlannerPathFollow(drive, pathName);
     }
 
