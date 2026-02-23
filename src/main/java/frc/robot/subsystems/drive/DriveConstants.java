@@ -72,7 +72,7 @@ public class DriveConstants {
         THETA_KD(0),
 
         // Turn PID for Swerve Pod
-        TURN_KP(.5),//1
+        TURN_KP(.4),//1
 
         // Drive Feedforward
         DRIVE_KS(0.13), // this value is multiplied by veloicty in meteres per second
@@ -86,10 +86,10 @@ public class DriveConstants {
         // FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS(0),
 
 
-        BACK_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS(0.5108156023659185),
-        BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS(2.3025051626163475),
-        FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS(1.1320778214596032),
-        FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS(1.1366797638232602),        
+        BACK_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS(-2.5065246074051375),
+        BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS(-0.8314175870340175),
+        FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS(-2.06934008285773),
+        FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET_RADIANS(-1.1535535524900022),        
 
         DEFAULT_HEADING_OFFSET(0),
         ;
@@ -109,7 +109,7 @@ public class DriveConstants {
     public static final PIDConstants THETA_PID = new PIDConstants(5,0,0);
 
     public enum DriveOptions { 
-        IS_FIELD_ORIENTED(true),
+        IS_FIELD_ORIENTED(false),
         IS_SQUARED_INPUTS(true),
         IS_POSE_UPDATED(true)
         ;

@@ -104,12 +104,9 @@ public class Shooter implements Dashboard, Sendable{
     private static final Distance SHOOTER_WHEEL_RADIUS = Inches.of(0);
     private static final double SHOOTER_EFFICIENCY = 1;
 
-    private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("Drivetrain");
-
-    private final StructSubscriber<Rotation2d> yawSubscriber = driveTable.getStructTopic("Yaw", Rotation2d.struct).subscribe(new Rotation2d());
-    private final StructSubscriber<Pose3d> pose3dSub = driveTable.getStructTopic("Pose3d", Pose3d.struct).subscribe(new Pose3d());
-    private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose2d", Pose2d.struct).subscribe(new Pose2d());
-    private final StructSubscriber<ChassisSpeeds> chassisSpeedsSub = driveTable.getStructTopic("ChassisSpeeds", ChassisSpeeds.struct).subscribe(new ChassisSpeeds());
+    private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("DriveState");
+    private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
+    private final StructSubscriber<ChassisSpeeds> chassisSpeedsSub = driveTable.getStructTopic("Speeds", ChassisSpeeds.struct).subscribe(new ChassisSpeeds());
 
     @Getter @Setter private ShooterMode shooterMode;
 
@@ -224,7 +221,7 @@ public class Shooter implements Dashboard, Sendable{
         }
 
         // 2. Get current robot heading from Pigeon 2
-        Rotation2d robotHeading = yawSubscriber.get();
+        Rotation2d robotHeading = poseSub.get().getRotation();
 
         // 3. Convert target field angle to robot-relative
         Rotation2d robotRelativeAngle = targetFieldAngle.minus(robotHeading);

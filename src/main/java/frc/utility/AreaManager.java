@@ -1,13 +1,18 @@
 package frc.utility;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructSubscriber;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.drive.SwerveDrive;
 
 public class AreaManager {
-  private SwerveDrive drive;
+  private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("DriveState");
+  private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
+
   private Rectangle2d redAllianceZone;
   private Rectangle2d leftBlueOppositionZone;
   private Rectangle2d rightBlueOppositionZone;
@@ -40,8 +45,7 @@ public class AreaManager {
   private Zone zone = Zone.ALLIANCE_ZONE;
   private Zone objectZone = Zone.ALLIANCE_ZONE;
 
-  public AreaManager(SwerveDrive drive) {
-    this.drive = drive;
+  public AreaManager() {
     // Red trenches
 
   }
@@ -97,7 +101,7 @@ public class AreaManager {
   }
 
   public void periodic() {
-    Translation2d drivePosition = drive.getPose().getTranslation();
+    Translation2d drivePosition = poseSub.get().getTranslation();
     if (DroidRageConstants.alliance == Alliance.Red) {
       if (redAllianceZone.contains(drivePosition)) {
         zone = Zone.ALLIANCE_ZONE;
@@ -126,7 +130,7 @@ public class AreaManager {
   }
 
   public boolean isShootingArea() {
-    Translation2d drivePosition = drive.getPose().getTranslation();
+    Translation2d drivePosition = poseSub.get().getTranslation();
     return !((trenchLeftRed.contains(drivePosition)
             || trenchRightRed.contains(drivePosition)
             || bumpLeftRed.contains(drivePosition)
