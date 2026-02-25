@@ -3,14 +3,9 @@ package frc.robot.commands.manual;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
-
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
@@ -21,27 +16,16 @@ import frc.robot.subsystems.drive.DriveConstants.DriveOptions;
 public class SwerveDriveTeleop extends Command {
     private final SwerveDrive drive;
 
-    private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric()
-        // .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-
-    private final SwerveRequest.RobotCentric robotCentricRequest = new SwerveRequest.RobotCentric()
-        // .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-
+    private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric();
+    private final SwerveRequest.RobotCentric robotCentricRequest = new SwerveRequest.RobotCentric();
     private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
-    
-
     
     private final Supplier<Double> x, y, turn;
     private volatile double xSpeed, ySpeed, turnSpeed;
-    private Rotation2d heading;
     private static final PIDController antiTipY = 
         new PIDController(0.006, 0, 0.0005);
     private static final PIDController antiTipX = 
         new PIDController(0.006, 0, 0.0005);
-    // private SlewRateLimiter xLimiter = new SlewRateLimiter(SwerveDriveConstants.SwerveDriveConfig.MAX_ACCELERATION_UNITS_PER_SECOND.getValue());
-    // private SlewRateLimiter yLimiter = new SlewRateLimiter(SwerveDriveConstants.SwerveDriveConfig.MAX_ACCELERATION_UNITS_PER_SECOND.getValue());
 
     public SwerveDriveTeleop(SwerveDrive drive, CommandXboxController driver) {
         this.drive = drive;
@@ -51,12 +35,13 @@ public class SwerveDriveTeleop extends Command {
         antiTipX.setTolerance(2);
         antiTipY.setTolerance(2);
 
-        driver.rightBumper().whileTrue(drive.setSpeed(Speed.SLOW))//SLOW
-            .whileFalse(drive.setSpeed(Speed.NORMAL));//NORMAL
+        driver.rightBumper().whileTrue(drive.setSpeed(Speed.SLOW))
+            .whileFalse(drive.setSpeed(Speed.NORMAL));
+        
         // driver.rightBumper().whileTrue(drive.setSpeed(Speed.SUPER_SLOW))
             // .whileFalse(drive.setSpeed(Speed.SLOW));
 
-        driver.b().onTrue(new InstantCommand(drive::seedFieldCentric));
+        driver.b().onTrue(drive.runOnce(drive::seedFieldCentric));
 
         addRequirements(drive);
     }

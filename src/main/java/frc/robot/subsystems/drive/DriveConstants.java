@@ -91,7 +91,7 @@ public class DriveConstants {
     public static final PIDConstants THETA_PID = new PIDConstants(5,0,0);
 
     public enum DriveOptions { 
-        IS_FIELD_ORIENTED(false),
+        IS_FIELD_ORIENTED(true),
         IS_SQUARED_INPUTS(true),
         IS_POSE_UPDATED(true)
         ;

@@ -23,7 +23,7 @@ public class ControllerUtils {
 
     }
 
-    public Rotation2d getRightStickRotation2d(CommandXboxController controller) {
+    public static Rotation2d getRightStickRotation2d(CommandXboxController controller) {
         var rot = new Rotation2d(controller.getRightX(), controller.getRightY());
         rot = rot.plus(Rotation2d.fromDegrees(90));
         return rot;
