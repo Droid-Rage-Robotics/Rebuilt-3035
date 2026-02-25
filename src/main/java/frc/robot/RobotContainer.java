@@ -34,25 +34,25 @@ import frc.utility.ControllerUtils;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true,swerveConfig);
-	private final Vision vision = new Vision();
+	public final SwerveDrive drive = new SwerveDrive(false,swerveConfig);
+	// private final Vision vision = new Vision();
     private final Climb climb = new Climb(false);
     
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
 
-    private final Indexer indexer = new Indexer(false);
-    private final Kicker kicker = new Kicker(false);
+    private final Indexer indexer = new Indexer(true);
+    private final Kicker kicker = new Kicker(true);
 
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(false)
+        new ShooterWheel(true)
     );
 
-    private final Light light = new Light(0);
+    // private final Light light = new Light(0);
     
     private final CommandXboxController driver =
 		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
@@ -60,8 +60,6 @@ public class RobotContainer {
 	private final CommandXboxController operator =		
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 	
-    private double MaxAngularRate = RotationsPerSecond.of(0.4).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
     private final Telemetry logger = new Telemetry();
 	
 	
@@ -79,7 +77,7 @@ public class RobotContainer {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		// drive.setDefaultCommand(new Turning(drive, driver));
 		climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
-		light.setDefaultCommand(new LightCommand(light));
+		// light.setDefaultCommand(new LightCommand(light));
 
 		driver.rightTrigger()
 			.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
