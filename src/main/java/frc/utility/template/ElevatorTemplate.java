@@ -36,7 +36,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final double conversionFactor;
     private final int mainNum;
     private final SubsystemConstants constants;
-
+    private final String name;
     private final boolean isEnabled;
 
     private Distance goalPosition = Meters.zero();
@@ -58,6 +58,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
 
+        this.name =constants.name;
         if (constants.encoderType == EncoderType.ABSOLUTE) {
             if (encoderConstants == null) {
                 throw new NullPointerException("Encoder constants required for absolute encoder");
@@ -83,8 +84,8 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(getName(), this);
-        SmartDashboard.putData(getName() + "/Reset Encoder", resetEncoderCommand());
+        SmartDashboard.putData(name, this);
+        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override public void practiceWriters() {}

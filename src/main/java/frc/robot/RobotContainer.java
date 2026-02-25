@@ -1,18 +1,15 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.LightCommand;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Indexer.IndexerValue;
-import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
@@ -25,27 +22,26 @@ import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
-import frc.robot.subsystems.vision.Vision;
 import frc.utility.ControllerUtils;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true,swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false,swerveConfig);
 	// private final Vision vision = new Vision();
-    private final Climb climb = new Climb(false);
+    private final Climb climb = new Climb(true);
     
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
 
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
 
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
 
     // private final Light light = new Light(0);
@@ -177,4 +173,16 @@ public class RobotContainer {
         // driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
         // driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 	}
+	public void testClimb() {
+        // climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
+
+        // operator.rightBumper()
+        //     .onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+        // operator.leftBumper()
+        //     .onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+        operator.rightBumper()
+            .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() + 0.5)));
+        operator.leftBumper()
+            .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
+    }
 }

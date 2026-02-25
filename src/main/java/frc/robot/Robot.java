@@ -113,6 +113,7 @@ public class Robot extends LoggedRobot {
         // robotContainer.configureTeleOpBindings();
         // robotContainer.testDrive();
         robotContainer.testSubsystems();
+        robotContainer.testClimb();
     }
 
     @Override
