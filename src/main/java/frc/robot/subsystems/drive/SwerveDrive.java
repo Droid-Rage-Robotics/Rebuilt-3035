@@ -68,11 +68,16 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
             null,        // Use default timeout (10 s)
             // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
+            null
         ),
         new SysIdRoutine.Mechanism(
             output -> setControl(m_translationCharacterization.withVolts(output)),
-            null,
+            (log) -> {
+                    log.motor("driveMotor_POD-0")    
+                        .voltage(getModules()[0].getDriveMotor().getMotorVoltage().getValue())
+                        .linearPosition(Meters.of(getModules()[0].getPosition(true).distanceMeters))
+                        .linearVelocity(MetersPerSecond.of(getModules()[0].getCurrentState().speedMetersPerSecond));
+                },
             this
         )
     );
@@ -84,11 +89,16 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             Volts.of(7), // Use dynamic voltage of 7 V
             null,        // Use default timeout (10 s)
             // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
+            null
         ),
         new SysIdRoutine.Mechanism(
             volts -> setControl(m_steerCharacterization.withVolts(volts)),
-            null,
+            (log) -> {
+                    log.motor("steerMotor_POD-0")    
+                        .voltage(getModules()[0].getSteerMotor().getMotorVoltage().getValue())
+                        .angularPosition(getModules()[0].getEncoder().getPosition().getValue())
+                        .angularVelocity(getModules()[0].getEncoder().getVelocity().getValue());
+            },
             this
         )
     );
@@ -106,22 +116,25 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             Volts.of(Math.PI),
             null, // Use default timeout (10 s)
             // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdRotation_State", state.toString())
+            null
         ),
         new SysIdRoutine.Mechanism(
             output -> {
                 /* output is actually radians per second, but SysId only supports "volts" */
                 setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
-                /* also log the requested output for SysId */
-                SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
             },
-            null,
+            (log) -> {
+                log.motor("chassis")
+                    .voltage(Volts.of(m_rotationCharacterization.RotationalRate))
+                    .angularPosition(getPigeon2().getYaw().getValue())
+                    .angularVelocity(getPigeon2().getAngularVelocityZWorld().getValue());
+            },
             this
         )
     );
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineSteer;
 
     public SwerveDrive(boolean isEnabled, SwerveConfig config) {
         super(

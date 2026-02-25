@@ -69,13 +69,13 @@ public class SwerveConfig {
 
 
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.1).withKV(2.49).withKA(0)
-        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        .withKP(25.348).withKI(0).withKD(1.9496)
+        .withKS(0.35738).withKV(2.4411).withKA(0.18145)
+        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0).withKV(0.124);
+        .withKP(0.79827).withKI(0).withKD(0)
+        .withKS(0.14055).withKV(1.929);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -150,7 +150,7 @@ public class SwerveConfig {
     private static final int kFrontLeftDriveMotorId = 12;
     private static final int kFrontLeftSteerMotorId = 10;
     private static final int kFrontLeftEncoderId = 11;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.180908203125);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.1806640625);
     private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -161,7 +161,7 @@ public class SwerveConfig {
     private static final int kFrontRightDriveMotorId = 3;
     private static final int kFrontRightSteerMotorId = 1;
     private static final int kFrontRightEncoderId = 2;
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.31787109375);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(0.04052734375);
     private static final boolean kFrontRightSteerMotorInverted = false;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -172,7 +172,7 @@ public class SwerveConfig {
     private static final int kBackLeftDriveMotorId = 9;
     private static final int kBackLeftSteerMotorId = 7;
     private static final int kBackLeftEncoderId = 8;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.082763671875);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.081787109375);
     private static final boolean kBackLeftSteerMotorInverted = false;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -183,7 +183,7 @@ public class SwerveConfig {
     private static final int kBackRightDriveMotorId = 6;
     private static final int kBackRightSteerMotorId = 4;
     private static final int kBackRightEncoderId = 5;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.132568359375);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.133544921875);
     private static final boolean kBackRightSteerMotorInverted = false;
     private static final boolean kBackRightEncoderInverted = false;
 
@@ -222,7 +222,7 @@ public class SwerveConfig {
     }
 
     public SwerveConfig() {
-
+        updateConfig();
     }
 
     public SwerveConfig updateConfig() {

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.LightCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.manual.SwerveDriveTeleop;
@@ -39,10 +40,10 @@ import frc.robot.subsystems.shooter.Shooter.ShooterMode;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 import frc.robot.subsystems.vision.Vision;
-import frc.utility.ControllerUtils;
 
 public class RobotContainer {
-	public final SwerveDrive drivetrain = new SwerveDrive(false, new SwerveConfig());
+	private final SwerveConfig swerveConfig = new SwerveConfig();
+	public final SwerveDrive drive = new SwerveDrive(true,swerveConfig);
 	private final Vision vision = new Vision();
     private final Climb climb = new Climb(false);
     
@@ -79,18 +80,18 @@ public class RobotContainer {
 	}
 
 	public void configureTeleOpBindings() {
-		drivetrain.registerTelemetry(logger::telemeterize);
+		drive.registerTelemetry(logger::telemeterize);
 
 		// Slow Mode and Gyro Reset in the Default Command
-		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		// drive.setDefaultCommand(new Turning(drive, driver));
 		// climb.setDefaultCommand(new ClimbTeleop(climb, operator::getRightY));
 		// climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
 
 		// light.setDefaultCommand(new LightCommand(light));
-		// driver.rightTrigger()
-		// 	.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
-		// 	.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+		operator.rightTrigger()
+			.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
+			.onFalse(intake.setPositionCommand(IntakeValue.STOP));
 			// .onFalse(new ParallelCommandGroup(
 			// 	intake.getPivot().setTargetPositionCommand(IntakeValue.OUTTAKE.getPivotAngle()),
 			// 	new SequentialCommandGroup(
@@ -120,34 +121,34 @@ public class RobotContainer {
 		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
 		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 			
-		driver.rightBumper()
+		operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
-		driver.leftBumper()
+		operator.leftBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
-		driver.rightBumper()
+		operator.rightBumper()
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-		driver.rightBumper()
+		operator.rightBumper()
 			.onTrue(shooter.getShooter().setTargetVelocityCommand(-25))
 			.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
 
 		// driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
 		//     .onFalse(shooter.getTurret(  ).setTargetPositionCommand(0));
 
-		driver.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
+		operator.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
 			.onFalse(shooter.getHood().setTargetPositionCommand(0));
 		
 		// shooter.getTurret().setGoalAngle(Rotation2d.fromRotations(ControllerUtils.getRightStickDeg(driver)/360.0));
 
-		driver.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
+		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
 			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
-		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
 
 		// operator.a()
@@ -162,6 +163,11 @@ public class RobotContainer {
 	}
 
 	public void testDrive() {
-		drivetrain.setDefaultCommand(new SwerveDriveTeleop(drivetrain, driver));
+		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+
+		driver.back().and(driver.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
+        driver.back().and(driver.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
+        driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+        driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 	}
 }
