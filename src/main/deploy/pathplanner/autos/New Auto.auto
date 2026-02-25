@@ -11,6 +11,24 @@
               {
                 "type": "path",
                 "data": {
+                  "pathName": "TrenchToNeutralOutpost"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NeutralToTrenchOutpost"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": null
+                }
+              },
+              {
+                "type": "path",
+                "data": {
                   "pathName": null
                 }
               }
