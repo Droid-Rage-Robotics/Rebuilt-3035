@@ -28,7 +28,7 @@ public class Climb extends ElevatorTemplate {
             this.height = height;
         }
 
-    }
+    } //0.375
 
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
@@ -44,7 +44,7 @@ public class Climb extends ElevatorTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1)
+        .withConversionFactor((1.0/48.0) * 0.375)
         .withSupplyCurrentLimit(70)
         .withStatorCurrentLimit(70);
 
