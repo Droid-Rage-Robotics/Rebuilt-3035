@@ -1,9 +1,5 @@
 package frc.robot;
 
-
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,7 +30,7 @@ import frc.utility.ControllerUtils;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(false,swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(true,swerveConfig);
 	// private final Vision vision = new Vision();
     private final Climb climb = new Climb(false);
     
@@ -70,10 +66,8 @@ public class RobotContainer {
 
 	public void configureTeleOpBindings() {
 		drive.registerTelemetry(logger::telemeterize);
-		drive.registerTelemetry(logger::telemeterize);
 
 		// Slow Mode and Gyro Reset in the Default Command
-		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		// drive.setDefaultCommand(new Turning(drive, driver));
 		climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
@@ -115,6 +109,9 @@ public class RobotContainer {
 	}
 
 	public void testSubsystems() {
+		drive.registerTelemetry(logger::telemeterize);
+		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+		
 		//USE this for TESTING
 		driver.leftTrigger()
 			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
@@ -172,11 +169,12 @@ public class RobotContainer {
 	}
 
 	public void testDrive() {
+		drive.registerTelemetry(logger::telemeterize);
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 
-		driver.back().and(driver.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
-        driver.back().and(driver.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
-        driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
-        driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+		// driver.back().and(driver.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
+        // driver.back().and(driver.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
+        // driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+        // driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 	}
 }

@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -48,7 +49,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     private final boolean isEnabled;
 
-    private volatile Speed speed = Speed.NORMAL;
+    @Setter private volatile Speed speed = Speed.NORMAL;
     
     
     /* Keep track if we've ever applied the operator perspective before or not */
