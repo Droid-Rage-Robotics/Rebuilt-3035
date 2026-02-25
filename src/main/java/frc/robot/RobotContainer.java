@@ -1,32 +1,22 @@
 package frc.robot;
 
 
-import static edu.wpi.first.units.Units.*;
-
-import com.ctre.phoenix6.swerve.SwerveRequest;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.LightCommand;
-import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Light;
-import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.drive.SwerveConfig;
+import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.intake.IntakeWheel;
@@ -35,14 +25,14 @@ import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.Shooter.ShooterMode;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 import frc.robot.subsystems.vision.Vision;
+// import frc.utility.ControllerUtils;
 import frc.utility.ControllerUtils;
 
 public class RobotContainer {
-	public final SwerveDrive drivetrain = new SwerveDrive(false, new SwerveConfig());
+	public final SwerveDrive drive = new SwerveDrive(false, new SwerveConfig());
 	private final Vision vision = new Vision();
     private final Climb climb = new Climb(false);
     
@@ -79,34 +69,51 @@ public class RobotContainer {
 	}
 
 	public void configureTeleOpBindings() {
-		drivetrain.registerTelemetry(logger::telemeterize);
+		drive.registerTelemetry(logger::telemeterize);
 
 		// Slow Mode and Gyro Reset in the Default Command
-		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		// drive.setDefaultCommand(new Turning(drive, driver));
-		// climb.setDefaultCommand(new ClimbTeleop(climb, operator::getRightY));
-		// climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
+		climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
+		light.setDefaultCommand(new LightCommand(light));
 
-		// light.setDefaultCommand(new LightCommand(light));
-		// driver.rightTrigger()
-		// 	.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
-		// 	.onFalse(intake.setPositionCommand(IntakeValue.STOP));
-			// .onFalse(new ParallelCommandGroup(
-			// 	intake.getPivot().setTargetPositionCommand(IntakeValue.OUTTAKE.getPivotAngle()),
-			// 	new SequentialCommandGroup(
-			// 		intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()),
-			// 		new WaitCommand(0.75),
-			// 		intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()),
-			// 		new WaitCommand(1),
-			// 		new ParallelCommandGroup(
-			// 			intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()),
-			// 			intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed())
-			// 		)
-			// 	)
+		driver.rightTrigger()
+			.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
+			.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+		driver.leftTrigger()
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
+
+
+		operator.rightTrigger()
+			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+		operator.leftTrigger()
+			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+			
+		driver.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
+			.onFalse(shooter.getHood().setTargetPositionCommand(0));
+		
+		shooter.getTurret().setGoalAngle(Rotation2d.fromRotations(ControllerUtils.getRightStickDeg(operator)/360.0)); //ToDo: Test
+
+		driver.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
+			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+
+		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+
+
+		// operator.a()
+		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
+		// operator.b()
+		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.OPPOSITE));
+		// operator.x()
+		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.SCORE));
+		// operator.y()
+		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
 				
+	}
 
-			// ));
-			// .onFalse(intake.setPositionCommand(IntakeValue.OUTTAKE));
+	public void testSubsystems() {
+		//USE this for TESTING
 		driver.leftTrigger()
 			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
@@ -148,20 +155,9 @@ public class RobotContainer {
 			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
 		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
-
-
-		// operator.a()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
-		// operator.b()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.OPPOSITE));
-		// operator.x()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.SCORE));
-		// operator.y()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
-				
 	}
 
 	public void testDrive() {
-		drivetrain.setDefaultCommand(new SwerveDriveTeleop(drivetrain, driver));
+		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 	}
 }

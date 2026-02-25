@@ -25,8 +25,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
-import frc.robot.subsystems.vision.Vision;
-import frc.utility.LimelightEx;
 import frc.utility.TelemetryUtils.Dashboard;
 import lombok.Getter;
 import lombok.Setter;
