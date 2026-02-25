@@ -42,6 +42,7 @@ public class SwerveDriveTeleop extends Command {
             // .whileFalse(drive.setSpeed(Speed.SLOW));
 
         driver.b().onTrue(drive.runOnce(drive::seedFieldCentric));
+        driver.b().and(driver.back()).onTrue(drive.runOnce(drive::tareEverything));
 
         addRequirements(drive);
     }

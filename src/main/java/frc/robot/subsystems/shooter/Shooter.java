@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
 import frc.utility.TelemetryUtils.Dashboard;
@@ -108,6 +110,8 @@ public class Shooter implements Dashboard, Sendable{
 
     @Getter @Setter private ShooterMode shooterMode;
 
+    private final Translation3d hubBlue = new Translation3d(4.625, 4.025, 2.05);
+
     public Shooter (
         Turret turret,
         Hood hood,
@@ -141,15 +145,15 @@ public class Shooter implements Dashboard, Sendable{
     public void turret() {
         switch(shooterMode){
             case HOLD:
-                turret.setTargetPositionCommand(turret.getPositionSetpoint());
-                hood.setTargetPositionCommand(hood.getPositionSetpoint());
-                shooter.setTargetVelocityCommand(shooter.getTargetVelocity());
-                shooter.setTargetVelocityCommand(IDLE_RPM);
+                // turret.setTargetPositionCommand(turret.getPositionSetpoint());
+                // hood.setTargetPositionCommand(hood.getPositionSetpoint());
+                // shooter.setTargetVelocityCommand(shooter.getTargetVelocity());
+                // shooter.setTargetVelocityCommand(IDLE_RPM);
 
                 //Should shooter be at same speed or just stop?
                 break;
             case OPPOSITE:
-                turret.setTargetPositionCommand(OPP_ANGLE);
+                // turret.setTargetPositionCommand(OPP_ANGLE);
                 getShooterSpeed(); //Based on limelight
                 break;
             case SCORE:
@@ -164,21 +168,30 @@ public class Shooter implements Dashboard, Sendable{
     public void getShooterSpeed(){
         // shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
     }
-    
-    public void aim() {
-        // if (limelight.getTV()) {
+
+    public ParallelCommandGroup aimCommand() {
         ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
             poseSub.get(), 
             chassisSpeedsSub.get(), 
-            new Translation3d(4,2,7), 
+            hubBlue, 
             1
         );
+        return new ParallelCommandGroup(
+            hood.setTargetPositionCommand(new Rotation2d(shot.getHoodAngle())),
+            shooter.setTargetVelocityCommand(HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).in(RotationsPerSecond)),
+            turret.setTargetPositionCommand(HubShooterMath.calculateTurretAngle(poseSub.get(), hubBlue))
+        );
+    }
+    
+    public void aim() {
+        // if (limelight.getTV()) {
+        
 
-        hood.setGoalAngle(new Rotation2d(shot.getHoodAngle()));
+        
 
-        shooter.setTargetVelocity(HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).in(RotationsPerSecond));
+        
 
-        turret.setGoalAngle(HubShooterMath.calculateTurretAngle(poseSub.get(), new Translation3d(4,2,7)));
+        
         
         
 

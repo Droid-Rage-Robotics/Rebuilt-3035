@@ -53,8 +53,8 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.mainNum=constants.mainNum;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.maxPosition=constants.lowerLimit;
-        this.minPosition=constants.upperLimit;
+        this.maxPosition=constants.upperLimit;
+        this.minPosition=constants.lowerLimit;
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
 

@@ -154,8 +154,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
     /* ---------------- Commands ---------------- */
 
-    public Command setTargetPositionCommand(double degrees) {
-        return new InstantCommand(() -> setTargetPositionDegrees(degrees), this);
+    public Command setTargetPositionCommand(Rotation2d goalAngle) {
+        return runOnce(() -> setGoalAngle(goalAngle));
     }
 
     /* ---------------- Manual Goal Control ---------------- */
