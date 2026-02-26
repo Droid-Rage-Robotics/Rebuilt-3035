@@ -115,8 +115,7 @@ public class Robot extends LoggedRobot {
         robotContainer.testSubsystems();
         robotContainer.testClimb();
         robotContainer.testShooter();
-        robotContainer.testIndexer();
-        robotContainer.testKicker();
+        
     }
 
     @Override
