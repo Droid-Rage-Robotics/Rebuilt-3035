@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructSubscriber;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.util.sendable.Sendable;
@@ -95,9 +96,9 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     @Getter private final Turret turret;
     @Getter private final Hood hood;
-    @Getter private final ShooterWheel shooter;
+    @Getter private final ShooterWheel shooterWheel;
     
-    private final double IDLE_RPM = 0;
+    public static final AngularVelocity IDLE_VELOCITY = RotationsPerSecond.of(30);
     private final double OPP_ANGLE = 0;
 
     private static final double LIMELIGHT_HEIGHT=0;
@@ -117,7 +118,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     ) {
         this.turret=turret;
         this.hood=hood;
-        this.shooter=shooter;
+        this.shooterWheel=shooter;
     }
 
     public void periodic() {
@@ -165,7 +166,6 @@ public class Shooter implements Dashboard, Sendable, Periodic {
                 getShooterSpeed(); //Based on limelight
                 break;
             case SCORE:
-                aim();
                 break;
             case HOARD:
                 hoardAiming();
@@ -175,43 +175,6 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     public void getShooterSpeed(){
         // shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
-    }
-
-    public ParallelCommandGroup aimCommand() {
-        
-        return new ParallelCommandGroup(
-            hood.setTargetPositionCommand(new Rotation2d(shot.getHoodAngle())),
-            shooter.setTargetVelocityCommand(HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).unaryMinus()),
-            turret.setTargetPositionCommand(HubShooterMath.calculateTurretAngle(poseSub.get(), FieldConstants.HUB_BLUE))
-        );
-    }
-    
-    public void aim() {
-        // if (limelight.getTV()) {
-        
-
-        
-
-        
-
-        
-        
-        
-
-        // }
-
-        // var tof = Einstein.calculateTimeOfFlight(getShooterExitVelocity(), null, 0);
-
-        // var tar = Einstein.predictTargetPos(null, null, null);
-
-        // var exit = Einstein.calculateShotFromFunnelClearance(null, null, null);
-
-        // var angle = Einstein.calculateAngleFromVelocity(null, getShooterExitVelocity(), null);
-
-
-        /* ---------------- Turret Aiming ---------------- */
-        
-        
     }
 
     private void turretAim() {

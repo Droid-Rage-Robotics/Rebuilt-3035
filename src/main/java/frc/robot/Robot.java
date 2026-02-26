@@ -110,11 +110,11 @@ public class Robot extends LoggedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        robotContainer.configureTeleOpBindings();
-        robotContainer.testDrive();
+        // robotContainer.configureTeleOpBindings();
+        // robotContainer.testDrive();
         robotContainer.testSubsystems();
-        robotContainer.testClimb();
-        robotContainer.testShooter();
+        // robotContainer.testClimb();
+        // robotContainer.testShooter();
         
     }
 

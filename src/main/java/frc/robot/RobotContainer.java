@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
+import frc.robot.commands.shooter.ShooterHold;
+import frc.robot.commands.shooter.ShooterScore;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
@@ -25,17 +27,17 @@ import frc.robot.subsystems.shooter.Turret;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true,swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	// private final Vision vision = new Vision();
-    private final Climb climb = new Climb(true);
+    private final Climb climb = new Climb(false);
     
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
 
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
 
     private final Shooter shooter = new Shooter(
         new Turret(true),
@@ -117,7 +119,11 @@ public class RobotContainer {
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 
 
-		driver.a().onTrue(shooter.aimCommand());
+		driver.a()
+			.onTrue(new ShooterScore(drive, shooter))
+			.onFalse(new ShooterHold(drive, shooter));
+
+		// driver.povDown().onTrue(null)
 		// operator.rightTrigger()
 		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
 		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
@@ -189,9 +195,9 @@ public class RobotContainer {
 	}
 	public void testShooter() {
     	operator.a()
-       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.of(-25)));
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-25)));
 		operator.b()
-       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.zero()));
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
    	 	operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
