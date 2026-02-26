@@ -1,8 +1,7 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
@@ -21,7 +20,6 @@ import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.Shooter.ShooterMode;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 
@@ -148,10 +146,10 @@ public class RobotContainer {
 		
 		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator));
 
-		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(Rotation2d.fromDegrees(IntakeValue.INTAKE.getPivotAngle())));
+		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
 			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
-		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(Rotation2d.fromDegrees(IntakeValue.STOP.getPivotAngle())));
+		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
 
 		// operator.a()
@@ -163,7 +161,7 @@ public class RobotContainer {
 		// operator.y()
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
 				
-		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(Rotation2d.fromDegrees(IntakeValue.STOP.getPivotAngle())));
+		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 	}
 
 	public void testDrive() {
@@ -192,8 +190,8 @@ public class RobotContainer {
 	}
 	public void testShooter() {
       	operator.rightTrigger()
-			.onTrue(shooter.getShooter().setTargetVelocityCommand(-25))
-			.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
+			.onTrue(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.of(-25)))
+			.onFalse(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.zero()));
 	}
 	public void testIndexer(){
 		operator.rightTrigger()
