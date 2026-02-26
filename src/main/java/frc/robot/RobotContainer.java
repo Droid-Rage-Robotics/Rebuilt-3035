@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
@@ -24,7 +23,6 @@ import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
-import frc.utility.ControllerUtils;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
@@ -176,6 +174,9 @@ public class RobotContainer {
         // driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
         // driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 	}
+	//FOR ENGINEERS!! ONLY USE THESE TEST BUTTONS BELOW. Once connected to the 
+	//robot plug in both controllers for testing the first controller listed is ALWAYS driver 1, the 2nd is driver 2 (operator)
+	
 	public void testClimb() {
         // climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
 
@@ -189,5 +190,25 @@ public class RobotContainer {
             .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
 
 		operator.a().onTrue(climb.getSysIdCommand());
-    }
+	}
+	public void testShooter() {
+        driver.a()
+       	 .onTrue(shooter.aimCommand());
+	}
+	public void testIndexer(){
+		operator.rightTrigger()
+       	 .onTrue(indexer.setTargetVelocityCommand( IndexerValue.INTAKE.getIndexerValue()))
+       	 .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+		operator.leftBumper()
+       	 .onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+       	 .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+	}
+	public void testKicker(){
+		operator.rightTrigger()
+       	 .onTrue(kicker.setTargetVelocityCommand( KickerValue.INTAKE.getKickerValue()))
+       	 .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+		operator.leftBumper()
+       	 .onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+       	 .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+	}
 }
