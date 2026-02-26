@@ -41,4 +41,13 @@ public class Pivot extends ArmTemplate {
             null, 
             motorConstants);
     }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+
+        if (getCurrentAngle().getDegrees()<0) {
+            resetEncoder();
+        }
+    }
 }

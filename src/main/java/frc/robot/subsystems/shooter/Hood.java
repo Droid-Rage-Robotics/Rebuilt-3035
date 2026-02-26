@@ -1,13 +1,11 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.DroidRageConstants;
-import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.template.ArmTemplate;
@@ -41,5 +39,14 @@ public class Hood extends ArmTemplate {
             constants, 
             null, 
             motorConstants);
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+
+        if (getCurrentAngle().getDegrees()<0) {
+            resetEncoder();
+        }
     }
 }
