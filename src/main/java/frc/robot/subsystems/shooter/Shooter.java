@@ -26,12 +26,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.DroidRageConstants;
+import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
 import frc.utility.TelemetryUtils.Dashboard;
+import frc.utility.TelemetryUtils.Periodic;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Shooter implements Dashboard, Sendable{
+public class Shooter implements Dashboard, Sendable, Periodic {
     public enum ShooterMode {
         HOLD, //Maintain current position
         OPPOSITE, //Face opposite intake
@@ -100,8 +102,6 @@ public class Shooter implements Dashboard, Sendable{
 
     private static final double LIMELIGHT_HEIGHT=0;
     private static final double LIMELIGHT_PITCH=0;
-
-    private static final Distance SHOOTER_WHEEL_RADIUS = Inches.of(2);
     private static final double SHOOTER_EFFICIENCY = 1;
 
     private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("DriveState");
@@ -118,6 +118,16 @@ public class Shooter implements Dashboard, Sendable{
         this.turret=turret;
         this.hood=hood;
         this.shooter=shooter;
+    }
+
+    public void periodic() {
+        
+        ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
+            poseSub.get(), 
+            chassisSpeedsSub.get(), 
+            FieldConstants.HUB_BLUE, 
+            1
+        );
     }
 
     @Override
@@ -168,16 +178,11 @@ public class Shooter implements Dashboard, Sendable{
     }
 
     public ParallelCommandGroup aimCommand() {
-        ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
-            poseSub.get(), 
-            chassisSpeedsSub.get(), 
-            hubBlue, 
-            1
-        );
+        
         return new ParallelCommandGroup(
             hood.setTargetPositionCommand(new Rotation2d(shot.getHoodAngle())),
             shooter.setTargetVelocityCommand(HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).unaryMinus()),
-            turret.setTargetPositionCommand(HubShooterMath.calculateTurretAngle(poseSub.get(), hubBlue))
+            turret.setTargetPositionCommand(HubShooterMath.calculateTurretAngle(poseSub.get(), FieldConstants.HUB_BLUE))
         );
     }
     
