@@ -186,27 +186,23 @@ public class RobotContainer {
         operator.leftBumper()
             .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
 
-		operator.a().onTrue(climb.getSysIdCommand());
 	}
 	public void testShooter() {
-      	operator.rightTrigger()
-			.onTrue(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.of(-25)))
-			.onFalse(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.zero()));
-	}
-	public void testIndexer(){
-		operator.rightTrigger()
-       	 .onTrue(indexer.setTargetVelocityCommand( IndexerValue.INTAKE.getIndexerValue()))
-       	 .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+    	operator.a()
+       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(-25));
+		operator.b()
+       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(0));
+   	 	operator.rightBumper()
+			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 		operator.leftBumper()
-       	 .onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-       	 .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-	}
-	public void testKicker(){
+			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 		operator.rightTrigger()
-       	 .onTrue(kicker.setTargetVelocityCommand( KickerValue.INTAKE.getKickerValue()))
-       	 .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-		operator.leftBumper()
-       	 .onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-       	 .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+		operator.leftTrigger()
+			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 }
