@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.encoder.CANcoderEx;
 import frc.utility.encoder.EncoderConstants;
@@ -36,6 +37,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final double conversionFactor;
     private final int mainNum;
     private final SubsystemConstants constants;
+    private final String name;
 
     private final boolean isEnabled;
 
@@ -57,6 +59,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.minPosition=constants.upperLimit;
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
+        this.name = constants.name;
 
         if (constants.encoderType == EncoderType.ABSOLUTE) {
             if (encoderConstants == null) {
@@ -77,14 +80,16 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         for (int i = 0; i < motorConstants.length; i++) {
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
+        
+        TelemetryUtils.registerDashboard(this);
     }
 
     /* ---------------- Dashboard ---------------- */
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(getName(), this);
-        SmartDashboard.putData(getName() + "/Reset Encoder", resetEncoderCommand());
+        SmartDashboard.putData(name, this);
+        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override public void practiceWriters() {}

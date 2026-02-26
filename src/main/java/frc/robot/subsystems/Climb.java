@@ -34,8 +34,8 @@ public class Climb extends ElevatorTemplate {
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
         .withLowerLimit(Units.inchesToMeters(0))
-        .withUpperLimit(Units.inchesToMeters(0))
-        .withName("Turret")
+        .withUpperLimit(Units.inchesToMeters(10))
+        .withName("Climb")
         .withOffset(0)
         .withMainNum(0);
     
@@ -50,7 +50,7 @@ public class Climb extends ElevatorTemplate {
 
     public Climb(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(0, 0, 0, 
+            new ProfiledPIDController(0.5, 0, 0, 
             new TrapezoidProfile.Constraints(0, 0)), 
             new ElevatorFeedforward(0, 0, 0), 
             constants, 

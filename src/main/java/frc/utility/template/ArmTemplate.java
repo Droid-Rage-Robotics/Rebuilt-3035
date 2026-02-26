@@ -86,7 +86,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void elasticInit() {
         SmartDashboard.putData(name, this);
-        SmartDashboard.putData(getName() + "/Reset Encoder", resetEncoderCommand());
+        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override

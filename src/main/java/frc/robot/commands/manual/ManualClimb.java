@@ -1,5 +1,7 @@
 package frc.robot.commands.manual;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +30,7 @@ public class ManualClimb extends Command {
         if(move<0){
             return;
         }
-        // climb.setTargetPosition(climb.getPositionSetpoint() + move * 0.45);
+        climb.setTargetPosition(Inches.of(climb.getGoalPosition().magnitude() +  move * 0.45));
     }
 
     @Override

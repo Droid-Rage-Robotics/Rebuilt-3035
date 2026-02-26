@@ -23,8 +23,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.StructSubscriber;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorConstants;
@@ -72,6 +74,14 @@ public class Turret extends TurretTemplate {
             null,            
             motorConstants);
 
+        switch(DriverStation.getAlliance().get()){
+            case Red:
+                hubPos = new Translation2d(Units.inchesToMeters(27), Units.inchesToMeters(324-27));
+                break;
+            case Blue:
+                hubPos = new Translation2d(Units.inchesToMeters(27), Units.inchesToMeters(27));
+                break;
+        }
         
     }
 
@@ -93,6 +103,18 @@ public class Turret extends TurretTemplate {
         // pose3dPub.accept(pose3d);
     }
 
+    public static Command aimTurretAtPoint(Pose2d pose){
+        return setTargetPositionCommand();
+        s.setControl(turretRotMagicCycle.withPosition(turretRotationsToKraken(SwerveSubsystem.turretRotationToPose(pose).getRotations())));
+    }
+
+    public static void aimTurretAtDegree(double degrees){
+        turretRotationMotor.setControl(turretRotMagicCycle.withPosition(Rotation2d.fromDegrees(degrees).getRotations()));
+    }
+
+    public static void aimtTurretAtRotation(double rot){
+        turretRotationMotor.setControl(turretRotMagicCycle.withPosition(turretRotationsToKraken(rot)));
+    }
     
 
     // public double getTurretGoalAngle(SwerveDrive drive, Pose2d target) { //MIGHT BE WRONG; https://www.chiefdelphi.com/t/turret-tracking-hub-using-odometry/512844/5

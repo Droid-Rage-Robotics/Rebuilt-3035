@@ -301,11 +301,11 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     // --------------------------------------------------------------------------------
     private void configurePathPlanner() {
         // Seed robot to mid field at start (Paths will change this starting position)
-        resetPose(
-                new Pose2d(
-                        Units.feetToMeters(10),
-                        Units.feetToMeters(27.0 / 2.0),
-                        config.getBlueAlliancePerspectiveRotation()));
+        // resetPose(
+        //         new Pose2d(
+        //                 Units.feetToMeters(10),
+        //                 Units.feetToMeters(27.0 / 2.0),
+        //                 config.getBlueAlliancePerspectiveRotation()));
 
         RobotConfig robotConfig = null; // Initialize with null in case of exception
         try {

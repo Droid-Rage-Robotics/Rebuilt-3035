@@ -1,18 +1,17 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import static edu.wpi.first.units.Units.Inches;
+
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.LightCommand;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Indexer.IndexerValue;
-import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
@@ -25,7 +24,6 @@ import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
-import frc.robot.subsystems.vision.Vision;
 import frc.utility.ControllerUtils;
 
 public class RobotContainer {
@@ -176,5 +174,18 @@ public class RobotContainer {
         // driver.back().and(driver.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
         // driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
         // driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+	}
+
+	public void testClimb() {
+		// climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
+
+		// operator.rightBumper()
+		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+		// operator.leftBumper()
+		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+		operator.rightBumper()
+			.onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() + 0.5)));
+		operator.leftBumper()
+			.onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
 	}
 }
