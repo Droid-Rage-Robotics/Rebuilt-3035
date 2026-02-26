@@ -53,7 +53,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     private final boolean isEnabled;
 
-    @Setter private volatile Speed speed = Speed.NORMAL;
+    private volatile Speed speed = Speed.NORMAL;
     
     
     /* Keep track if we've ever applied the operator perspective before or not */
