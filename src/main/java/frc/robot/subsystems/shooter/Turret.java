@@ -31,17 +31,13 @@ import frc.robot.DroidRageConstants;
 import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
-import frc.utility.motor.TalonEx;
 import frc.utility.template.SubsystemConstants;
 import frc.utility.template.SubsystemConstants.EncoderType;
 import frc.utility.template.TurretTemplate;
 
-public class Turret extends TurretTemplate { 
-    
-    Mechanism2d mech = new Mechanism2d(10, 10);
-    MechanismLigament2d ligma = new MechanismLigament2d(getName(), getPositionSetpoint(), getPositionError());
-
+public class Turret extends TurretTemplate {
     private static Translation2d hubPos = new Translation2d(0, 0);//TODO: Changes based on the alliance
+    
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(3.0/50.0)
         .withEncoderType(EncoderType.INTEGRATED)
@@ -84,25 +80,6 @@ public class Turret extends TurretTemplate {
         }
         
     }
-
-    private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("Drivetrain");
-    private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Turret");
-
-    private final StructSubscriber<Pose3d> pose3dSub = driveTable.getStructTopic("Pose3d", Pose3d.struct).subscribe(new Pose3d());
-    private final StructPublisher<Pose3d> pose3dPub  = table.getStructTopic("Pose3d", Pose3d.struct).publish();
-
-
-    @Override
-    public void periodic() {
-        super.periodic();
-        
-        // var pose3d = pose3dSub.get().transformBy(HubShooterMath.ROBOT_TO_TURRET_TRANSFORM);
-
-        // pose3d = pose3d.transformBy(new Transform3d(Translation3d.kZero, new Rotation3d(0, 0, getCurrentAngle().getRadians())));
-
-        // pose3dPub.accept(pose3d);
-    }
-    
 
     // public double getTurretGoalAngle(SwerveDrive drive, Pose2d target) { //MIGHT BE WRONG; https://www.chiefdelphi.com/t/turret-tracking-hub-using-odometry/512844/5
     //     // Get robot pose with turret offset

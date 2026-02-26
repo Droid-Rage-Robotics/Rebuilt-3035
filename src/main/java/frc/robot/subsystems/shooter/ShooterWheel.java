@@ -17,7 +17,7 @@ public class ShooterWheel extends FlywheelTemplate {
         .withEncoderType(EncoderType.INTEGRATED)
         .withLowerLimit(-60)
         .withUpperLimit(60)
-        .withName("Shooter")
+        .withName("ShooterWheel")
         .withOffset(0)
         .withMainNum(0);
     
@@ -26,9 +26,7 @@ public class ShooterWheel extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1)
-        .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70);
+        .withConversionFactor( 1);
 
     private static final MotorConstants leftMotor = new MotorConstants() 
         .withDeviceId(5)
@@ -36,8 +34,6 @@ public class ShooterWheel extends FlywheelTemplate {
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1);
-        // .withSupplyCurrentLimit(70)
-        // .withStatorCurrentLimit(70);
 
     public ShooterWheel(boolean isEnabled) {
         super(isEnabled,
