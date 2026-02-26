@@ -1,7 +1,8 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.DroidRageConstants;
@@ -15,8 +16,8 @@ public class ShooterWheel extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(-60)
-        .withUpperLimit(60)
+        .withMinVelocity(RotationsPerSecond.of(-60))
+        .withMaxVelocity(RotationsPerSecond.of(60))
         .withName("ShooterWheel")
         .withOffset(0)
         .withMainNum(0);

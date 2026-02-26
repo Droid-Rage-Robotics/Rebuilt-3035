@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
@@ -16,8 +18,8 @@ public class IntakeWheel extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(-100)
-        .withUpperLimit(100)
+        .withMinVelocity(RotationsPerSecond.of(-100))
+        .withMaxVelocity(RotationsPerSecond.of(100))
         .withName("Intake")
         .withOffset(0)
         .withMainNum(0);

@@ -3,32 +3,10 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.networktables.StructSubscriber;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
-import frc.utility.encoder.EncoderConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.template.SubsystemConstants;
@@ -36,13 +14,11 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 import frc.utility.template.TurretTemplate;
 
 public class Turret extends TurretTemplate {
-    private static Translation2d hubPos = new Translation2d(0, 0);//TODO: Changes based on the alliance
-    
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(3.0/50.0)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(-135) //Degree
-        .withUpperLimit(135) //Degree
+        .withMinAngle(Degrees.of(-135))
+        .withMaxAngle(Degrees.of(135))
         .withName("Turret")
         .withOffset(0)
         .withMainNum(0);
@@ -63,22 +39,12 @@ public class Turret extends TurretTemplate {
     
     public Turret(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(1.1597, 0, 0, 
+            new ProfiledPIDController(4, 0, 0, 
             new TrapezoidProfile.Constraints(1, 1)), 
             new SimpleMotorFeedforward(0.11055, 1.6667, 0.15809), 
             constants, 
             null,            
             motorConstants);
-
-        switch(DriverStation.getAlliance().get()){
-            case Red:
-                hubPos = new Translation2d(Units.inchesToMeters(27), Units.inchesToMeters(324-27));
-                break;
-            case Blue:
-                hubPos = new Translation2d(Units.inchesToMeters(27), Units.inchesToMeters(27));
-                break;
-        }
-        
     }
 
     // public double getTurretGoalAngle(SwerveDrive drive, Pose2d target) { //MIGHT BE WRONG; https://www.chiefdelphi.com/t/turret-tracking-hub-using-odometry/512844/5

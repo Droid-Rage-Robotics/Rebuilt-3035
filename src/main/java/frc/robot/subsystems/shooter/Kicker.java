@@ -32,8 +32,8 @@ public class Kicker extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(-60)
-        .withUpperLimit(60)
+        .withMinVelocity(RotationsPerSecond.of(60))
+        .withMaxVelocity(RotationsPerSecond.of(60))
         .withName("Kicker")
         .withOffset(0)
         .withMainNum(0);

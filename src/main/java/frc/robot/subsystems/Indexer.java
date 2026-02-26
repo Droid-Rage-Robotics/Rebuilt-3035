@@ -32,8 +32,8 @@ public class Indexer extends FlywheelTemplate{
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1.0/3.0)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(-50)
-        .withUpperLimit(50)
+        .withMinVelocity(RotationsPerSecond.of(-50))
+        .withMaxVelocity(RotationsPerSecond.of(50))
         .withName("Indexer")
         .withOffset(0)
         .withMainNum(0);
@@ -44,8 +44,6 @@ public class Indexer extends FlywheelTemplate{
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
         .withConversionFactor( 1);
-        // .withSupplyCurrentLimit(70)
-        // .withStatorCurrentLimit(70);
 
     public Indexer(boolean isEnabled) {
         super(isEnabled,

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -14,10 +16,10 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Hood extends ArmTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/60.0)
+        .withConversionFactor(1.0/(4.0 * (155.0/9.0)))
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(0)
-        .withUpperLimit(35)
+        .withMinAngle(Degrees.zero())
+        .withMaxAngle(Degrees.of(28))
         .withName("Hood")
         .withOffset(0)
         .withMainNum(0);
@@ -33,8 +35,8 @@ public class Hood extends ArmTemplate {
 
     public Hood(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(0.3236, 0, 0,
-            new TrapezoidProfile.Constraints(1, 1)), 
+            new ProfiledPIDController(15, 0, 0,
+            new TrapezoidProfile.Constraints(0.5, 0.5)), 
             new ArmFeedforward(0.4334, 0,0.28114, 2.0731), 
             constants, 
             null, 

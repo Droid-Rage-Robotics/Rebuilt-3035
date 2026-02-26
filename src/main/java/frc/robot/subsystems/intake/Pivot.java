@@ -1,10 +1,11 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
@@ -16,8 +17,8 @@ public class Pivot extends ArmTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1.0/54.0)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withLowerLimit(0)
-        .withUpperLimit(Units.degreesToRadians(130))
+        .withMinAngle(Degrees.zero())
+        .withMaxAngle(Degrees.of(130))
         .withName("Pivot")
         .withOffset(0)
         .withMainNum(0);
