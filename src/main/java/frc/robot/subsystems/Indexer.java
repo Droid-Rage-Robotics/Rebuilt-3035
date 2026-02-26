@@ -1,11 +1,12 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
@@ -21,10 +22,10 @@ public class Indexer extends FlywheelTemplate{
         STOP(0),
         HOLD(0);
 
-        @Getter private final double indexerValue;
+        @Getter private final AngularVelocity indexerValue;
 
         private IndexerValue(double indexerValue) {
-            this.indexerValue = indexerValue;
+            this.indexerValue = RotationsPerSecond.of(indexerValue);
         }
     }
     

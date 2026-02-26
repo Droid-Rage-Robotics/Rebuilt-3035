@@ -110,8 +110,6 @@ public class Shooter implements Dashboard, Sendable{
 
     @Getter @Setter private ShooterMode shooterMode;
 
-    private final Translation3d hubBlue = new Translation3d(4.625, 4.025, 2.05);
-
     public Shooter (
         Turret turret,
         Hood hood,
@@ -177,8 +175,8 @@ public class Shooter implements Dashboard, Sendable{
             1
         );
         return new ParallelCommandGroup(
-            // hood.setTargetPositionCommand(new Rotation2d(shot.getHoodAngle())),
-            shooter.setTargetVelocityCommand(-HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).in(RotationsPerSecond)),
+            hood.setTargetPositionCommand(new Rotation2d(shot.getHoodAngle())),
+            shooter.setTargetVelocityCommand(HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).unaryMinus()),
             turret.setTargetPositionCommand(HubShooterMath.calculateTurretAngle(poseSub.get(), hubBlue))
         );
     }

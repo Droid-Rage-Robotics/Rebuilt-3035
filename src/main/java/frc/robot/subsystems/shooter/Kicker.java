@@ -1,9 +1,12 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
@@ -19,10 +22,10 @@ public class Kicker extends FlywheelTemplate {
         STOP(0),
         HOLD(0);
 
-        @Getter private final double kickerValue;
+        @Getter private final AngularVelocity kickerValue;
 
         private KickerValue(double kickerValue) {
-            this.kickerValue = kickerValue;
+            this.kickerValue = RotationsPerSecond.of(kickerValue);
         }
     } 
 
