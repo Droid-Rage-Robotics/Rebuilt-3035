@@ -189,9 +189,9 @@ public class RobotContainer {
 	}
 	public void testShooter() {
     	operator.a()
-       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(-25));
+       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.of(-25)));
 		operator.b()
-       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(0));
+       	 	.onTrue(shooter.getShooter().setTargetVelocityCommand(RotationsPerSecond.zero()));
    	 	operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
