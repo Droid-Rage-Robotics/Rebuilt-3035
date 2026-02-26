@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
@@ -35,14 +36,14 @@ public class SwerveDriveTeleop extends Command {
         antiTipX.setTolerance(2);
         antiTipY.setTolerance(2);
 
-        driver.rightBumper().whileTrue(drive.setSpeed(Speed.SLOW))
-            .whileFalse(drive.setSpeed(Speed.NORMAL));
+        driver.rightBumper().onTrue(drive.setSpeed(Speed.SLOW))
+            .onFalse(drive.setSpeed(Speed.NORMAL));
         
-        // driver.rightBumper().whileTrue(drive.setSpeed(Speed.SUPER_SLOW))
-            // .whileFalse(drive.setSpeed(Speed.SLOW));
+        // driver.rightBumper().onTrue(drive.setSpeed(Speed.SUPER_SLOW))
+            // .onFalse(drive.setSpeed(Speed.SLOW));
 
-        driver.b().onTrue(drive.runOnce(drive::seedFieldCentric));
-        driver.b().and(driver.back()).onTrue(drive.runOnce(drive::tareEverything));
+        driver.b().onTrue(new InstantCommand(drive::seedFieldCentric));
+        driver.b().and(driver.back()).onTrue(new InstantCommand(drive::tareEverything));
 
         addRequirements(drive);
     }

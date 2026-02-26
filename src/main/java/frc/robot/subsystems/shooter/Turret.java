@@ -39,7 +39,7 @@ public class Turret extends TurretTemplate {
     
     public Turret(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(4, 0, 0, 
+            new ProfiledPIDController(10, 0, 0, 
             new TrapezoidProfile.Constraints(1, 1)), 
             new SimpleMotorFeedforward(0.11055, 1.6667, 0.15809), 
             constants, 

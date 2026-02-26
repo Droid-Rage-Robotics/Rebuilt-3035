@@ -27,21 +27,21 @@ import frc.robot.subsystems.shooter.Turret;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
     private final Climb climb = new Climb(false);
     
 	private final Intake intake = new Intake(
         new Pivot(false),
-        new IntakeWheel(false)
+        new IntakeWheel(true)
     );
 
-    private final Indexer indexer = new Indexer(false);
-    private final Kicker kicker = new Kicker(false);
+    private final Indexer indexer = new Indexer(true);
+    private final Kicker kicker = new Kicker(true);
 
     private final Shooter shooter = new Shooter(
-        new Turret(true),
-        new Hood(true),
+        new Turret(false),
+        new Hood(false),
         new ShooterWheel(true)
     );
 
@@ -78,10 +78,10 @@ public class RobotContainer {
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 
 
-		operator.rightTrigger()
-			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
-		operator.leftTrigger()
-			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+		// operator.rightTrigger()
+		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+		// operator.leftTrigger()
+		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 			
 		// driver.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
 		// 	.onFalse(shooter.getHood().setTargetPositionCommand(0));
@@ -110,13 +110,7 @@ public class RobotContainer {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		
 		//USE this for TESTING
-		driver.leftTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
-
-		driver.rightTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.INTAKE.getIntakeSpeed()))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
+		
 
 
 		driver.a()
@@ -194,20 +188,28 @@ public class RobotContainer {
 
 	}
 	public void testShooter() {
-    	operator.a()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-25)));
-		operator.b()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
+    	driver.leftTrigger()
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
+
+		driver.rightTrigger()
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.INTAKE.getIntakeSpeed()))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
+		
+		
+		operator.a()
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-50)))
+       	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
    	 	operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 		operator.leftBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		operator.rightTrigger()
+		operator.rightBumper()
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-		operator.leftTrigger()
+		operator.leftBumper()
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
