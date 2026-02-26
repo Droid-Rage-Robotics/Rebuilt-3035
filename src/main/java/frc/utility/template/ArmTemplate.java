@@ -38,8 +38,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     private final boolean isEnabled;
     private final SubsystemConstants constants;
 
-    private Rotation2d goalAngle = Rotation2d.fromRadians(0);
-
     public ArmTemplate(
         boolean isEnabled,
         ProfiledPIDController controller,
@@ -52,8 +50,8 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         this.constants=constants;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.minAngleRad=constants.lowerLimit;
-        this.maxAngleRad=constants.upperLimit;
+        this.minAngleRad=constants.minAngle.in(Radians);
+        this.maxAngleRad=constants.maxAngle.in(Radians);
         this.conversionFactor=constants.conversionFactor;
         this.mainNum=constants.mainNum;
         this.name=constants.name;
@@ -145,12 +143,11 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
             maxAngleRad
         );
 
-        goalAngle = new Rotation2d(clamped);
         controller.setGoal(clamped);
     }
 
     public Rotation2d getGoalAngle() {
-        return goalAngle;
+        return Rotation2d.fromRadians(controller.getGoal().position);
     }
 
     public double getVelocitySetpoint() {

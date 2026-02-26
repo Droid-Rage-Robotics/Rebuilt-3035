@@ -64,8 +64,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         this.mainNum=constants.mainNum;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.minAngleRad=Math.toRadians(constants.lowerLimit);
-        this.maxAngleRad=Math.toRadians(constants.upperLimit);
+        this.minAngleRad=constants.minAngle.in(Radians);
+        this.maxAngleRad=constants.maxAngle.in(Radians);
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
 

@@ -1,5 +1,9 @@
 package frc.utility.template;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+
 public final class SubsystemConstants {
     public enum EncoderType {
         INTEGRATED,
@@ -9,8 +13,12 @@ public final class SubsystemConstants {
     public String name;
     public EncoderType encoderType;
     public int mainNum;
-    public double upperLimit;
-    public double lowerLimit;
+    public Distance maxDistance;
+    public Distance minDistance;
+    public Angle maxAngle;
+    public Angle minAngle;
+    public AngularVelocity maxVelocity;
+    public AngularVelocity minVelocity;
     public double conversionFactor;
     public double offset;
 
@@ -50,13 +58,33 @@ public final class SubsystemConstants {
         return this;
     }
 
-    public SubsystemConstants withUpperLimit(double upperLimit) {
-        this.upperLimit=upperLimit;
+    public SubsystemConstants withMaxVelocity(AngularVelocity max) {
+        this.maxVelocity=max;
         return this;
     }
 
-    public SubsystemConstants withLowerLimit(double lowerLimit) {
-        this.lowerLimit=lowerLimit;
+    public SubsystemConstants withMinVelocity(AngularVelocity min) {
+        this.minVelocity=min;
+        return this;
+    }
+
+    public SubsystemConstants withMaxAngle(Angle max) {
+        this.maxAngle=max;
+        return this;
+    }
+
+    public SubsystemConstants withMinAngle(Angle min) {
+        this.minAngle=min;
+        return this;
+    }
+
+    public SubsystemConstants withMaxDistance(Distance max) {
+        this.maxDistance=max;
+        return this;
+    }
+
+    public SubsystemConstants withMinDistance(Distance min) {
+        this.minDistance=min;
         return this;
     }
 

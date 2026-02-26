@@ -46,8 +46,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         this.isEnabled=isEnabled;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.maxSpeed=constants.upperLimit;
-        this.minSpeed=constants.lowerLimit;
+        this.maxSpeed=constants.maxVelocity.in(RotationsPerSecond);
+        this.minSpeed=constants.minVelocity.in(RotationsPerSecond);
         this.conversionFactor=constants.conversionFactor;
         this.mainNum=constants.mainNum;
         this.name=constants.name;
