@@ -61,7 +61,6 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.isEnabled=isEnabled;
         this.name = constants.name;
 
-        this.name =constants.name;
         if (constants.encoderType == EncoderType.ABSOLUTE) {
             if (encoderConstants == null) {
                 throw new NullPointerException("Encoder constants required for absolute encoder");
@@ -81,6 +80,8 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         for (int i = 0; i < motorConstants.length; i++) {
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
+
+        TelemetryUtils.registerDashboard(this);
     }
 
     /* ---------------- Dashboard ---------------- */

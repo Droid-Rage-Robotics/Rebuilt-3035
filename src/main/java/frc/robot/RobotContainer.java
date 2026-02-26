@@ -2,6 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.DistanceUnit;
@@ -179,4 +181,17 @@ public class RobotContainer {
         // driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
         // driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 	}
+	
+	public void testClimb() {
+        // climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
+
+        // operator.rightBumper()
+        //     .onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+        // operator.leftBumper()
+        //     .onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+        operator.rightBumper()
+            .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() + 0.5)));
+        operator.leftBumper()
+            .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
+    }
 }

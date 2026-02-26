@@ -102,19 +102,6 @@ public class Turret extends TurretTemplate {
 
         // pose3dPub.accept(pose3d);
     }
-
-    public static Command aimTurretAtPoint(Pose2d pose){
-        return setTargetPositionCommand();
-        s.setControl(turretRotMagicCycle.withPosition(turretRotationsToKraken(SwerveSubsystem.turretRotationToPose(pose).getRotations())));
-    }
-
-    public static void aimTurretAtDegree(double degrees){
-        turretRotationMotor.setControl(turretRotMagicCycle.withPosition(Rotation2d.fromDegrees(degrees).getRotations()));
-    }
-
-    public static void aimtTurretAtRotation(double rot){
-        turretRotationMotor.setControl(turretRotMagicCycle.withPosition(turretRotationsToKraken(rot)));
-    }
     
 
     // public double getTurretGoalAngle(SwerveDrive drive, Pose2d target) { //MIGHT BE WRONG; https://www.chiefdelphi.com/t/turret-tracking-hub-using-odometry/512844/5
