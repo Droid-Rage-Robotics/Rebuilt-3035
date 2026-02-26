@@ -3,11 +3,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-
-import static edu.wpi.first.units.Units.Inches;
-
-import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
@@ -26,6 +21,7 @@ import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterMode;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 
@@ -195,8 +191,9 @@ public class RobotContainer {
 		operator.a().onTrue(climb.getSysIdCommand());
 	}
 	public void testShooter() {
-        driver.a()
-       	 .onTrue(shooter.aimCommand());
+      	operator.rightTrigger()
+			.onTrue(shooter.getShooter().setTargetVelocityCommand(-25))
+			.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
 	}
 	public void testIndexer(){
 		operator.rightTrigger()
