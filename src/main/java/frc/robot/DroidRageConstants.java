@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.CANBus;
 
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.util.sendable.Sendable;
@@ -91,6 +92,9 @@ public final class DroidRageConstants {
 
         public static final Distance NEUTRAL_ZONE_START = Inches.of(0);
         public static final Distance NEUTRAL_ZONE_END = Inches.of(0);
+
+        public static final Translation3d HUB_BLUE = new Translation3d(4.625, 4.025, 2.05);
+        public static final Translation3d HUB_RED = new Translation3d(); // TODO: set
 
     }
     
