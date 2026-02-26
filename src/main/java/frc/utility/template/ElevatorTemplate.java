@@ -55,12 +55,13 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.mainNum=constants.mainNum;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.maxPosition=constants.lowerLimit;
-        this.minPosition=constants.upperLimit;
+        this.maxPosition=constants.upperLimit;
+        this.minPosition=constants.lowerLimit;
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
         this.name = constants.name;
 
+        this.name =constants.name;
         if (constants.encoderType == EncoderType.ABSOLUTE) {
             if (encoderConstants == null) {
                 throw new NullPointerException("Encoder constants required for absolute encoder");
@@ -80,8 +81,6 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         for (int i = 0; i < motorConstants.length; i++) {
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
-        
-        TelemetryUtils.registerDashboard(this);
     }
 
     /* ---------------- Dashboard ---------------- */
@@ -110,14 +109,14 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void periodic() {
-        double meter = getPosition().in(Meters);
+        // double meter = getPosition().in(Meters);
 
-        double pidOut = controller.calculate(meter);
-        var setpoint = controller.getSetpoint();
+        // double pidOut = controller.calculate(meter);
+        // var setpoint = controller.getSetpoint();
 
-        double ffOut = feedforward.calculate(setpoint.velocity);
+        // double ffOut = feedforward.calculate(setpoint.velocity);
 
-        setVoltage(pidOut + ffOut);
+        // setVoltage(pidOut + ffOut);
     }
 
     @Override
@@ -144,7 +143,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
             maxPosition
         );
 
-        goalPosition = Distance.ofBaseUnits(clamped, Meters);
+        goalPosition = Meters.of(clamped);
         controller.setGoal(clamped);
     }
 
@@ -225,12 +224,12 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
             new SysIdRoutine.Mechanism(
                 (voltage) -> {
                     // Only apply voltage if within safe bounds
-                    double currentPos = getPosition().in(Meters);
-                    if (currentPos >= minPosition || currentPos <= maxPosition) {
+                    // double currentPos = getPosition().in(Meters);
+                    // if (currentPos >= minPosition || currentPos <= maxPosition) {
                         setVoltage(voltage);
-                    } else {
-                        setVoltage(0); // Stop if at limits
-                    }
+                    // } else {
+                    //     setVoltage(0); // Stop if at limits
+                    // }
                 }, 
                 (log) -> {
                     log.motor("motor")
@@ -245,17 +244,17 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     public Command getSysIdCommand() {
         return new SequentialCommandGroup(
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
-                .until(this::isAtUpperLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward),
+                // .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse)
-                .until(this::isAtLowerLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse),
+                // .until(this::isAtLowerLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward)
-                .until(this::isAtUpperLimit),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward),
+                // .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
             getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
-                .until(this::isAtLowerLimit)
+                // .until(this::isAtLowerLimit)
         );
     }
 

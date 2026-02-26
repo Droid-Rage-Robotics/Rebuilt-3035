@@ -128,8 +128,8 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     /* ---------------- Commands ---------------- */
     
-    public Command setTargetPositionCommand(double degree){
-        return new InstantCommand(()->setTargetPositionDegrees(degree));
+    public Command setTargetPositionCommand(Rotation2d goalAngle) {
+        return runOnce(() -> setGoalAngle(goalAngle));
     }
 
     /* ---------------- Manual Goal Control ---------------- */

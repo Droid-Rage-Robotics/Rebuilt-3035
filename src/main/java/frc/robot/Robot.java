@@ -112,7 +112,8 @@ public class Robot extends LoggedRobot {
 		DriverStation.silenceJoystickConnectionWarning(true);
         // robotContainer.configureTeleOpBindings();
         // robotContainer.testDrive();
-        robotContainer.testSubsystems();
+        // robotContainer.testSubsystems();
+        robotContainer.testClimb();
     }
 
     @Override

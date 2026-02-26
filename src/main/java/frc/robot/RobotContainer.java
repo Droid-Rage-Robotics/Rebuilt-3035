@@ -2,9 +2,12 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
@@ -30,7 +33,7 @@ public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(true,swerveConfig);
 	// private final Vision vision = new Vision();
-    private final Climb climb = new Climb(false);
+    private final Climb climb = new Climb(true);
     
 	private final Intake intake = new Intake(
         new Pivot(true),
@@ -41,8 +44,8 @@ public class RobotContainer {
     private final Kicker kicker = new Kicker(true);
 
     private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
+        new Turret(true),
+        new Hood(true),
         new ShooterWheel(true)
     );
 
@@ -84,15 +87,15 @@ public class RobotContainer {
 		operator.leftTrigger()
 			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 			
-		driver.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
-			.onFalse(shooter.getHood().setTargetPositionCommand(0));
+		// driver.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
+		// 	.onFalse(shooter.getHood().setTargetPositionCommand(0));
 		
-		shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
+		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
 
-		driver.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
-			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		// driver.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
+		// 	// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
-		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		// driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
 
 		// operator.a()
@@ -120,6 +123,7 @@ public class RobotContainer {
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 
 
+		driver.a().onTrue(shooter.aimCommand());
 		// operator.rightTrigger()
 		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
 		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
@@ -136,22 +140,22 @@ public class RobotContainer {
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-		operator.rightBumper()
-			.onTrue(shooter.getShooter().setTargetVelocityCommand(-25))
-			.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
+		// operator.rightBumper()
+		// 	.onTrue(shooter.getShooter().setTargetVelocityCommand(-60))
+		// 	.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
 
 		// driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
 		//     .onFalse(shooter.getTurret(  ).setTargetPositionCommand(0));
 
-		operator.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
-			.onFalse(shooter.getHood().setTargetPositionCommand(0));
+		// operator.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
+		// 	.onFalse(shooter.getHood().setTargetPositionCommand(0));
 		
-		// shooter.getTurret().setGoalAngle(Rotation2d.fromRotations(ControllerUtils.getRightStickDeg(driver)/360.0));
+		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator));
 
-		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
+		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(Rotation2d.fromDegrees(IntakeValue.INTAKE.getPivotAngle())));
 			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
-		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(Rotation2d.fromDegrees(IntakeValue.STOP.getPivotAngle())));
 
 
 		// operator.a()
@@ -163,7 +167,7 @@ public class RobotContainer {
 		// operator.y()
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
 				
-		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(Rotation2d.fromDegrees(IntakeValue.STOP.getPivotAngle())));
 	}
 
 	public void testDrive() {
@@ -174,18 +178,5 @@ public class RobotContainer {
         // driver.back().and(driver.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
         // driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
         // driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
-	}
-
-	public void testClimb() {
-		// climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
-
-		// operator.rightBumper()
-		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
-		// operator.leftBumper()
-		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
-		operator.rightBumper()
-			.onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() + 0.5)));
-		operator.leftBumper()
-			.onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
 	}
 }

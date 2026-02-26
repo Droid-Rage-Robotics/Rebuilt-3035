@@ -27,7 +27,7 @@ public class Hood extends ArmTemplate {
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withDeviceId(6)
         .withCANBus(DroidRageConstants.rioCanBus)
-        .withDirection(Direction.Forward)
+        .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
         .withSupplyCurrentLimit(70)
