@@ -101,7 +101,7 @@ public class Shooter implements Dashboard, Sendable{
     private static final double LIMELIGHT_HEIGHT=0;
     private static final double LIMELIGHT_PITCH=0;
 
-    private static final Distance SHOOTER_WHEEL_RADIUS = Inches.of(0);
+    private static final Distance SHOOTER_WHEEL_RADIUS = Inches.of(2);
     private static final double SHOOTER_EFFICIENCY = 1;
 
     private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("DriveState");
@@ -177,8 +177,8 @@ public class Shooter implements Dashboard, Sendable{
             1
         );
         return new ParallelCommandGroup(
-            hood.setTargetPositionCommand(new Rotation2d(shot.getHoodAngle())),
-            shooter.setTargetVelocityCommand(HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).in(RotationsPerSecond)),
+            // hood.setTargetPositionCommand(new Rotation2d(shot.getHoodAngle())),
+            shooter.setTargetVelocityCommand(-HubShooterMath.linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS).in(RotationsPerSecond)),
             turret.setTargetPositionCommand(HubShooterMath.calculateTurretAngle(poseSub.get(), hubBlue))
         );
     }
