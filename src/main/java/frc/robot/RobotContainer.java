@@ -21,7 +21,6 @@ import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.Shooter.ShooterMode;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 
@@ -188,27 +187,22 @@ public class RobotContainer {
         operator.leftBumper()
             .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
 
-		operator.a().onTrue(climb.getSysIdCommand());
 	}
 	public void testShooter() {
-      	operator.rightTrigger()
-			.onTrue(shooter.getShooter().setTargetVelocityCommand(-25))
-			.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
+    	operator.rightTrigger()
+       	 .onTrue(shooter.getShooter().setTargetVelocityCommand(-25))
+       	 .onFalse(shooter.getShooter().setTargetVelocityCommand(0));
 	}
-	public void testIndexer(){
-		operator.rightTrigger()
-       	 .onTrue(indexer.setTargetVelocityCommand( IndexerValue.INTAKE.getIndexerValue()))
-       	 .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		operator.leftBumper()
-       	 .onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-       	 .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+
+	public void testIndexer() {
+   		 operator.rightTrigger()
+      	  .onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+      	  .onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 	}
-	public void testKicker(){
-		operator.rightTrigger()
-       	 .onTrue(kicker.setTargetVelocityCommand( KickerValue.INTAKE.getKickerValue()))
-       	 .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-		operator.leftBumper()
-       	 .onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+
+	public void testKicker() {
+    	operator.rightTrigger()
+       	 .onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
        	 .onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 }
