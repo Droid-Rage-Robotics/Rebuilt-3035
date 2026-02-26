@@ -3,6 +3,11 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import static edu.wpi.first.units.Units.Inches;
+
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
@@ -174,8 +179,6 @@ public class RobotContainer {
         // driver.start().and(driver.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
         // driver.start().and(driver.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 	}
-	//FOR ENGINEERS!! ONLY USE THESE TEST BUTTONS BELOW. Once connected to the 
-	//robot plug in both controllers for testing the first controller listed is ALWAYS driver 1, the 2nd is driver 2 (operator)
 	
 	public void testClimb() {
         // climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
