@@ -9,11 +9,13 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.utility.HubShift;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.MatchValue;
 
 public class Robot extends LoggedRobot {
     private final RobotContainer robotContainer = new RobotContainer();
+    private HubShift hubShift = new HubShift();
 
     // private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer,shooter, light);
 
@@ -44,12 +46,15 @@ public class Robot extends LoggedRobot {
         // SmartDashboard.putData("Robot Misc", DroidRageConstants.robotMisc);
 
         // DroidRageConstants.alliance = DriverStation.getAlliance().get();
+        // robotContainer.updateShiftTime();
+        hubShift.updateShiftMessage();
     }
     
     @Override
     public void robotPeriodic() {
         commandScheduler.run();
         TelemetryUtils.onRobotPeriodic();
+        hubShift.updateShiftMessage();
 
         // if(DriverStation.isEStopped()){ //Robot Estopped
         //     light.flashingColors(light.red, light.white);
@@ -119,7 +124,11 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        // robotContainer.updateShiftTime();
+        // robotContainer.twoUpdateShiftTime();
+        // robotContainer.updateShiftTime();
+    }
 
     @Override
     public void teleopExit(){

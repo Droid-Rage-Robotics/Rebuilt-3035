@@ -1,15 +1,21 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.ShooterHold;
 import frc.robot.commands.shooter.ShooterScore;
 import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.drive.SwerveConfig;
@@ -24,8 +30,10 @@ import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
+// import frc.utility.HubShiftUtil;
+import frc.utility.TelemetryUtils.Dashboard;
 
-public class RobotContainer {
+public class RobotContainer{
 	private final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
@@ -213,4 +221,51 @@ public class RobotContainer {
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
+	// @Override
+    // public void initSendable(SendableBuilder builder) {
+    //     builder.addDoubleProperty("Target Speed", controller::getSetpoint, null);
+    //     builder.addDoubleProperty("Current Speed", () -> this.getVelocity().in(RotationsPerSecond), null);
+    //     builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
+    //     builder.addDoubleProperty("Torque Current", () -> getCurrent().in(Amp), null);
+    // }
+    // public void updateShiftTime() {
+    //     // Publish match time
+    //     SmartDashboard.putNumber("Misc/Match Time", DriverStation.getMatchTime());
+
+    //     // Update from HubShiftUtil
+    //     SmartDashboard.putString(
+    //         "Misc/Shifts/Remaining Shift Time",
+    //         String.format("%.1f", Math.max(HubShiftUtil.getShiftedShiftInfo().remainingTime(), 0.0)));
+    //     SmartDashboard.putBoolean("Misc/Shifts/Shift Active", HubShiftUtil.getShiftedShiftInfo().active());
+    //     SmartDashboard.putString(
+    //         "Misc/Shifts/Game State", HubShiftUtil.getShiftedShiftInfo().currentShift().toString());
+    //     SmartDashboard.putBoolean(
+    //         "Misc/Shifts/Active First?",
+    //         DriverStation.getAlliance().orElse(Alliance.Blue) == HubShiftUtil.getFirstActiveAlliance());
+    // }
+
+	// @Override
+    // public void practiceWriters() {}
+
+    // @Override
+    // public void alerts() {}
+
+	// public  final Sendable twoUpdateShiftTime = new Sendable() {
+    //     @Override
+    //     public void initSendable(SendableBuilder builder) {
+    //         builder.addDoubleProperty("Match Time", DriverStation::getMatchTime, null);
+    //         builder.addStringProperty("Shifts/Remaining Shift Time",
+	// 			()-> String.format("%.1f", Math.max(HubShiftUtil.getShiftedShiftInfo().remainingTime(), 0.0)), null);
+	// 		builder.addBooleanProperty("Shifts/Shift Active", getShiftActive());
+	// 		builder.addStringProperty(
+	// 			"Shifts/Game State", ()->HubShiftUtil.getShiftedShiftInfo().currentShift().toString());
+	// 		SmartDashboard.putBoolean(
+	// 			"Shifts/Active First?",
+	// 			DriverStation.getAlliance().orElse(Alliance.Blue) == HubShiftUtil.getFirstActiveAlliance());
+    //     };
+    // };
+
+	// public BooleanSupplier getShiftActive() {
+	// 	return ()->HubShiftUtil.getShiftedShiftInfo().active();
+	// }
 }
