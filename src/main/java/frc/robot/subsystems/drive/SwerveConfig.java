@@ -22,6 +22,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.DroidRageConstants;
 import lombok.Getter;
 
 public class SwerveConfig {
@@ -102,9 +103,9 @@ public class SwerveConfig {
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
-                .withSupplyCurrentLimit(Amps.of(35))
+                .withSupplyCurrentLimit(Amps.of(DriveConstants.ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT))
                 .withSupplyCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Amps.of(75))
+                .withStatorCurrentLimit(Amps.of(DriveConstants.ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT))
                 .withStatorCurrentLimitEnable(true)   
         );
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
@@ -112,8 +113,10 @@ public class SwerveConfig {
             new CurrentLimitsConfigs()
                 // Swerve azimuth does not require much torque output, so we can set a relatively low
                 // stator current limit to help avoid brownouts without impacting performance.
-                .withStatorCurrentLimit(Amps.of(80))
-                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(Amps.of(DriveConstants.ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT))
+                .withSupplyCurrentLimitEnable(true)
+                // .withStatorCurrentLimit(Amps.of(DriveConstants.ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT))
+                // .withStatorCurrentLimitEnable(true)
         );
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs

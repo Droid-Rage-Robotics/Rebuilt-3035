@@ -43,8 +43,8 @@ public class Climb extends ElevatorTemplate {
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor((1.0/48.0) * 0.375)
-        .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70);
+        .withSupplyCurrentLimit(70) //Reefscape 120
+        .withStatorCurrentLimit(70); //Reefscape 120
 
     public Climb(boolean isEnabled) {
         super(isEnabled, 

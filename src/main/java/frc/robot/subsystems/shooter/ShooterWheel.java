@@ -27,14 +27,18 @@ public class ShooterWheel extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1);
+        .withConversionFactor( 1)
+        .withSupplyCurrentLimit(80)
+        .withStatorCurrentLimit(80);
 
     private static final MotorConstants leftMotor = new MotorConstants() 
         .withDeviceId(5)
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1);
+        .withConversionFactor( 1)
+        .withSupplyCurrentLimit(80)
+        .withStatorCurrentLimit(80);
 
     public ShooterWheel(boolean isEnabled) {
         super(isEnabled,

@@ -25,9 +25,10 @@ public class DriveConstants {
         public static final double TURN_ENCODER_ROT_2_RAD_SEC = TURN_ENCODER_ROT_2_RAD/60;
 
         /* Current Limits */
-        public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35;
-        public static final double DRIVE_STATOR_CURRENT_LIMIT = 75;
-        public static final double TURN_SUPPLY_CURRENT_LIMIT = 80;
+        public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35; //MA:40
+        public static final double DRIVE_STATOR_CURRENT_LIMIT = 75; //MA:80
+        public static final double TURN_SUPPLY_CURRENT_LIMIT = 40; //MA:40 //2025=80
+        //SUPERNURDS had STATOR at 60, no supply
     }
 
 

@@ -29,8 +29,8 @@ public class Pivot extends ArmTemplate {
         .withConversionFactor(1)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
-        .withStatorCurrentLimit(70)
-        .withSupplyCurrentLimit(70);
+        .withStatorCurrentLimit(50) //Reefscape 50
+        .withSupplyCurrentLimit(50); //Reefscape None
 
 
     public Pivot(boolean isEnabled) {

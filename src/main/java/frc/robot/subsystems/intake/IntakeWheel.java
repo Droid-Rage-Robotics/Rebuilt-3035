@@ -30,8 +30,8 @@ public class IntakeWheel extends FlywheelTemplate {
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
-        .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70)
+        .withSupplyCurrentLimit(70) //Reefscape 80
+        .withStatorCurrentLimit(70) //Reefscape 80
         .withMotorType(MotorType.KrakenX60);
 
     public IntakeWheel(boolean isEnabled) {
