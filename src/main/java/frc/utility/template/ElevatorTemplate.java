@@ -164,10 +164,10 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Sensor Access ---------------- */
 
     public Distance getPosition() {
-        return Meters.of(encoder
+        return Meters.of(Units.inchesToMeters(0.375)*(encoder
             .map(enc -> enc.getAbsolutePosition().in(Radians) * conversionFactor)
             .orElse(motors[mainNum].getPosition().in(Radians) * conversionFactor)
-        );
+        ));
     }
 
     public LinearVelocity getVelocity() {

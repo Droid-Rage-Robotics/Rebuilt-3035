@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants.Direction;
@@ -33,7 +34,8 @@ public class Climb extends ElevatorTemplate {
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinDistance(Inches.zero())
         .withMaxDistance(Inches.of(9.5))
-        .withName("Turret")
+        .withName("Climb")
+        .withConversionFactor(1.0/48.0)
         .withOffset(0)
         .withMainNum(0);
     
@@ -42,7 +44,6 @@ public class Climb extends ElevatorTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor((1.0/48.0) * 0.375)
         .withSupplyCurrentLimit(70) //Reefscape 120
         .withStatorCurrentLimit(70); //Reefscape 120
 

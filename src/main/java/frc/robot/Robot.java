@@ -114,7 +114,8 @@ public class Robot extends LoggedRobot {
         // robotContainer.testDrive();
         // robotContainer.testSubsystems();
         // robotContainer.testClimb();
-        robotContainer.testShooter();
+        robotContainer.resetClimb();
+        // robotContainer.testShooter();
         
     }
 

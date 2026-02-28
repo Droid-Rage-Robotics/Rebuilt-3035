@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
@@ -29,20 +30,20 @@ public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
-    private final Climb climb = new Climb(false);
+    private final Climb climb = new Climb(true);
     
 	private final Intake intake = new Intake(
         new Pivot(false),
-        new IntakeWheel(true)
+        new IntakeWheel(false)
     );
 
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
 
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
 
     // private final Light light = new Light(0);
@@ -212,5 +213,15 @@ public class RobotContainer {
 		operator.leftBumper()
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+	}
+
+	public void resetClimb(){
+		operator.rightBumper()
+			.onTrue(new InstantCommand(()->climb.getMotor().setPower(0.25)))
+			.onFalse(new InstantCommand(()->climb.getMotor().setPower(0)));
+
+		operator.leftBumper()
+			.onTrue(new InstantCommand(()->climb.getMotor().setPower(-0.25)))
+			.onFalse(new InstantCommand(()->climb.getMotor().setPower(0)));
 	}
 }
