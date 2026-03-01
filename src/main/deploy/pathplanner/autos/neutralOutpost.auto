@@ -5,21 +5,110 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "TrenchToNeutralOutpost"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeDown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TrenchToNeutralOutpost"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "NeutralToTrenchOutpost"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NeutralToTrenchOutpost"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeUp"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "TrenchToHPS"
+            "name": "shootTrench"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TrenchToHPS"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootOutpost"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HPSToTower"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "climbUp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climbDown"
           }
         }
       ]

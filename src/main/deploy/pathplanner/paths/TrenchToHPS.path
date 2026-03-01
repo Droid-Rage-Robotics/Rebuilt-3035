@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.456457831325301,
-        "y": 0.6364819277108437
+        "x": 2.1264281619748484,
+        "y": 1.0382285676537815
       },
       "isLocked": false,
       "linkedName": "Trench"
@@ -20,8 +20,8 @@
         "y": 0.65
       },
       "prevControl": {
-        "x": 0.16448002453710592,
-        "y": 0.6474320904512725
+        "x": 1.9383586189516746,
+        "y": 1.0382285676537817
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Outpost",
