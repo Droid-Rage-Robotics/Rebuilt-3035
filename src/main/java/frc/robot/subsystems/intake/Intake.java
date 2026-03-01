@@ -15,32 +15,31 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import lombok.Getter;
 
-public class Intake implements Sendable{
-    public enum IntakeValue{
-        STOP(40,0),
+public class Intake implements Sendable {
+    public class IntakeValue {
+        public enum PivotAngle {
+            DOWN(160),
+            UP(40),
+            ;
 
-        INTAKE(160,-55),
-        OUTTAKE(160,75),
+            @Getter private final Rotation2d angle;
 
-        HOLD(35,20)
-        ;
-
-        /*
-        @Getter is an annotation from the lombok plugin.
-        It creates a method to return stuff without creating our own getters.
-        */ 
-        @Getter private final Rotation2d pivotAngle;
-        @Getter private final AngularVelocity intakeSpeed;
-
-
-        private IntakeValue(double pivotAngle, double intakeSpeed){
-            this.pivotAngle = Rotation2d.fromDegrees(pivotAngle);
-            this.intakeSpeed = RotationsPerSecond.of(intakeSpeed);
+            private PivotAngle(double angle) {
+                this.angle = Rotation2d.fromDegrees(angle);
+            }
         }
-        
-        private IntakeValue(IntakeValue value) {
-            this.pivotAngle = value.pivotAngle;
-            this.intakeSpeed = value.intakeSpeed;
+
+        public enum WheelVelocity {
+            INTAKE(-55),
+            OUTTAKE(75),
+            STOP(0)
+            ;
+
+            @Getter private final AngularVelocity velocity;
+
+            private WheelVelocity(double velocity) {
+                this.velocity = RotationsPerSecond.of(velocity);
+            }
         }
     }
 
@@ -52,7 +51,7 @@ public class Intake implements Sendable{
     public Intake(Pivot pivot, IntakeWheel intakeWheel){
         this.pivot = pivot;
         this.intakeWheel = intakeWheel;
-        CommandScheduler.getInstance().schedule(setPositionCommand(IntakeValue.STOP));
+        // CommandScheduler.getInstance().schedule(setPositionCommand(IntakeValue.STOP));
     }
 
     @Override
@@ -64,17 +63,11 @@ public class Intake implements Sendable{
         return intakeValue.toString();
     }
     
-    public Command setPositionCommand(IntakeValue targetPos) {
-        intakeValue = targetPos;
-        return new SequentialCommandGroup (
-            pivot.setTargetPositionCommand(targetPos.getPivotAngle()),
-            intakeWheel.setTargetVelocityCommand(targetPos.intakeSpeed)
-        );
-    }
-    // /** Not something to Command anything other than to make the writers reflect the position */
-    //  public Command setIntakeValue(IntakeValue targetPos) {
-    //      return new SequentialCommandGroup(
-    //         new InstantCommand(()-> intakeValue = targetPos)
+    // public Command setPositionCommand(IntakeValue targetPos) {
+    //     intakeValue = targetPos;
+    //     return new SequentialCommandGroup (
+    //         pivot.setTargetPositionCommand(targetPos.getPivotAngle()),
+    //         intakeWheel.setTargetVelocityCommand(targetPos.intakeSpeed)
     //     );
     // }
 
@@ -82,10 +75,12 @@ public class Intake implements Sendable{
         return intakeValue == value;
     }
 
-    public void isPushed(){  //Might need to put a timeout period for this AND might need a switch to turn it off when mechanism is off
-        boolean isPushed = pivot.getSetpointError()> 20 && pivot.getMotor().getVoltage()>5;
-        if (isPushed){
-            setPositionCommand(IntakeValue.HOLD);
-        }
-    }
+    // public void isPushed(){  //Might need to put a timeout period for this AND might need a switch to turn it off when mechanism is off
+    //     boolean isPushed = pivot.getSetpointError()> 20 && pivot.getMotor().getVoltage()>5;
+    //     if (isPushed){
+    //         setPositionCommand(IntakeValue.HOLD);
+    //     }
+    // }
+    
+    
 }

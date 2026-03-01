@@ -71,12 +71,12 @@ public class RobotContainer {
 		climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
 		// light.setDefaultCommand(new LightCommand(light));
 
-		driver.rightTrigger()
-			.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
-			.onFalse(intake.setPositionCommand(IntakeValue.STOP));
-		driver.leftTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
+		// driver.rightTrigger()
+		// 	.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
+		// 	.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+		// driver.leftTrigger()
+		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
+		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 
 
 		// operator.rightTrigger()
@@ -136,11 +136,11 @@ public class RobotContainer {
 		// 	.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
 		driver.rightTrigger()
-			.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
-			.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 		driver.leftTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 
 		// operator.rightBumper()
 		// 	.onTrue(shooter.getShooter().setTargetVelocityCommand(-60))
@@ -154,10 +154,10 @@ public class RobotContainer {
 		
 		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator));
 
-		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
+		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
 			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 
-		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
 
 
 		// operator.a()
@@ -169,7 +169,6 @@ public class RobotContainer {
 		// operator.y()
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
 				
-		driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
 	}
 
 	public void testDrive() {

@@ -7,7 +7,10 @@ import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
+import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.template.FlywheelTemplate;
@@ -40,5 +43,9 @@ public class IntakeWheel extends FlywheelTemplate {
             new SimpleMotorFeedforward(0.50353, 0.12171, 0.0036507), 
             constants, 
             motorConstants);
+    }
+
+    public Command setTargetVelocityCommand(IntakeValue.WheelVelocity target) {
+        return super.setTargetVelocityCommand(target.getVelocity());
     }
 }
