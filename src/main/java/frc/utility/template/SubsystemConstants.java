@@ -7,7 +7,8 @@ import edu.wpi.first.units.measure.Distance;
 public final class SubsystemConstants {
     public enum EncoderType {
         INTEGRATED,
-        ABSOLUTE
+        ABSOLUTE,
+        EXTERNAL
     }
     
     public String name;

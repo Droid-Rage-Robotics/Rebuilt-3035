@@ -214,9 +214,13 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Sensor Access ---------------- */
 
     public Rotation2d getCurrentAngle() {
-        return new Rotation2d(encoder
-            .map(enc -> enc.getAbsolutePosition().times(conversionFactor))
-            .orElse(motors[mainNum].getPosition().times(conversionFactor)));
+        if (constants.encoderType==EncoderType.ABSOLUTE) {
+            return new Rotation2d(encoder.get().getAbsolutePosition().times(conversionFactor));
+        } else {
+            return new Rotation2d(encoder
+                .map(enc -> enc.getPosition().times(conversionFactor))
+                .orElse(motors[mainNum].getPosition().times(conversionFactor)));
+        }
     }
 
     public AngularVelocity getVelocity() {

@@ -165,6 +165,10 @@ public class CANcoderEx {
         return encoder.getAbsolutePosition().getValue();
     }
 
+    public Angle getPosition() {
+        return encoder.getPosition().getValue();
+    }
+
     public Rotation2d getRotation2d() {
         return new Rotation2d(encoder.getAbsolutePosition().getValue());
     }
