@@ -28,22 +28,22 @@ import frc.robot.subsystems.shooter.Turret;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
-    private final Climb climb = new Climb(false);
+    private final Climb climb = new Climb(true);
     
 	private final Intake intake = new Intake(
         new Pivot(false),
         new IntakeWheel(false)
     );
 
-    private final Indexer indexer = new Indexer(false);
-    private final Kicker kicker = new Kicker(false);
+    private final Indexer indexer = new Indexer(true);
+    private final Kicker kicker = new Kicker(true);
 
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(false)
+        new ShooterWheel(true)
     );
 
     // private final Light light = new Light(0);
@@ -123,17 +123,24 @@ public class RobotContainer {
 		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
 		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 			
-		operator.rightBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+		// operator.rightBumper()
+		// 	.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+		// 	.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
 		operator.leftBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
-		operator.rightBumper()
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+		// operator.rightBumper()
+		// 	.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+		// 	.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+
+		driver.rightTrigger()
+			.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
+			.onFalse(intake.setPositionCommand(IntakeValue.STOP));
+		driver.leftTrigger()
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 
 		// operator.rightBumper()
 		// 	.onTrue(shooter.getShooter().setTargetVelocityCommand(-60))
@@ -189,7 +196,12 @@ public class RobotContainer {
 
 	}
 	public void testShooter() {
-    	// driver.leftTrigger()
+    	// operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
+		// 	// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+
+		// operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		
+		// driver.leftTrigger()
 		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
 		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 
@@ -198,21 +210,21 @@ public class RobotContainer {
 		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 		
 		
-		// operator.a()
-       	//  	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-50)))
-       	//  	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
+		operator.rightBumper()
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-20)))
+       	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
    	 	operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 		operator.leftBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		// operator.rightBumper()
-		// 	.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-		// 	.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-		// operator.leftBumper()
-		// 	.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-		// 	.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+		operator.rightBumper()
+			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+		operator.leftBumper()
+			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 
 	public void resetClimb(){
