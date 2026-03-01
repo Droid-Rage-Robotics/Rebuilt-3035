@@ -19,7 +19,7 @@ import lombok.Getter;
 public class Climb extends ElevatorTemplate {
     public enum ClimbValue {
         START(Inches.of(0)),
-        CLIMB(Inches.of(0));
+        CLIMB(Inches.of(-5.48));
 
         @Getter private final Distance height;
 
@@ -33,7 +33,7 @@ public class Climb extends ElevatorTemplate {
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinDistance(Inches.zero())
-        .withMaxDistance(Inches.of(9.5))
+        .withMaxDistance(Inches.of(-5.48))
         .withName("Climb")
         .withConversionFactor(1.0/48.0)
         .withOffset(0)
