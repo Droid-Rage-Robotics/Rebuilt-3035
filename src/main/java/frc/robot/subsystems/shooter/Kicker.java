@@ -32,14 +32,14 @@ public class Kicker extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withMinVelocity(RotationsPerSecond.of(60))
+        .withMinVelocity(RotationsPerSecond.of(-60))
         .withMaxVelocity(RotationsPerSecond.of(60))
         .withName("Kicker")
         .withOffset(0)
         .withMainNum(0);
     
     private static final MotorConstants motor = new MotorConstants() 
-        .withDeviceId(1)
+        .withDeviceId(18)
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)

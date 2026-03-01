@@ -20,9 +20,9 @@ public class Intake implements Sendable{
         STOP(40,0),
 
         INTAKE(160,-55),
-        OUTTAKE(160,55),
+        OUTTAKE(160,75),
 
-        HOLD(40,20)
+        HOLD(35,20)
         ;
 
         /*
