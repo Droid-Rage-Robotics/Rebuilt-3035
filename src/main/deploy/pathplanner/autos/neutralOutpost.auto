@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchToTowerOutpost"
+            "pathName": "TrenchToHPS"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Outpost",
   "choreoAuto": false
 }

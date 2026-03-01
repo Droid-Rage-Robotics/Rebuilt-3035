@@ -17,12 +17,12 @@ import lombok.Getter;
 
 public class Intake implements Sendable{
     public enum IntakeValue{
-        STOP(0,0),
+        STOP(40,0),
 
-        INTAKE(126,-55),
-        OUTTAKE(126,55),
+        INTAKE(160,-55),
+        OUTTAKE(160,55),
 
-        HOLD(0,20)
+        HOLD(40,20)
         ;
 
         /*

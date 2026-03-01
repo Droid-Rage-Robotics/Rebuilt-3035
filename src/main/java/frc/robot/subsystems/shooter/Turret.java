@@ -24,7 +24,7 @@ public class Turret extends TurretTemplate {
         .withMainNum(0);
     
     private static final MotorConstants motorConstants = new MotorConstants() 
-        .withDeviceId(2)
+        .withDeviceId(18)
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)

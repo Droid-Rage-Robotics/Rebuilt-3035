@@ -25,7 +25,7 @@ public class Hood extends ArmTemplate {
         .withMainNum(0);
 
     private static final MotorConstants motorConstants = new MotorConstants() 
-        .withDeviceId(6)
+        .withDeviceId(19)
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
@@ -48,7 +48,7 @@ public class Hood extends ArmTemplate {
         super.periodic();
 
         if (getCurrentAngle().getDegrees()<0) {
-            resetEncoder();
+            resetEncoder(Degrees.of(0));
         }
     }
 }

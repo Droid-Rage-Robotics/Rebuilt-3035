@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.48755281690141,
-        "y": 1.8952464788732404
+        "x": 7.5,
+        "y": 0.875
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Neutral"
     },
     {
       "anchor": {
         "x": 3.575316901408451,
-        "y": 0.6497183098591552
+        "y": 0.65
       },
       "prevControl": {
-        "x": 7.918697183098592,
-        "y": 0.21857394366197236
+        "x": 7.375316901408451,
+        "y": 0.6499999999999996
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Trench"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "outpost",
+  "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.05208601343043

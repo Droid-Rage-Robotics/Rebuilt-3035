@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -32,6 +33,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     private final double minAngleRad;
     private final double maxAngleRad;
     private final double conversionFactor;
+    
     protected final int mainNum;
     protected final String name;
     private final Optional<CANcoderEx> encoder;
@@ -84,7 +86,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     @Override
     public void elasticInit() {
         SmartDashboard.putData(name, this);
-        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
+        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand(0));
     }
 
     @Override
@@ -108,7 +110,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void periodic() {
-        double currentAngleRad = getCurrentAngle().getRadians();
+        double currentAngleRad = getCurrentAngle().getRadians();//+ Math.toRadians(constants.offset);
         
         double pidOut = controller.calculate(currentAngleRad);
         var setpoint = controller.getSetpoint();
@@ -165,7 +167,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
             .map(enc -> enc.getAbsolutePosition())
             .orElse(motors[mainNum].getPosition());
 
-        return Rotation2d.fromRotations(rot.in(Rotations) * conversionFactor);
+        return Rotation2d.fromRotations((rot.in(Rotations) * conversionFactor) + constants.offset);
     }
 
     public AngularVelocity getVelocity() {
@@ -199,19 +201,21 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         }
     }
     
-    public void resetEncoder() {
+    public void resetEncoder(Angle resetAngle) {
         if (hasExternalEncoder()) {
             return;
         } else {
             for (TalonEx motor: motors) {
-                motor.resetEncoder(0);
+                motor.resetEncoder(resetAngle.in(Rotations));
+                // motor.resetEncoder(resetAngle.in(Rotations)+Math.to);
+
             }
-            setGoalAngle(Rotation2d.kZero);
+            setGoalAngle(Rotation2d.fromRotations(resetAngle.in(Rotation)+constants.offset));//new Rotation2d(resetAngle)
         }
     }
 
-    public Command resetEncoderCommand() {
-        return new InstantCommand(this::resetEncoder) {
+    public Command resetEncoderCommand(double resetDegree) {
+        return new InstantCommand(()->resetEncoder(Degrees.of(resetDegree))) {//+constants.offset
             @Override
             public boolean runsWhenDisabled() {
                 return true;

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
@@ -14,13 +15,14 @@ import frc.utility.template.SubsystemConstants;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Pivot extends ArmTemplate {
+    private static double startingPosDegree = 35;
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1.0/54.0)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withMinAngle(Degrees.zero())
-        .withMaxAngle(Degrees.of(130))
+        .withMinAngle(Degrees.of(35))
+        .withMaxAngle(Degrees.of(160))
         .withName("Pivot")
-        .withOffset(0)
+        .withOffset(Units.degreesToRotations(startingPosDegree))//Rotation
         .withMainNum(0);
 
     private static final MotorConstants motorConstants = new MotorConstants()
@@ -29,26 +31,42 @@ public class Pivot extends ArmTemplate {
         .withConversionFactor(1)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
-        .withStatorCurrentLimit(50) //Reefscape 50
-        .withSupplyCurrentLimit(50); //Reefscape None
+        .withStatorCurrentLimit(20) //Reefscape 50
+        .withSupplyCurrentLimit(15); //Reefscape None
 
 
     public Pivot(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(5, 0, 0,
-            new TrapezoidProfile.Constraints(2, 4)), 
-            new ArmFeedforward(0.74109, 0.27134, 3.1928, 0.21903), 
+            new ProfiledPIDController(25, 0, .35,//4
+            new TrapezoidProfile.Constraints(10, 15)), 
+            
+// new ProfiledPIDController(25, 0, .35,//4
+//             new TrapezoidProfile.Constraints(10, 15))
+
+            // new TrapezoidProfile.Constraints(0.001, 4)), 
+            // new ArmFeedforward(0, 0.35, 0, 0.0), 
+            new ArmFeedforward(0.74109, 0.27134, 3.3, 0.23), 
+
+            // new ProfiledPIDController(25, 0, 0.35,//4, 25 d .35
+            // new TrapezoidProfile.Constraints(11, 20)), 
+            // // new TrapezoidProfile.Constraints(0.001, 4)), 
+            // // new ArmFeedforward(0, 0.35, 0, 0.0), 
+            // new ArmFeedforward(0.74109, 0.27134, 3.4, 0.25), //3.1928
+
             constants, 
             null, 
             motorConstants);
+            setTargetPositionDegrees(startingPosDegree);
     }
 
     @Override
     public void periodic() {
         super.periodic();
 
-        if (getCurrentAngle().getDegrees()<0) {
-            resetEncoder();
+        //TODO:TEst
+        if (getCurrentAngle().getDegrees()<35) {
+            resetEncoderCommand(0);
         }
+
     }
 }
