@@ -104,7 +104,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Commands ---------------- */
 
     public Command setTargetVelocityCommand(AngularVelocity target){
-        return runOnce(() -> setTargetVelocity(target));
+        return new InstantCommand(() -> setTargetVelocity(target));
     }
 
     /* ---------------- Manual Goal Control ---------------- */

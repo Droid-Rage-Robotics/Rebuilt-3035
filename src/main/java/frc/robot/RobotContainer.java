@@ -22,7 +22,6 @@ import frc.robot.subsystems.intake.Pivot;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Kicker.KickerValue;
-import frc.robot.subsystems.shooter.Shooter.ShooterMode;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
@@ -72,12 +71,12 @@ public class RobotContainer {
 		climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
 		// light.setDefaultCommand(new LightCommand(light));
 
-		// driver.rightTrigger()
-		// 	.onTrue(intake.setPositionCommand(IntakeValue.INTAKE))
-		// 	.onFalse(intake.setPositionCommand(IntakeValue.STOP));
-		// driver.leftTrigger()
-		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
-		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
+		driver.rightTrigger()
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+		driver.leftTrigger()
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 
 
 		operator.rightTrigger()
@@ -96,9 +95,15 @@ public class RobotContainer {
 		// operator.y()
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
 
-		// operator.x()
-		// 	.onTrue(shooter.shootHubFromTower());
+		// operater.x()
+		// 	.
 				
+	}
+
+	public void testAim() {
+		driver.a()
+			.onTrue(new ShooterScore(drive, shooter))
+			.onFalse(new ShooterHold(drive, shooter));
 	}
 
 	public void testSubsystems() {

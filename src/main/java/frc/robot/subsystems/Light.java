@@ -22,8 +22,8 @@ public class Light extends SubsystemBase {
 		startShiftNum = endShootNum+1,
 		endShiftNum = LEDlength+8;
 	private final CANdleEx candle;
-	public Light(int deviceID) {
-		candle = CANdleEx.create(deviceID, LEDlength);
+	public Light() {
+		candle = CANdleEx.create(23, LEDlength);
 	}
 
 	@Override

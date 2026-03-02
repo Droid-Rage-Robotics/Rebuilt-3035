@@ -82,7 +82,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
 
         center.append(ligament);
 
-        if (constants.encoderType == EncoderType.ABSOLUTE) {
+        if (constants.encoderType == EncoderType.ABSOLUTE || constants.encoderType == EncoderType.EXTERNAL) {
             if (encoderConstants == null) {
                 throw new NullPointerException("Encoder constants required for absolute encoder");
             }
@@ -252,13 +252,15 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     }
 
     public void resetEncoder() {
-        if (hasExternalEncoder()) {
-            return;
-        } else {
-            for (TalonEx motor: motors) {
-                motor.resetEncoder(0);
-            }
-            setGoalAngle(Rotation2d.kZero);
+        switch(constants.encoderType){
+            case ABSOLUTE: 
+                return;
+            case EXTERNAL: 
+                encoder.get().resetPosition(Degrees.of(0));
+            case INTEGRATED: 
+                for (TalonEx motor: motors) {
+                    motor.resetEncoder(0);
+                }
         }
     }
 

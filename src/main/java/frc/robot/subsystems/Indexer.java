@@ -7,6 +7,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
@@ -46,6 +48,8 @@ public class Indexer extends FlywheelTemplate{
         .withStatorCurrentLimit(80)
         .withSupplyCurrentLimit(80);
         //SUPERNERDS have 40 stator
+    // private Timer stallTimer = new Timer();
+    // private double intakeTime = 0;
 
     public Indexer(boolean isEnabled) {
         super(isEnabled,
@@ -59,8 +63,33 @@ public class Indexer extends FlywheelTemplate{
     // public void periodic() {
     //     super.periodic();
 
-    //     if (getCurrent().in(Amps) >= 100) {
-    //         setTargetVelocity(-getTargetVelocity());
+    //     if (Math.abs(getCurrent().in(Amps)) >= 50) {
+    //         // setTargetVelocity(-getTargetVelocity());
+    //         System.out.println("INDEXER STALL");
+    //         // System.out.println(intakeTime);//4.7
+    //         stallTimer.reset();
+    //         // stallTimer
+    //         System.out.println(stallTimer.get());//4
+
+    //         if (stallTimer.get()>0.2) {
+    //             System.out.println("REVERSING");
+    //             setTargetVelocity(RotationsPerSecond.of(-getTargetVelocity()));
+    //             stallTimer.restart();
+    //             if (stallTimer.get()>0.5) {
+    //                 System.out.println("REVERTING BACK");
+    //                 setTargetVelocity(RotationsPerSecond.of(-getTargetVelocity()));
+    //                 // intakeTime = 0;
+    //             }
+    //         }
     //     }
+    // }
+
+    // @Override
+    // public Command setTargetVelocityCommand(AngularVelocity target) {
+    //     if(target==IndexerValue.INTAKE.getIndexerValue()){
+    //         intakeTime=stallTimer.get();
+            
+    //     }
+    //     return super.setTargetVelocityCommand(target);
     // }
 }

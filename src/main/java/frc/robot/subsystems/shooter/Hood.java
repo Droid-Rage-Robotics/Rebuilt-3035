@@ -36,7 +36,7 @@ public class Hood extends ArmTemplate {
     public Hood(boolean isEnabled) {
         super(isEnabled, 
             new ProfiledPIDController(15, 0, 0,
-            new TrapezoidProfile.Constraints(0.5, 0.5)), 
+            new TrapezoidProfile.Constraints(5, 5)), 
             new ArmFeedforward(0.4334, 0,0.28114, 2.0731), 
             constants, 
             null, 

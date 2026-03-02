@@ -58,7 +58,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         this.mainNum=constants.mainNum;
         this.name=constants.name;
 
-        if (constants.encoderType == EncoderType.ABSOLUTE) {
+        if (constants.encoderType == EncoderType.ABSOLUTE || constants.encoderType == EncoderType.EXTERNAL) {
             if (encoderConstants == null) {
                 throw new NullPointerException("Encoder constants required for absolute encoder");
             }
