@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.shooter.ShooterScore;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Light;
@@ -28,7 +29,8 @@ public class AutoChooser implements Dashboard {
         NamedCommands.registerCommand("climbDown", AutoCommands.climbDown(climb));
         NamedCommands.registerCommand("climbUp", AutoCommands.climbUp(climb));
 
-        addTuningAuto(drive);
+        // addTuningAuto(drive);
+        addTurretTesting(drive, shooter);
 
         TelemetryUtils.registerDashboard(this);
     }
@@ -37,6 +39,17 @@ public class AutoChooser implements Dashboard {
         return autoChooser.getSelected();
     }
 
+    private static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
+        autoChooser.addOption("TurretTestStrafeRight", new ParallelCommandGroup(
+            TuningAutos.strafeRight(drive),
+            new ShooterScore(drive, shooter))
+        ); // Use this for Turret Testing
+        autoChooser.addOption("TurretTestStrafeLeft", new ParallelCommandGroup(
+            TuningAutos.strafeLeft(drive),
+            new ShooterScore(drive, shooter))
+        ); // Use this for Turret Testing
+    }
+    
     public static void addTuningAuto(SwerveDrive drive) {
         autoChooser.addOption("BackTest", TuningAutos.backTest(drive));
         autoChooser.addOption("ForwardTest", TuningAutos.forwardTest(drive));

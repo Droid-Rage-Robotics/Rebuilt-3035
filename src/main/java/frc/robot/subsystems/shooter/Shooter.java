@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
+import frc.robot.commands.shooter.ShooterScore;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.Periodic;
@@ -148,74 +149,88 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     @Override
     public void alerts() {}
 
+    public void shooterPeriodic() {
+        switch(shooterMode){
+            case HOLD:
+                break;
+            case OPPOSITE:
+            case HOARD:
+                break;
+            case SCORE:
+                break;
+            default:
+                break;
+        }
+    }
+
     public Command setShooterModeCommand(ShooterMode shooterMode) {
         return new InstantCommand(() -> setShooterMode(shooterMode));
     }
     
-    public void turret() {
-        switch(shooterMode){
-            case HOLD:
-                // turret.setTargetPositionCommand(turret.getPositionSetpoint());
-                // hood.setTargetPositionCommand(hood.getPositionSetpoint());
-                // shooter.setTargetVelocityCommand(shooter.getTargetVelocity());
-                // shooter.setTargetVelocityCommand(IDLE_RPM);
+    // public void turret() {
+    //     switch(shooterMode){
+    //         case HOLD:
+    //             // turret.setTargetPositionCommand(turret.getPositionSetpoint());
+    //             // hood.setTargetPositionCommand(hood.getPositionSetpoint());
+    //             // shooter.setTargetVelocityCommand(shooter.getTargetVelocity());
+    //             // shooter.setTargetVelocityCommand(IDLE_RPM);
 
-                //Should shooter be at same speed or just stop?
-                break;
-            case OPPOSITE:
-                // turret.setTargetPositionCommand(OPP_ANGLE);
-                getShooterSpeed(); //Based on limelight
-                break;
-            case SCORE:
-                break;
-            case HOARD:
-                hoardAiming();
-                break;
-        }
-    }
-
-    public void getShooterSpeed(){
-        // shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
-    }
-
-    private void turretAim() {
-        // if (limelight.getTV()) {
-        //     double txDeg = limelight.getTX();
-        //     Rotation2d currentAngle = turret.getCurrentAngle();
-
-        //     // Shift the goal by the Limelight error
-        //     Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
-        //     turret.setGoalAngle(newGoal);
-        // }
-    }
-
-    private void hoardAiming() {
-         // 1. Determine target field angle based on alliance
-        Rotation2d targetFieldAngle;
-        if (DroidRageConstants.alliance == Alliance.Red) {
-            targetFieldAngle = Rotation2d.fromDegrees(0.0); // Point toward red
-        } else {
-            targetFieldAngle = Rotation2d.fromDegrees(180.0); // Point toward blue
-        }
-
-        // 2. Get current robot heading from Pigeon 2
-        Rotation2d robotHeading = poseSub.get().getRotation();
-
-        // 3. Convert target field angle to robot-relative
-        Rotation2d robotRelativeAngle = targetFieldAngle.minus(robotHeading);
-
-        // 4. Account for turret's 180° offset
-        Rotation2d turretSetpoint = robotRelativeAngle.minus(Rotation2d.fromDegrees(180.0));
-
-        // 5. Send to turret (Rotation2d handles normalization automatically)
-        turret.setGoalAngle(turretSetpoint);
-    }
-
-    // public Command shootHubFromTower(){
-    //     return new SequentialCommandGroup(
-    //         shooterWheel.setTargetVelocityCommand(AngularVelocity),
-    //         turret.setTargetPositionCommand(Rotation2d.fromDegrees(0))
-
-    //     )
+    //             //Should shooter be at same speed or just stop?
+    //             break;
+    //         case OPPOSITE:
+    //             // turret.setTargetPositionCommand(OPP_ANGLE);
+    //             getShooterSpeed(); //Based on limelight
+    //             break;
+    //         case SCORE:
+    //             break;
+    //         case HOARD:
+    //             hoardAiming();
+    //             break;
+    //     }
     // }
+
+    // public void getShooterSpeed(){
+    //     // shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
+    // }
+
+    // private void turretAim() {
+    //     // if (limelight.getTV()) {
+    //     //     double txDeg = limelight.getTX();
+    //     //     Rotation2d currentAngle = turret.getCurrentAngle();
+
+    //     //     // Shift the goal by the Limelight error
+    //     //     Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
+    //     //     turret.setGoalAngle(newGoal);
+    //     // }
+    // }
+
+    // private void hoardAiming() {
+    //      // 1. Determine target field angle based on alliance
+    //     Rotation2d targetFieldAngle;
+    //     if (DroidRageConstants.alliance == Alliance.Red) {
+    //         targetFieldAngle = Rotation2d.fromDegrees(0.0); // Point toward red
+    //     } else {
+    //         targetFieldAngle = Rotation2d.fromDegrees(180.0); // Point toward blue
+    //     }
+
+    //     // 2. Get current robot heading from Pigeon 2
+    //     Rotation2d robotHeading = poseSub.get().getRotation();
+
+    //     // 3. Convert target field angle to robot-relative
+    //     Rotation2d robotRelativeAngle = targetFieldAngle.minus(robotHeading);
+
+    //     // 4. Account for turret's 180° offset
+    //     Rotation2d turretSetpoint = robotRelativeAngle.minus(Rotation2d.fromDegrees(180.0));
+
+    //     // 5. Send to turret (Rotation2d handles normalization automatically)
+    //     turret.setGoalAngle(turretSetpoint);
+    // }
+
+    // // public Command shootHubFromTower(){
+    // //     return new SequentialCommandGroup(
+    // //         shooterWheel.setTargetVelocityCommand(AngularVelocity),
+    // //         turret.setTargetPositionCommand(Rotation2d.fromDegrees(0))
+
+    // //     )
+    // // }
 }
