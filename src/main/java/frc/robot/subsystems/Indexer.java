@@ -17,7 +17,7 @@ import lombok.Getter;
 
 public class Indexer extends FlywheelTemplate{
     public enum IndexerValue {
-        INTAKE(50),
+        INTAKE(100),
         OUTTAKE(-25),
         STOP(0),
         HOLD(0);
@@ -32,8 +32,8 @@ public class Indexer extends FlywheelTemplate{
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1.0/3.0)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withMinVelocity(RotationsPerSecond.of(-50))
-        .withMaxVelocity(RotationsPerSecond.of(50))
+        .withMinVelocity(RotationsPerSecond.of(-150))
+        .withMaxVelocity(RotationsPerSecond.of(150))
         .withName("Indexer")
         .withOffset(0)
         .withMainNum(0);
@@ -42,12 +42,14 @@ public class Indexer extends FlywheelTemplate{
         .withDeviceId(14)
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Forward)
-        .withIdleMode(NeutralModeValue.Coast);
+        .withIdleMode(NeutralModeValue.Coast)
+        .withStatorCurrentLimit(80)
+        .withSupplyCurrentLimit(80);
         //SUPERNERDS have 40 stator
 
     public Indexer(boolean isEnabled) {
         super(isEnabled,
-            new PIDController(0.032889, 0, 0), 
+            new PIDController(0.5, 0, 0), //0.032889
             new SimpleMotorFeedforward(0.34224, 0.37116, 0.0095347), 
             constants, 
             motor);

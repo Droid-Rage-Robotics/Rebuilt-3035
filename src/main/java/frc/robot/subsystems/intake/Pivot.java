@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.DroidRageConstants;
+import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.utility.motor.MotorConstants;
 import frc.utility.motor.MotorConstants.Direction;
 import frc.utility.template.ArmTemplate;
@@ -69,4 +70,11 @@ public class Pivot extends ArmTemplate {
         }
 
     }
+
+    // public void isPushed(){  //Might need to put a timeout period for this AND might need a switch to turn it off when mechanism is off
+    //     boolean isPushed = pivot.getSetpointError()> 20 && pivot.getMotor().getVoltage()>5;
+    //     if (isPushed){
+    //         setPositionCommand(IntakeValue.HOLD);
+    //     }
+    // }
 }

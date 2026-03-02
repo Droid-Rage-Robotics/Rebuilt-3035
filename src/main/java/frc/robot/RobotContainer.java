@@ -22,6 +22,7 @@ import frc.robot.subsystems.intake.Pivot;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Kicker.KickerValue;
+import frc.robot.subsystems.shooter.Shooter.ShooterMode;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
@@ -30,7 +31,7 @@ public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
-    private final Climb climb = new Climb(true);
+    private final Climb climb = new Climb(false);
     
 	private final Intake intake = new Intake(
         new Pivot(false),
@@ -79,21 +80,12 @@ public class RobotContainer {
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
 
 
-		// operator.rightTrigger()
-		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
-		// operator.leftTrigger()
-		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
-			
-		// driver.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
-		// 	.onFalse(shooter.getHood().setTargetPositionCommand(0));
+		operator.rightTrigger()
+			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+		operator.leftTrigger()
+			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 		
 		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
-
-		// driver.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
-		// 	// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
-
-		// driver.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
-
 
 		// operator.a()
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
@@ -103,6 +95,9 @@ public class RobotContainer {
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.SCORE));
 		// operator.y()
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));
+
+		// operator.x()
+		// 	.onTrue(shooter.shootHubFromTower());
 				
 	}
 
