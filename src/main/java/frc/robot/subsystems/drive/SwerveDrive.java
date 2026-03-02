@@ -17,6 +17,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -348,5 +349,11 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
                 // Blue, this is normally
                 // the case
                 this); // Subsystem for requirements
+    }
+
+    public Translation2d getTranslation2d(){
+        // return getState().Pose;
+        return new Translation2d();
+        //TODO: Fix
     }
 }
