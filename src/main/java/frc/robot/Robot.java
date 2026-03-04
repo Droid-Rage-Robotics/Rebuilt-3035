@@ -50,6 +50,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         commandScheduler.run();
         TelemetryUtils.onRobotPeriodic();
+        robotContainer.periodic();
 
         // if(DriverStation.isEStopped()){ //Robot Estopped
         //     light.flashingColors(light.red, light.white);
