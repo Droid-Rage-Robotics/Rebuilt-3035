@@ -2,7 +2,7 @@ package frc.utility.template;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.utility.motor.TalonEx;
+import frc.utility.devices.motor.TalonEx;
 
 //Works
 public class SetPower {

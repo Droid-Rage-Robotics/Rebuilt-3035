@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.CANBus;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -16,6 +17,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public final class DroidRageConstants {
     public enum Alignment {
@@ -70,6 +72,48 @@ public final class DroidRageConstants {
     public static boolean isWithinDeadzone(double stick) {
         return Math.abs(stick) < DroidRageConstants.Gamepad.OPERATOR_STICK_DEADZONE;
     }
+
+    public class ControllerUtils {
+        public static double getRightStickDeg(CommandXboxController controller) {
+            double x = controller.getRightX();
+            double y = controller.getRightY();
+
+            // atan2 gives the angle of the vector (y, x)
+            double angleRadians = Math.atan2(-y, -x);
+            double angleDegrees = Math.toDegrees(angleRadians)-90;
+
+            // Normalize to [0, 360)
+            if (angleDegrees < 0) {
+                angleDegrees += 360;
+            }
+
+            return angleDegrees;            
+        }
+
+        public static Rotation2d getRightStickRotation2d(CommandXboxController controller) {
+            var rot = new Rotation2d(controller.getRightX(), controller.getRightY());
+            rot = rot.plus(Rotation2d.fromDegrees(90));
+            return rot;
+        }
+
+        public static double getLeftStickDeg(CommandXboxController controller) {
+            double x = controller.getLeftX();
+            double y = controller.getLeftY();
+
+            // atan2 gives the angle of the vector (y, x)
+            double angleRadians = Math.atan2(-y, -x);
+            double angleDegrees = Math.toDegrees(angleRadians)-90;
+
+            // Normalize to [0, 360)
+            if (angleDegrees < 0) {
+            angleDegrees += 360;
+            }
+            
+            return angleDegrees;
+        }
+    }
+
+
 
     public static final CANBus driveCanBus = new CANBus("drive");
     public static final CANBus rioCanBus = new CANBus();

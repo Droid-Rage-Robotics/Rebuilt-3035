@@ -1,4 +1,4 @@
-package frc.utility;
+package frc.utility.devices;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANdleConfiguration;

@@ -1,4 +1,4 @@
-package frc.utility.motor;
+package frc.utility.devices.motor;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;

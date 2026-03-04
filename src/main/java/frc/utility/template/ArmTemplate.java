@@ -20,10 +20,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
-import frc.utility.encoder.CANcoderEx;
-import frc.utility.encoder.EncoderConstants;
-import frc.utility.motor.TalonEx;
-import frc.utility.motor.MotorConstants;
+import frc.utility.devices.encoder.CANcoderEx;
+import frc.utility.devices.encoder.EncoderConstants;
+import frc.utility.devices.motor.MotorConstants;
+import frc.utility.devices.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ArmTemplate extends SubsystemBase implements Dashboard {

@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
-import frc.utility.motor.TalonEx;
-import frc.utility.motor.MotorConstants;
+import frc.utility.devices.motor.MotorConstants;
+import frc.utility.devices.motor.TalonEx;
 
 public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private final TalonEx[] motors;
