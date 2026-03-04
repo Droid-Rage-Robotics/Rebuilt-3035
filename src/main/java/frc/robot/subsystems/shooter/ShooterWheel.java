@@ -42,8 +42,8 @@ public class ShooterWheel extends FlywheelTemplate {
 
     public ShooterWheel(boolean isEnabled) {
         super(isEnabled,
-            new PIDController(0.035014, 0, 0), 
-            new SimpleMotorFeedforward(0.083079, 0.11738, 0.0072731), 
+            new PIDController(0.043, 0, 0), //0.035014
+            new SimpleMotorFeedforward(0.085, 0.11738, 0.0072731), //ks: 0.083079
             constants, 
             rightMotor, leftMotor);
     }
