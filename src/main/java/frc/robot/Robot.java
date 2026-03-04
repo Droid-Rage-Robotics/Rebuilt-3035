@@ -31,7 +31,7 @@ public class Robot extends LoggedRobot {
         }
         
         TelemetryUtils.onRobotInit();
-
+        DroidRageConstants.alliance = DriverStation.getAlliance().get();
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
 
@@ -110,12 +110,12 @@ public class Robot extends LoggedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        // robotContainer.configureTeleOpBindings();
+        robotContainer.configureTeleOpBindings();
         // robotContainer.testDrive();
         // robotContainer.testSubsystems();
         // robotContainer.testClimb();
         // robotContainer.resetClimb();1
-        robotContainer.testShooter();
+        // robotContainer.testShooter();
         // robotContainer.testAim();
     
         

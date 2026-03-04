@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.shooter.Shooter;
@@ -31,8 +32,8 @@ public class ShooterScore extends Command{
         this.shooter = shooter;
         this.robot = drive::getState;
 
-        var alliance = DriverStation.getAlliance();
-        this.hubPose = alliance.isPresent() && alliance.get() == Alliance.Red 
+        // var alliance = DroidRageConstants.alliance;
+        this.hubPose = DroidRageConstants.alliance == Alliance.Red 
             ? FieldConstants.HUB_RED 
             : FieldConstants.HUB_BLUE;
 

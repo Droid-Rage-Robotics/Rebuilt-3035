@@ -28,24 +28,20 @@ import frc.robot.subsystems.shooter.Turret;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	// private final Vision vision = new Vision();
-    private final Climb climb = new Climb(false);
-    
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
-
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
-
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
-
+    private final Climb climb = new Climb(false);
     // private final Light light = new Light(0);
     
     private final CommandXboxController driver =
@@ -118,14 +114,13 @@ public class RobotContainer {
 			.onTrue(new ShooterScore(drive, shooter))
 			.onFalse(new ShooterHold(drive, shooter));
 
-		// driver.povDown().onTrue(null)
-		// operator.rightTrigger()
-		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
-		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+		operator.b()
+			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
+			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 			
-		// operator.rightBumper()
-		// 	.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
-		// 	.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+		operator.rightBumper()
+			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
 		operator.leftBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
@@ -142,20 +137,8 @@ public class RobotContainer {
 			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 
-		// operator.rightBumper()
-		// 	.onTrue(shooter.getShooter().setTargetVelocityCommand(-60))
-		// 	.onFalse(shooter.getShooter().setTargetVelocityCommand(0));
-
-		// driver.b().onTrue(shooter.getTurret().setTargetPositionCommand(-90))
-		//     .onFalse(shooter.getTurret(  ).setTargetPositionCommand(0));
-
-		// operator.a().onTrue(shooter.getHood().setTargetPositionCommand(10))
-		// 	.onFalse(shooter.getHood().setTargetPositionCommand(0));
-		
-		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator));
-
-		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
-			// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		operator.x()
+			.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
 
 		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
 
@@ -182,36 +165,19 @@ public class RobotContainer {
 	}
 	
 	public void testClimb() {
-        // climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
-
-        // operator.rightBumper()
-        //     .onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
-        // operator.leftBumper()
-        //     .onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
         operator.rightBumper()
             .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() + 0.5)));
         operator.leftBumper()
             .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
-
 	}
 	public void testShooter() {
-    	// operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.INTAKE.getPivotAngle()));
-		// 	// .onFalse(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
+		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+		// operator.a().onTrue(new ShooterScore(drive, shooter));
+		
+		// operator.rightBumper()
+       	//  	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(5)))
+       	//  	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
 
-		// operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.STOP.getPivotAngle()));
-		
-		// driver.leftTrigger()
-		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.OUTTAKE.getIntakeSpeed()))
-		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
-
-		// driver.rightTrigger()
-		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.INTAKE.getIntakeSpeed()))
-		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.STOP.getIntakeSpeed()));
-		
-		
-		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-40)))
-       	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
    	 	operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
@@ -222,8 +188,8 @@ public class RobotContainer {
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 		operator.leftBumper()
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+			.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+
 	}
 
 	public void resetClimb(){
