@@ -25,6 +25,7 @@ import frc.robot.subsystems.shooter.Kicker.KickerValue;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
+import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
@@ -45,6 +46,8 @@ public class RobotContainer {
         new Hood(false),
         new ShooterWheel(true)
     );
+	private final DRAreaManager areaManager = new DRAreaManager(drive);
+
 
     // private final Light light = new Light(0);
     
@@ -234,5 +237,9 @@ public class RobotContainer {
 		operator.leftBumper()
 			.onTrue(new InstantCommand(()->climb.getMotor().setPower(-0.25)))
 			.onFalse(new InstantCommand(()->climb.getMotor().setPower(0)));
+	}
+
+	public void periodic() {
+		areaManager.periodic();
 	}
 }
