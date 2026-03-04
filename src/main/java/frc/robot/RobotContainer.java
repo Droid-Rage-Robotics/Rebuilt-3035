@@ -32,15 +32,15 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 

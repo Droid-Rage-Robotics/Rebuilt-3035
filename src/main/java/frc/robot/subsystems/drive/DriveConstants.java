@@ -54,13 +54,13 @@ public class DriveConstants {
         THETA_KI(0),
         THETA_KD(0),
 
-        // Turn PID for Swerve Pod
-        TURN_KP(.4),//1
+        // // Turn PID for Swerve Pod
+        // TURN_KP(.4),//1
 
-        // Drive Feedforward
-        DRIVE_KS(0.13), // this value is multiplied by veloicty in meteres per second
-        DRIVE_KV(2.7), //this value is the voltage that iwll be constantly applied
-        // DRIVE_KA = 0.12,
+        // // Drive Feedforward
+        // DRIVE_KS(0.13), // this value is multiplied by veloicty in meteres per second
+        // DRIVE_KV(2.7), //this value is the voltage that iwll be constantly applied
+        // // DRIVE_KA = 0.12,
 
         // Bevel Gears to the Left <-
         // BACK_LEFT_ABSOLUTE_ENCODER_OFFSET_RADIANS(0),
