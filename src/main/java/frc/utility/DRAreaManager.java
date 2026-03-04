@@ -15,7 +15,8 @@ public class DRAreaManager{
 	public enum Zone {
 		ALLIANCE_ZONE,
 		OPPOSITION,
-		NEUTRAL
+		NEUTRAL,
+		BETWEEN
 	}
 
 	private Zone currentZone = Zone.ALLIANCE_ZONE;
@@ -37,7 +38,8 @@ public class DRAreaManager{
 				currentZone = Zone.OPPOSITION;
 			} else if (nuetralZone.contains(drivePosition)) {
 				currentZone = Zone.NEUTRAL;
-			}
+			} else 
+				currentZone = Zone.BETWEEN;
 		} else {
 			if (redAllianceZone.contains(drivePosition)) {
 				currentZone = Zone.OPPOSITION;
@@ -45,7 +47,8 @@ public class DRAreaManager{
 				currentZone = Zone.ALLIANCE_ZONE;
 			} else if (nuetralZone.contains(drivePosition)) {
 				currentZone = Zone.NEUTRAL;
-			}
+			} else 
+				currentZone = Zone.BETWEEN;
 		}
 		SmartDashboard.putString("Current Zone", currentZone.toString());
 	}

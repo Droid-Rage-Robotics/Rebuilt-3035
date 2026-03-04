@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -56,7 +57,6 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     private final boolean isEnabled;
 
     private volatile Speed speed = Speed.NORMAL;
-    
     
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
@@ -352,8 +352,6 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     }
 
     public Translation2d getTranslation2d(){
-        // return getState().Pose;
-        return new Translation2d();
-        //TODO: Fix
+        return fieldPose.getRobotPose().getTranslation();
     }
 }
