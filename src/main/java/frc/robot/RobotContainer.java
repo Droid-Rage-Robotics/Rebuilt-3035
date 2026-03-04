@@ -210,7 +210,7 @@ public class RobotContainer {
 		
 		
 		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-20)))
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(-40)))
        	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
    	 	operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
