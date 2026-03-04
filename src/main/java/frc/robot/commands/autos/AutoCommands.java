@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.Kicker;
 
 public class AutoCommands{
 

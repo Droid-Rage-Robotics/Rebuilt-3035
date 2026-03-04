@@ -111,12 +111,13 @@ public class Robot extends LoggedRobot {
         //     autonomousCommand.cancel();
         // }
 		DriverStation.silenceJoystickConnectionWarning(true);
-        robotContainer.configureTeleOpBindings();
+        // robotContainer.configureTeleOpBindings();
+        DroidRageConstants.alliance = DriverStation.getAlliance().get();
         // robotContainer.testDrive();
         // robotContainer.testSubsystems();
         // robotContainer.testClimb();
         // robotContainer.resetClimb();1
-        // robotContainer.testShooter();
+        robotContainer.testShooter();
         // robotContainer.testAim();
     
         
