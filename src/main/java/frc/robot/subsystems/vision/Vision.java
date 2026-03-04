@@ -18,7 +18,7 @@ import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
-import frc.utility.LimelightEx;
+import frc.utility.devices.LimelightEx;
 import lombok.Getter;
 
 public class Vision extends SubsystemBase implements Dashboard{

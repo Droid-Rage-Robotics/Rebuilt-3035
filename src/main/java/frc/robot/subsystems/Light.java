@@ -4,7 +4,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.utility.CANdleEx;
+import frc.utility.devices.CANdleEx;
 
 public class Light extends SubsystemBase {
 	// 0-7: On Board LEDs

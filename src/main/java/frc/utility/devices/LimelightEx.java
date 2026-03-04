@@ -1,4 +1,4 @@
-package frc.utility;
+package frc.utility.devices;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -10,6 +10,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
+import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
 
 public class LimelightEx implements Sendable, TelemetryUpdater{

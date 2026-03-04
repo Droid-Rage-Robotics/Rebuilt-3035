@@ -1,4 +1,4 @@
-package frc.utility.motor;
+package frc.utility.devices.motor;
 
 import static edu.wpi.first.units.Units.Volts;
 
@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.utility.TelemetryUtils.Dashboard;
-import frc.utility.motor.MotorConstants.Direction;
+import frc.utility.devices.motor.MotorConstants.Direction;
 
 public class TalonEx implements Dashboard {
     private final TalonFX motor;
