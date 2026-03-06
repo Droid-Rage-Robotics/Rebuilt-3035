@@ -45,8 +45,8 @@ public class Indexer extends FlywheelTemplate{
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
-        .withStatorCurrentLimit(80)//100
-        .withSupplyCurrentLimit(80);//100
+        .withStatorCurrentLimit(50)//100
+        .withSupplyCurrentLimit(50);//100
         //SUPERNERDS have 40 stator
     // private Timer stallTimer = new Timer();
     // private double intakeTime = 0;
