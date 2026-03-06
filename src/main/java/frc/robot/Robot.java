@@ -118,13 +118,15 @@ public class Robot extends LoggedRobot {
         // robotContainer.testClimb();
         // robotContainer.resetClimb();1
         // robotContainer.testShooter();
-        // robotContainer.testAim();
+        robotContainer.testAim();
     
         
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        robotContainer.testTurretPeriodic();
+    }
 
     @Override
     public void teleopExit(){

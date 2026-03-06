@@ -5,7 +5,9 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.DroidRageConstants.ControllerUtils;
 import frc.robot.commands.manual.ManualClimb;
+import frc.robot.commands.manual.ManualTurret;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.ShooterHold;
 import frc.robot.commands.shooter.ShooterScore;
@@ -29,11 +31,11 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
     private final Indexer indexer = new Indexer(false);
     private final Kicker kicker = new Kicker(false);
@@ -100,9 +102,12 @@ public class RobotContainer {
 	}
 
 	public void testAim() {
-		driver.a()
-			.onTrue(new ShooterScore(drive, shooter))
-			.onFalse(new ShooterHold(drive, shooter));
+		// driver.a()
+			// .onTrue(new ShooterScore(drive, shooter))
+			// .onFalse(new ShooterHold(drive, shooter));
+		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
+
+		shooter.getTurret().setDefaultCommand(new ManualTurret(shooter, operator));
 	}
 
 	public void testSubsystems() {
@@ -175,10 +180,10 @@ public class RobotContainer {
 	}
 	public void testShooter() {
 		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		// operator.a().onTrue(new ShooterScore(drive, shooter));
+		operator.a().onTrue(new ShooterScore(drive, shooter));
 		
 		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(50)))
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(30)))
        	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
 
    	 	operator.rightBumper()
@@ -193,6 +198,17 @@ public class RobotContainer {
 		operator.leftBumper()
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
+		// operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
+		// operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
+
+		// operator.rightTrigger()
+		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+
+		// operator.leftTrigger()
+		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+
 	}
 
 	public void resetClimb(){
@@ -203,6 +219,10 @@ public class RobotContainer {
 		operator.leftBumper()
 			.onTrue(new InstantCommand(()->climb.getMotor().setPower(-0.25)))
 			.onFalse(new InstantCommand(()->climb.getMotor().setPower(0)));
+	}
+
+	public void testTurretPeriodic() {
+		shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator));
 	}
 
 	public void periodic() {

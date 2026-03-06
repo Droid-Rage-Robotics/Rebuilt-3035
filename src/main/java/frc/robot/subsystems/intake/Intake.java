@@ -18,7 +18,7 @@ import lombok.Getter;
 public class Intake implements Sendable {
     public class IntakeValue {
         public enum PivotAngle {
-            DOWN(160),
+            DOWN(170),
             UP(40),
             ;
 
@@ -30,8 +30,8 @@ public class Intake implements Sendable {
         }
 
         public enum WheelVelocity {
-            INTAKE(-55),
-            OUTTAKE(75),
+            INTAKE(-100),
+            OUTTAKE(100),
             STOP(0)
             ;
 
