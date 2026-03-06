@@ -47,6 +47,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     private final boolean isEnabled;
 
     private Rotation2d goalAngle = Rotation2d.fromRadians(0);
+    private double calculatedVoltage = 0;
 
     private final MechanismLigament2d ligament;
     private final Mechanism2d mechanism;
@@ -125,7 +126,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         builder.addDoubleProperty("Position Setpoint (deg)", this::getPositionSetpoint, null);
         builder.addDoubleProperty("Velocity Setpoint (deg/s)", this::getVelocitySetpoint, null);
         builder.addDoubleProperty("Current Velocity (rot/s)", ()-> getVelocity().in(RotationsPerSecond), null);
-        builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
+        builder.addDoubleProperty("Applied Voltage", ()->calculatedVoltage, null);
         builder.addDoubleProperty("Position Error (deg)", this::getPositionError, null);
         
         // mechanism.initSendable(builder);
@@ -143,8 +144,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         var setpoint = controller.getSetpoint();
 
         double ffOut = feedforward.calculate(setpoint.velocity);
-
-        setVoltage(pidOut + ffOut);
+        
+        calculatedVoltage = pidOut + ffOut;
+        setVoltage(calculatedVoltage);
     }
 
     @Override
@@ -164,7 +166,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         setGoalAngle(Rotation2d.fromDegrees(degrees));
     }
 
-    public synchronized void setGoalAngle(Rotation2d angle) {
+    //This function was synchronized, but I (Lucky) removed it
+    public  void setGoalAngle(Rotation2d angle) {
         double angleRad = angle.getRadians();
         
         // Check if within valid range - if so, use as-is
