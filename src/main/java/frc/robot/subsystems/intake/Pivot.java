@@ -42,19 +42,7 @@ public class Pivot extends ArmTemplate {
         super(isEnabled, 
             new ProfiledPIDController(25, 0, .35,//4
             new TrapezoidProfile.Constraints(10, 15)), 
-            
-// new ProfiledPIDController(25, 0, .35,//4
-//             new TrapezoidProfile.Constraints(10, 15))
-
-            // new TrapezoidProfile.Constraints(0.001, 4)), 
-            // new ArmFeedforward(0, 0.35, 0, 0.0), 
             new ArmFeedforward(0.74109, 0.27134, 3.3, 0.23), 
-
-            // new ProfiledPIDController(25, 0, 0.35,//4, 25 d .35
-            // new TrapezoidProfile.Constraints(11, 20)), 
-            // // new TrapezoidProfile.Constraints(0.001, 4)), 
-            // // new ArmFeedforward(0, 0.35, 0, 0.0), 
-            // new ArmFeedforward(0.74109, 0.27134, 3.4, 0.25), //3.1928
 
             constants, 
             null, 
