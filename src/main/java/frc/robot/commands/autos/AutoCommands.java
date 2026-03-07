@@ -43,8 +43,19 @@ public class AutoCommands{
         return intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE);
     }
 
-    public static Command shoot(Shooter shooter) {
-        var shot = calculateShotFromFunnelClearance(state.Pose, FieldConstants.queryOurHub(), FieldConstants.queryOurHub());
-        
+    public static Command shootFromBlue(Shooter shooter) {
+        return new ParallelCommandGroup(
+            shooter.getTurret().setTargetPositionCommand(null),
+            shooter.getHood().setTargetPositionCommand(null),
+            shooter.getShooterWheel().setTargetVelocityCommand(null)
+        );
+    }
+
+    public static Command shootFromRed(Shooter shooter) {
+        return new ParallelCommandGroup(
+            shooter.getTurret().setTargetPositionCommand(null),
+            shooter.getHood().setTargetPositionCommand(null),
+            shooter.getShooterWheel().setTargetVelocityCommand(null)
+        );
     }
 }

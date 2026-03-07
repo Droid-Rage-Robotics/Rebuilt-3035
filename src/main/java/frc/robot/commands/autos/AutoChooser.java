@@ -5,11 +5,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.shooter.ShooterScore;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Indexer;
@@ -28,6 +25,10 @@ public class AutoChooser implements Dashboard {
         NamedCommands.registerCommand("intakeUp", AutoCommands.intakeUp(intake));
         NamedCommands.registerCommand("climbDown", AutoCommands.climbDown(climb));
         NamedCommands.registerCommand("climbUp", AutoCommands.climbUp(climb));
+        NamedCommands.registerCommand("intake", AutoCommands.intake(intake));
+        NamedCommands.registerCommand("outtake", AutoCommands.outtake(intake));
+        NamedCommands.registerCommand("shootFromBlue", AutoCommands.shootFromBlue(shooter));
+        NamedCommands.registerCommand("shootFromRed", AutoCommands.shootFromRed(shooter));
 
         // addTuningAuto(drive);
         addTurretTesting(drive, shooter);
