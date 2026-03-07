@@ -37,12 +37,12 @@ public class RobotContainer {
         new Pivot(false),
         new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(false);
-    private final Kicker kicker = new Kicker(false);
+    private final Indexer indexer = new Indexer(true);
+    private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(false)
+        new ShooterWheel(true)
     );
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
@@ -85,7 +85,7 @@ public class RobotContainer {
 		operator.leftTrigger()
 			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 		
-		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
+		shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
 
 		// operator.a()
 		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
@@ -107,7 +107,8 @@ public class RobotContainer {
 			// .onFalse(new ShooterHold(drive, shooter));
 		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
 
-		shooter.getTurret().setDefaultCommand(new ManualTurret(shooter, operator));
+		// shooter.getTurret().setDefaultCommand(new ManualTurret(shooter, driver));
+		driver.a().onTrue(indexer.getSysIdCommand());
 	}
 
 	public void testSubsystems() {
@@ -180,7 +181,7 @@ public class RobotContainer {
 	}
 	public void testShooter() {
 		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		operator.a().onTrue(new ShooterScore(drive, shooter));
+		// operator.a().onTrue(new ShooterScore(drive, shooter));
 		
 		operator.rightBumper()
        	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(30)))

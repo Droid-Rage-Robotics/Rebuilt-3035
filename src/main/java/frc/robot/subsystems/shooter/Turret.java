@@ -18,7 +18,7 @@ import frc.utility.template.TurretTemplate;
 
 public class Turret extends TurretTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/20)
+        .withConversionFactor(1.0/20.0)
         .withEncoderType(EncoderType.EXTERNAL)
         .withMinAngle(Degrees.of(-220))
         .withMaxAngle(Degrees.of(140))

@@ -161,9 +161,13 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- SysId ---------------- */
 
     private SysIdRoutine getSysIdRoutine() {
-        motors[mainNum].getMotor().getVelocity().setUpdateFrequency(100);
         return new SysIdRoutine(
-            new SysIdRoutine.Config(), 
+            new SysIdRoutine.Config(
+                null, // Use default ramp rate (1 V/s)
+                Volts.of(9), // Reduce dynamic step voltage to 4 to prevent brownout
+                Seconds.of(10), // Use default timeout (10 s)
+                null
+            ), 
             new SysIdRoutine.Mechanism(
                 this::setVoltage,
                 (log) -> {
