@@ -65,9 +65,7 @@ public class Indexer extends FlywheelTemplate{
     public void periodic(){
         super.periodic();
 
-        isStalling = Math.abs(getCurrent().in(Amps)) >=50;
-        isReversing = Math.abs(getCurrent().in(Amps)) >=50;
-    // if (Math.abs(getCurrent().in(Amps)) >=50){
+    if (Math.abs(getCurrent().in(Amps)) >=50){
         if (!isStalling){
             isStalling = true;
             stallTimer.reset();
@@ -76,24 +74,31 @@ public class Indexer extends FlywheelTemplate{
         }
         System.out.println(stallTimer.get());
 
-        if (stallTimer.get()> 0.2 && !isReversing){
+        if (stallTimer.get()> 0.2 && stallTimer.get()<1.5){
             System.out.println("REVERSING");
             isReversing = true;
             setTargetVelocity(IndexerValue.OUTTAKE.indexerValue);
-            stallTimer.reset();
-        }
+            // stallTimer.reset();
+        } 
+        // else{
+        //     System.out.println("REVERTING BACK");
+        //     isReversing = false;
+        //     isStalling = false;
+        //     setTargetVelocity(IndexerValue.INTAKE.indexerValue);
+        // }
 
-        if (isReversing && stallTimer.get()>1){
-            System.out.println("REVERTING BACK");
-            isReversing = false;
-            isStalling = false;
-            setTargetVelocity(IndexerValue.INTAKE.indexerValue);
-        }
-    // }
-    //  else {
-    //     isStalling = false;
-    //     isReversing = false;
-    // }
+        // if (isReversing && stallTimer.get()>1){
+        //     System.out.println("REVERTING BACK");
+        //     isReversing = false;
+        //     isStalling = false;
+        //     setTargetVelocity(IndexerValue.INTAKE.indexerValue);
+        // } 
+    } else {
+        isStalling = false;
+        isReversing = false;
+        stallTimer.reset();
+
+    }
 
 // }
     // @Override
