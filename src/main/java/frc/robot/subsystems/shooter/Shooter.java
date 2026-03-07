@@ -43,57 +43,28 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         SCORE, //Hub Scoring
         HOARD // shooting on alliance side
     }
-    private enum TargetHeight {
-        TAG_2(2, 0),
-        TAG_3(3, 0),
-        TAG_4(4, 0),
-        TAG_5(5, 0),
-        TAG_8(8, 0),
-        TAG_9(9, 0),
-        TAG_10(10, 0),
-        TAG_11(11, 0),
-        TAG_18(18, 0),
-        TAG_19(19, 0),
-        TAG_20(20, 0),
-        TAG_21(21, 0),
-        TAG_24(24, 0),
-        TAG_25(25, 0),
-        TAG_26(26, 0),
-        TAG_27(27, 0);
+    public enum ShooterValue {
+        SHOOT_HUB(180,0,100),
+        SHOOT_BUMP_RIGHT(-120,0,100),
+        SHOOT_BUMP_LEFT(120,SHOOT_BUMP_RIGHT.getHoodAngle(),SHOOT_BUMP_RIGHT.getVelocity()),
+        HOLD(0, 0, 10),
+        HOARD(0,0,0)
+        ;
 
-        private final int id;
-        private final double height;
+        @Getter private final Rotation2d turretAngle;
+        @Getter private final Rotation2d hoodAngle;
+        @Getter private final AngularVelocity velocity;
 
-        private TargetHeight(int id, double height) {
-            this.id = id;
-            this.height = height;
+        private ShooterValue(double turretAngle, double hoodAngle, double velocity) {
+            this.turretAngle = Rotation2d.fromDegrees(turretAngle);
+            this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
+            this.velocity = RotationsPerSecond.of(velocity);
         }
-
-        public static double getHeight(double tagId) {
-            for (TargetHeight target : values()) {
-                if (target.id == tagId) {
-                    return target.height;
-                }
-            }
-            return 0; // Default height if tag ID not found - TODO: Fix
+        private ShooterValue(double turretAngle, Rotation2d hoodAngle, AngularVelocity velocity) {
+            this.turretAngle = Rotation2d.fromDegrees(turretAngle);
+            this.hoodAngle = hoodAngle;
+            this.velocity = velocity;
         }
-    }
-    
-    private static final InterpolatingDoubleTreeMap SCORE_SPEED_MAP = new InterpolatingDoubleTreeMap();
-    // private static final InterpolatingDoubleTreeMap HOARD_SPEED_MAP = new InterpolatingDoubleTreeMap();
-
-    static{
-        //Include all speed values for the shooter (LL Distance, Speed)
-
-        //Scoring
-        SCORE_SPEED_MAP.put(0.0,0.0);
-        SCORE_SPEED_MAP.put(4.1,100.0);
-
-
-        // //Hoarding
-        // HOARD_SPEED_MAP.put(0.0,0.0);
-        // HOARD_SPEED_MAP.put(4.1,100.0);
-
     }
 
     @Getter private final Turret turret;
@@ -101,11 +72,11 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     @Getter private final ShooterWheel shooterWheel;
     
     public static final AngularVelocity IDLE_VELOCITY = RotationsPerSecond.of(30);
-    private final double OPP_ANGLE = 0;
+    // private final double OPP_ANGLE = 0;
 
-    private static final double LIMELIGHT_HEIGHT=0;
-    private static final double LIMELIGHT_PITCH=0;
-    private static final double SHOOTER_EFFICIENCY = 1;
+    // private static final double LIMELIGHT_HEIGHT=0;
+    // private static final double LIMELIGHT_PITCH=0;
+    // private static final double SHOOTER_EFFICIENCY = 1;
 
     private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("DriveState");
     private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
@@ -125,12 +96,12 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     public void periodic() {
         
-        ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
-            poseSub.get(), 
-            chassisSpeedsSub.get(), 
-            FieldConstants.HUB_BLUE, 
-            1
-        );
+        // ShotData shot = HubShooterMath.iterativeMovingShotFromFunnelClearance(
+        //     poseSub.get(), 
+        //     chassisSpeedsSub.get(), 
+        //     FieldConstants.HUB_BLUE, 
+        //     1
+        // );
     }
 
     @Override
@@ -163,74 +134,15 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         }
     }
 
-    public Command setShooterModeCommand(ShooterMode shooterMode) {
-        return new InstantCommand(() -> setShooterMode(shooterMode));
+    // public Command setShooterModeCommand(ShooterMode shooterMode) {
+    //     return new InstantCommand(() -> setShooterMode(shooterMode));
+    // }
+
+    public Command setShooterTargetCommand(ShooterValue shooterValue) {
+        return new ParallelCommandGroup(
+            turret.setTargetPositionCommand(shooterValue.getTurretAngle()),
+            hood.setTargetPositionCommand(shooterValue.getHoodAngle()),
+            shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())
+        );
     }
-    
-    // public void turret() {
-    //     switch(shooterMode){
-    //         case HOLD:
-    //             // turret.setTargetPositionCommand(turret.getPositionSetpoint());
-    //             // hood.setTargetPositionCommand(hood.getPositionSetpoint());
-    //             // shooter.setTargetVelocityCommand(shooter.getTargetVelocity());
-    //             // shooter.setTargetVelocityCommand(IDLE_RPM);
-
-    //             //Should shooter be at same speed or just stop?
-    //             break;
-    //         case OPPOSITE:
-    //             // turret.setTargetPositionCommand(OPP_ANGLE);
-    //             getShooterSpeed(); //Based on limelight
-    //             break;
-    //         case SCORE:
-    //             break;
-    //         case HOARD:
-    //             hoardAiming();
-    //             break;
-    //     }
-    // }
-
-    // public void getShooterSpeed(){
-    //     // shooter.setTargetVelocityCommand(SCORE_SPEED_MAP.get(limelight.getTY()));
-    // }
-
-    // private void turretAim() {
-    //     // if (limelight.getTV()) {
-    //     //     double txDeg = limelight.getTX();
-    //     //     Rotation2d currentAngle = turret.getCurrentAngle();
-
-    //     //     // Shift the goal by the Limelight error
-    //     //     Rotation2d newGoal = currentAngle.plus(Rotation2d.fromDegrees(txDeg));
-    //     //     turret.setGoalAngle(newGoal);
-    //     // }
-    // }
-
-    // private void hoardAiming() {
-    //      // 1. Determine target field angle based on alliance
-    //     Rotation2d targetFieldAngle;
-    //     if (DroidRageConstants.alliance == Alliance.Red) {
-    //         targetFieldAngle = Rotation2d.fromDegrees(0.0); // Point toward red
-    //     } else {
-    //         targetFieldAngle = Rotation2d.fromDegrees(180.0); // Point toward blue
-    //     }
-
-    //     // 2. Get current robot heading from Pigeon 2
-    //     Rotation2d robotHeading = poseSub.get().getRotation();
-
-    //     // 3. Convert target field angle to robot-relative
-    //     Rotation2d robotRelativeAngle = targetFieldAngle.minus(robotHeading);
-
-    //     // 4. Account for turret's 180° offset
-    //     Rotation2d turretSetpoint = robotRelativeAngle.minus(Rotation2d.fromDegrees(180.0));
-
-    //     // 5. Send to turret (Rotation2d handles normalization automatically)
-    //     turret.setGoalAngle(turretSetpoint);
-    // }
-
-    // // public Command shootHubFromTower(){
-    // //     return new SequentialCommandGroup(
-    // //         shooterWheel.setTargetVelocityCommand(AngularVelocity),
-    // //         turret.setTargetPositionCommand(Rotation2d.fromDegrees(0))
-
-    // //     )
-    // // }
 }

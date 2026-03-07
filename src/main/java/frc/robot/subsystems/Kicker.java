@@ -41,7 +41,7 @@ public class Kicker extends FlywheelTemplate {
     private static final MotorConstants motor = new MotorConstants() 
         .withDeviceId(18)
         .withCANBus(DroidRageConstants.rioCanBus)
-        .withDirection(Direction.Forward)
+        .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
         .withSupplyCurrentLimit(50)
@@ -49,8 +49,8 @@ public class Kicker extends FlywheelTemplate {
 
     public Kicker(boolean isEnabled) {
         super(isEnabled,
-            new PIDController(0.2, 0, 0), 
-            new SimpleMotorFeedforward(0.046, 0.14, 0.25), //.043254, 0.1229, 0.02026
+            new PIDController(0.24, 0, 0), 
+            new SimpleMotorFeedforward(0.042, 0.14, 0.25), //.043254, 0.1229, 0.02026
             constants, 
             motor);
     }

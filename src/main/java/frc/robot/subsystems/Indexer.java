@@ -8,9 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.template.FlywheelTemplate;
@@ -21,7 +19,7 @@ import lombok.Getter;
 public class Indexer extends FlywheelTemplate{
     public enum IndexerValue {
         INTAKE(10), //100
-        OUTTAKE(5),//-25
+        OUTTAKE(-5),//-25
         STOP(0),
         HOLD(0);
 
@@ -65,40 +63,40 @@ public class Indexer extends FlywheelTemplate{
     public void periodic(){
         super.periodic();
 
-    if (Math.abs(getCurrent().in(Amps)) >=50){
-        if (!isStalling){
-            isStalling = true;
-            stallTimer.reset();
-            stallTimer.start();
-            System.out.println("INDEXER STALL");
-        }
-        System.out.println(stallTimer.get());
+        // if (Math.abs(getCurrent().in(Amps)) >=60){
+        //     if (!isStalling){
+        //         isStalling = true;
+        //         stallTimer.reset();
+        //         stallTimer.start();
+        //         System.out.println("INDEXER STALL");
+        //     }
+        //     System.out.println(stallTimer.get());
 
-        if (stallTimer.get()> 0.2 && stallTimer.get()<1.5){
-            System.out.println("REVERSING");
-            isReversing = true;
-            setTargetVelocity(IndexerValue.OUTTAKE.indexerValue);
-            // stallTimer.reset();
-        } 
-        // else{
-        //     System.out.println("REVERTING BACK");
-        //     isReversing = false;
+        //     if (stallTimer.get()> 0.2 && stallTimer.get()<1.5){
+        //         System.out.println("REVERSING");
+        //         isReversing = true;
+        //         setTargetVelocity(IndexerValue.OUTTAKE.indexerValue);
+        //         stallTimer.reset();
+        //     } 
+        //     else{
+        //         System.out.println("REVERTING BACK");
+        //         isReversing = false;
+        //         isStalling = false;
+        //         setTargetVelocity(IndexerValue.INTAKE.indexerValue);
+        //     }
+
+        //     if (isReversing && stallTimer.get()>1){
+        //         System.out.println("REVERTING BACK");
+        //         isReversing = false;
+        //         isStalling = false;
+        //         setTargetVelocity(IndexerValue.INTAKE.indexerValue);
+        //     } 
+        // } else {
         //     isStalling = false;
-        //     setTargetVelocity(IndexerValue.INTAKE.indexerValue);
+        //     isReversing = false;
+        //     stallTimer.reset();
+
         // }
-
-        // if (isReversing && stallTimer.get()>1){
-        //     System.out.println("REVERTING BACK");
-        //     isReversing = false;
-        //     isStalling = false;
-        //     setTargetVelocity(IndexerValue.INTAKE.indexerValue);
-        // } 
-    } else {
-        isStalling = false;
-        isReversing = false;
-        stallTimer.reset();
-
-    }
 
 // }
     // @Override

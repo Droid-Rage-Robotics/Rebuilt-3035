@@ -114,10 +114,10 @@ public class Robot extends LoggedRobot {
         // robotContainer.configureTeleOpBindings();
         DroidRageConstants.alliance = DriverStation.getAlliance().get();
         // robotContainer.testDrive();
-        // robotContainer.testSubsystems();
+        robotContainer.testSubsystems();
         // robotContainer.testClimb();
         // robotContainer.resetClimb();1
-        robotContainer.testShooter();
+        // robotContainer.testShooter();
         // robotContainer.testAim();
     
         
