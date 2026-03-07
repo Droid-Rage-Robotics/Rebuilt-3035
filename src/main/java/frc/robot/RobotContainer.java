@@ -43,7 +43,7 @@ public class RobotContainer {
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
         new Turret(false),
-        new Hood(false),
+        new Hood(true),
         new ShooterWheel(true)
     );
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
@@ -80,7 +80,7 @@ public class RobotContainer {
 
 		driver.povUp()
 			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
-		operator.povDown()
+		driver.povDown()
 			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 		
 		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test

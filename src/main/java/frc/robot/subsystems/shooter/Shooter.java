@@ -44,11 +44,11 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         HOARD // shooting on alliance side
     }
     public enum ShooterValue {
-        SHOOT_HUB(180,0,100),
-        SHOOT_BUMP_RIGHT(-120,0,100),
+        SHOOT_HUB(180,15,40),
+        SHOOT_BUMP_RIGHT(-120,10,40),
         SHOOT_BUMP_LEFT(120,SHOOT_BUMP_RIGHT.getHoodAngle(),SHOOT_BUMP_RIGHT.getVelocity()),
-        HOLD(0, 0, 10),
-        HOARD(0,0,0)
+        HOLD(0, 0, 20),
+        HOARD(0,5,40)
         ;
 
         @Getter private final Rotation2d turretAngle;

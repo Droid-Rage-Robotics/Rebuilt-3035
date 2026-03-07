@@ -32,12 +32,11 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final ProfiledPIDController controller;
     private final ElevatorFeedforward feedforward;
 
-    private final double maxPosition;
-    private final double minPosition;
+    // private final double maxPosition;
+    // private final double minPosition;
     private final double conversionFactor;
     private final int mainNum;
     private final SubsystemConstants constants;
-    private final String name;
 
     private final boolean isEnabled;
 
@@ -55,11 +54,10 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.mainNum=constants.mainNum;
         this.controller=controller;
         this.feedforward=feedforward;
-        this.maxPosition=constants.maxDistance.in(Meters);
-        this.minPosition=constants.minDistance.in(Meters);
+        // this.maxPosition=constants.maxDistance.in(Meters);
+        // this.minPosition=constants.minDistance.in(Meters);
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
-        this.name = constants.name;
 
         if (constants.encoderType == EncoderType.ABSOLUTE) {
             if (encoderConstants == null) {
@@ -88,8 +86,8 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(name, this);
-        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
+        SmartDashboard.putData(constants.name, this);
+        SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override public void practiceWriters() {}
@@ -97,27 +95,24 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Goal Position (inches)", () -> getGoalPosition().in(Inches), null);
-        builder.addDoubleProperty("Current Position (inches)", () -> getPosition().in(Inches), null);
-        builder.addDoubleProperty("Position Setpoint (inches)", () -> Units.metersToInches(getPositionSetpoint()), null);
-        builder.addDoubleProperty("Velocity Setpoint (m/s)", this::getVelocitySetpoint, null);
-        builder.addDoubleProperty("Current Velocity (m/s)", () -> getVelocity().in(MetersPerSecond), null);
+        builder.addDoubleProperty("Final Goal Position (in)", () -> getGoalPosition().in(Inches), null);
+        builder.addDoubleProperty("Current Position (in)", () -> getPosition().in(Inches), null);
+        builder.addDoubleProperty("Position Setpoint (in)", () -> Units.metersToInches(controller.getSetpoint().position), null);
+        // builder.addDoubleProperty("Velocity Setpoint (m/s)", this::getVelocitySetpoint, null);
+        // builder.addDoubleProperty("Current Velocity (m/s)", () -> getVelocity().in(MetersPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
-        builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
+        builder.addDoubleProperty("Position Error (in)", () -> Units.metersToInches(controller.getPositionError()), null);
     }
 
     /* ---------------- Periodic Control Loop ---------------- */
 
     @Override
     public void periodic() {
-        // double meter = getPosition().in(Meters);
+        double meter = getPosition().in(Meters);
+        double pidOut = controller.calculate(meter);
+        double ffOut = feedforward.calculate(controller.getSetpoint().velocity);
 
-        // double pidOut = controller.calculate(meter);
-        // var setpoint = controller.getSetpoint();
-
-        // double ffOut = feedforward.calculate(setpoint.velocity);
-
-        // setVoltage(pidOut + ffOut);
+        setVoltage(pidOut + ffOut);
     }
 
     @Override
@@ -128,20 +123,17 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     /* ---------------- Commands ---------------- */
 
     public Command setTargetPositionCommand(Distance value) {
-        return new InstantCommand(() -> setTargetPosition(value), this);
+        return new InstantCommand(() -> setTargetPosition(value));
     }
 
     /* ---------------- Manual Goal Control ---------------- */
 
-    public void setTargetPosition(Distance value) {
-        setGoalPosition(value);
-    }
 
-    public void setGoalPosition(Distance position) {
+    public void setTargetPosition(Distance position) {
         double clamped = MathUtil.clamp(
             position.in(Meters),
-            minPosition,
-            maxPosition
+            constants.minDistance.in(Meters),
+            constants.maxDistance.in(Meters)
         );
 
         goalPosition = Meters.of(clamped);
@@ -152,13 +144,16 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         return goalPosition;
     }
 
-    public double getVelocitySetpoint() {
-        return Math.toDegrees(controller.getSetpoint().velocity);
-    }
+    // public double getVelocitySetpoint() {
+    //     return (controller.getSetpoint().velocity);
+    //     // return Math.toDegrees(controller.getSetpoint().velocity);
+    // }
 
-    public double getPositionSetpoint() {
-        return Math.toDegrees(controller.getSetpoint().position);
-    }
+    // public double getPositionSetpoint() {
+    //     // return Math.toDegrees(controller.getSetpoint().position);
+    //     return controller.getSetpoint().position;
+
+    // }
 
     
     /* ---------------- Sensor Access ---------------- */
@@ -205,7 +200,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
             for (TalonEx motor: motors) {
                 motor.resetEncoder(0);
             }
-            setGoalPosition(Meters.zero());
+            setTargetPosition(Meters.zero());
         }
     }
 
@@ -273,13 +268,13 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         return controller.atGoal();
     }
 
-    private boolean isAtUpperLimit() {
-        return getPosition().in(Meters) >= maxPosition - 0.05; // 0.05 cm buffer
-    }
+    // private boolean isAtUpperLimit() {
+    //     return getPosition().in(Meters) >= maxPosition - 0.05; // 0.05 cm buffer
+    // }
 
-    private boolean isAtLowerLimit() {
-        return getPosition().in(Meters) <= minPosition + 0.05; // 0.05 cm buffer
-    }
+    // private boolean isAtLowerLimit() {
+    //     return getPosition().in(Meters) <= minPosition + 0.05; // 0.05 cm buffer
+    // }
 
     private boolean hasExternalEncoder() {
         return constants.encoderType == EncoderType.ABSOLUTE;

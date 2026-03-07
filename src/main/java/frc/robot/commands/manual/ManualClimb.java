@@ -1,6 +1,7 @@
 package frc.robot.commands.manual;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meter;
 
 import java.util.function.Supplier;
 
@@ -10,11 +11,11 @@ import frc.robot.subsystems.Climb;
 
 public class ManualClimb extends Command {
     private final Climb climb;
-    private final Supplier<Double> elevatorMove;
+    private final Supplier<Double> climbMove;
     
     public ManualClimb(Climb climb, Supplier<Double> elevatorMove) {
         this.climb = climb;
-        this.elevatorMove = elevatorMove;
+        this.climbMove = elevatorMove;
         
         addRequirements(climb);
     }
@@ -24,13 +25,13 @@ public class ManualClimb extends Command {
 
     @Override
     public void execute() {
-        double move = -elevatorMove.get();
+        double move = -climbMove.get();
         move = DroidRageConstants.squareInput(move);
         move = DroidRageConstants.applyDeadBand(move);
-        if(move<0){
-            return;
-        }
-        climb.setTargetPosition(Inches.of(climb.getGoalPosition().magnitude() +  move * 0.45));
+        // if(move<0){
+            // return;
+        // }
+        climb.setTargetPosition(Meter.of(climb.getGoalPosition().in(Inches) +  move * 0.06));
     }
 
     @Override

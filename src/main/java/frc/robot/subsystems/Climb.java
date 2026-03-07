@@ -19,22 +19,21 @@ import lombok.Getter;
 
 public class Climb extends ElevatorTemplate {
     public enum ClimbValue {
-        START(Inches.of(0)),
-        CLIMB(Inches.of(-5.48));
+        START(0),
+        CLIMB(1);//5.48
 
         @Getter private final Distance height;
 
-        private ClimbValue(Distance height) {
-            this.height = height;
+        private ClimbValue(double height) {
+            this.height = Inches.of(height);
         }
 
     } //0.375
 
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withMinDistance(Inches.zero())
-        .withMaxDistance(Inches.of(-5.48))
+        .withMinDistance(Inches.of(0))
+        .withMaxDistance(Inches.of(7))
         .withName("Climb")
         .withConversionFactor(1.0/48.0)
         .withOffset(0)
@@ -43,7 +42,7 @@ public class Climb extends ElevatorTemplate {
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withDeviceId(17)
         .withCANBus(DroidRageConstants.driveCanBus)
-        .withDirection(Direction.Forward)
+        .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
         .withSupplyCurrentLimit(70) //Reefscape 120
         .withStatorCurrentLimit(70); //Reefscape 120
@@ -53,6 +52,10 @@ public class Climb extends ElevatorTemplate {
             new ProfiledPIDController(0, 0, 0, 
             new TrapezoidProfile.Constraints(0, 0)), 
             new ElevatorFeedforward(0, 0, 0), 
+
+            // new ProfiledPIDController(20, 0, 0, 
+            // new TrapezoidProfile.Constraints(15, 10)), 
+            // new ElevatorFeedforward(0.3, 0.5, 0.5), 
             constants, 
             null, 
             motorConstants);
