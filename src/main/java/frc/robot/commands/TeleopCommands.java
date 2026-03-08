@@ -9,13 +9,18 @@ import frc.robot.subsystems.intake.Intake.IntakeValue;
 public class TeleopCommands {
     public static Command shootIntakeCommand(Intake intake) {
         return new SequentialCommandGroup(
-            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP),
-            new WaitCommand(0.5),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_THREE),
+            new WaitCommand(1),
             intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
-            new WaitCommand(0.5),
-            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP),
-            new WaitCommand(0.5),
-            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN)
+            new WaitCommand(1),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO),
+            new WaitCommand(1),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+            new WaitCommand(1),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_ONE),
+            new WaitCommand(1),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+            new WaitCommand(1)
         );
     }
 }
