@@ -11,8 +11,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -66,7 +64,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
 
-        TelemetryUtils.registerDashboard(this);
+        // TelemetryUtils.registerDashboard(this);
+        TelemetryUtils.registerTelemetry(this);
 
         sysIdRoutine = getSysIdRoutine();
     }
@@ -74,21 +73,11 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     /* ---------------- Dashboard ---------------- */
     
     @Override
-    public void elasticInit() {
-        SmartDashboard.putData(name, this);
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Target Speed", controller::getSetpoint, null);
-        builder.addDoubleProperty("Current Speed", () -> this.getVelocity().in(RotationsPerSecond), null);
-        builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
-        builder.addDoubleProperty("Torque Current", () -> getCurrent().in(Amp), null);
-    }
+    public void elasticInit() {}
 
     @Override
     public void updateTelemetry() {
-        Logger.recordOutput(name +"/Target Velocity", controller.getSetpoint());
+        Logger.recordOutput(name + "/Target Velocity", controller.getSetpoint());
         Logger.recordOutput(name +"/Current Velocity", getVelocity());
         Logger.recordOutput(name + "/Applied Voltage", getVoltage());
         Logger.recordOutput(name + "/Torque Current", getCurrent());

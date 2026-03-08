@@ -3,6 +3,9 @@ package frc.utility.template;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -20,13 +23,14 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
+import frc.utility.TelemetryUtils.TelemetryUpdater;
 import frc.utility.devices.encoder.CANcoderEx;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
-public class ArmTemplate extends SubsystemBase implements Dashboard {
+public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
     protected final TalonEx[] motors;
     protected final ProfiledPIDController controller;
     protected final ArmFeedforward feedforward;
@@ -79,13 +83,13 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
         }
 
         TelemetryUtils.registerDashboard(this);
+        TelemetryUtils.registerTelemetry(this);
     }
 
     /* ---------------- Dashboard ---------------- */
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(name, this);
         SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand(0));
     }
 
@@ -96,14 +100,14 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     public void alerts() {}
 
     @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Goal Angle (deg)", () -> getGoalAngle().getDegrees(), null);
-        builder.addDoubleProperty("Current Angle (deg)", () -> getCurrentAngle().getDegrees(), null);
-        builder.addDoubleProperty("Position Setpoint (deg)", this::getPositionSetpoint, null);
-        builder.addDoubleProperty("Velocity Setpoint (deg/s)", this::getVelocitySetpoint, null);
-        builder.addDoubleProperty("Current Velocity (rot/s)", () -> getVelocity().in(RotationsPerSecond), null);
-        builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
-        builder.addDoubleProperty("Position Error (deg)", () -> Math.toDegrees(controller.getPositionError()), null);
+    public void updateTelemetry() {
+        Logger.recordOutput(name + "/Goal Angle", getGoalAngle());
+        Logger.recordOutput(name + "/Current Angle", getCurrentAngle());
+        Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint());
+        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
+        Logger.recordOutput(name + "/Current Velocity", getVelocity());
+        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
+        Logger.recordOutput(name + "/Position Error", controller.getPositionError());
     }
     
     /* ---------------- Periodic Control Loop ---------------- */
@@ -215,12 +219,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard {
     }
 
     public Command resetEncoderCommand(double resetDegree) {
-        return new InstantCommand(()->resetEncoder(Degrees.of(resetDegree))) {//+constants.offset
-            @Override
-            public boolean runsWhenDisabled() {
-                return true;
-            }
-        };
+        return new InstantCommand(()->resetEncoder(Degrees.of(resetDegree))).ignoringDisable(true);
     }
 
     /* ---------------- SysId ---------------- */

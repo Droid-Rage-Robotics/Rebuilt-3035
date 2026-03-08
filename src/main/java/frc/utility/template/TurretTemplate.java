@@ -4,13 +4,14 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -25,13 +26,14 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
+import frc.utility.TelemetryUtils.TelemetryUpdater;
 import frc.utility.devices.encoder.CANcoderEx;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
-public class TurretTemplate extends SubsystemBase implements Dashboard {
+public class TurretTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
     private final TalonEx[] motors;
     private final Optional<CANcoderEx> encoder;
     private final ProfiledPIDController controller;
@@ -53,6 +55,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     private final Mechanism2d mechanism;
     private final MechanismRoot2d center;
 
+    private final String name;
+
     public TurretTemplate(
         boolean isEnabled,
         ProfiledPIDController controller,
@@ -64,6 +68,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         this.constants=constants;
         this.mainNum=constants.mainNum;
         this.controller=controller;
+        this.name=constants.name;
         this.feedforward=feedforward;
         this.minAngleRad=constants.minAngle.in(Radians);
         this.maxAngleRad=constants.maxAngle.in(Radians);
@@ -105,32 +110,30 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
         }
         
         TelemetryUtils.registerDashboard(this);
+        TelemetryUtils.registerTelemetry(this);
     }
 
     /* ---------------- Dashboard ---------------- */
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(getName(), this);
-        SmartDashboard.putData(getName() + "/Mechanism", mechanism);
+        // SmartDashboard.putData(getName() + "/Mechanism", mechanism);
         SmartDashboard.putData(getName() + "/Reset Encoder", resetEncoderCommand());
+    }
+
+    @Override
+    public void updateTelemetry() {
+        Logger.recordOutput(name + "/Goal Angle", getGoalAngle());
+        Logger.recordOutput(name + "/Current Angle", getCurrentAngle());
+        Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint());
+        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
+        Logger.recordOutput(name + "/Current Velocity", getVelocity());
+        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
+        Logger.recordOutput(name + "/Position Error", getPositionError());
     }
 
     @Override public void practiceWriters() {}
     @Override public void alerts() {}
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Goal Angle (deg)", () -> getGoalAngle().getDegrees(), null);
-        builder.addDoubleProperty("Current Angle (deg)", () -> getCurrentAngle().getDegrees(), null);
-        builder.addDoubleProperty("Position Setpoint (deg)", this::getPositionSetpoint, null);
-        builder.addDoubleProperty("Velocity Setpoint (deg/s)", this::getVelocitySetpoint, null);
-        builder.addDoubleProperty("Current Velocity (rot/s)", ()-> getVelocity().in(RotationsPerSecond), null);
-        builder.addDoubleProperty("Applied Voltage", ()->calculatedVoltage, null);
-        builder.addDoubleProperty("Position Error (deg)", this::getPositionError, null);
-        
-        // mechanism.initSendable(builder);
-    }
 
     /* ---------------- Periodic Control Loop ---------------- */
 
@@ -268,12 +271,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard {
     }
 
     public Command resetEncoderCommand() {
-        return new InstantCommand(this::resetEncoder) {
-            @Override
-            public boolean runsWhenDisabled() {
-                return true;
-            }
-        };
+        return new InstantCommand(this::resetEncoder).ignoringDisable(true);
     }
 
     /* ---------------- SysId ---------------- */
