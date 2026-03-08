@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants.ControllerUtils;
+import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.manual.ManualClimb;
-import frc.robot.commands.manual.ManualTurret;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.ShooterHold;
 import frc.robot.commands.shooter.ShooterScore;
@@ -104,6 +104,7 @@ public class RobotContainer {
 		operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+			.onTrue(TeleopCommands.shootIntakeCommand(intake))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
