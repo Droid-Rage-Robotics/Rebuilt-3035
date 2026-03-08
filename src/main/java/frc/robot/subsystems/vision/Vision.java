@@ -1,19 +1,13 @@
 package frc.robot.subsystems.vision;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.DroidRageConstants;
-import frc.robot.DroidRageConstants.Alignment;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
 import frc.utility.TelemetryUtils;
@@ -35,7 +29,15 @@ public class Vision extends SubsystemBase implements Dashboard{
         RIGHT_UP(Units.inchesToMeters(7.35)),
         RIGHT_ROLL(0),
         RIGHT_PITCH(55),
-        RIGHT_YAW(40);
+        RIGHT_YAW(40),
+
+        MIDDLE_FORWARD(Units.inchesToMeters(0)),
+        MIDDLE_SIDE(Units.inchesToMeters(0)),
+        MIDDLE_UP(Units.inchesToMeters(0)),
+        MIDDLE_ROLL(0),
+        MIDDLE_PITCH(0),
+        MIDDLE_YAW(0)
+        ;
 
         @Getter private final double value;
 
@@ -57,6 +59,11 @@ public class Vision extends SubsystemBase implements Dashboard{
         .withFieldLayout(Constants.FIELD_LAYOUT)
         .withCropWindow(-1, 1, -1, 1);
     @Getter private final LimelightEx rightLL = LimelightEx.create(DroidRageConstants.rightLL) // webgui at 10.30.35.12:5801
+        .withStreamMode_Standard()
+        .withFieldLayout(Constants.FIELD_LAYOUT)
+        .withCropWindow(-1, 1, -1, 1);
+
+    @Getter private final LimelightEx middleLL = LimelightEx.create(DroidRageConstants.middleLL)
         .withStreamMode_Standard()
         .withFieldLayout(Constants.FIELD_LAYOUT)
         .withCropWindow(-1, 1, -1, 1);
