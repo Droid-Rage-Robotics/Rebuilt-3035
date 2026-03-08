@@ -20,7 +20,7 @@ import lombok.Getter;
 public class Climb extends ElevatorTemplate {
     public enum ClimbValue {
         START(0),
-        CLIMB(1);//5.48
+        CLIMB(5.48);//5.48
 
         @Getter private final Distance height;
 
@@ -35,7 +35,7 @@ public class Climb extends ElevatorTemplate {
         .withMinDistance(Inches.of(0))
         .withMaxDistance(Inches.of(7))
         .withName("Climb")
-        .withConversionFactor(1.0/48.0)
+        .withConversionFactor(Units.inchesToMeters(0.375)/48.0)
         .withOffset(0)
         .withMainNum(0);
     
@@ -49,13 +49,13 @@ public class Climb extends ElevatorTemplate {
 
     public Climb(boolean isEnabled) {
         super(isEnabled, 
-            new ProfiledPIDController(0, 0, 0, 
-            new TrapezoidProfile.Constraints(0, 0)), 
-            new ElevatorFeedforward(0, 0, 0), 
+            // new ProfiledPIDController(0, 0, 0, 
+            // new TrapezoidProfile.Constraints(0, 0)), 
+            // new ElevatorFeedforward(0, 0, 0), 
 
-            // new ProfiledPIDController(20, 0, 0, 
-            // new TrapezoidProfile.Constraints(15, 10)), 
-            // new ElevatorFeedforward(0.3, 0.5, 0.5), 
+            new ProfiledPIDController(400, 0, 0, 
+            new TrapezoidProfile.Constraints(40, 25)), 
+            new ElevatorFeedforward(1, 0, 5), 
             constants, 
             null, 
             motorConstants);

@@ -40,7 +40,6 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     private final boolean isEnabled;
 
-    private Distance goalPosition = Meters.zero();
     
     public ElevatorTemplate(
         boolean isEnabled,
@@ -97,9 +96,9 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Final Goal Position (in)", () -> getGoalPosition().in(Inches), null);
         builder.addDoubleProperty("Current Position (in)", () -> getPosition().in(Inches), null);
-        builder.addDoubleProperty("Position Setpoint (in)", () -> Units.metersToInches(controller.getSetpoint().position), null);
-        // builder.addDoubleProperty("Velocity Setpoint (m/s)", this::getVelocitySetpoint, null);
-        // builder.addDoubleProperty("Current Velocity (m/s)", () -> getVelocity().in(MetersPerSecond), null);
+        builder.addDoubleProperty("Position Setpoint (in)", () -> getPositionSetpoint().in(Inches), null);
+        builder.addDoubleProperty("Velocity Setpoint (m/s)", () -> getVelocitySetpoint().in(MetersPerSecond), null);
+        builder.addDoubleProperty("Current Velocity (m/s)", () -> getVelocity().in(MetersPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
         builder.addDoubleProperty("Position Error (in)", () -> Units.metersToInches(controller.getPositionError()), null);
     }
@@ -135,34 +134,32 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
             constants.minDistance.in(Meters),
             constants.maxDistance.in(Meters)
         );
-
-        goalPosition = Meters.of(clamped);
         controller.setGoal(clamped);
     }
 
     public Distance getGoalPosition() {
-        return goalPosition;
+        return Meters.of(controller.getGoal().position);
     }
 
-    // public double getVelocitySetpoint() {
-    //     return (controller.getSetpoint().velocity);
-    //     // return Math.toDegrees(controller.getSetpoint().velocity);
-    // }
+    public LinearVelocity getVelocitySetpoint() {
+        return MetersPerSecond.of(controller.getSetpoint().velocity);
+        // return Math.toDegrees(controller.getSetpoint().velocity);
+    }
 
-    // public double getPositionSetpoint() {
-    //     // return Math.toDegrees(controller.getSetpoint().position);
-    //     return controller.getSetpoint().position;
+    public Distance getPositionSetpoint() {
+        // return Math.toDegrees(controller.getSetpoint().position);
+        return Meters.of(controller.getSetpoint().position);
 
-    // }
+    }
 
     
     /* ---------------- Sensor Access ---------------- */
 
     public Distance getPosition() {
-        return Meters.of(Units.inchesToMeters(0.375)*(encoder
+        return Meters.of(encoder
             .map(enc -> enc.getAbsolutePosition().in(Radians) * conversionFactor)
             .orElse(motors[mainNum].getPosition().in(Radians) * conversionFactor)
-        ));
+        );
     }
 
     public LinearVelocity getVelocity() {

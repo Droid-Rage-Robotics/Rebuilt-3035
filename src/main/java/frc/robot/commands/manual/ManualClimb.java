@@ -31,7 +31,7 @@ public class ManualClimb extends Command {
         // if(move<0){
             // return;
         // }
-        climb.setTargetPosition(Meter.of(climb.getGoalPosition().in(Inches) +  move * 0.06));
+        climb.setTargetPosition(Inches.of(climb.getGoalPosition().in(Inches) + move * 0.06));
     }
 
     @Override
