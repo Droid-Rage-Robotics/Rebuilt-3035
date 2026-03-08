@@ -5,15 +5,13 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
 
-public class LimelightEx implements Sendable, TelemetryUpdater{
+public class LimelightEx implements TelemetryUpdater{
     private final String name;
     private AprilTagFieldLayout fieldLayout;
 
@@ -171,15 +169,6 @@ public class LimelightEx implements Sendable, TelemetryUpdater{
     public Pose3d getTargetPose_FieldSpace() {
         return fieldLayout.getTagPose(((int)getID())).get();
     }
- 
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("tA", this::getTA, null);
-        builder.addDoubleProperty("tX", this::getTX, null);
-        builder.addDoubleProperty("tY", this::getTY, null);
-        builder.addBooleanProperty("tV", this::getTV, null);
-        builder.addDoubleProperty("ID", this::getID, null);  
-    }
 
     @Override
     public void updateTelemetry() {
@@ -188,6 +177,5 @@ public class LimelightEx implements Sendable, TelemetryUpdater{
         Logger.recordOutput(name+"/tY", getTY());
         Logger.recordOutput(name+"/tV", getTV());
         Logger.recordOutput(name+"/ID", getID());
-
     }
 }

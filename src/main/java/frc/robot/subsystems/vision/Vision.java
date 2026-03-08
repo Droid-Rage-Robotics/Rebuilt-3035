@@ -5,17 +5,14 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
-import frc.utility.TelemetryUtils;
-import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.devices.LimelightEx;
 import lombok.Getter;
 
-public class Vision extends SubsystemBase implements Dashboard{
+public class Vision extends SubsystemBase {
     public enum MountPose {
         LEFT_FORWARD(Units.inchesToMeters(-10)),
         LEFT_SIDE(Units.inchesToMeters(-10.25)),
@@ -89,22 +86,7 @@ public class Vision extends SubsystemBase implements Dashboard{
             MountPose.RIGHT_YAW.getValue() // Yaw (degrees) - Will Change; Should not cause issues
         );
 
-        TelemetryUtils.registerDashboard(this);
     }
-
-    @Override
-    public void elasticInit() {
-        SmartDashboard.putData("Left_LL", leftLL);
-        SmartDashboard.putData("Right_LL", rightLL);
-
-        
-    }
-
-    @Override
-    public void practiceWriters() {}
-
-    @Override
-    public void alerts() {}
 
     @Override
     public void periodic() {}
