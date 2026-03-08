@@ -3,14 +3,15 @@ package frc.utility.template;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,13 +21,14 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
+import frc.utility.TelemetryUtils.TelemetryUpdater;
 import frc.utility.devices.encoder.CANcoderEx;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
-public class ElevatorTemplate extends SubsystemBase implements Dashboard {
+public class ElevatorTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
     private final TalonEx[] motors;
     private final Optional<CANcoderEx> encoder;
     private final ProfiledPIDController controller;
@@ -39,7 +41,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
     private final SubsystemConstants constants;
 
     private final boolean isEnabled;
-
+    private final String name;
     
     public ElevatorTemplate(
         boolean isEnabled,
@@ -53,6 +55,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
         this.mainNum=constants.mainNum;
         this.controller=controller;
         this.feedforward=feedforward;
+        this.name=constants.name;
         // this.maxPosition=constants.maxDistance.in(Meters);
         // this.minPosition=constants.minDistance.in(Meters);
         this.conversionFactor=constants.conversionFactor;
@@ -85,23 +88,22 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void elasticInit() {
-        // SmartDashboard.putData(constants.name, this);
         SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand());
+    }
+
+    @Override
+    public void updateTelemetry() {
+        Logger.recordOutput(name + "/Goal Position", getGoalPosition());
+        Logger.recordOutput(name + "/Current Position", getPosition());
+        Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint());
+        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
+        Logger.recordOutput(name + "/Current Velocity", getVelocity());
+        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
+        Logger.recordOutput(name + "/Position Error", getPositionError());
     }
 
     @Override public void practiceWriters() {}
     @Override public void alerts() {}
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Final Goal Position (in)", () -> getGoalPosition().in(Inches), null);
-        builder.addDoubleProperty("Current Position (in)", () -> getPosition().in(Inches), null);
-        builder.addDoubleProperty("Position Setpoint (in)", () -> getPositionSetpoint().in(Inches), null);
-        builder.addDoubleProperty("Velocity Setpoint (m/s)", () -> getVelocitySetpoint().in(MetersPerSecond), null);
-        builder.addDoubleProperty("Current Velocity (m/s)", () -> getVelocity().in(MetersPerSecond), null);
-        builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
-        builder.addDoubleProperty("Position Error (in)", () -> Units.metersToInches(controller.getPositionError()), null);
-    }
 
     /* ---------------- Periodic Control Loop ---------------- */
 
@@ -143,15 +145,15 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     public LinearVelocity getVelocitySetpoint() {
         return MetersPerSecond.of(controller.getSetpoint().velocity);
-        // return Math.toDegrees(controller.getSetpoint().velocity);
     }
 
     public Distance getPositionSetpoint() {
-        // return Math.toDegrees(controller.getSetpoint().position);
         return Meters.of(controller.getSetpoint().position);
-
     }
 
+    public Distance getPositionError() {
+        return Meters.of(controller.getPositionError());
+    }
     
     /* ---------------- Sensor Access ---------------- */
 

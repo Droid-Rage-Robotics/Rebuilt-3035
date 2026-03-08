@@ -41,7 +41,6 @@ public class Telemetry {
         //     SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         // }
     }
-[]\
     /* What to publish over networktables for telemetry */
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
