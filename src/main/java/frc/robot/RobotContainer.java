@@ -48,9 +48,10 @@ public class RobotContainer {
         new Hood(false),
         new ShooterWheel(false)
     );
+    private final Climb climb = new Climb(true);
+
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
-    private final Climb climb = new Climb(false);
     // private final Light light = new Light(0);
     
     private final CommandXboxController driver =
@@ -116,7 +117,10 @@ public class RobotContainer {
 		operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			.onTrue(TeleopCommands.shootIntakeCommand(intake))
+			.onTrue(TeleopCommands.shootIntakeCommand(intake)
+				.andThen(TeleopCommands.shootIntakeCommand(intake))
+				.andThen(TeleopCommands.shootIntakeCommand(intake)))
+				
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 

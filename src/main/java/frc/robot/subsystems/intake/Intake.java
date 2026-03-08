@@ -6,19 +6,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import lombok.Getter;
 
 public class Intake implements Sendable {
     public class IntakeValue {
         public enum PivotAngle {
             DOWN(170),
+            HALF_THREE(DOWN.getAngle().getDegrees()-5),
+            HALF_TWO(DOWN.getAngle().getDegrees()-10),
+            HALF_ONE(DOWN.getAngle().getDegrees()-15),
+
             UP(40),
             ;
 
