@@ -2,6 +2,8 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -19,10 +21,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
+import frc.utility.TelemetryUtils.TelemetryUpdater;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.TalonEx;
 
-public class FlywheelTemplate extends SubsystemBase implements Dashboard {
+public class FlywheelTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
     private final TalonEx[] motors;
     private final PIDController controller;
     private final SimpleMotorFeedforward feedforward;
@@ -81,6 +84,14 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         builder.addDoubleProperty("Current Speed", () -> this.getVelocity().in(RotationsPerSecond), null);
         builder.addDoubleProperty("Applied Voltage", this::getVoltage, null);
         builder.addDoubleProperty("Torque Current", () -> getCurrent().in(Amp), null);
+    }
+
+    @Override
+    public void updateTelemetry() {
+        Logger.recordOutput(name +"/Target Velocity", controller.getSetpoint());
+        Logger.recordOutput(name +"/Current Velocity", getVelocity());
+        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
+        Logger.recordOutput(name + "/Torque Current", getCurrent());
     }
 
     @Override
@@ -163,9 +174,9 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
     private SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(
             new SysIdRoutine.Config(
-                null, // Use default ramp rate (1 V/s)
-                Volts.of(9), // Reduce dynamic step voltage to 4 to prevent brownout
-                Seconds.of(10), // Use default timeout (10 s)
+                null,
+                Volts.of(9),
+                Seconds.of(10),
                 null
             ), 
             new SysIdRoutine.Mechanism(
@@ -209,13 +220,3 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard {
         return controller.atSetpoint();
     }
 }
-
-// isElementIn = this::(getTargetPosition() - getEncoderPosition() > 40);
-
-    // private final Sendable isElementIn =  new Sendable() {
-    //     @Override
-    //     public void initSendable(SendableBuilder builder) {
-    //         builder.setSmartDashboardType("Boolean Box");
-    //         builder.addBooleanProperty("Is Element In", () -> (getTargetPosition() - getVelocity() > 40), null);
-    //     }
-    // };
