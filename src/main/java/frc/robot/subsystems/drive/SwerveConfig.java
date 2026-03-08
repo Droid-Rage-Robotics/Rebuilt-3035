@@ -22,7 +22,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.DroidRageConstants;
 import lombok.Getter;
 
 public class SwerveConfig {
