@@ -9,28 +9,41 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.shooter.ShooterScore;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterValue;
+import frc.robot.subsystems.vision.Vision;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 
 public class AutoChooser implements Dashboard {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-    public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Shooter shooter, Light light, Climb climb){
-        NamedCommands.registerCommand("intakeDown", AutoCommands.intakeDown(intake));
-        NamedCommands.registerCommand("intakeUp", AutoCommands.intakeUp(intake));
-        NamedCommands.registerCommand("climbDown", AutoCommands.climbDown(climb));
-        NamedCommands.registerCommand("climbUp", AutoCommands.climbUp(climb));
-        NamedCommands.registerCommand("intake", AutoCommands.intake(intake));
-        NamedCommands.registerCommand("outtake", AutoCommands.outtake(intake));
-        NamedCommands.registerCommand("shootFromBlue", AutoCommands.shootFromBlue(shooter));
-        NamedCommands.registerCommand("shootFromRed", AutoCommands.shootFromRed(shooter));
+    public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision){
+        NamedCommands.registerCommand("intakeDown",  intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle()));
+        NamedCommands.registerCommand("intakeUp", intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP.getAngle()));
+
+        NamedCommands.registerCommand("climbDown", climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+        NamedCommands.registerCommand("climbUp", climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+
+        NamedCommands.registerCommand("intake", new ParallelCommandGroup(
+            intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle())
+            )
+        );
+
+        NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
+        NamedCommands.registerCommand("shootBumpR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_BUMP_RIGHT));
+        NamedCommands.registerCommand("shootBumpL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_BUMP_LEFT));
 
         // addTuningAuto(drive);
+        addAutos(drive, intake, indexer, kicker, shooter, climb, vision);
         addTurretTesting(drive, shooter);
 
         TelemetryUtils.registerDashboard(this);
@@ -62,11 +75,10 @@ public class AutoChooser implements Dashboard {
         // autoChooser.addOption("ForwardAndBack", TuningAutos.forwardAndBackTest(drive));
     }
 
-    public static void addMiddleAuto(SwerveDrive drive, Intake intake, Indexer indexer, Shooter shooter, Light light){
+    public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision) {
+        autoChooser.addOption("rightNuetralOutpost", Autos.rightNuetralOutpost(drive, intake, indexer, kicker, shooter, vision));
 
     }
-
-    public static void addAutos() {}
     
     @Override
     public void elasticInit() {

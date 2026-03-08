@@ -7,8 +7,10 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.MatchValue;
 
@@ -29,7 +31,7 @@ public class Robot extends LoggedRobot {
         } else {
             TelemetryUtils.Config.Match = MatchValue.PRACTICE;
         }
-        
+
         TelemetryUtils.onRobotInit();
         DroidRageConstants.alliance = DriverStation.getAlliance().get();
         Logger.addDataReceiver(new NT4Publisher());
@@ -72,7 +74,7 @@ public class Robot extends LoggedRobot {
         // SignalLogger.start(); // CTRE Signal Logger
 
         // autonomousCommand = autoChooser.getAutonomousCommand();
-        // autonomousCommand = new InstantCommand();
+        autonomousCommand = new InstantCommand();
 
         if (autonomousCommand != null) {
             commandScheduler.schedule(autonomousCommand);
@@ -110,22 +112,15 @@ public class Robot extends LoggedRobot {
         // if (autonomousCommand != null) {
         //     autonomousCommand.cancel();
         // }
-		DriverStation.silenceJoystickConnectionWarning(true);
-        robotContainer.configureTeleOpBindings();
+        
         DroidRageConstants.alliance = DriverStation.getAlliance().get();
-        // robotContainer.testDrive();
-        // robotContainer.testSubsystems();
-        // robotContainer.testClimb();
-        // robotContainer.resetClimb();
-        // robotContainer.testShooter();
-        // robotContainer.testAim();
-        
-        
+
+        /* DO NOT INITIALIZE BUTTON BINDINGS HERE */
     }
 
     @Override
     public void teleopPeriodic() {
-        robotContainer.testTurretPeriodic();
+        // robotContainer.testTurretPeriodic();
     }
 
     @Override

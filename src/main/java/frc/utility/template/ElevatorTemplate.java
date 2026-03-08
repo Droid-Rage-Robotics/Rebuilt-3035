@@ -86,7 +86,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard {
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(constants.name, this);
+        // SmartDashboard.putData(constants.name, this);
         SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand());
     }
 

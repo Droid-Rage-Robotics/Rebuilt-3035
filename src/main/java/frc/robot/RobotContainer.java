@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants.ControllerUtils;
@@ -36,15 +38,15 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
@@ -61,6 +63,16 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		DriverStation.silenceJoystickConnectionWarning(true);
+        
+		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
+		
+		configureTeleOpBindings();
+		// testDrive();
+        // testSubsystems();
+        // testClimb();
+        // resetClimb();
+        // testShooter();
+        // testAim();
 	}
 
 	public void configureTeleOpBindings() {

@@ -50,7 +50,7 @@ public class DRAreaManager{
 			} else 
 				currentZone = Zone.BETWEEN;
 		}
-		SmartDashboard.putString("Current Zone", currentZone.toString());
+		// SmartDashboard.putString("Current Zone", currentZone.toString());
 	}
 
 	public boolean isShootingArea() {

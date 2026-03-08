@@ -154,7 +154,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             startSimThread();
         }
 
-        SmartDashboard.putData("Drive/fieldPose", fieldPose);
+        // SmartDashboard.putData("Drive/fieldPose", fieldPose);
         configurePathPlanner();
     }
     
@@ -228,7 +228,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             });
         }
 
-        fieldPose.setRobotPose(getState().Pose);
+        // fieldPose.setRobotPose(getState().Pose);
     }
 
     private void startSimThread() {
