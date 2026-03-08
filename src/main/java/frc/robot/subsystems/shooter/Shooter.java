@@ -45,8 +45,9 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     }
     public enum ShooterValue {
         SHOOT_HUB(180,15,25),
-        SHOOT_BUMP_RIGHT(-120,10,40),
-        SHOOT_BUMP_LEFT(120,SHOOT_BUMP_RIGHT.getHoodAngle(),SHOOT_BUMP_RIGHT.getVelocity()),
+        SHOOT_OUTPOST(180,15,25),
+        SHOOT_TRENCH_RIGHT(-120,10,40),
+        SHOOT_TRENCH_LEFT(120,SHOOT_TRENCH_RIGHT.getHoodAngle(),SHOOT_TRENCH_RIGHT.getVelocity()),
         HOLD(-220, 0, 20),
         HOARD(0,5,40)
         ;

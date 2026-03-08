@@ -103,9 +103,9 @@ public class RobotContainer {
 		operator.a()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
 		operator.b()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_BUMP_RIGHT));
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
 		operator.x()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_BUMP_LEFT));
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_HUB));
 		

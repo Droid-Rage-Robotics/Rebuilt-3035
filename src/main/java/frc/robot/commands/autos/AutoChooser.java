@@ -39,8 +39,10 @@ public class AutoChooser implements Dashboard {
         );
 
         NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
-        NamedCommands.registerCommand("shootBumpR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_BUMP_RIGHT));
-        NamedCommands.registerCommand("shootBumpL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_BUMP_LEFT));
+        NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
+        NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
+        NamedCommands.registerCommand("shootOutpost", shooter.setShooterTargetCommand(ShooterValue.SHOOT_OUTPOST));
+
 
         // addTuningAuto(drive);
         addAutos(drive, intake, indexer, kicker, shooter, climb, vision);

@@ -82,6 +82,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
         }
 
         TelemetryUtils.registerDashboard(this);
+        TelemetryUtils.registerTelemetry(this);
     }
 
     /* ---------------- Dashboard ---------------- */
