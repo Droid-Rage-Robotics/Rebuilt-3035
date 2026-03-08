@@ -118,8 +118,6 @@ public class TelemetryUtils {
                 .withDescription("Battery Low!")
                 .withDisplaySeconds(10.0));
         }
-
-        // SmartDashboard.putData("Distribution", powerDistribution);
     }
 
     /**
