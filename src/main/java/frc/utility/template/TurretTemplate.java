@@ -3,12 +3,14 @@ package frc.utility.template;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -34,22 +36,19 @@ import frc.utility.devices.motor.TalonEx;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class TurretTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
-    private final TalonEx[] motors;
+    private final TalonEx motor;
     private final Optional<CANcoderEx> encoder;
-    private final ProfiledPIDController controller;
-    private final SimpleMotorFeedforward feedforward;
 
     private final double minAngleRad;
     private final double maxAngleRad;
     private final double conversionFactor;
-    private final int mainNum;
     private final SubsystemConstants constants;
 
+    private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
 
     private final boolean isEnabled;
 
-    private Rotation2d goalAngle = Rotation2d.fromRadians(0);
-    private double calculatedVoltage = 0;
+    private final AtomicReference<Rotation2d> goalAngle = new AtomicReference<Rotation2d>(Rotation2d.kZero);
 
     private final MechanismLigament2d ligament;
     private final Mechanism2d mechanism;
@@ -59,23 +58,22 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     public TurretTemplate(
         boolean isEnabled,
-        ProfiledPIDController controller,
-        SimpleMotorFeedforward feedforward,
         SubsystemConstants constants,
         EncoderConstants encoderConstants,
-        MotorConstants... motorConstants
+        MotorConstants motorConstants
     ) {
         this.constants=constants;
-        this.mainNum=constants.mainNum;
-        this.controller=controller;
         this.name=constants.name;
-        this.feedforward=feedforward;
         this.minAngleRad=constants.minAngle.in(Radians);
         this.maxAngleRad=constants.maxAngle.in(Radians);
         this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
 
-        mechanism = new Mechanism2d(constants.width, 10);
+        motorConstants.subsystem=this;
+        motorConstants.isEnabled=isEnabled;
+        
+        this.motor = TalonEx.createWithConstants(motorConstants);
+        this.mechanism = new Mechanism2d(constants.width, 10);
 
         center = mechanism.getRoot("center", 5, 5);
 
@@ -88,26 +86,36 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
         center.append(ligament);
 
+        var motorConfig = motor.getConfig();
+
         if (constants.encoderType == EncoderType.ABSOLUTE || constants.encoderType == EncoderType.EXTERNAL) {
             if (encoderConstants == null) {
-                throw new NullPointerException("Encoder constants required for absolute encoder");
+                throw new NullPointerException("Encoder constants required for external encoder");
             }
             this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
+            
+            motorConfig.Feedback.FeedbackRemoteSensorID=encoderConstants.deviceId;
+            motorConfig.Feedback.FeedbackSensorSource=FeedbackSensorSourceValue.RemoteCANcoder;
+            motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
         } else {
             this.encoder = Optional.empty();
         }
         
-        
-        this.motors = new TalonEx[motorConstants.length];
-        
-        for (MotorConstants m_motorConstants : motorConstants) {
-            m_motorConstants.subsystem=this;
-            m_motorConstants.isEnabled=isEnabled;
-        }
+        // PID slot 0
+        motorConfig.Slot0.kP = constants.kP;
+        motorConfig.Slot0.kI = constants.kI;
+        motorConfig.Slot0.kD = constants.kD;
+        motorConfig.Slot0.kV = constants.kV;
+        motorConfig.Slot0.kA = constants.kA;
+        motorConfig.Slot0.kS = constants.kS;
 
-        for (int i = 0; i < motorConstants.length; i++) {
-            this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
-        }
+        motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
+        motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
+        motorConfig.MotionMagic.MotionMagicJerk = 0; // optional, set nonzero for S-curve smoothing
+
+        
+
+        motor.getMotor().getConfigurator().apply(motorConfig);
         
         TelemetryUtils.registerDashboard(this);
         TelemetryUtils.registerTelemetry(this);
@@ -141,20 +149,12 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     public void periodic() {
         ligament.setAngle(getCurrentAngle());
 
-        double currentAngleRad = getCurrentAngle().getRadians();
-
-        double pidOut = controller.calculate(currentAngleRad);
-        var setpoint = controller.getSetpoint();
-
-        double ffOut = feedforward.calculate(setpoint.velocity);
-        
-        calculatedVoltage = pidOut + ffOut;
-        setVoltage(calculatedVoltage);
+        motor.setControl(motionMagicRequest.withPosition(goalAngle.get().getMeasure())); // isEnabled safety in motor file and auto unit conversion
     }
 
     @Override
     public void simulationPeriodic() {
-        periodic();
+    
     }
 
     /* ---------------- Commands ---------------- */
@@ -169,14 +169,12 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         setGoalAngle(Rotation2d.fromDegrees(degrees));
     }
 
-    //This function was synchronized, but I (Lucky) removed it
-    public  void setGoalAngle(Rotation2d angle) {
+    public void setGoalAngle(Rotation2d angle) {
         double angleRad = angle.getRadians();
         
         // Check if within valid range - if so, use as-is
         if (angleRad >= minAngleRad && angleRad <= maxAngleRad) {
-            goalAngle = new Rotation2d(angleRad);
-            controller.setGoal(goalAngle.getRadians());
+            goalAngle.set(new Rotation2d(angleRad));
             return;
         }
         
@@ -188,32 +186,34 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         
         // Check if flipped angle is within range
         if (flippedAngle >= minAngleRad && flippedAngle <= maxAngleRad) {
-            goalAngle = new Rotation2d(flippedAngle);
-            controller.setGoal(goalAngle.getRadians());
+            goalAngle.set(new Rotation2d(flippedAngle));
             return;
         }
         
         // Neither original nor flipped works - clamp to nearest limit
         // This is a fallback that shouldn't normally happen
         double clamped = MathUtil.clamp(angleRad, minAngleRad, maxAngleRad);
-        goalAngle = new Rotation2d(clamped);
-        controller.setGoal(goalAngle.getRadians());
+        goalAngle.set(new Rotation2d(clamped));
     }
 
-    public synchronized Rotation2d getGoalAngle() {
-        return goalAngle;
-    }
-
-    public double getVelocitySetpoint() {
-        return Math.toDegrees(controller.getSetpoint().velocity);
+    public Rotation2d getGoalAngle() {
+        return goalAngle.get();
     }
 
     public double getPositionSetpoint() {
-        return Math.toDegrees(controller.getSetpoint().position);
+    // Talon reports in rotations; convert back to degrees
+    return motor.getMotor().getClosedLoopReference().getValueAsDouble()
+        * conversionFactor * 360.0;
+    }
+
+    public double getVelocitySetpoint() {
+        return motor.getMotor().getClosedLoopReferenceSlope().getValueAsDouble()
+            * conversionFactor * 360.0;
     }
 
     public double getPositionError() {
-        return Math.toDegrees(controller.getPositionError());
+        return motor.getMotor().getClosedLoopError().getValueAsDouble()
+            * conversionFactor * 360.0;
     }
 
     
@@ -225,35 +225,31 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         } else {
             return new Rotation2d(encoder
                 .map(enc -> enc.getPosition().times(conversionFactor))
-                .orElse(motors[mainNum].getPosition().times(conversionFactor)));
+                .orElse(motor.getPosition().times(conversionFactor)));
         }
     }
 
     public AngularVelocity getVelocity() {
         return encoder
             .map(enc -> enc.getVelocity().times(conversionFactor))
-            .orElse(motors[mainNum].getVelocity().times(conversionFactor)); 
+            .orElse(motor.getVelocity().times(conversionFactor)); 
     }
     
     public double getVoltage() {
-        return motors[mainNum].getVoltage();
+        return motor.getVoltage();
     }
 
     /* ---------------- Motor Control ---------------- */
 
     public void setVoltage(double voltage) {
         if (isEnabled) {
-            for (TalonEx motor: motors) {
-                motor.setVoltage(voltage);
-            }
+            motor.setVoltage(voltage);
         }
     }
 
     public void setVoltage(Voltage voltage) {
         if (isEnabled) {
-            for (TalonEx motor: motors) {
-                motor.setVoltage(voltage);
-            }
+            motor.setVoltage(voltage);
         }
     }
 
@@ -263,10 +259,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
                 return;
             case EXTERNAL: 
                 encoder.get().resetPosition(Degrees.of(0));
+                break;
             case INTEGRATED: 
-                for (TalonEx motor: motors) {
-                    motor.resetEncoder(0);
-                }
+                motor.resetEncoder(0);
         }
     }
 
@@ -279,8 +274,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     private SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(
             new SysIdRoutine.Config(
-                null, // Use default ramp rate (1 V/s)
-                Volts.of(2), // Reduce dynamic step voltage to 4 to prevent brownout
+                Volts.of(0.25).per(Second), // Use default ramp rate (1 V/s)
+                Volts.of(1), // Reduce dynamic step voltage to 4 to prevent brownout
                 Seconds.of(3), // Use default timeout (10 s)
                 null
             ), 
@@ -307,33 +302,29 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     public Command getSysIdCommand() {
         return new SequentialCommandGroup(
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward),
-                // .until(this::isAtUpperLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
+                .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse),
-                // .until(this::isAtLowerLimit),
+            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse)
+                .until(this::isAtLowerLimit),
             new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward),
-                // .until(this::isAtUpperLimit),
+            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward)
+                .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
             getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
-                // .until(this::isAtLowerLimit)
+                .until(this::isAtLowerLimit)
         );
     }
     
     /* ---------------- Utility ---------------- */
     
     public TalonEx getMotor(){
-        return motors[mainNum];
-    }
-    
-    public TalonEx[] getAllMotor() {
-        return motors;
+        return motor;
     }
 
-    public boolean atGoal(){
-        return controller.atGoal();
-    }
+    // public boolean atGoal(){
+    //     return controller.atGoal();
+    // }
 
     private boolean isAtUpperLimit() {
         return getCurrentAngle().getRadians() >= maxAngleRad - 0.05; // 0.05 rad buffer
@@ -341,9 +332,5 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     private boolean isAtLowerLimit() {
         return getCurrentAngle().getRadians() <= minAngleRad + 0.05; // 0.05 rad buffer
-    }
-
-    private boolean hasExternalEncoder() {
-        return constants.encoderType == EncoderType.ABSOLUTE;
     }
 }

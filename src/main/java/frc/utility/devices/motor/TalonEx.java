@@ -3,8 +3,10 @@ package frc.utility.devices.motor;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -134,6 +136,11 @@ public class TalonEx implements Dashboard {
         return this;
     }
 
+    public TalonEx withMotionMagicConfigs(MotionMagicConfigs configs) {
+        config.MotionMagic=configs;
+        return this;
+    }
+
     /**
      * Used to get the velocity of the motor. 
      * Custom conversion factors are automatically
@@ -159,6 +166,7 @@ public class TalonEx implements Dashboard {
     public TalonFXSimState getSimState() {
         return motor.getSimState();
     }
+    
 
     /**
      * Used to get the position of the motor.
@@ -241,6 +249,12 @@ public class TalonEx implements Dashboard {
         }
     }
 
+    public void setControl(ControlRequest controlRequest) {
+        if (isEnabled) {
+            motor.setControl(controlRequest);
+        }
+    }
+
     /**
      * Used to apply a voltage to the motor. Does
      * nothing if the motor is disabled.
@@ -269,6 +283,10 @@ public class TalonEx implements Dashboard {
     public void stop() {
         withIsEnabled(false);
         motor.setVoltage(0);
+    }
+
+    public TalonFXConfiguration getConfig() {
+        return config;
     }
 
 

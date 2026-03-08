@@ -5,9 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
@@ -18,7 +15,11 @@ import frc.utility.template.TurretTemplate;
 
 public class Turret extends TurretTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/20.0)
+        .withPID(10, 0, 0)
+        .withFeedforward(0.11055, 1.6667, 0.15809)
+        .withMaxVelocity(RotationsPerSecond.of(5))
+        .withMaxAcceleration(RotationsPerSecondPerSecond.of(5))
+        .withGearRatio(20.0)
         .withEncoderType(EncoderType.EXTERNAL)
         .withMinAngle(Degrees.of(-220))
         .withMaxAngle(Degrees.of(140))
@@ -40,12 +41,6 @@ public class Turret extends TurretTemplate {
         .withDirection(SensorDirectionValue.Clockwise_Positive);
     
     public Turret(boolean isEnabled) {
-        super(isEnabled, 
-            new ProfiledPIDController(10, 0, 0, 
-            new TrapezoidProfile.Constraints(5, 5)), 
-            new SimpleMotorFeedforward(0.11055, 1.6667, 0.15809), 
-            constants, 
-            encoderConstants,            
-            motorConstants);
+        super(isEnabled, constants, encoderConstants, motorConstants);
     }
 }

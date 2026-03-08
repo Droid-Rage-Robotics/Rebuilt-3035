@@ -1,6 +1,7 @@
 package frc.utility.template;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 
@@ -19,9 +20,18 @@ public final class SubsystemConstants {
     public Angle maxAngle;
     public Angle minAngle;
     public AngularVelocity maxVelocity;
+    public AngularAcceleration maxAcceleration;
     public AngularVelocity minVelocity;
     public double conversionFactor;
     public double offset;
+    
+    public double kP;
+    public double kI;
+    public double kD;
+    public double kS;
+    public double kG;
+    public double kV;
+    public double kA;
 
     public double gearRatio;
 
@@ -32,6 +42,33 @@ public final class SubsystemConstants {
 
     public SubsystemConstants withEncoderType(EncoderType value) {
         this.encoderType=value;
+        return this;
+    }
+
+    public SubsystemConstants withPID(double kP, double kI, double kD) {
+        this.kP=kP;
+        this.kI=kI;
+        this.kD=kD;
+        return this;
+    }
+
+    public SubsystemConstants withFeedforward(double kS, double kG, double kV, double kA) {
+        this.kS=kS;
+        this.kG=kG;
+        this.kV=kV;
+        this.kA=kA;
+        return this;
+    }
+    
+    public SubsystemConstants withFeedforward(double kS, double kV, double kA) {
+        this.kS=kS;
+        this.kV=kV;
+        this.kA=kA;
+        return this;
+    }
+
+    public SubsystemConstants withMaxAcceleration(AngularAcceleration max) {
+        this.maxAcceleration=max;
         return this;
     }
 
