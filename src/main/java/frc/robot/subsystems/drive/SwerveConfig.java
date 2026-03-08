@@ -13,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -25,6 +26,30 @@ import edu.wpi.first.units.measure.Voltage;
 import lombok.Getter;
 
 public class SwerveConfig {
+    public static class ModuleConstants {
+        public static final Distance WHEEL_DIAMETER = Inches.of(4);
+        // public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();
+        // public static final double TURN_MOTOR_GEAR_RATIO = GearRatio.TURN.getConversionFactor();
+
+        // public static final double DRIVE_ENCODER_ROT_2_METER = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER.in(Meters);
+        // public static final double DRIVE_ENCODER_RPM_2_METER_PER_SEC = DRIVE_ENCODER_ROT_2_METER / 60;
+        public static final double READINGS_PER_REVOLUTION = 1;//4096
+
+        //Used for the CANCoder
+        public static final double TURN_ENCODER_ROT_2_RAD = 2 * Math.PI / READINGS_PER_REVOLUTION;
+        public static final double TURN_ENCODER_ROT_2_RAD_SEC = TURN_ENCODER_ROT_2_RAD/60;
+
+        /* Current Limits */
+        public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35; //MA:40
+        public static final double DRIVE_STATOR_CURRENT_LIMIT = 75; //MA:80
+        public static final double TURN_SUPPLY_CURRENT_LIMIT = 40; //MA:40 //2025=80
+        //SUPERNURDS had STATOR at 60, no supply
+    }
+
+    public static final PIDConstants TRANSLATIONAL_PID = new PIDConstants(7,0,0);
+
+    public static final PIDConstants THETA_PID = new PIDConstants(5,0,0);
+    
     public enum Speed {
         TURBO(1, 1),
         NORMAL(1.6, 1.6),//3.5, 1 //1,.4
@@ -57,6 +82,20 @@ public class SwerveConfig {
         private GearRatio(double gearRatio) {
             this.gearRatio=gearRatio;
             this.conversionFactor=(1.0/gearRatio);
+        }
+    }
+
+    public enum DriveOptions { 
+        IS_FIELD_ORIENTED(true),
+        IS_SQUARED_INPUTS(true),
+        IS_POSE_UPDATED(true)
+        ;
+        private final boolean value;
+        private DriveOptions(boolean value) {
+            this.value = value;
+        } 
+        public boolean get(){
+            return value;
         }
     }
     
@@ -102,9 +141,9 @@ public class SwerveConfig {
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
-                .withSupplyCurrentLimit(Amps.of(DriveConstants.ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT))
+                .withSupplyCurrentLimit(Amps.of(ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT))
                 .withSupplyCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Amps.of(DriveConstants.ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT))
+                .withStatorCurrentLimit(Amps.of(ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT))
                 .withStatorCurrentLimitEnable(true)   
         );
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
@@ -112,7 +151,7 @@ public class SwerveConfig {
             new CurrentLimitsConfigs()
                 // Swerve azimuth does not require much torque output, so we can set a relatively low
                 // stator current limit to help avoid brownouts without impacting performance.
-                .withSupplyCurrentLimit(Amps.of(DriveConstants.ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT))
+                .withSupplyCurrentLimit(Amps.of(ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT))
                 .withSupplyCurrentLimitEnable(true)
                 // .withStatorCurrentLimit(Amps.of(DriveConstants.ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT))
                 // .withStatorCurrentLimitEnable(true)

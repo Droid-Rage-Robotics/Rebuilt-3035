@@ -334,7 +334,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
                                 AutoRequest.withSpeeds(
                                         speeds)), // Consumer of ChassisSpeeds to drive the robot
                 new PPHolonomicDriveController(
-                        DriveConstants.TRANSLATIONAL_PID, DriveConstants.THETA_PID),
+                        SwerveConfig.TRANSLATIONAL_PID, SwerveConfig.THETA_PID),
                 robotConfig,
                 () ->
                         DriverStation.getAlliance().orElse(Alliance.Blue)
