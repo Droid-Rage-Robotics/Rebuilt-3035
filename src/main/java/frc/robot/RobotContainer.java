@@ -36,19 +36,20 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
         new Turret(false),
         new Hood(false),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
+    private final Climb climb = new Climb(true);
+
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
-    private final Climb climb = new Climb(false);
     // private final Light light = new Light(0);
     
     private final CommandXboxController driver =
@@ -104,7 +105,10 @@ public class RobotContainer {
 		operator.rightBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			.onTrue(TeleopCommands.shootIntakeCommand(intake))
+			.onTrue(TeleopCommands.shootIntakeCommand(intake)
+				.andThen(TeleopCommands.shootIntakeCommand(intake))
+				.andThen(TeleopCommands.shootIntakeCommand(intake)))
+				
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
