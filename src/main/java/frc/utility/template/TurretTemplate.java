@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -113,8 +114,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
         motorConfig.MotionMagic.MotionMagicJerk = 0; // optional, set nonzero for S-curve smoothing
 
-        
-
         motor.getMotor().getConfigurator().apply(motorConfig);
         
         TelemetryUtils.registerDashboard(this);
@@ -200,20 +199,16 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         return goalAngle.get();
     }
 
-    public double getPositionSetpoint() {
-    // Talon reports in rotations; convert back to degrees
-    return motor.getMotor().getClosedLoopReference().getValueAsDouble()
-        * conversionFactor * 360.0;
+    public Angle getPositionSetpoint() {
+        return Rotations.of(motor.getMotor().getClosedLoopReference().getValueAsDouble());
     }
 
-    public double getVelocitySetpoint() {
-        return motor.getMotor().getClosedLoopReferenceSlope().getValueAsDouble()
-            * conversionFactor * 360.0;
+    public AngularVelocity getVelocitySetpoint() {
+        return RotationsPerSecond.of(motor.getMotor().getClosedLoopReferenceSlope().getValueAsDouble());
     }
 
-    public double getPositionError() {
-        return motor.getMotor().getClosedLoopError().getValueAsDouble()
-            * conversionFactor * 360.0;
+    public Angle getPositionError() {
+        return Rotations.of(motor.getMotor().getClosedLoopError().getValueAsDouble());
     }
 
     
