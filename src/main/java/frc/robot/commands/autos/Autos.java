@@ -12,7 +12,7 @@ import frc.robot.subsystems.vision.Vision;
 public final class Autos {
     public static Command rightNuetralOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "nuetralOutpost")
+            PathPlannerFollow.create(drive, "neutralOutpost")
                 .setMaxVelocity(6)
                 .setAcceleration(6)
                 .build()

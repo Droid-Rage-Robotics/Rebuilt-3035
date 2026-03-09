@@ -25,7 +25,7 @@ public class Pivot extends ArmTemplate {
         .withConversionFactor(1.0/54.0)
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.of(35))
-        .withMaxAngle(Degrees.of(160))
+        .withMaxAngle(Degrees.of(175))
         .withName("Pivot")
         .withOffset(Units.degreesToRotations(startingPosDegree))//Rotation
         .withMainNum(0);
@@ -35,9 +35,9 @@ public class Pivot extends ArmTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withConversionFactor(1)
         .withDirection(Direction.Forward)
-        .withIdleMode(NeutralModeValue.Coast)
-        .withStatorCurrentLimit(20) //Reefscape 50
-        .withSupplyCurrentLimit(15); //Reefscape None
+        .withIdleMode(NeutralModeValue.Coast);
+        // .withStatorCurrentLimit(20) //Reefscape 50
+        // .withSupplyCurrentLimit(15); //Reefscape None
 
 
     public Pivot(boolean isEnabled) {

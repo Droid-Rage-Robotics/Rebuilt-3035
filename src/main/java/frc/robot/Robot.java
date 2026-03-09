@@ -73,8 +73,7 @@ public class Robot extends LoggedRobot {
 
         // SignalLogger.start(); // CTRE Signal Logger
 
-        // autonomousCommand = autoChooser.getAutonomousCommand();
-        autonomousCommand = new InstantCommand();
+        autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (autonomousCommand != null) {
             commandScheduler.schedule(autonomousCommand);
