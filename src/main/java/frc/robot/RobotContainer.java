@@ -6,10 +6,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants.ControllerUtils;
 import frc.robot.commands.TeleopCommands;
+import frc.robot.commands.autos.AutoChooser;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.ShooterHold;
@@ -38,19 +40,21 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
-        new Hood(true),
-        new ShooterWheel(true)
+        new Turret(false),
+        new Hood(false),
+        new ShooterWheel(false)
     );
-    private final Climb climb = new Climb(true);
+    private final Climb climb = new Climb(false);
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
+
+	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, climb, null);
 
     // private final Light light = new Light(0);
     
@@ -254,5 +258,9 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
+	}
+
+	public Command getAutonomousCommand() {
+		return autoChooser.getAutonomousCommand();
 	}
 }

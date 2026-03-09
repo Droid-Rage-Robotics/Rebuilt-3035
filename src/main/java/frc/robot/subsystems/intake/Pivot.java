@@ -26,7 +26,7 @@ public class Pivot extends ArmTemplate {
         .withMaxAcceleration(RotationsPerSecondPerSecond.of(15))
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.of(35))
-        .withMaxAngle(Degrees.of(160))
+        .withMaxAngle(Degrees.of(175))
         .withName("Pivot")
         .withOffset(Units.degreesToRotations(startingPosDegree))//Rotation
         .withMainNum(0);
