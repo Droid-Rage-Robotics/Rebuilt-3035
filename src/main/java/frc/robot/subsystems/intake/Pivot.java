@@ -8,6 +8,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.utility.devices.motor.MotorConstants;
@@ -70,4 +73,19 @@ public class Pivot extends ArmTemplate {
     //         setPositionCommand(IntakeValue.HOLD);
     //     }
     // }
+
+    public void changeCurrentLimit(boolean isCurrentOn){ 
+        for (int i = 0; i < getAllMotor().length; i++) {
+            getAllMotor()[i].changeCurrentLimits(isCurrentOn);
+        }
+    }
+
+    public Command startPivotCommand(){ //TODO: Test
+        return new ParallelCommandGroup(
+            new InstantCommand(()->changeCurrentLimit(false)),
+            setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+            new WaitCommand(1),
+            new InstantCommand(()->changeCurrentLimit(true))
+        );
+    }
 }
