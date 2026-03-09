@@ -62,75 +62,8 @@ public class Indexer extends FlywheelTemplate{
         @Override
     public void periodic(){
         super.periodic();
-
-        // if (Math.abs(getCurrent().in(Amps)) >=60){
-        //     if (!isStalling){
-        //         isStalling = true;
-        //         stallTimer.reset();
-        //         stallTimer.start();
-        //         System.out.println("INDEXER STALL");
-        //     }
-        //     System.out.println(stallTimer.get());
-
-        //     if (stallTimer.get()> 0.2 && stallTimer.get()<1.5){
-        //         System.out.println("REVERSING");
-        //         isReversing = true;
-        //         setTargetVelocity(IndexerValue.OUTTAKE.indexerValue);
-        //         stallTimer.reset();
-        //     } 
-        //     else{
-        //         System.out.println("REVERTING BACK");
-        //         isReversing = false;
-        //         isStalling = false;
-        //         setTargetVelocity(IndexerValue.INTAKE.indexerValue);
-        //     }
-
-        //     if (isReversing && stallTimer.get()>1){
-        //         System.out.println("REVERTING BACK");
-        //         isReversing = false;
-        //         isStalling = false;
-        //         setTargetVelocity(IndexerValue.INTAKE.indexerValue);
-        //     } 
-        // } else {
-        //     isStalling = false;
-        //     isReversing = false;
-        //     stallTimer.reset();
-
-        // }
-
-// }
-    // @Override
-    // public void periodic() {
-    //     super.periodic();
-
-    //     if (Math.abs(getCurrent().in(Amps)) >= 50) {
-    //         // setTargetVelocity(-getTargetVelocity());
-    //         System.out.println("INDEXER STALL");
-    //         // System.out.println(intakeTime);//4.7
-    //         stallTimer.reset();
-    //         // stallTimer
-    //         System.out.println(stallTimer.get());//4
-
-    //         if (stallTimer.get()>0.2) {
-    //             System.out.println("REVERSING");
-    //             setTargetVelocity(RotationsPerSecond.of(-getTargetVelocity()));
-    //             stallTimer.restart();
-    //             if (stallTimer.get()>0.5) {
-    //                 System.out.println("REVERTING BACK");
-    //                 setTargetVelocity(RotationsPerSecond.of(-getTargetVelocity()));
-    //                 // intakeTime = 0;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // @Override
-    // public Command setTargetVelocityCommand(AngularVelocity target) {
-    //     if(target==IndexerValue.INTAKE.getIndexerValue()){
-    //         intakeTime=stallTimer.get();
-            
-    //     }
-    //     return super.setTargetVelocityCommand(target);
-    // }
     }
+        public boolean isStalling() {
+            return Math.abs(getCurrent().in(Amps)) >=60;
+        }
 }
