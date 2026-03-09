@@ -36,9 +36,9 @@ public class Pivot extends ArmTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withConversionFactor(1)
         .withDirection(Direction.Forward)
-        .withIdleMode(NeutralModeValue.Coast)
-        .withStatorCurrentLimit(20) //Reefscape 50
-        .withSupplyCurrentLimit(15); //Reefscape None
+        .withIdleMode(NeutralModeValue.Coast);
+        // .withStatorCurrentLimit(20) //Reefscape 50
+        // .withSupplyCurrentLimit(15); //Reefscape None
 
 
     public Pivot(boolean isEnabled) {
