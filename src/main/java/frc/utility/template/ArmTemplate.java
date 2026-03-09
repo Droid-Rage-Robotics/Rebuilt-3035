@@ -2,18 +2,21 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
-import frc.utility.devices.encoder.CANcoderEx;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.TalonEx;
@@ -32,44 +34,32 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
     protected final TalonEx[] motors;
-    protected final ProfiledPIDController controller;
-    protected final ArmFeedforward feedforward;
+
     private final double minAngleRad;
     private final double maxAngleRad;
-    private final double conversionFactor;
+
+    private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
+        
+    private final AtomicReference<Rotation2d> goalAngle = new AtomicReference<Rotation2d>(Rotation2d.kZero);
+
     
     protected final int mainNum;
     protected final String name;
-    private final Optional<CANcoderEx> encoder;
     private final boolean isEnabled;
     private final SubsystemConstants constants;
 
     public ArmTemplate(
         boolean isEnabled,
-        ProfiledPIDController controller,
-        ArmFeedforward feedforward,
         SubsystemConstants constants,
         EncoderConstants encoderConstants,
         MotorConstants... motorConstants
     ){
         this.isEnabled=isEnabled;
         this.constants=constants;
-        this.controller=controller;
-        this.feedforward=feedforward;
         this.minAngleRad=constants.minAngle.in(Radians);
         this.maxAngleRad=constants.maxAngle.in(Radians);
-        this.conversionFactor=constants.conversionFactor;
         this.mainNum=constants.mainNum;
         this.name=constants.name;
-
-        if (constants.encoderType == EncoderType.ABSOLUTE || constants.encoderType == EncoderType.EXTERNAL) {
-            if (encoderConstants == null) {
-                throw new NullPointerException("Encoder constants required for absolute encoder");
-            }
-            this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
-        } else {
-            this.encoder = Optional.empty();
-        }
 
         this.motors = new TalonEx[motorConstants.length];
         
@@ -81,6 +71,45 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         for (int i = 0; i < motorConstants.length; i++) {
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
+
+        for (int i = 0; i < motors.length; i++) {
+            if (i != mainNum) {
+                motors[i].getMotor().setControl(
+                    new Follower(motors[mainNum].getMotor().getDeviceID(), MotorAlignmentValue.Aligned)
+                    // 'false' = same direction, 'true' = opposite direction
+                );
+            }
+        }
+
+        var motorConfig = motors[mainNum].getConfig();
+
+        if (constants.encoderType == EncoderType.ABSOLUTE || constants.encoderType == EncoderType.EXTERNAL) {
+            if (encoderConstants == null) {
+                throw new NullPointerException("Encoder constants required for external encoder");
+            }
+            motorConfig.Feedback.FeedbackRemoteSensorID=encoderConstants.deviceId;
+            motorConfig.Feedback.FeedbackSensorSource=FeedbackSensorSourceValue.RemoteCANcoder;
+            motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
+        } else {
+            motorConfig.Feedback.RotorToSensorRatio=constants.gearRatio;
+            motorConfig.Feedback.FeedbackRotorOffset=constants.offset;
+        }
+        
+        // PID slot 0
+        motorConfig.Slot0.kP = constants.kP;
+        motorConfig.Slot0.kI = constants.kI;
+        motorConfig.Slot0.kD = constants.kD;
+        motorConfig.Slot0.kV = constants.kV;
+        motorConfig.Slot0.kA = constants.kA;
+        motorConfig.Slot0.kS = constants.kS;
+        motorConfig.Slot0.kG = constants.kG;
+        motorConfig.Slot0.GravityType=GravityTypeValue.Arm_Cosine;
+
+        motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
+        motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
+        motorConfig.MotionMagic.MotionMagicJerk = 0; // optional, set nonzero for S-curve smoothing
+
+        motors[mainNum].getMotor().getConfigurator().apply(motorConfig);
 
         TelemetryUtils.registerDashboard(this);
         TelemetryUtils.registerTelemetry(this);
@@ -107,27 +136,14 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
         Logger.recordOutput(name + "/Current Velocity", getVelocity());
         Logger.recordOutput(name + "/Applied Voltage", getVoltage());
-        Logger.recordOutput(name + "/Position Error", controller.getPositionError());
+        Logger.recordOutput(name + "/Position Error", getPositionError());
     }
     
     /* ---------------- Periodic Control Loop ---------------- */
 
     @Override
     public void periodic() {
-        double currentAngleRad = getCurrentAngle().getRadians();//+ Math.toRadians(constants.offset);
-        
-        double pidOut = controller.calculate(currentAngleRad);
-        var setpoint = controller.getSetpoint();
-
-        double ffOut = feedforward.calculate(setpoint.position, setpoint.velocity);
-
-        setVoltage(pidOut + ffOut);
-        //ks * Math.signum(velocity) + kg + kv * velocity + ka * acceleration; ^^
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        periodic();
+        motors[mainNum].setControl(motionMagicRequest.withPosition(goalAngle.get().getMeasure()));
     }
 
     /* ---------------- Commands ---------------- */
@@ -149,35 +165,33 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
             maxAngleRad
         );
 
-        controller.setGoal(clamped);
+        goalAngle.set(Rotation2d.fromRadians(clamped));
     }
 
     public Rotation2d getGoalAngle() {
-        return Rotation2d.fromRadians(controller.getGoal().position);
+        return goalAngle.get();
     }
 
-    public double getVelocitySetpoint() {
-        return Math.toDegrees(controller.getSetpoint().velocity);
+    public Angle getPositionSetpoint() {
+        return Rotations.of(motors[mainNum].getMotor().getClosedLoopReference().getValueAsDouble());
     }
 
-    public double getPositionSetpoint() {
-        return Math.toDegrees(controller.getSetpoint().position);
+    public AngularVelocity getVelocitySetpoint() {
+        return RotationsPerSecond.of(motors[mainNum].getMotor().getClosedLoopReferenceSlope().getValueAsDouble());
+    }
+
+    public Angle getPositionError() {
+        return Rotations.of(motors[mainNum].getMotor().getClosedLoopError().getValueAsDouble());
     }
     
     /* ---------------- Sensor Access ---------------- */
 
     public Rotation2d getCurrentAngle() {
-        var rot = encoder
-            .map(enc -> enc.getAbsolutePosition())
-            .orElse(motors[mainNum].getPosition());
-
-        return Rotation2d.fromRotations((rot.in(Rotations) * conversionFactor) + constants.offset);
+        return new Rotation2d(motors[mainNum].getPosition());
     }
 
     public AngularVelocity getVelocity() {
-        return encoder
-            .map(enc -> enc.getVelocity().times(conversionFactor))
-            .orElse(motors[mainNum].getVelocity().times(conversionFactor)); 
+        return motors[mainNum].getVelocity();
     }
     
     public double getVoltage() {
@@ -192,16 +206,12 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
             (angle < minAngleRad && voltage < 0)) {
             voltage = 0;
         }
-        for (TalonEx motor: motors) {
-            motor.setVoltage(voltage);
-        }
+        motors[mainNum].setVoltage(voltage);
     }
 
     public void setVoltage(Voltage voltage) {
         if (isEnabled) {
-            for (TalonEx motor: motors) {
-                motor.setVoltage(voltage);
-            }
+            motors[mainNum].setVoltage(voltage);
         }
     }
     
@@ -279,17 +289,9 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         return motors;
     }
 
-    public boolean atSetpoint(){
-        return controller.atSetpoint();
-    }
-    
-    public double getSetpointError() {
-        return controller.getPositionError();
-    }
-
-    public boolean atGoal(){
-        return controller.atGoal();
-    }
+    // public boolean atGoal(){
+    //     return controller.atGoal();
+    // }
 
     private boolean isAtUpperLimit() {
         return getCurrentAngle().getRadians() >= maxAngleRad - 0.05; // 0.05 rad buffer

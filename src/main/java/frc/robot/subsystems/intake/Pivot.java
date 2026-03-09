@@ -20,6 +20,10 @@ public class Pivot extends ArmTemplate {
     private static double startingPosDegree = 35;
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1.0/54.0)
+        .withPID(25, 0, 0.35)
+        .withFeedforward(0.74109, 0.27134, 3.3, 0.23)
+        .withMaxVelocity(RotationsPerSecond.of(10))
+        .withMaxAcceleration(RotationsPerSecondPerSecond.of(15))
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.of(35))
         .withMaxAngle(Degrees.of(160))
@@ -38,15 +42,9 @@ public class Pivot extends ArmTemplate {
 
 
     public Pivot(boolean isEnabled) {
-        super(isEnabled, 
-            new ProfiledPIDController(25, 0, .35,//4
-            new TrapezoidProfile.Constraints(10, 15)), 
-            new ArmFeedforward(0.74109, 0.27134, 3.3, 0.23), 
-
-            constants, 
-            null, 
-            motorConstants);
-            setTargetPositionDegrees(startingPosDegree);
+        super(isEnabled, constants, null, motorConstants);
+        
+        setTargetPositionDegrees(startingPosDegree);
     }
 
     public Command setTargetPositionCommand(IntakeValue.PivotAngle goalAngle) {

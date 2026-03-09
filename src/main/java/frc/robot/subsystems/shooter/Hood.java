@@ -16,7 +16,11 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Hood extends ArmTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/(4.0 * (155.0/9.0)))
+        .withGearRatio(4.0 * (155.0/9.0))
+        .withPID(15, 0, 0)
+        .withFeedforward(0.4334, 0,0.28114, 2.0731)
+        .withMaxVelocity(RotationsPerSecond.of(5))
+        .withMaxAcceleration(RotationsPerSecondPerSecond.of(5))
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.zero())
         .withMaxAngle(Degrees.of(28))
@@ -34,13 +38,7 @@ public class Hood extends ArmTemplate {
         .withStatorCurrentLimit(70);
 
     public Hood(boolean isEnabled) {
-        super(isEnabled, 
-            new ProfiledPIDController(15, 0, 0,
-            new TrapezoidProfile.Constraints(5, 5)), 
-            new ArmFeedforward(0.4334, 0,0.28114, 2.0731), 
-            constants, 
-            null, 
-            motorConstants);
+        super(isEnabled, constants, null, motorConstants);
     }
 
     @Override
