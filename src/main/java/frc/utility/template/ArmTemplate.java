@@ -2,6 +2,7 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.littletonrobotics.junction.Logger;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
+import frc.utility.devices.encoder.CANcoderEx;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.TalonEx;
@@ -34,6 +36,7 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
     protected final TalonEx[] motors;
+    private final Optional<CANcoderEx> encoder;
 
     private final double minAngleRad;
     private final double maxAngleRad;
@@ -87,13 +90,20 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
             if (encoderConstants == null) {
                 throw new NullPointerException("Encoder constants required for external encoder");
             }
+
+            this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
+
             motorConfig.Feedback.FeedbackRemoteSensorID=encoderConstants.deviceId;
             motorConfig.Feedback.FeedbackSensorSource=FeedbackSensorSourceValue.RemoteCANcoder;
-            motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
+
+
         } else {
-            motorConfig.Feedback.RotorToSensorRatio=constants.gearRatio;
-            motorConfig.Feedback.FeedbackRotorOffset=constants.offset;
+            this.encoder = Optional.empty();
+
+            // motorConfig.Feedback.FeedbackRotorOffset=constants.offset;
         }
+
+        motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
         
         // PID slot 0
         motorConfig.Slot0.kP = constants.kP;
@@ -216,15 +226,15 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     }
     
     public void resetEncoder(Angle resetAngle) {
-        if (hasExternalEncoder()) {
-            return;
-        } else {
-            for (TalonEx motor: motors) {
-                motor.resetEncoder(resetAngle.in(Rotations));
-                // motor.resetEncoder(resetAngle.in(Rotations)+Math.to);
-
-            }
-            setGoalAngle(Rotation2d.fromRotations(resetAngle.in(Rotation)+constants.offset));//new Rotation2d(resetAngle)
+        switch(constants.encoderType){
+            case ABSOLUTE: 
+                return;
+            case EXTERNAL: 
+                encoder.get().resetPosition(resetAngle);
+                motors[mainNum].resetEncoder(resetAngle.in(Rotations));
+                break;
+            case INTEGRATED: 
+                motors[mainNum].resetEncoder(resetAngle.in(Rotations));
         }
     }
 

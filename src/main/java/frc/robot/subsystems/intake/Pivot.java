@@ -19,7 +19,7 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 public class Pivot extends ArmTemplate {
     private static double startingPosDegree = 35;
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/54.0)
+        .withConversionFactor(54.0)
         .withPID(25, 0, 0.35)
         .withFeedforward(0.74109, 0.27134, 3.3, 0.23)
         .withMaxVelocity(RotationsPerSecond.of(10))
@@ -34,7 +34,6 @@ public class Pivot extends ArmTemplate {
     private static final MotorConstants motorConstants = new MotorConstants()
         .withDeviceId(16)
         .withCANBus(DroidRageConstants.driveCanBus)
-        .withConversionFactor(1)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
         .withStatorCurrentLimit(20) //Reefscape 50
@@ -55,10 +54,10 @@ public class Pivot extends ArmTemplate {
     public void periodic() {
         super.periodic();
 
-        //TODO:TEst
-        if (getCurrentAngle().getDegrees()<35) {
-            resetEncoderCommand(0);
-        }
+        // //TODO:TEst
+        // if (getCurrentAngle().getDegrees()<35) {
+        //     resetEncoderCommand(0);
+        // }
 
     }
 

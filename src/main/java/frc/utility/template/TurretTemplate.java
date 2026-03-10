@@ -42,7 +42,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     private final double minAngleRad;
     private final double maxAngleRad;
-    private final double conversionFactor;
     private final SubsystemConstants constants;
 
     private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
@@ -67,7 +66,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         this.name=constants.name;
         this.minAngleRad=constants.minAngle.in(Radians);
         this.maxAngleRad=constants.maxAngle.in(Radians);
-        this.conversionFactor=constants.conversionFactor;
         this.isEnabled=isEnabled;
 
         motorConstants.subsystem=this;
@@ -97,11 +95,12 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
             
             motorConfig.Feedback.FeedbackRemoteSensorID=encoderConstants.deviceId;
             motorConfig.Feedback.FeedbackSensorSource=FeedbackSensorSourceValue.RemoteCANcoder;
-            motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
         } else {
             this.encoder = Optional.empty();
         }
         
+        motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
+
         // PID slot 0
         motorConfig.Slot0.kP = constants.kP;
         motorConfig.Slot0.kI = constants.kI;
@@ -215,19 +214,11 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     /* ---------------- Sensor Access ---------------- */
 
     public Rotation2d getCurrentAngle() {
-        if (constants.encoderType==EncoderType.ABSOLUTE) {
-            return new Rotation2d(encoder.get().getAbsolutePosition().times(conversionFactor));
-        } else {
-            return new Rotation2d(encoder
-                .map(enc -> enc.getPosition().times(conversionFactor))
-                .orElse(motor.getPosition().times(conversionFactor)));
-        }
+        return new Rotation2d(motor.getPosition());
     }
 
     public AngularVelocity getVelocity() {
-        return encoder
-            .map(enc -> enc.getVelocity().times(conversionFactor))
-            .orElse(motor.getVelocity().times(conversionFactor)); 
+        return motor.getVelocity();
     }
     
     public double getVoltage() {
@@ -254,6 +245,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
                 return;
             case EXTERNAL: 
                 encoder.get().resetPosition(Degrees.of(0));
+                motor.resetEncoder(0);
                 break;
             case INTEGRATED: 
                 motor.resetEncoder(0);

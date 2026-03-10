@@ -38,7 +38,7 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
+        new Pivot(true),
         new IntakeWheel(false)
     );
     private final Indexer indexer = new Indexer(false);
@@ -48,7 +48,7 @@ public class RobotContainer {
         new Hood(false),
         new ShooterWheel(false)
     );
-    private final Climb climb = new Climb(true);
+    private final Climb climb = new Climb(false);
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
@@ -67,12 +67,12 @@ public class RobotContainer {
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		configureTeleOpBindings();
+		// configureTeleOpBindings();
 		// testDrive();
         // testSubsystems();
         // testClimb();
         // resetClimb();
-        // testShooter();
+        testShooter();
         // testAim();
 	}
 
@@ -209,24 +209,24 @@ public class RobotContainer {
 		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		// operator.a().onTrue(new ShooterScore(drive, shooter));
 		
-		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(30)))
-       	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
+		// operator.rightBumper()
+       	//  	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(30)))
+       	//  	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
 
-   	 	operator.rightBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		operator.leftBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		operator.rightBumper()
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-		operator.leftBumper()
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+   	 	// operator.rightBumper()
+		// 	.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+		// 	.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+		// operator.leftBumper()
+		// 	.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+		// 	.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+		// operator.rightBumper()
+		// 	.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+		// 	.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+		// operator.leftBumper()
+		// 	.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-		// operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
-		// operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
+		operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
+		operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
 
 		// operator.rightTrigger()
 		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
