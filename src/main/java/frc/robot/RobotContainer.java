@@ -46,11 +46,11 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer(true);
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
-        new Hood(true),
+        new Turret(false),
+        new Hood(false),
         new ShooterWheel(true)
     );
-    private final Climb climb = new Climb(true);
+    private final Climb climb = new Climb(false);
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
@@ -71,12 +71,12 @@ public class RobotContainer {
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		configureTeleOpBindings();
+		// configureTeleOpBindings();
 		// testDrive();
         // testSubsystems();
         // testClimb();
         // resetClimb();
-        // testShooter();
+        testShooter();
         // testAim();
 	}
 
@@ -214,7 +214,7 @@ public class RobotContainer {
 		// operator.a().onTrue(new ShooterScore(drive, shooter));
 		
 		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(30)))
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(60)))
        	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
 
    	 	operator.rightBumper()

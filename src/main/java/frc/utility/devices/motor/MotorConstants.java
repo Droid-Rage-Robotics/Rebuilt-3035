@@ -3,6 +3,7 @@ package frc.utility.devices.motor;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
@@ -53,6 +54,8 @@ public final class MotorConstants {
     public boolean isEnabled;
     public MotorType motorType;
 
+    public MotorAlignmentValue alignment = MotorAlignmentValue.Aligned;
+
     /**
      * Used to enable/disable the motor.
      * @param isEnabled
@@ -60,6 +63,11 @@ public final class MotorConstants {
      */
     public MotorConstants withIsEnabled(boolean isEnabled) {
         this.isEnabled=isEnabled;
+        return this;
+    }
+
+    public MotorConstants withMotorAlignment(MotorAlignmentValue alignmentValue) {
+        this.alignment=alignmentValue;
         return this;
     }
 

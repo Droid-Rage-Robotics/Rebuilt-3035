@@ -18,8 +18,8 @@ import lombok.Getter;
 
 public class Indexer extends FlywheelTemplate{
     public enum IndexerValue {
-        INTAKE(10), //100
-        OUTTAKE(-10),//-25
+        INTAKE(30), //100
+        OUTTAKE(-30),//-25
         STOP(0),
         HOLD(0);
 
@@ -31,7 +31,9 @@ public class Indexer extends FlywheelTemplate{
     }
     
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/9.0)
+        .withGearRatio(5.0)
+        .withPID(0.014761, 0, 0) //0.032889
+        .withFeedforward(0.14827, 1.0665, 0.014828) //0.34224, 0.37116, 0.0095347
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinVelocity(RotationsPerSecond.of(-150))
         .withMaxVelocity(RotationsPerSecond.of(150))
@@ -53,13 +55,10 @@ public class Indexer extends FlywheelTemplate{
     private boolean isReversing = false;
 
     public Indexer(boolean isEnabled) {
-        super(isEnabled,
-            new PIDController(0.014761, 0, 0), //0.032889
-            new SimpleMotorFeedforward(0.14827, 1.0665, 0.014828), //0.34224, 0.37116, 0.0095347
-            constants, 
-            motor);
+        super(isEnabled, constants, motor);
     }
-        @Override
+        
+    @Override
     public void periodic(){
         super.periodic();
     }
