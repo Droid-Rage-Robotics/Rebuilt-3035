@@ -17,7 +17,7 @@ public class ShooterWheel extends FlywheelTemplate {
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinVelocity(RotationsPerSecond.of(-60))
-        .withMaxVelocity(RotationsPerSecond.of(100))
+        .withMaxVelocity(RotationsPerSecond.of(200))
         .withName("ShooterWheel")
         .withOffset(0)
         .withMainNum(0);

@@ -48,18 +48,18 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         SHOOT_OUTPOST(180,15,70),
 
         SHOOT_TRENCH_RIGHT(-120,10,60),
-        AUTO_SHOOT_TRENCH_RIGHT(
-            SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),
-            0,
-            SHOOT_TRENCH_RIGHT.getVelocity()),
+        // AUTO_SHOOT_TRENCH_RIGHT(
+        //     SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),
+        //     0,
+        //     SHOOT_TRENCH_RIGHT.getVelocity()),
         SHOOT_TRENCH_LEFT(
             120, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
             SHOOT_TRENCH_RIGHT.getVelocity()),
-        AUTO_SHOOT_TRENCH_LEFT(
-            SHOOT_TRENCH_LEFT.getTurretAngle().getDegrees(), 
-            AUTO_SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(),
-            AUTO_SHOOT_TRENCH_RIGHT.getVelocity()),
+        // AUTO_SHOOT_TRENCH_LEFT(
+        //     SHOOT_TRENCH_LEFT.getTurretAngle().getDegrees(), 
+        //     AUTO_SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(),
+        //     AUTO_SHOOT_TRENCH_RIGHT.getVelocity()),
         
         HOLD(-220, 0, 20),
         HOARD(0,5,40)
