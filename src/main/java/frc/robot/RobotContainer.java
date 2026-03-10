@@ -37,7 +37,7 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(false),
@@ -46,9 +46,9 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer(false);
     private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
-        new ShooterWheel(false)
+        new Turret(true),
+        new Hood(true),
+        new ShooterWheel(true)
     );
     private final Climb climb = new Climb(false);
 
