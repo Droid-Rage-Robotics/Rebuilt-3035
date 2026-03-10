@@ -46,8 +46,21 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     public enum ShooterValue {
         SHOOT_HUB(180,15,40),
         SHOOT_OUTPOST(180,15,40),
+
         SHOOT_TRENCH_RIGHT(-120,10,40),
-        SHOOT_TRENCH_LEFT(120,SHOOT_TRENCH_RIGHT.getHoodAngle(),SHOOT_TRENCH_RIGHT.getVelocity()),
+        AUTO_SHOOT_TRENCH_RIGHT(
+            SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),
+            0,
+            SHOOT_TRENCH_RIGHT.getVelocity()),
+        SHOOT_TRENCH_LEFT(
+            120, 
+            SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
+            SHOOT_TRENCH_RIGHT.getVelocity()),
+        AUTO_SHOOT_TRENCH_LEFT(
+            SHOOT_TRENCH_LEFT.getTurretAngle().getDegrees(), 
+            AUTO_SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(),
+            AUTO_SHOOT_TRENCH_RIGHT.getVelocity()),
+        
         HOLD(-220, 0, 20),
         HOARD(0,5,40)
         ;
@@ -61,9 +74,9 @@ public class Shooter implements Dashboard, Sendable, Periodic {
             this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
             this.velocity = RotationsPerSecond.of(velocity);
         }
-        private ShooterValue(double turretAngle, Rotation2d hoodAngle, AngularVelocity velocity) {
+        private ShooterValue(double turretAngle, double hoodAngle, AngularVelocity velocity) {
             this.turretAngle = Rotation2d.fromDegrees(turretAngle);
-            this.hoodAngle = hoodAngle;
+            this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
             this.velocity = velocity;
         }
     }

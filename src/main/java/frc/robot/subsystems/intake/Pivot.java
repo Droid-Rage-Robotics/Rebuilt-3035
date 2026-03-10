@@ -79,13 +79,4 @@ public class Pivot extends ArmTemplate {
             getAllMotor()[i].changeCurrentLimits(isCurrentOn);
         }
     }
-
-    public Command startPivotCommand(){ //TODO: Test
-        return new ParallelCommandGroup(
-            new InstantCommand(()->changeCurrentLimit(false)),
-            setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
-            new WaitCommand(1),
-            new InstantCommand(()->changeCurrentLimit(true))
-        );
-    }
 }

@@ -19,6 +19,12 @@
                 "data": {
                   "pathName": "TrenchToNeutralOutpost"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "startPivot"
+                }
               }
             ]
           }
@@ -32,6 +38,12 @@
                 "data": {
                   "pathName": "NeutralToTrenchOutpost"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootTrenchR"
+                }
               }
             ]
           }
@@ -39,13 +51,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shootTrenchR"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "name": "shoot"
           }
         },
         {
@@ -65,6 +71,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         },
         {

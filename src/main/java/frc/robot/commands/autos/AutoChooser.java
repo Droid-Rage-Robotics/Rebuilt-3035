@@ -1,5 +1,7 @@
 package frc.robot.commands.autos;
 
+import java.util.jar.Attributes.Name;
+
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -7,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.shooter.ShooterScore;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
@@ -26,22 +29,32 @@ public class AutoChooser implements Dashboard {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
     public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision){
+        NamedCommands.registerCommand("startPivot", AutoCommands.startPivotCommand(intake));
         NamedCommands.registerCommand("intakeDown",  intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle()));
         NamedCommands.registerCommand("intakeUp", intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP.getAngle()));
 
         NamedCommands.registerCommand("climbDown", climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
         NamedCommands.registerCommand("climbUp", climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
 
-        NamedCommands.registerCommand("intake", new ParallelCommandGroup(
-            intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE),
-            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle())
-            )
+        NamedCommands.registerCommand("intake",
+            intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
         );
 
         NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
         NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
         NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
         NamedCommands.registerCommand("shootOutpost", shooter.setShooterTargetCommand(ShooterValue.SHOOT_OUTPOST));
+        NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
+            new ParallelCommandGroup(
+            indexer.setTargetVelocityCommand(Indexer.IndexerValue.INTAKE.getIndexerValue()),
+            kicker.setTargetVelocityCommand(Kicker.KickerValue.INTAKE.getKickerValue())
+            ),
+            new WaitCommand(2),
+            new ParallelCommandGroup(
+                indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP.getIndexerValue()),
+                kicker.setTargetVelocityCommand(Kicker.KickerValue.STOP.getKickerValue())
+            )
+        ));
 
 
         // addTuningAuto(drive);

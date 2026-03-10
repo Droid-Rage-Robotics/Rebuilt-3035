@@ -112,9 +112,9 @@ public class Robot extends LoggedRobot {
         commandScheduler.cancelAll();
         // SignalLogger.start(); // CTRE Signal Logger
         
-        // if (autonomousCommand != null) {
-        //     autonomousCommand.cancel();
-        // }
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
         
         DroidRageConstants.alliance = DriverStation.getAlliance().get();
 
