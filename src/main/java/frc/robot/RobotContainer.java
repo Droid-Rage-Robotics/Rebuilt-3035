@@ -119,7 +119,7 @@ public class RobotContainer {
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
 
 		operator.rightBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+			.onTrue(TeleopCommands.indexerIntakeCommand(indexer))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
 			.onTrue(TeleopCommands.shootIntakeCommand(intake)
 				.andThen(TeleopCommands.shootIntakeCommand(intake))

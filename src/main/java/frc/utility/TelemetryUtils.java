@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 
 public class TelemetryUtils {
@@ -138,6 +141,16 @@ public class TelemetryUtils {
      * in {@code Robot.robotPeriodic()}
      */
     public static void onRobotPeriodic() {
+        // Update from HubShiftUtil
+        SmartDashboard.putString(
+            "Shifts/Remaining Shift Time",
+            String.format("%.1f", Math.max(HubShiftUtil.getOfficialShiftInfo().remainingTime(), 0.0)));
+        SmartDashboard.putBoolean("Shifts/Shift Active", HubShiftUtil.getOfficialShiftInfo().active());
+        SmartDashboard.putString(
+            "Shifts/Game State", HubShiftUtil.getOfficialShiftInfo().currentShift().toString());
+        SmartDashboard.putBoolean(
+            "Shifts/Active First?",
+            DriverStation.getAlliance().orElse(Alliance.Blue) == HubShiftUtil.getFirstActiveAlliance());
         for (Periodic pub : periodicPublishers) {
             pub.periodic();
         }
