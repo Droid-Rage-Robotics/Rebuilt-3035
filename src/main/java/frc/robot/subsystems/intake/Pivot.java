@@ -38,6 +38,7 @@ public class Pivot extends ArmTemplate {
         .withIdleMode(NeutralModeValue.Coast);
         // .withStatorCurrentLimit(20) //Reefscape 50
         // .withSupplyCurrentLimit(15); //Reefscape None
+        //TODO: Uncomment and check the command to turn on and off current limit
 
 
     public Pivot(boolean isEnabled) {
@@ -60,6 +61,7 @@ public class Pivot extends ArmTemplate {
     public void periodic() {
         super.periodic();
 
+        System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
         //TODO:TEst
         if (getCurrentAngle().getDegrees()<35) {
             resetEncoderCommand(0);
