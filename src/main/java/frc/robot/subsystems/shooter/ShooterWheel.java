@@ -4,8 +4,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
