@@ -33,7 +33,11 @@ public class Robot extends LoggedRobot {
         }
 
         TelemetryUtils.onRobotInit();
-        DroidRageConstants.alliance = DriverStation.getAlliance().get();
+
+        if (DriverStation.getAlliance().isPresent()) {
+            DroidRageConstants.alliance = DriverStation.getAlliance().get();
+        }
+
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
 

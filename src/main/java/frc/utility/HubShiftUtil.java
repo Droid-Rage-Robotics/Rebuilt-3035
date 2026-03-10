@@ -118,7 +118,9 @@ public class HubShiftUtil {
       // Adjust the current offset if the time difference above the theshold
       if (Math.abs(fieldTeleopTime - currentTime) >= timeResetThreshold
           && fieldTeleopTime <= 135
-          && DriverStation.isFMSAttached()) {
+          // && DriverStation.isFMSAttached()
+        
+        ) {
         shiftTimerOffset += currentTime - fieldTeleopTime;
         currentTime = timerValue + shiftTimerOffset;
       }

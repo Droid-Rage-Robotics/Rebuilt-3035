@@ -149,8 +149,8 @@ public class TelemetryUtils {
         SmartDashboard.putString(
             "Shifts/Game State", HubShiftUtil.getOfficialShiftInfo().currentShift().toString());
         SmartDashboard.putBoolean(
-            "Shifts/Active First?",
-            DriverStation.getAlliance().orElse(Alliance.Blue) == HubShiftUtil.getFirstActiveAlliance());
+            "Shifts/Won Auto?",
+            !(DriverStation.getAlliance().orElse(Alliance.Blue) == HubShiftUtil.getFirstActiveAlliance()));
         for (Periodic pub : periodicPublishers) {
             pub.periodic();
         }
