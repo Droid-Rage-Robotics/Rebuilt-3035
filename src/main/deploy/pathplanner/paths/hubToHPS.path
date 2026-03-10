@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.575316901408451,
-        "y": 4.003063380281691
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1019921389135185,
-        "y": 3.383993195467007
+        "x": 3.575316901408451,
+        "y": 1.0
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Hub"
     },
     {
       "anchor": {
-        "x": 0.988450704225353,
-        "y": 0.6497183098591552
+        "x": 0.489,
+        "y": 0.65
       },
       "prevControl": {
-        "x": 1.9680119820108724,
-        "y": 1.9582003148578173
+        "x": 3.314,
+        "y": 0.6499999999999997
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HPS"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.87669728592454
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Outpost",
