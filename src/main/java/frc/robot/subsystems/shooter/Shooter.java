@@ -44,10 +44,10 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         HOARD // shooting on alliance side
     }
     public enum ShooterValue {
-        SHOOT_HUB(180,15,40),
-        SHOOT_OUTPOST(180,15,40),
+        SHOOT_HUB(180,15,70),
+        SHOOT_OUTPOST(180,15,70),
 
-        SHOOT_TRENCH_RIGHT(-120,10,40),
+        SHOOT_TRENCH_RIGHT(-120,10,60),
         AUTO_SHOOT_TRENCH_RIGHT(
             SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),
             0,
