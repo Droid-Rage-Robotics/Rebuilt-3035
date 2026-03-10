@@ -19,6 +19,8 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 public class IntakeWheel extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
+        .withPID(0.015741, 0, 0)
+        .withFeedforward(0.50353, 0.12171, 0.0036507)
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinVelocity(RotationsPerSecond.of(-100))
         .withMaxVelocity(RotationsPerSecond.of(100))
@@ -37,11 +39,7 @@ public class IntakeWheel extends FlywheelTemplate {
         .withSupplyCurrentLimit(50);
 
     public IntakeWheel(boolean isEnabled) {
-        super(isEnabled,
-            new PIDController(0.015741, 0, 0), 
-            new SimpleMotorFeedforward(0.50353, 0.12171, 0.0036507), 
-            constants, 
-            motorConstants);
+        super(isEnabled, constants, motorConstants);
     }
 
     public Command setTargetVelocityCommand(IntakeValue.WheelVelocity target) {

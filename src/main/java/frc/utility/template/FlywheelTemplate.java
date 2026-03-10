@@ -2,11 +2,11 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.concurrent.atomic.AtomicReference;
 import org.littletonrobotics.junction.Logger;
-
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -25,11 +25,8 @@ import frc.utility.devices.motor.TalonEx;
 
 public class FlywheelTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
     private final TalonEx[] motors;
-    private final PIDController controller;
-    private final SimpleMotorFeedforward feedforward;
     private final double maxSpeed;
     private final double minSpeed;
-    private final double conversionFactor;
     private final int mainNum;
     private final String name;
     private final SysIdRoutine sysIdRoutine;
@@ -37,19 +34,17 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
 
     private final boolean isEnabled;
 
+    private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
+    private final AtomicReference<AngularVelocity> targetVelocity = new AtomicReference<AngularVelocity>(RotationsPerSecond.zero());
+
     public FlywheelTemplate(
         boolean isEnabled,
-        PIDController controller,
-        SimpleMotorFeedforward feedforward,
         SubsystemConstants constants,
         MotorConstants...motorConstants
     ){
         this.isEnabled=isEnabled;
-        this.controller=controller;
-        this.feedforward=feedforward;
         this.maxSpeed=constants.maxVelocity.in(RotationsPerSecond);
         this.minSpeed=constants.minVelocity.in(RotationsPerSecond);
-        this.conversionFactor=constants.conversionFactor;
         this.mainNum=constants.mainNum;
         this.name=constants.name;
 
@@ -64,7 +59,27 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
             this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
         }
 
-        // TelemetryUtils.registerDashboard(this);
+        for (int i = 0; i < motors.length; i++) {
+            if (i != mainNum) {
+                motors[i].getMotor().setControl(
+                    new Follower(motors[mainNum].getMotor().getDeviceID(), motorConstants[i].alignment)
+                );
+            }
+        }
+
+        var motorConfig = motors[mainNum].getConfig();
+
+        motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
+        
+        motorConfig.Slot0.kP = constants.kP;
+        motorConfig.Slot0.kI = constants.kI;
+        motorConfig.Slot0.kD = constants.kD;
+        motorConfig.Slot0.kV = constants.kV;
+        motorConfig.Slot0.kA = constants.kA;
+        motorConfig.Slot0.kS = constants.kS;
+
+        motors[mainNum].getMotor().getConfigurator().apply(motorConfig);
+
         TelemetryUtils.registerTelemetry(this);
 
         sysIdRoutine = getSysIdRoutine();
@@ -77,7 +92,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
 
     @Override
     public void updateTelemetry() {
-        Logger.recordOutput(name + "/Target Velocity", controller.getSetpoint());
+        Logger.recordOutput(name + "/Target Velocity", getTargetVelocity());
         Logger.recordOutput(name +"/Current Velocity", getVelocity());
         Logger.recordOutput(name + "/Applied Voltage", getVoltage());
         Logger.recordOutput(name + "/Torque Current", getCurrent());
@@ -94,10 +109,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     @Override
     public void periodic() {
         if (!sysIdActive) {
-            setVoltage(
-                controller.calculate(getVelocity().in(RotationsPerSecond), controller.getSetpoint())
-                +feedforward.calculate(controller.getSetpoint())
-            );
+            motors[mainNum].setControl(velocityRequest.withVelocity(targetVelocity.get()));
         }
     }
 
@@ -115,21 +127,21 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
             minSpeed, 
             maxSpeed);
         
-        controller.setSetpoint(clamped);
+        targetVelocity.set(RotationsPerSecond.of(clamped));
     }
 
-    public double getTargetVelocity(){
-        return controller.getSetpoint();
+    public AngularVelocity getTargetVelocity() {
+        return targetVelocity.get();
     }
 
     /* ---------------- Sensor Access ---------------- */
 
     public Angle getCurrentAngle() {
-        return motors[mainNum].getPosition().times(conversionFactor);
+        return motors[mainNum].getPosition();
     }
 
     public AngularVelocity getVelocity() {
-        return motors[mainNum].getVelocity().times(conversionFactor);
+        return motors[mainNum].getVelocity();
     }
     
     public double getVoltage() {
@@ -205,7 +217,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
         return motors;
     }
 
-    public boolean atSetpoint() {
-        return controller.atSetpoint();
-    }
+    // public boolean atSetpoint() {
+    //     return controller.atSetpoint();
+    // }
 }

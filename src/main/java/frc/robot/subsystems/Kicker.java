@@ -31,6 +31,8 @@ public class Kicker extends FlywheelTemplate {
 
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withConversionFactor(1)
+        .withPID(0.2, 0, 0) //.24
+        .withFeedforward(0.038, 0.14, 0.25) //.043254, 0.1229, 0.02026
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinVelocity(RotationsPerSecond.of(-300))
         .withMaxVelocity(RotationsPerSecond.of(300))
@@ -48,10 +50,6 @@ public class Kicker extends FlywheelTemplate {
         .withStatorCurrentLimit(50);
 
     public Kicker(boolean isEnabled) {
-        super(isEnabled,
-            new PIDController(0.2, 0, 0), //.24
-            new SimpleMotorFeedforward(0.038, 0.14, 0.25), //.043254, 0.1229, 0.02026
-            constants, 
-            motor);
+        super(isEnabled, constants, motor);
     }
 }
