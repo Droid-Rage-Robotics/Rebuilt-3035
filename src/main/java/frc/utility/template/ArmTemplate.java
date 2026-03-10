@@ -78,8 +78,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         for (int i = 0; i < motors.length; i++) {
             if (i != mainNum) {
                 motors[i].getMotor().setControl(
-                    new Follower(motors[mainNum].getMotor().getDeviceID(), MotorAlignmentValue.Aligned)
-                    // 'false' = same direction, 'true' = opposite direction
+                    new Follower(motors[mainNum].getMotor().getDeviceID(), motorConstants[i].alignment)
                 );
             }
         }
