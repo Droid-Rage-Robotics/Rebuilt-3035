@@ -121,9 +121,9 @@ public class RobotContainer {
 		operator.rightBumper()
 			.onTrue(TeleopCommands.indexerIntakeCommand(indexer))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			.onTrue(TeleopCommands.shootIntakeCommand(intake)
-				.andThen(TeleopCommands.shootIntakeCommand(intake))
-				.andThen(TeleopCommands.shootIntakeCommand(intake)))
+			// .onTrue(TeleopCommands.shootIntakeCommand(intake)
+			// 	.andThen(TeleopCommands.shootIntakeCommand(intake))
+			// 	.andThen(TeleopCommands.shootIntakeCommand(intake)))
 				
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
