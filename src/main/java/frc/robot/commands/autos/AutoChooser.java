@@ -1,7 +1,5 @@
 package frc.robot.commands.autos;
 
-import java.util.jar.Attributes.Name;
-
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -91,8 +89,8 @@ public class AutoChooser implements Dashboard {
     }
 
     public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision) {
-        autoChooser.addOption("rightNuetralOutpost", Autos.rightNuetralOutpost(drive, intake, indexer, kicker, shooter, vision));
-
+        autoChooser.addOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("rightCrossNeutral", Autos.rightCrossNeutral(drive, intake, indexer, kicker, shooter, vision));
     }
     
     @Override

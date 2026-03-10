@@ -10,9 +10,18 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
 
 public final class Autos {
-    public static Command rightNuetralOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command rightNeutralOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             PathPlannerFollow.create(drive, "neutralOutpost")
+                .setMaxVelocity(6)
+                .setAcceleration(6)
+                .build()
+        );
+    }
+
+    public static Command rightCrossNeutral(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            PathPlannerFollow.create(drive, "crossNeutralOutpost")
                 .setMaxVelocity(6)
                 .setAcceleration(6)
                 .build()
