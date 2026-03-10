@@ -33,8 +33,8 @@ public class IntakeWheel extends FlywheelTemplate {
         .withIdleMode(NeutralModeValue.Coast)
         .withConversionFactor( 1)
         .withMotorType(MotorType.KrakenX60)
-        .withStatorCurrentLimit(50)
-        .withSupplyCurrentLimit(50);
+        .withStatorCurrentLimit(65)//50
+        .withSupplyCurrentLimit(65);//50
 
     public IntakeWheel(boolean isEnabled) {
         super(isEnabled,

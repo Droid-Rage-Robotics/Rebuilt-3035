@@ -141,6 +141,13 @@ public class TalonEx implements Dashboard {
         return this;
     }
 
+    public TalonEx changeCurrentLimits(boolean isCurrentOn){
+        config.CurrentLimits.SupplyCurrentLimitEnable = isCurrentOn;
+        config.CurrentLimits.StatorCurrentLimitEnable = isCurrentOn;
+        configurator.apply(config);
+        return this;
+    }
+
     /**
      * Used to get the velocity of the motor. 
      * Custom conversion factors are automatically
