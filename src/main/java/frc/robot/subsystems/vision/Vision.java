@@ -27,14 +27,15 @@ public class Vision extends SubsystemBase {
         RIGHT_ROLL(0),
         RIGHT_PITCH(55),
         RIGHT_YAW(40),
-
-        MIDDLE_FORWARD(Units.inchesToMeters(0)),
-        MIDDLE_SIDE(Units.inchesToMeters(0)),
-        MIDDLE_UP(Units.inchesToMeters(0)),
-        MIDDLE_ROLL(0),
-        MIDDLE_PITCH(0),
-        MIDDLE_YAW(0)
         ;
+
+        // MIDDLE_FORWARD(Units.inchesToMeters(0)),
+        // MIDDLE_SIDE(Units.inchesToMeters(0)),
+        // MIDDLE_UP(Units.inchesToMeters(0)),
+        // MIDDLE_ROLL(0),
+        // MIDDLE_PITCH(0),
+        // MIDDLE_YAW(0)
+        // ;
 
         @Getter private final double value;
 
@@ -60,10 +61,10 @@ public class Vision extends SubsystemBase {
         .withFieldLayout(Constants.FIELD_LAYOUT)
         .withCropWindow(-1, 1, -1, 1);
 
-    @Getter private final LimelightEx middleLL = LimelightEx.create(DroidRageConstants.middleLL)
-        .withStreamMode_Standard()
-        .withFieldLayout(Constants.FIELD_LAYOUT)
-        .withCropWindow(-1, 1, -1, 1);
+    // @Getter private final LimelightEx middleLL = LimelightEx.create(DroidRageConstants.middleLL)
+    //     .withStreamMode_Standard()
+    //     .withFieldLayout(Constants.FIELD_LAYOUT)
+    //     .withCropWindow(-1, 1, -1, 1);
 
 
     // Initialize Limelight network tables
