@@ -8,7 +8,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
@@ -16,6 +15,7 @@ import frc.utility.template.ElevatorTemplate;
 import frc.utility.template.SubsystemConstants;
 import frc.utility.template.SubsystemConstants.EncoderType;
 import lombok.Getter;
+import lombok.Setter;
 
 public class Climb extends ElevatorTemplate {
     public enum ClimbValue {
@@ -47,18 +47,25 @@ public class Climb extends ElevatorTemplate {
         .withSupplyCurrentLimit(70) //Reefscape 120
         .withStatorCurrentLimit(70); //Reefscape 120
 
-    public Climb(boolean isEnabled) {
-        super(isEnabled, 
-            // new ProfiledPIDController(0, 0, 0, 
-            // new TrapezoidProfile.Constraints(0, 0)), 
-            // new ElevatorFeedforward(0, 0, 0), 
+    @Setter public boolean isResetting = false;
 
+    public Climb(boolean isEnabled) {
+        super(isEnabled,
             new ProfiledPIDController(400, 0, 0, 
             new TrapezoidProfile.Constraints(40, 25)), 
             new ElevatorFeedforward(1, 0, 5), 
             constants, 
             null, 
             motorConstants);
+    }
+
+    @Override
+    public void periodic() {
+        if(isResetting) {
+            return;
+        } else {
+            super.periodic();
+        }
     }
 
     
