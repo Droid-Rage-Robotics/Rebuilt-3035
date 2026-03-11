@@ -61,7 +61,7 @@ public class Pivot extends ArmTemplate {
     public void periodic() {
         super.periodic();
 
-        System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
+        // System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
         //TODO:TEst
         if (getCurrentAngle().getDegrees()<35) {
             resetEncoderCommand(0);
