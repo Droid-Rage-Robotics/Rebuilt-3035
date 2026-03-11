@@ -130,7 +130,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     @Override
     public void updateTelemetry() {
         Logger.recordOutput(name + "/Goal Angle", getGoalAngle());
-        Logger.recordOutput(name + "/Current Angle", getCurrentAngle());
+        Logger.recordOutput(name + "/Current Angle", getCurrentAngle().getDegrees());
         Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint());
         Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
         Logger.recordOutput(name + "/Current Velocity", getVelocity());

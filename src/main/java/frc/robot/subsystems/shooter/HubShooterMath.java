@@ -21,7 +21,7 @@ import frc.robot.DroidRageConstants.FieldConstants;
 
 public class HubShooterMath {
     public static final Distance SHOOTER_WHEEL_RADIUS = Inches.of(2);
-    public static final Distance DISTANCE_ABOVE_FUNNEL = Inches.of(20); // how high to clear the funnel
+    public static final Distance DISTANCE_ABOVE_FUNNEL = Inches.of(10); // how high to clear the funnel
     public static final double VEL_MULTIPLIER = 70.0; // multiplies goal velocity for targeting
     public static final double VEL_POWER = 0.3; // raises goal velocity to power
     public static final LinearVelocity BASE_VEL = InchesPerSecond.of(50); // added to final velocity

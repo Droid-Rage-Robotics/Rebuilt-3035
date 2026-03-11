@@ -120,7 +120,7 @@ public class Vision extends SubsystemBase {
      * @param est a pose estimate
      * @return distance in meters
      */
-    public double closestTagDistance(PoseEstimate est) {
+    public static double closestTagDistance(PoseEstimate est) {
         if (est.rawFiducials == null || est.rawFiducials.length == 0) return 999;
         double minDist = 999;
         for (var f : est.rawFiducials) {
@@ -135,7 +135,7 @@ public class Vision extends SubsystemBase {
      * @param rawFiducials an array of raw fiducials from the limelight
      * @return distance in meters
      */
-    public double closestTagDistance(RawFiducial[] rawFiducials) {
+    public static double closestTagDistance(RawFiducial[] rawFiducials) {
         if (rawFiducials == null || rawFiducials.length == 0) return 999;
         double minDist = 999;
         for (var f : rawFiducials) {
@@ -151,7 +151,7 @@ public class Vision extends SubsystemBase {
      * @param id the id of the april tag
      * @return distance in meters
      */
-    public double getDistanceToTag(RawFiducial[] rawFiducials, int id) {
+    public static double getDistanceToTag(RawFiducial[] rawFiducials, int id) {
         if (rawFiducials == null || rawFiducials.length == 0) return 999;
         double distance = 999;
         for (RawFiducial f : rawFiducials) {
@@ -163,7 +163,7 @@ public class Vision extends SubsystemBase {
     }
     
     
-    public double distanceToStdDev(double distMeters) {
+    public static double distanceToStdDev(double distMeters) {
         double MIN_STD = 0.05; // 5cm close
         double MAX_STD = 1.0;  // 1m far away
         double SLOPE = 0.15;   // uncertainty per meter
@@ -182,7 +182,7 @@ public class Vision extends SubsystemBase {
      * @param vision the next vision estimate
      * @return true if the position difference is reasonable; false otherwise
      */
-    public boolean isReasonable(Pose2d current, Pose2d vision) {
+    public static boolean isReasonable(Pose2d current, Pose2d vision) {
         double posDiff = current.getTranslation().getDistance(vision.getTranslation());
         double rotDiff = Math.abs(current.getRotation().minus(vision.getRotation()).getDegrees());
 

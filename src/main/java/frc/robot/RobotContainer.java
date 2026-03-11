@@ -2,6 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,7 +15,7 @@ import frc.robot.commands.autos.AutoChooser;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.ShooterHold;
-import frc.robot.commands.shooter.ShooterScore;
+import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
@@ -38,7 +40,7 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
+        new Pivot(true),
         new IntakeWheel(true)
     );
     private final Indexer indexer = new Indexer(true);
@@ -104,13 +106,13 @@ public class RobotContainer {
 
 		climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
 		operator.a()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
 		operator.b()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
 		operator.x()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
 		operator.y()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_HUB));
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.FAR));
 		
 		operator.povUp()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
@@ -154,6 +156,8 @@ public class RobotContainer {
 	}
 
 	public void testSubsystems() {
+		driver.back().and(driver.b()).onTrue(
+			new InstantCommand(()-> drive.resetPose(new Pose2d(3.5,4.0,Rotation2d.kZero))));	
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		
 		//USE this for TESTING

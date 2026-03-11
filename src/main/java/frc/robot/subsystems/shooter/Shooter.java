@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
-import frc.robot.commands.shooter.ShooterScore;
+import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.Periodic;
@@ -44,16 +44,19 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         HOARD // shooting on alliance side
     }
     public enum ShooterValue {
-        SHOOT_HUB(180,15,70),
+        // SHOOT_HUB(180,15,70),
         SHOOT_OUTPOST(180,15,70),
 
-        SHOOT_TRENCH_RIGHT(-120,10,60),
+        SHORT(0, 10, 52),
+        FAR(0,0,0),
+
+        SHOOT_TRENCH_RIGHT(138.5,5.57,52),
         // AUTO_SHOOT_TRENCH_RIGHT(
         //     SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),
         //     0,
         //     SHOOT_TRENCH_RIGHT.getVelocity()),
         SHOOT_TRENCH_LEFT(
-            120, 
+            -138.5, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
             SHOOT_TRENCH_RIGHT.getVelocity()),
         // AUTO_SHOOT_TRENCH_LEFT(

@@ -29,7 +29,7 @@ public class Indexer extends FlywheelTemplate{
     }
     
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withGearRatio(5.0)
+        .withGearRatio(3.0)
         .withPID(0.014761, 0, 0) //0.032889
         .withFeedforward(0.14827, 1.0665, 0.014828) //0.34224, 0.37116, 0.0095347
         .withEncoderType(EncoderType.INTEGRATED)

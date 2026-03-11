@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.shooter.ShooterScore;
+import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
@@ -41,7 +41,7 @@ public class AutoChooser implements Dashboard {
         NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
         NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
         NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
-        NamedCommands.registerCommand("shootOutpost", shooter.setShooterTargetCommand(ShooterValue.SHOOT_OUTPOST));
+        NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
         NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
             new ParallelCommandGroup(
             indexer.setTargetVelocityCommand(Indexer.IndexerValue.INTAKE.getIndexerValue()),
@@ -69,11 +69,11 @@ public class AutoChooser implements Dashboard {
     private static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
         autoChooser.addOption("TurretTestStrafeRight", new ParallelCommandGroup(
             TuningAutos.strafeRight(drive),
-            new ShooterScore(drive, shooter))
+            new ShootHub(drive, shooter))
         ); // Use this for Turret Testing
         autoChooser.addOption("TurretTestStrafeLeft", new ParallelCommandGroup(
             TuningAutos.strafeLeft(drive),
-            new ShooterScore(drive, shooter))
+            new ShootHub(drive, shooter))
         ); // Use this for Turret Testing
     }
     

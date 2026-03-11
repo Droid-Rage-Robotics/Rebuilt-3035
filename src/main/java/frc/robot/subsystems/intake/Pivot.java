@@ -25,7 +25,7 @@ public class Pivot extends ArmTemplate {
         .withConversionFactor(1.0/54.0)
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.of(35))
-        .withMaxAngle(Degrees.of(150))
+        .withMaxAngle(Degrees.of(168))
         .withName("Pivot")
         .withOffset(Units.degreesToRotations(startingPosDegree))//Rotation
         .withMainNum(0);
@@ -61,7 +61,7 @@ public class Pivot extends ArmTemplate {
     public void periodic() {
         super.periodic();
 
-        // System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
+       // System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
         //TODO:TEst
         if (getCurrentAngle().getDegrees()<35) {
             resetEncoderCommand(0);

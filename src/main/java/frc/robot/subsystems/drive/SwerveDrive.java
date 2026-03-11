@@ -25,6 +25,7 @@ import edu.wpi.first.networktables.NTSendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -149,7 +150,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             startSimThread();
         }
 
-        // SmartDashboard.putData("Drive/fieldPose", fieldPose);
+        SmartDashboard.putData("Drive/fieldPose", fieldPose);
         configurePathPlanner();
     }
     
@@ -223,7 +224,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             });
         }
 
-        // fieldPose.setRobotPose(getState().Pose);
+        fieldPose.setRobotPose(getState().Pose);
     }
 
     private void startSimThread() {
@@ -286,6 +287,8 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         double timestampSeconds,
         Matrix<N3, N1> visionMeasurementStdDevs
     ) {
+
+        
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 

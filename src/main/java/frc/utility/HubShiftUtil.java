@@ -49,7 +49,7 @@ public class HubShiftUtil {
   public static final double teleopDuration = 140.0;
   private static final boolean[] activeSchedule = {true, true, false, true, false, true};
   private static final boolean[] inactiveSchedule = {true, false, true, false, true, true};
-  private static final double timeResetThreshold = 3.0;
+  private static final double timeResetThreshold = 1;
   private static double shiftTimerOffset = 0.0;
   @Setter private static Supplier<Optional<Boolean>> allianceWinOverride = () -> Optional.empty();
 
@@ -196,7 +196,7 @@ public class HubShiftUtil {
   //     110.0
   //   };
   //   double[] shiftedShiftEndTimes = {
-  //     10.0 + endingActiveFudge,
+  //     10.0 + endingActiveFudge, 
   //     35.0 + approachingActiveFudge,
   //     60.0 + endingActiveFudge,
   //     85.0 + approachingActiveFudge,

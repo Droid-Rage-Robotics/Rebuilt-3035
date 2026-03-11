@@ -132,7 +132,7 @@ public final class DroidRageConstants {
 
     public static class FieldConstants {
         public static final Distance FUNNEL_RADIUS = Inches.of(24);
-        public static final Distance FUNNEL_HEIGHT = Inches.of(72 - 56.4);
+        public static final Distance FUNNEL_HEIGHT = Inches.of(69);
 
         public static final Distance NEUTRAL_ZONE_START = Inches.of(0);
         public static final Distance NEUTRAL_ZONE_END = Inches.of(0);

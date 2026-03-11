@@ -1,5 +1,6 @@
 package frc.robot.commands.shooter;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.subsystems.shooter.HubShooterMath.*;
 
 import java.util.function.Supplier;
@@ -17,7 +18,7 @@ import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
 
-public class ShooterScore extends Command{
+public class ShootHub extends Command{
     private final Shooter shooter;    
 
     private final Translation3d hubPose;
@@ -28,7 +29,7 @@ public class ShooterScore extends Command{
     private ShotData shot;
     private Time timeOfFlight;
 
-    public ShooterScore(SwerveDrive drive, Shooter shooter) {
+    public ShootHub(SwerveDrive drive, Shooter shooter) {
         this.shooter = shooter;
         this.robot = drive::getState;
 
@@ -57,8 +58,9 @@ public class ShooterScore extends Command{
     public void execute() {
         var state = robot.get();
         shooter.getHood().setGoalAngle(new Rotation2d(shot.getHoodAngle()));
-        shooter.getShooterWheel().setTargetVelocity(linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS));
-        shooter.getTurret().setGoalAngle(calculateTurretAngle(state.Pose, predictedTarget));
+        shooter.getShooterWheel().setTargetVelocity(linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS)
+            .plus(RotationsPerSecond.of(20)));
+        shooter.getTurret().setGoalAngle(calculateTurretAngle(state.Pose, predictedTarget).unaryMinus());
         
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
         predictedTarget = predictTargetPos(hubPose, state.Speeds, timeOfFlight);
