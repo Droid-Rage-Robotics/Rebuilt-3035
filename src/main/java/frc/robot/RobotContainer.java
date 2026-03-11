@@ -2,10 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -40,14 +38,14 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
+        new Pivot(false),
         new IntakeWheel(true)
     );
     private final Indexer indexer = new Indexer(true);
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
+        new Turret(true),
+        new Hood(true),
         new ShooterWheel(true)
     );
     private final Climb climb = new Climb(false);
@@ -67,21 +65,22 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry();
 
 	public RobotContainer() {
+		drive.registerTelemetry(logger::telemeterize);
+		
 		DriverStation.silenceJoystickConnectionWarning(true);
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		// configureTeleOpBindings();
+		configureTeleOpBindings();
 		// testDrive();
         // testSubsystems();
         // testClimb();
         // resetClimb();
-        testShooter();
+        // testShooter();
         // testAim();
 	}
 
 	public void configureTeleOpBindings() {
-		drive.registerTelemetry(logger::telemeterize);
 
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		// light.setDefaultCommand(new LightCommand(light));
@@ -155,7 +154,6 @@ public class RobotContainer {
 	}
 
 	public void testSubsystems() {
-		drive.registerTelemetry(logger::telemeterize);
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		
 		//USE this for TESTING
@@ -198,7 +196,6 @@ public class RobotContainer {
 	}
 
 	public void testDrive() {
-		drive.registerTelemetry(logger::telemeterize);
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 	}
 	
@@ -214,7 +211,7 @@ public class RobotContainer {
 		// operator.a().onTrue(new ShooterScore(drive, shooter));
 		
 		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(60)))
+       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(40)))
        	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
 
    	 	operator.rightBumper()
@@ -243,6 +240,7 @@ public class RobotContainer {
 	}
 
 	public void resetClimb(){
+		climb.setResetting(true);
 		operator.rightBumper()
 			.onTrue(new InstantCommand(()->climb.getMotor().setPower(0.25)))
 			.onFalse(new InstantCommand(()->climb.getMotor().setPower(0)));
@@ -250,10 +248,6 @@ public class RobotContainer {
 		operator.leftBumper()
 			.onTrue(new InstantCommand(()->climb.getMotor().setPower(-0.25)))
 			.onFalse(new InstantCommand(()->climb.getMotor().setPower(0)));
-	}
-
-	public void testTurretPeriodic() {
-		shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator));
 	}
 
 	public void periodic() {
