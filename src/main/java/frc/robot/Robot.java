@@ -7,17 +7,13 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.MatchValue;
 
 public class Robot extends LoggedRobot {
     private final RobotContainer robotContainer = new RobotContainer();
-
-    // private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer,shooter, light);
 
     private final CommandScheduler commandScheduler = CommandScheduler.getInstance();
 
@@ -122,9 +118,7 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {
-        // robotContainer.testTurretPeriodic();
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void teleopExit(){
