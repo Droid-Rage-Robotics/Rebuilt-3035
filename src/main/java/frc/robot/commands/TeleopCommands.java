@@ -16,6 +16,7 @@ import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 
 public class TeleopCommands {
     public static Command shootIntakeCommand(Intake intake) {
@@ -66,7 +67,8 @@ public class TeleopCommands {
 
     public static Command operatorRightBumperOnTrue(Shooter shooter, Indexer indexer, Kicker kicker) {
         return new SequentialCommandGroup(
-            TeleopCommands.raiseHoodCommand(shooter),
+            // TeleopCommands.raiseHoodCommand(shooter),
+            shooter.setHoodPositionCommand(shooter.getCurrentShooterPos()),
             new WaitCommand(0.2),
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
             new WaitCommand(0.1),
@@ -76,17 +78,19 @@ public class TeleopCommands {
 
     public static Command operatorRightBumperOnFalse(Shooter shooter, Indexer indexer, Kicker kicker) {
         return new ParallelCommandGroup(
-            TeleopCommands.lowerHoodCommand(shooter),
+            // TeleopCommands.lowerHoodCommand(shooter),
+            // shooter.setHoodPositionCommand(ShooterValue.HOLD),
+            shooter.getHood().setTargetPositionCommand(Rotation2d.kZero),
             indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
             kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
         );
     }
 
-    public static Command raiseHoodCommand(Shooter shooter) {
-        return shooter.getHood().setTargetPositionCommand(shooter.getShooterValue().getHoodAngle());
-    }
+    // public static Command raiseHoodCommand(Shooter shooter) {
+    //     return shooter.getHood().setTargetPositionCommand(shooter.getShooterValue().getHoodAngle());
+    // }
 
-    public static Command lowerHoodCommand(Shooter shooter) {
-        return shooter.getHood().setTargetPositionCommand(Rotation2d.kZero);
-    }
+    // public static Command lowerHoodCommand(Shooter shooter) {
+    //     return shooter.getHood().setTargetPositionCommand(Rotation2d.kZero);
+    // }
 }

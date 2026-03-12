@@ -95,7 +95,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
     private final StructSubscriber<ChassisSpeeds> chassisSpeedsSub = driveTable.getStructTopic("Speeds", ChassisSpeeds.struct).subscribe(new ChassisSpeeds());
 
-    @Getter @Setter private ShooterValue shooterValue = ShooterValue.HOLD;
+    @Getter @Setter private ShooterValue currentShooterPos = ShooterValue.HOLD;
 
     public Shooter (
         Turret turret,
@@ -120,7 +120,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addStringProperty("ShooterMode", () -> getShooterValue().toString(), null);
+        builder.addStringProperty("ShooterMode", () -> getCurrentShooterPos().toString(), null);
     }
 
     @Override
@@ -154,10 +154,14 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     public Command setShooterTargetCommand(ShooterValue shooterValue) {
         return new ParallelCommandGroup(
-            Commands.runOnce(()->setShooterValue(shooterValue)),
+            Commands.runOnce(()->setCurrentShooterPos(shooterValue)),
             turret.setTargetPositionCommand(shooterValue.getTurretAngle()),
             shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())
         );
+    }
+
+    public Command setHoodPositionCommand(ShooterValue shooterValue) {
+        return hood.setTargetPositionCommand(shooterValue.getHoodAngle());
     }
 
     
