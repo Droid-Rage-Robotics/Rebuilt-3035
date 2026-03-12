@@ -160,11 +160,5 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         );
     }
 
-    public Command raiseHoodCommand(Shooter shooter) {
-        return hood.setTargetPositionCommand(shooterValue.hoodAngle);
-    }
-
-    public Command lowerHoodCommand(Shooter shooter) {
-        return hood.setTargetPositionCommand(Rotation2d.kZero);
-    }
+    
 }
