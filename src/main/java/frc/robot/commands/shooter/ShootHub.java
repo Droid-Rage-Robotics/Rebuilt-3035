@@ -60,7 +60,7 @@ public class ShootHub extends Command{
         shooter.getHood().setGoalAngle(new Rotation2d(shot.getHoodAngle()));
         shooter.getShooterWheel().setTargetVelocity(linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS)
             .plus(RotationsPerSecond.of(20)));
-        shooter.getTurret().setGoalAngle(calculateTurretAngle(state.Pose, predictedTarget).unaryMinus());
+        shooter.getTurret().setGoalAngle(new Rotation2d(calculateAzimuthAngle(state.Pose, predictedTarget).unaryMinus()));
         
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
         predictedTarget = predictTargetPos(hubPose, state.Speeds, timeOfFlight);
