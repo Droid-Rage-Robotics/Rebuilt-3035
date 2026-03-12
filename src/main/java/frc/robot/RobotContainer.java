@@ -46,11 +46,11 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer(false);
     private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
+        new Turret(true),
         new Hood(true),
-        new ShooterWheel(false)
+        new ShooterWheel(true)
     );
-    private final Climb climb = new Climb(false);
+    private final Climb climb = new Climb(true);
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
@@ -105,13 +105,13 @@ public class RobotContainer {
 
 
 		climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
-		operator.a()
+		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
 		operator.b()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
 		operator.x()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
-		operator.y()
+		operator.a()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.FAR));
 		
 		operator.povUp()
@@ -120,8 +120,8 @@ public class RobotContainer {
 		operator.povRight()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
 
-		operator.povDown()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
+		// operator.povDown()
+		// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
 
 		operator.rightBumper()
 			.onTrue(TeleopCommands.operatorRightBumperOnTrue(shooter, indexer, kicker))

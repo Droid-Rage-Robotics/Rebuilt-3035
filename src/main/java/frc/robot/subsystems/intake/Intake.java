@@ -23,7 +23,7 @@ public class Intake implements Sendable {
             HALF_ONE(DOWN.getAngle().getDegrees()-15),
 
             UP(40),
-            HALF(115),
+            HALF(105),
             ;
 
             @Getter private final Rotation2d angle;

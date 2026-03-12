@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -31,26 +32,21 @@ import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
+import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.Periodic;
 import lombok.Getter;
 import lombok.Setter;
 
 public class Shooter implements Dashboard, Sendable, Periodic {
-    public enum ShooterMode {
-        HOLD, //Maintain current position
-        OPPOSITE, //Face opposite intake
-        SCORE, //Hub Scoring
-        HOARD // shooting on alliance side
-    }
     public enum ShooterValue {
         // SHOOT_HUB(180,15,70),
-        SHOOT_OUTPOST(180,15,70),
+        SHOOT_OUTPOST(180,15,20), //v70
 
-        SHORT(0, 10, 52),
+        SHORT(0, 10, 20), //v52
         FAR(0,0,0),
 
-        SHOOT_TRENCH_RIGHT(138.5,5.57,52),
+        SHOOT_TRENCH_RIGHT(138.5,5.57,20), //v52
         // AUTO_SHOOT_TRENCH_RIGHT(
         //     SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),
         //     0,
@@ -64,8 +60,8 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         //     AUTO_SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(),
         //     AUTO_SHOOT_TRENCH_RIGHT.getVelocity()),
         
-        HOLD(-220, 0, 20),
-        HOARD(0,5,40)
+        HOLD(-220, 0, 20)
+        // HOARD(0,5,40)
         ;
 
         @Getter private final Rotation2d turretAngle;
@@ -99,7 +95,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
     private final StructSubscriber<ChassisSpeeds> chassisSpeedsSub = driveTable.getStructTopic("Speeds", ChassisSpeeds.struct).subscribe(new ChassisSpeeds());
 
-    @Getter @Setter private ShooterValue shooterValue;
+    @Getter @Setter private ShooterValue shooterValue = ShooterValue.HOLD;
 
     public Shooter (
         Turret turret,
@@ -109,8 +105,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         this.turret=turret;
         this.hood=hood;
         this.shooterWheel=shooter;
-
-        shooterValue=ShooterValue.HOLD;
+        TelemetryUtils.registerDashboard(this);
     }
 
     public void periodic() {
@@ -125,7 +120,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        // builder.addStringProperty("ShooterMode", () -> getShooterMode().toString(), null);
+        builder.addStringProperty("ShooterMode", () -> getShooterValue().toString(), null);
     }
 
     @Override
@@ -159,14 +154,14 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     public Command setShooterTargetCommand(ShooterValue shooterValue) {
         return new ParallelCommandGroup(
-            new InstantCommand(()-> setShooterValue(shooterValue)),
+            Commands.runOnce(()->setShooterValue(shooterValue)),
             turret.setTargetPositionCommand(shooterValue.getTurretAngle()),
             shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())
         );
     }
 
     public Command raiseHoodCommand(Shooter shooter) {
-        return hood.setTargetPositionCommand(shooterValue.getHoodAngle());
+        return hood.setTargetPositionCommand(shooterValue.hoodAngle);
     }
 
     public Command lowerHoodCommand(Shooter shooter) {

@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -49,11 +51,13 @@ public class TeleopCommands {
     
     public static Command indexerWiggleIntake(Intake intake) {
         return new SequentialCommandGroup(
-            new WaitCommand(1.5),
+            new WaitCommand(3),
             new SequentialCommandGroup(
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
+                intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(50)),
                 new WaitCommand(0.5),
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+                intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(-50)),
                 new WaitCommand(0.5)
             ).repeatedly()
         );

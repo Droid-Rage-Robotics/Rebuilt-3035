@@ -133,7 +133,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     /* ---------------- Commands ---------------- */
     
     public Command setTargetPositionCommand(Rotation2d goalAngle) {
-        return runOnce(() -> setGoalAngle(goalAngle));
+        return new InstantCommand(() -> setGoalAngle(goalAngle));
     }
 
     /* ---------------- Manual Goal Control ---------------- */
