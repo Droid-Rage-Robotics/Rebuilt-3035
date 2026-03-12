@@ -193,6 +193,9 @@ public class RobotContainer {
 
 		operator.povDown()
 			.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
+			
+		operator.povRight()
+			.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF));
 
 		operator.povUp()
 			.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));

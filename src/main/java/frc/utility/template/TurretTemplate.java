@@ -261,20 +261,20 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     private SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(0.25).per(Second), // Use default ramp rate (1 V/s)
-                Volts.of(1), // Reduce dynamic step voltage to 4 to prevent brownout
-                Seconds.of(3), // Use default timeout (10 s)
+                Volts.of(0.25).per(Second),
+                Volts.of(1),
+                Seconds.of(3),
                 null
             ), 
             new SysIdRoutine.Mechanism(
                 (voltage) -> {
                     // Only apply voltage if within safe bounds
-                    // double currentAngle = getCurrentAngle().getRadians();
-                    // if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
+                    double currentAngle = getCurrentAngle().getRadians();
+                    if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
                         setVoltage(voltage);
-                    // } else {
-                    //     setVoltage(0); // Stop if at limits
-                    // }
+                    } else {
+                        setVoltage(0); // Stop if at limits
+                    }
                 }, 
                 (log) -> {
                     log.motor("motor")

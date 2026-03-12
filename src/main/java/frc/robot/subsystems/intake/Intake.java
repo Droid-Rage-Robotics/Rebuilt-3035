@@ -11,12 +11,13 @@ import lombok.Getter;
 public class Intake implements Sendable {
     public class IntakeValue {
         public enum PivotAngle {
-            DOWN(155),
+            DOWN(160),
             HALF_THREE(DOWN.getAngle().getDegrees()-5),
             HALF_TWO(DOWN.getAngle().getDegrees()-10),
             HALF_ONE(DOWN.getAngle().getDegrees()-15),
 
             UP(40),
+            HALF(20),
             ;
 
             @Getter private final Rotation2d angle;
