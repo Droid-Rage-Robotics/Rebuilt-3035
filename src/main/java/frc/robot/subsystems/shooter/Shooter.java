@@ -99,7 +99,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     private final StructSubscriber<Pose2d> poseSub = driveTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
     private final StructSubscriber<ChassisSpeeds> chassisSpeedsSub = driveTable.getStructTopic("Speeds", ChassisSpeeds.struct).subscribe(new ChassisSpeeds());
 
-    @Getter @Setter private ShooterMode shooterMode;
+    @Getter @Setter private ShooterValue shooterValue;
 
     public Shooter (
         Turret turret,
@@ -109,6 +109,8 @@ public class Shooter implements Dashboard, Sendable, Periodic {
         this.turret=turret;
         this.hood=hood;
         this.shooterWheel=shooter;
+
+        shooterValue=ShooterValue.HOLD;
     }
 
     public void periodic() {
@@ -123,7 +125,7 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addStringProperty("ShooterMode", () -> getShooterMode().toString(), null);
+        // builder.addStringProperty("ShooterMode", () -> getShooterMode().toString(), null);
     }
 
     @Override
@@ -137,19 +139,19 @@ public class Shooter implements Dashboard, Sendable, Periodic {
     @Override
     public void alerts() {}
 
-    public void shooterPeriodic() {
-        switch(shooterMode){
-            case HOLD:
-                break;
-            case OPPOSITE:
-            case HOARD:
-                break;
-            case SCORE:
-                break;
-            default:
-                break;
-        }
-    }
+    // public void shooterPeriodic() {
+    //     switch(shooterMode){
+    //         case HOLD:
+    //             break;
+    //         case OPPOSITE:
+    //         case HOARD:
+    //             break;
+    //         case SCORE:
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 
     // public Command setShooterModeCommand(ShooterMode shooterMode) {
     //     return new InstantCommand(() -> setShooterMode(shooterMode));
@@ -157,9 +159,17 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     public Command setShooterTargetCommand(ShooterValue shooterValue) {
         return new ParallelCommandGroup(
+            new InstantCommand(()-> setShooterValue(shooterValue)),
             turret.setTargetPositionCommand(shooterValue.getTurretAngle()),
-            hood.setTargetPositionCommand(shooterValue.getHoodAngle()),
             shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())
         );
+    }
+
+    public Command raiseHoodCommand(Shooter shooter) {
+        return hood.setTargetPositionCommand(shooterValue.getHoodAngle());
+    }
+
+    public Command lowerHoodCommand(Shooter shooter) {
+        return hood.setTargetPositionCommand(Rotation2d.kZero);
     }
 }

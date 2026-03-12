@@ -51,6 +51,8 @@ public class Pivot extends ArmTemplate {
             null, 
             motorConstants);
             setTargetPositionDegrees(startingPosDegree);
+
+        // controller.setTolerance(Units.degreesToRadians(1), 1);
     }
 
     public Command setTargetPositionCommand(IntakeValue.PivotAngle goalAngle) {

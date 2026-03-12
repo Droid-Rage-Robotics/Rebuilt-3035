@@ -7,8 +7,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Kicker;
+import frc.robot.subsystems.Indexer.IndexerValue;
+import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
+import frc.robot.subsystems.shooter.Shooter;
 
 public class TeleopCommands {
     public static Command shootIntakeCommand(Intake intake) {
@@ -40,6 +44,36 @@ public class TeleopCommands {
                 new SequentialCommandGroup(),
                 () ->  indexer.isStalling()
             )
+        );
+    }
+    
+    public static Command indexerWiggleIntake(Intake intake) {
+        return new SequentialCommandGroup(
+            new WaitCommand(1.5),
+            new SequentialCommandGroup(
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
+                new WaitCommand(0.5),
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+                new WaitCommand(0.5)
+            ).repeatedly()
+        );
+    }
+
+    public static Command operatorRightBumperOnTrue(Shooter shooter, Indexer indexer, Kicker kicker) {
+        return new SequentialCommandGroup(
+            shooter.raiseHoodCommand(shooter),
+            new WaitCommand(0.2),
+            kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
+            new WaitCommand(0.1),
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue())
+        );
+    }
+
+    public static Command operatorRightBumperOnFalse(Shooter shooter, Indexer indexer, Kicker kicker) {
+        return new ParallelCommandGroup(
+            shooter.lowerHoodCommand(shooter),
+            indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
+            kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
         );
     }
 }

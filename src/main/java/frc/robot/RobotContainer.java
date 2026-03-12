@@ -37,18 +37,18 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
+        new Turret(false),
         new Hood(true),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
     private final Climb climb = new Climb(false);
 
@@ -89,7 +89,7 @@ public class RobotContainer {
 
 		driver.rightTrigger()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+			.onTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 		driver.leftTrigger()
 			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
@@ -116,18 +116,18 @@ public class RobotContainer {
 		
 		operator.povUp()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
+
+		operator.povRight()
+			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
+
 		operator.povDown()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
 
 		operator.rightBumper()
-			.onTrue(TeleopCommands.indexerIntakeCommand(indexer))
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			// .onTrue(TeleopCommands.shootIntakeCommand(intake)
-			// 	.andThen(TeleopCommands.shootIntakeCommand(intake))
-			// 	.andThen(TeleopCommands.shootIntakeCommand(intake)))
-				
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
-			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+			.onTrue(TeleopCommands.operatorRightBumperOnTrue(shooter, indexer, kicker))
+			.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
+			.onFalse(TeleopCommands.operatorRightBumperOnFalse(shooter, indexer, kicker));
+
 
 		operator.leftBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
