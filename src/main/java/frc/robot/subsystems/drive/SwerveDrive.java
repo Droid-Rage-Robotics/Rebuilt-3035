@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,6 +17,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -32,7 +35,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.LimelightHelpers;
+import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import lombok.Getter;
 
 public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem, NTSendable {
@@ -153,6 +160,39 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         SmartDashboard.putData("Drive/fieldPose", fieldPose);
         configurePathPlanner();
     }
+
+    public void updateVisionOdometry() {
+        PoseEstimate left = Vision.getLeftEstimate();
+        PoseEstimate right = Vision.getRightEstimate();
+
+        if (left != null && left.tagCount > 0) {
+            double dist = Vision.closestTagDistance(left);
+            double std = Vision.distanceToStdDev(dist);
+            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+
+            // if (Vision.isReasonable(getEstimatedPose(), left.pose)) {
+                addVisionMeasurement(
+                    left.pose,
+                    left.timestampSeconds,
+                    VecBuilder.fill(std, std, stdTheta)
+                );
+            // }
+        }
+
+        if (right != null && right.tagCount > 0) {
+            double dist = Vision.closestTagDistance(right);
+            double std = Vision.distanceToStdDev(dist);
+            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+
+            // if (Vision.isReasonable(getEstimatedPose(), right.pose)) {
+                addVisionMeasurement(
+                    right.pose,
+                    right.timestampSeconds,
+                    VecBuilder.fill(std, std, stdTheta)
+                );
+            // }  
+        }
+    }
     
     @Override
     public void initSendable(NTSendableBuilder builder) {
@@ -206,6 +246,14 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     @Override
     public void periodic() {
+        LimelightHelpers.SetRobotOrientation(DroidRageConstants.leftLL, 
+            getState().RawHeading.getDegrees(), 0, 0, 0, 0, 0);
+
+        LimelightHelpers.SetRobotOrientation(DroidRageConstants.rightLL, 
+            getState().RawHeading.getDegrees(), 0, 0, 0, 0, 0);
+        
+        // updateVisionOdometry();
+
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -223,6 +271,13 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        
+        Logger.recordOutput("DriveState/Pose", getState().Pose);
+        Logger.recordOutput("DriveState/Speeds", getState().Speeds);
+        Logger.recordOutput("DriveState/ModuleStates", getState().ModuleStates);
+        Logger.recordOutput("DriveState/ModuleTargets", getState().ModuleTargets);
+        Logger.recordOutput("DriveState/ModulePositions", getState().ModulePositions);
+        Logger.recordOutput("DriveState/OdometryPeriod", getState().OdometryPeriod);
 
         fieldPose.setRobotPose(getState().Pose);
     }

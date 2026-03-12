@@ -64,10 +64,10 @@ public class RobotContainer {
 	private final CommandXboxController operator =		
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 	
-    private final Telemetry logger = new Telemetry();
+    // private final Telemetry logger = new Telemetry();
 
 	public RobotContainer() {
-		drive.registerTelemetry(logger::telemeterize);
+		// drive.registerTelemetry(logger::telemeterize);
 		
 		DriverStation.silenceJoystickConnectionWarning(true);
         

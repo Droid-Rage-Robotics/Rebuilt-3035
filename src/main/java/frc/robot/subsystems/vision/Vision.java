@@ -197,8 +197,8 @@ public class Vision extends SubsystemBase {
      * 
      * @return a new PoseEstimate
      */
-    public PoseEstimate getLeftEstimate() {
-        return leftLL.getBotPoseEstimate_wpiBlue_MegaTag2();
+    public static PoseEstimate getLeftEstimate() {
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.leftLL);
     }
 
     /**
@@ -208,7 +208,7 @@ public class Vision extends SubsystemBase {
      * 
      * @return a new PoseEstimate
      */
-    public PoseEstimate getRightEstimate() {
-        return rightLL.getBotPoseEstimate_wpiBlue_MegaTag2();
+    public static PoseEstimate getRightEstimate() {
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.rightLL);
     }
 }
