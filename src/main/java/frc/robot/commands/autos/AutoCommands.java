@@ -34,5 +34,15 @@ public class AutoCommands{
         );
     }
 
+    public static Command resetBot(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
+        return new ParallelCommandGroup(
+            shooter.setShooterTargetCommand(ShooterValue.HOLD),
+            indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP.getIndexerValue()),
+            kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+            intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP)
+        );
+    }
+
     
 }

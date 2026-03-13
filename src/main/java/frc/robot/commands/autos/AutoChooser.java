@@ -49,23 +49,26 @@ public class AutoChooser implements Dashboard {
         NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
 
         NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
+        NamedCommands.registerCommand("resetBot", AutoCommands.resetBot(shooter, indexer, kicker, intake));
+
         NamedCommands.registerCommand("wiggleIntake", TeleopCommands.indexerWiggleIntake(intake));
         NamedCommands.registerCommand("index", new SequentialCommandGroup(
             indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()),
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
         ));
-        NamedCommands.registerCommand("indexStop", new SequentialCommandGroup(
+        NamedCommands.registerCommand("stopIndexer", new SequentialCommandGroup(
             indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
             kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
         ));
+        // NamedCommands.registerCommand("resetShooter", new SequentialCommandGroup(
+        //     indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
+        //     kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
+        // ));
 
         
-        addTuningAuto(drive);
+        // addTuningAuto(drive);
         addAutos(drive, intake, indexer, kicker, shooter, climb, vision);
-        // autoChooser.addOption("one", new SequentialCommandGroup(
-            // PathPlannerFollow.create(drive, "one").build()
-        // ));
-        addTurretTesting(drive, shooter);
+        // addTurretTesting(drive, shooter);
 
         TelemetryUtils.registerDashboard(this);
     }
@@ -74,7 +77,7 @@ public class AutoChooser implements Dashboard {
         return autoChooser.getSelected();
     }
 
-    private static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
+    public static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
         autoChooser.addOption("TurretTestStrafeRight", new ParallelCommandGroup(
             TuningAutos.strafeRight(drive),
             new ShootHub(drive, shooter))
@@ -97,6 +100,7 @@ public class AutoChooser implements Dashboard {
 
     public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision) {
         autoChooser.setDefaultOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightCrossNeutral(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("rightCrossNeutral", Autos.rightCrossNeutral(drive, intake, indexer, kicker, shooter, vision));
     }
     
