@@ -5,7 +5,9 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
@@ -14,7 +16,7 @@ import frc.utility.template.SubsystemConstants;
 import frc.utility.template.SubsystemConstants.EncoderType;
 import lombok.Getter;
 
-public class Indexer extends FlywheelTemplate{
+public class Indexer extends FlywheelTemplate {
     public enum IndexerValue {
         INTAKE(30), //100
         OUTTAKE(-30),//-25
@@ -60,7 +62,27 @@ public class Indexer extends FlywheelTemplate{
     public void periodic(){
         super.periodic();
     }
-        public boolean isStalling() {
-            return Math.abs(getCurrent().in(Amps)) >=60;
-        }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addBooleanProperty("IndexerOn", () -> isIndexerOn(), null);
+    }
+
+    @Override
+    public void elasticInit() {
+        SmartDashboard.putData("Shooter", this);
+    }
+
+    @Override
+    public void practiceWriters() {}
+
+    @Override
+    public void alerts() {}
+    public boolean isStalling() {
+        return Math.abs(getCurrent().in(Amps)) >=60;
+    }
+
+    public boolean isIndexerOn(){
+        return !(getTargetVelocity() == IndexerValue.STOP.indexerValue);
+    }
 }

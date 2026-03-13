@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
@@ -17,8 +19,8 @@ public class Kicker extends FlywheelTemplate {
     public enum KickerValue {
         INTAKE(55),
         OUTTAKE(-150),
-        STOP(0),
-        HOLD(0);
+        STOP(0);
+        // HOLD(0);
 
         @Getter private final AngularVelocity kickerValue;
 
@@ -49,5 +51,23 @@ public class Kicker extends FlywheelTemplate {
 
     public Kicker(boolean isEnabled) {
         super(isEnabled, constants, motor);
+    }
+
+    
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addBooleanProperty("IndexerOn", () -> isKickerOn(), null);
+    }
+
+    @Override
+    public void elasticInit() {
+        SmartDashboard.putData("Shooter", this);
+    }
+
+    @Override
+    public void practiceWriters() {}
+
+     public boolean isKickerOn(){
+        return !(getTargetVelocity() == KickerValue.STOP.getKickerValue());
     }
 }
