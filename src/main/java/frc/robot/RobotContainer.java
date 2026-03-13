@@ -9,13 +9,10 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.DroidRageConstants.ControllerUtils;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
-import frc.robot.commands.shooter.ShooterHold;
-import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer;
@@ -134,15 +131,6 @@ public class RobotContainer {
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-
-		// operator.a()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOLD)); //LED strip: indicate the mode, one automatic (automates itself), three positions
-		// operator.b()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.OPPOSITE));
-		// operator.x()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.SCORE));
-		// operator.y()
-		// 	.onTrue(shooter.setShooterModeCommand(ShooterMode.HOARD));	
 	}
 
 	public void testAim() {

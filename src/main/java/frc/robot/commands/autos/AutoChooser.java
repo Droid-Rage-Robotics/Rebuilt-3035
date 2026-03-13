@@ -7,15 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
-import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
@@ -48,19 +45,7 @@ public class AutoChooser implements Dashboard {
         NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
         NamedCommands.registerCommand("wiggleIntake", getAutonomousCommand());
         NamedCommands.registerCommand("index", indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()));
-        NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
-            new ParallelCommandGroup(
-            indexer.setTargetVelocityCommand(Indexer.IndexerValue.INTAKE.getIndexerValue()),
-            kicker.setTargetVelocityCommand(Kicker.KickerValue.INTAKE.getKickerValue())
-            ),
-            new WaitCommand(2),
-            new ParallelCommandGroup(
-                indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP.getIndexerValue()),
-                kicker.setTargetVelocityCommand(Kicker.KickerValue.STOP.getKickerValue())
-            )
-        ));
-
-
+        
         // addTuningAuto(drive);
         addAutos(drive, intake, indexer, kicker, shooter, climb, vision);
         addTurretTesting(drive, shooter);
@@ -91,7 +76,6 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("StrafeRight", TuningAutos.strafeRight(drive));
         autoChooser.addOption("StrafeLeft", TuningAutos.strafeLeft(drive));
         autoChooser.addOption("LessForwardTest", TuningAutos.lessForwardTest(drive));
-        // autoChooser.addOption("ForwardAndBack", TuningAutos.forwardAndBackTest(drive));
     }
 
     public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision) {

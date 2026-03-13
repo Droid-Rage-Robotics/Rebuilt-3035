@@ -3,7 +3,6 @@ package frc.utility;
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
 

@@ -21,7 +21,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
-        // SignalLogger.setPath("/home/lvuser/logs/ctre/");
         if (DriverStation.isFMSAttached()) {
             TelemetryUtils.Config.Match = MatchValue.COMPETITION;
         } else {
@@ -36,16 +35,6 @@ public class Robot extends LoggedRobot {
 
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
-
-        // // Starts recording to data log
-        // DataLogManager.start();
-        // // Record both DS control and joystick data
-        // DriverStation.startDataLog(DataLogManager.getLog());
-        
-        // vision.setUpVision();
-        // SmartDashboard.putData("Robot Misc", DroidRageConstants.robotMisc);
-
-        // DroidRageConstants.alliance = DriverStation.getAlliance().get();
     }
     
     @Override
@@ -60,7 +49,9 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        commandScheduler.cancelAll();
+    }
     
     @Override
     public void disabledPeriodic() {
@@ -70,8 +61,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousInit() {
         commandScheduler.cancelAll();
-
-        // SignalLogger.start(); // CTRE Signal Logger
 
         autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -106,7 +95,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
         commandScheduler.cancelAll();
-        // SignalLogger.start(); // CTRE Signal Logger
         
         if (autonomousCommand != null) {
             autonomousCommand.cancel();

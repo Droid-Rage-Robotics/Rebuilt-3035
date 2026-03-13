@@ -1,6 +1,6 @@
 package frc.robot.commands.shooter;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.shooter.HubShooterMath.*;
 
 import java.util.function.Supplier;
@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
@@ -33,7 +32,6 @@ public class ShootHub extends Command{
         this.shooter = shooter;
         this.robot = drive::getState;
 
-        // var alliance = DroidRageConstants.alliance;
         this.hubPose = DroidRageConstants.alliance == Alliance.Red 
             ? FieldConstants.HUB_RED 
             : FieldConstants.HUB_BLUE;

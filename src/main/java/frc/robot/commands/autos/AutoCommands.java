@@ -33,4 +33,6 @@ public class AutoCommands{
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
         );
     }
+
+    
 }

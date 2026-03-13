@@ -1,10 +1,8 @@
 package frc.robot.commands.manual;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.Climb;
@@ -26,11 +24,10 @@ public class ManualClimb extends Command {
     @Override
     public void execute() {
         double move = climbMove.get();
+
         move = DroidRageConstants.squareInput(move);
         move = DroidRageConstants.applyDeadBand(move);
-        // if(move<0){
-            // return;
-        // }
+
         climb.setTargetPosition(Inches.of(climb.getGoalPosition().in(Inches) + move * 0.06));
     }
 
