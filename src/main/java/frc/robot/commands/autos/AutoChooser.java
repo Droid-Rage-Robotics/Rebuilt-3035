@@ -8,15 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
+import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Light;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
+import frc.robot.subsystems.intake.Intake.IntakeValue.WheelVelocity;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.vision.Vision;
@@ -40,8 +43,11 @@ public class AutoChooser implements Dashboard {
 
         NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
         NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
+        NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
         NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
         NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
+        NamedCommands.registerCommand("wiggleIntake", getAutonomousCommand());
+        NamedCommands.registerCommand("index", indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()));
         NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
             new ParallelCommandGroup(
             indexer.setTargetVelocityCommand(Indexer.IndexerValue.INTAKE.getIndexerValue()),

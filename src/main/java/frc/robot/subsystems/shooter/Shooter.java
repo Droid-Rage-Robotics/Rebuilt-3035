@@ -41,12 +41,12 @@ import lombok.Setter;
 public class Shooter implements Dashboard, Sendable, Periodic {
     public enum ShooterValue {
         // SHOOT_HUB(180,15,70),
-        SHOOT_OUTPOST(180,15,20), //v70
+        SHOOT_OUTPOST(180,15,70), //v70
 
-        SHORT(0, 10, 20), //v52
+        SHORT(0, 10, 52), //v52
         FAR(0,0,0),
 
-        SHOOT_TRENCH_RIGHT(138.5,5.57,20), //v52
+        SHOOT_TRENCH_RIGHT(138.5,5.57,52), //v52
         // AUTO_SHOOT_TRENCH_RIGHT(
         //     SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),
         //     0,
@@ -154,7 +154,8 @@ public class Shooter implements Dashboard, Sendable, Periodic {
 
     public Command setShooterTargetCommand(ShooterValue shooterValue) {
         return new ParallelCommandGroup(
-            Commands.runOnce(()->setShooterValue(shooterValue)),
+            // Commands.runOnce(()->setShooterValue(shooterValue)),
+            hood.setTargetPositionCommand(shooterValue.getHoodAngle()),
             turret.setTargetPositionCommand(shooterValue.getTurretAngle()),
             shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())
         );

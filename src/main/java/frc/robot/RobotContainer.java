@@ -37,14 +37,14 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
-    private final Indexer indexer = new Indexer(false);
-    private final Kicker kicker = new Kicker(false);
+    private final Indexer indexer = new Indexer(true);
+    private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
         new Turret(true),
         new Hood(true),
@@ -112,7 +112,7 @@ public class RobotContainer {
 		operator.x()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
 		operator.a()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.FAR));
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
 		
 		operator.povUp()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
@@ -124,9 +124,9 @@ public class RobotContainer {
 		// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
 
 		operator.rightBumper()
-			.onTrue(TeleopCommands.operatorRightBumperOnTrue(shooter, indexer, kicker))
+			.onTrue(TeleopCommands.operatorRightBumperOnTrue(shooter, indexer, kicker,intake))
 			.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
-			.onFalse(TeleopCommands.operatorRightBumperOnFalse(shooter, indexer, kicker));
+			.onFalse(TeleopCommands.operatorRightBumperOnFalse(shooter, indexer, kicker,intake));
 
 
 		operator.leftBumper()

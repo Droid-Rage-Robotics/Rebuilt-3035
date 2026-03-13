@@ -25,7 +25,7 @@ public class ManualClimb extends Command {
 
     @Override
     public void execute() {
-        double move = -climbMove.get();
+        double move = climbMove.get();
         move = DroidRageConstants.squareInput(move);
         move = DroidRageConstants.applyDeadBand(move);
         // if(move<0){

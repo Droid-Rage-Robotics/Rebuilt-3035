@@ -52,41 +52,42 @@ public class TeleopCommands {
     
     public static Command indexerWiggleIntake(Intake intake) {
         return new SequentialCommandGroup(
-            new WaitCommand(3),
+            new WaitCommand(2),
             new SequentialCommandGroup(
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
-                intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(50)),
                 new WaitCommand(0.5),
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
-                intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(-50)),
                 new WaitCommand(0.5)
             ).repeatedly()
         );
     }
 
-    public static Command operatorRightBumperOnTrue(Shooter shooter, Indexer indexer, Kicker kicker) {
+    public static Command operatorRightBumperOnTrue(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
         return new SequentialCommandGroup(
-            TeleopCommands.raiseHoodCommand(shooter),
-            new WaitCommand(0.2),
+            // TeleopCommands.raiseHoodCommand(shooter),
+            // new WaitCommand(0.2),
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
             new WaitCommand(0.1),
-            indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue())
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()),
+            new WaitCommand(2),
+            intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(-30))
         );
     }
 
-    public static Command operatorRightBumperOnFalse(Shooter shooter, Indexer indexer, Kicker kicker) {
+    public static Command operatorRightBumperOnFalse(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
         return new ParallelCommandGroup(
-            TeleopCommands.lowerHoodCommand(shooter),
+            // TeleopCommands.lowerHoodCommand(shooter),
+            intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.zero()),
             indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
             kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
         );
     }
 
-    public static Command raiseHoodCommand(Shooter shooter) {
-        return shooter.getHood().setTargetPositionCommand(shooter.getShooterValue().getHoodAngle());
-    }
+    // public static Command raiseHoodCommand(Shooter shooter) {
+    //     return shooter.getHood().setTargetPositionCommand(shooter.getShooterValue().getHoodAngle());
+    // }
 
-    public static Command lowerHoodCommand(Shooter shooter) {
-        return shooter.getHood().setTargetPositionCommand(Rotation2d.kZero);
-    }
+    // public static Command lowerHoodCommand(Shooter shooter) {
+    //     return shooter.getHood().setTargetPositionCommand(Rotation2d.kZero);
+    // }
 }
