@@ -9,12 +9,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "setShootTrenchR"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "TrenchToNeutralOutpost"
@@ -43,6 +37,12 @@
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setShootTrenchR"
                 }
               }
             ]
@@ -83,6 +83,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 12.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIndexer"
           }
         }
       ]
