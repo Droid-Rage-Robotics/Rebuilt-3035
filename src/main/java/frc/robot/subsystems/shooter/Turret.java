@@ -17,8 +17,8 @@ public class Turret extends TurretTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withPID(10, 0, 0)
         .withFeedforward(0.11055, 1.6667, 0.15809)
-        .withMaxVelocity(RotationsPerSecond.of(5))
-        .withMaxAcceleration(RotationsPerSecondPerSecond.of(5))
+        .withMaxVelocity(RotationsPerSecond.of(7.5))
+        .withMaxAcceleration(RotationsPerSecondPerSecond.of(7.5))
         .withGearRatio(20.0)
         .withEncoderType(EncoderType.EXTERNAL)
         .withMinAngle(Degrees.of(-140))
@@ -32,8 +32,8 @@ public class Turret extends TurretTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
-        .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70);
+        .withSupplyCurrentLimit(30)
+        .withStatorCurrentLimit(30);
     
     private static final EncoderConstants encoderConstants = new EncoderConstants()
         .withDeviceId(22)    

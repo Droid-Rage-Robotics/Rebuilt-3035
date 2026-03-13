@@ -30,8 +30,8 @@ public class Hood extends ArmTemplate {
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
-        .withSupplyCurrentLimit(70)
-        .withStatorCurrentLimit(70);
+        .withSupplyCurrentLimit(50)
+        .withStatorCurrentLimit(50);
 
     public Hood(boolean isEnabled) {
         super(isEnabled, 
