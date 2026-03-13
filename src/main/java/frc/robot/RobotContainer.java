@@ -75,7 +75,7 @@ public class RobotContainer {
         // testSubsystems();
         // testClimb();
         // resetClimb();
-        // testShooter();
+        // testShooter(); 
         // testAim();
 	}
 
@@ -133,106 +133,106 @@ public class RobotContainer {
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 
-	public void testAim() {
-		// driver.a()
-			// .onTrue(new ShooterScore(drive, shooter))
-			// .onFalse(new ShooterHold(drive, shooter));
-		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
+	// public void testAim() {
+	// 	// driver.a()
+	// 		// .onTrue(new ShooterScore(drive, shooter))
+	// 		// .onFalse(new ShooterHold(drive, shooter));
+	// 	// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
 
-		// shooter.getTurret().setDefaultCommand(new ManualTurret(shooter, driver));
-		driver.a().onTrue(indexer.getSysIdCommand());
-	}
+	// 	// shooter.getTurret().setDefaultCommand(new ManualTurret(shooter, driver));
+	// 	driver.a().onTrue(indexer.getSysIdCommand());
+	// }
 
-	public void testSubsystems() {
-		driver.back().and(driver.b()).onTrue(
-			new InstantCommand(()-> drive.resetPose(new Pose2d(3.5,4.0,Rotation2d.kZero))));	
-		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+	// public void testSubsystems() {
+	// 	driver.back().and(driver.b()).onTrue(
+	// 		new InstantCommand(()-> drive.resetPose(new Pose2d(3.5,4.0,Rotation2d.kZero))));	
+	// 	drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		
-		//USE this for TESTING
+	// 	//USE this for TESTING
 		
-		// driver.a()
-		// 	.onTrue(new ShooterScore(drive, shooter))
-		// 	.onFalse(new ShooterHold(drive, shooter));
+	// 	// driver.a()
+	// 	// 	.onTrue(new ShooterScore(drive, shooter))
+	// 	// 	.onFalse(new ShooterHold(drive, shooter));
 
-		operator.b()
-			.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
-			.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+	// 	operator.b()
+	// 		.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()))
+	// 		.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
 			
-		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(30)))
-       	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
+	// 	operator.rightBumper()
+    //    	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(30)))
+    //    	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
 
-   	 	operator.rightBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		operator.leftBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+   	//  	operator.rightBumper()
+	// 		.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+	// 		.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+	// 		.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()))
+	// 		.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+	// 	operator.leftBumper()
+	// 		.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+	// 		.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()))
+	// 		.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
 
-		driver.rightTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-		driver.leftTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	driver.rightTrigger()
+	// 		.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	driver.leftTrigger()
+	// 		.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 
-		operator.povDown()
-			.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
+	// 	operator.povDown()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
 			
-		operator.povRight()
-			.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF));
+	// 	operator.povRight()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF));
 
-		operator.povUp()
-			.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
+	// 	operator.povUp()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
 
-	}
+	// }
 
-	public void testDrive() {
-		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-	}
+	// public void testDrive() {
+	// 	drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+	// }
 	
-	public void testClimb() {
-        operator.rightBumper()
-            .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() + 0.5)));
-        operator.leftBumper()
-            .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
-	}
+	// public void testClimb() {
+    //     operator.rightBumper()
+    //         .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() + 0.5)));
+    //     operator.leftBumper()
+    //         .onTrue(climb.setTargetPositionCommand(Inches.of(climb.getGoalPosition().magnitude() - 0.5)));
+	// }
 
-	public void testShooter() {
-		// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		// operator.a().onTrue(new ShooterScore(drive, shooter));
+	// public void testShooter() {
+	// 	// drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+	// 	// operator.a().onTrue(new ShooterScore(drive, shooter));
 		
-		operator.rightBumper()
-       	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(40)))
-       	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
+	// 	operator.rightBumper()
+    //    	 	.onTrue(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(40)))
+    //    	 	.onFalse(shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.zero()));
 
-   	 	operator.rightBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		operator.leftBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
-		operator.rightBumper()
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
-			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-		operator.leftBumper()
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+   	//  	operator.rightBumper()
+	// 		.onTrue(indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()))
+	// 		.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+	// 	operator.leftBumper()
+	// 		.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+	// 		.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()));
+	// 	operator.rightBumper()
+	// 		.onTrue(kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()))
+	// 		.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+	// 	operator.leftBumper()
+	// 		.onTrue(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-		// operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
-		// operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
+	// 	// operator.x().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN));
+	// 	// operator.povDown().onTrue(intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP));
 
-		// operator.rightTrigger()
-		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
-		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	// operator.rightTrigger()
+	// 	// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+	// 	// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 
-		// operator.leftTrigger()
-		// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
-		// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	// operator.leftTrigger()
+	// 	// 	.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+	// 	// 	.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 
-	}
+	// }
 
 	public void resetClimb(){
 		climb.setResetting(true);
@@ -251,5 +251,10 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return autoChooser.getAutonomousCommand();
+	}
+
+	public void teleopInit(){
+		shooter.setShooterTargetCommand(ShooterValue.HOLD);
+		indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP.getIndexerValue());
 	}
 }

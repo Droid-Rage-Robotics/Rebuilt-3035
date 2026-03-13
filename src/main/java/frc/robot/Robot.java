@@ -102,6 +102,8 @@ public class Robot extends LoggedRobot {
         
         DroidRageConstants.alliance = DriverStation.getAlliance().get();
 
+        robotContainer.teleopInit(); //TODO: Test
+
         /* DO NOT INITIALIZE BUTTON BINDINGS HERE */
     }
 
