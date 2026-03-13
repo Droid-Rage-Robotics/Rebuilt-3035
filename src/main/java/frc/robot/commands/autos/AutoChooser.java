@@ -7,10 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer.IndexerValue;
+import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.drive.SwerveDrive;
@@ -40,14 +42,29 @@ public class AutoChooser implements Dashboard {
 
         NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
         NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
+        NamedCommands.registerCommand("setShootTrenchR", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT));
+
         NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
         NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
+        NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
+
         NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
-        NamedCommands.registerCommand("wiggleIntake", getAutonomousCommand());
-        NamedCommands.registerCommand("index", indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()));
+        NamedCommands.registerCommand("wiggleIntake", TeleopCommands.indexerWiggleIntake(intake));
+        NamedCommands.registerCommand("index", new SequentialCommandGroup(
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()),
+            kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
+        ));
+        NamedCommands.registerCommand("indexStop", new SequentialCommandGroup(
+            indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
+            kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
+        ));
+
         
-        // addTuningAuto(drive);
+        addTuningAuto(drive);
         addAutos(drive, intake, indexer, kicker, shooter, climb, vision);
+        // autoChooser.addOption("one", new SequentialCommandGroup(
+            // PathPlannerFollow.create(drive, "one").build()
+        // ));
         addTurretTesting(drive, shooter);
 
         TelemetryUtils.registerDashboard(this);
@@ -79,7 +96,7 @@ public class AutoChooser implements Dashboard {
     }
 
     public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision) {
-        autoChooser.addOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.setDefaultOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("rightCrossNeutral", Autos.rightCrossNeutral(drive, intake, indexer, kicker, shooter, vision));
     }
     
