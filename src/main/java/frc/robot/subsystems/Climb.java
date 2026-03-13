@@ -44,7 +44,7 @@ public class Climb extends ElevatorTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
-        .withSupplyCurrentLimit(70) //Reefscape 120
+        .withSupplyCurrentLimit(65) //Reefscape 120
         .withStatorCurrentLimit(70); //Reefscape 120
 
     @Setter public boolean isResetting = false;

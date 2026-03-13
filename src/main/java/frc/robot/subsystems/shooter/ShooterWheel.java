@@ -29,7 +29,7 @@ public class ShooterWheel extends FlywheelTemplate {
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Coast)
         .withConversionFactor( 1)
-        .withSupplyCurrentLimit(60)//80
+        .withSupplyCurrentLimit(55)//80
         .withStatorCurrentLimit(60);//80
 
     private static final MotorConstants leftMotor = new MotorConstants() // FOLLOWER

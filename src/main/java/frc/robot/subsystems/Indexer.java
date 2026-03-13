@@ -45,7 +45,7 @@ public class Indexer extends FlywheelTemplate{
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
         .withStatorCurrentLimit(80)//100
-        .withSupplyCurrentLimit(80);//100
+        .withSupplyCurrentLimit(75);//100
         //SUPERNERDS have 40 stator
     private Timer stallTimer = new Timer();
     // private double intakeTime = 0;
