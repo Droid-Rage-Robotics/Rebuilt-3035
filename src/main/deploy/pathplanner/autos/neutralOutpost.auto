@@ -9,40 +9,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "TrenchToNeutralOutpost"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "startPivot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "NeutralToTrenchOutpost"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "shootTrenchR"
                 }
               },
               {
@@ -50,15 +19,21 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "startPivot"
+                      }
+                    },
+                    {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 0.25
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "intakeUp"
+                        "name": "intake"
                       }
                     }
                   ]
@@ -74,32 +49,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TrenchToHPS"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "shootOutpost"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "HPSToTower"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "climbUp"
+                  "pathName": "NeutralToTrenchOutpost"
                 }
               }
             ]
@@ -108,7 +58,32 @@
         {
           "type": "named",
           "data": {
-            "name": "climbDown"
+            "name": "shootTrenchR"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "wiggleIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "index"
+                }
+              }
+            ]
           }
         }
       ]
