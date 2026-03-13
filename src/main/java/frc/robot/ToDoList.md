@@ -24,3 +24,9 @@ Turret seeks hub when it can't see the april tag. (Look in general direction usi
 
 Maybe make it function like this bot https://www.instagram.com/reel/DUFUoRaiSyr/?igsh=MWFtc3Bjd3RhOHdxdg== - dalberto
 (could make it so when it reaches the max rotational distance we give it make it do 180 the other way?)
+
+
+Auto to Teleop Robot reset
+Turret Wraapping
+Update Wiring Diagram
+telemetry kicker, indexer, intake on

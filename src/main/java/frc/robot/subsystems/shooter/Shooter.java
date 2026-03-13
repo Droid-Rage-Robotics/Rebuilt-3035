@@ -8,7 +8,6 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
@@ -23,20 +22,20 @@ public class Shooter implements Dashboard, Sendable {
         SHORT(0, 10, 45), //v52
         FAR(0,0,0),
 
-        SHOOT_TRENCH_RIGHT(138.5,5.57,56), //v52
+        SHOOT_TRENCH_RIGHT(141.5,5.57,56), //v52
 
         AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),0,0), //v52
         
         SHOOT_TRENCH_LEFT(
-            -138.5, 
+            -1.5, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
             SHOOT_TRENCH_RIGHT.getVelocity()
         ),
 
         AUTO_SHOOT_TRENCH_LEFT(SHOOT_TRENCH_LEFT.getTurretAngle().getDegrees(), 0,0),
         
-        HOLD(-220, 0, 20),
-        HOARD(0,5,60)
+        HOLD(-220, 10, 20),
+        HOARD(0,10,60)
         ;
 
         @Getter private final Rotation2d turretAngle;
@@ -97,6 +96,12 @@ public class Shooter implements Dashboard, Sendable {
             turret.setTargetPositionCommand(shooterValue.getTurretAngle()),
             shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())
         );
+    }
+
+    public void setShooterTarget(ShooterValue shooterValue) {
+        hood.setGoalAngle(shooterValue.getHoodAngle());
+        turret.setGoalAngle(shooterValue.getTurretAngle());
+        shooterWheel.setTargetVelocity(shooterValue.getVelocity());
     }
 
     public Command setHoodPositionCommand(ShooterValue shooterValue) {

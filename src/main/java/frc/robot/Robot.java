@@ -78,7 +78,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousExit(){
-        SignalLogger.stop();
         switch (DriverStation.getGameSpecificMessage()) { // Set didWeWin for Lights
             case "R": // Red won Auto
                 DroidRageConstants.didWeWin = DroidRageConstants.alliance == DriverStation.Alliance.Red;
@@ -90,6 +89,9 @@ public class Robot extends LoggedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
+
+        robotContainer.resetSubsystemsAutoExit();
+
     }
 
     @Override
@@ -102,7 +104,6 @@ public class Robot extends LoggedRobot {
         
         DroidRageConstants.alliance = DriverStation.getAlliance().get();
 
-        robotContainer.teleopInit(); //TODO: Test
 
         /* DO NOT INITIALIZE BUTTON BINDINGS HERE */
     }

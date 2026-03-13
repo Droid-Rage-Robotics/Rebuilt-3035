@@ -1,9 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -253,8 +249,10 @@ public class RobotContainer {
 		return autoChooser.getAutonomousCommand();
 	}
 
-	public void teleopInit(){
-		shooter.setShooterTargetCommand(ShooterValue.HOLD);
-		indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP.getIndexerValue());
+	public void resetSubsystemsAutoExit() {
+		shooter.setShooterTarget(ShooterValue.HOLD);
+		indexer.setTargetVelocity(Indexer.IndexerValue.STOP.getIndexerValue());
+		kicker.setTargetVelocity(KickerValue.STOP.getKickerValue());
+		intake.getIntakeWheel().setTargetVelocity(IntakeValue.WheelVelocity.STOP.getVelocity());
 	}
 }

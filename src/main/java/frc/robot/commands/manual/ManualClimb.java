@@ -28,7 +28,7 @@ public class ManualClimb extends Command {
         move = DroidRageConstants.squareInput(move);
         move = DroidRageConstants.applyDeadBand(move);
 
-        climb.setTargetPosition(Inches.of(climb.getGoalPosition().in(Inches) + move * 0.06));
+        climb.setTargetPosition(Inches.of(climb.getGoalPosition().in(Inches) + move * -0.06));
     }
 
     @Override
