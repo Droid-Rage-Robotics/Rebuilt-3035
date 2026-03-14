@@ -21,7 +21,7 @@ public class Turret extends TurretTemplate {
         .withMaxAcceleration(RotationsPerSecondPerSecond.of(7.5))
         .withGearRatio(20.0)
         .withEncoderType(EncoderType.EXTERNAL)
-        .withMinAngle(Degrees.of(-140))
+        .withMinAngle(Degrees.of(-145))
         .withMaxAngle(Degrees.of(185))
         .withName("Turret")
         .withOffset(0)

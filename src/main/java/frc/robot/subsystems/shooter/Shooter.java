@@ -27,15 +27,15 @@ public class Shooter implements Dashboard, Sendable {
         AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),0,0), //v52
         
         SHOOT_TRENCH_LEFT(
-            -1.5, 
+            -141.5, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
             SHOOT_TRENCH_RIGHT.getVelocity()
         ),
 
         AUTO_SHOOT_TRENCH_LEFT(SHOOT_TRENCH_LEFT.getTurretAngle().getDegrees(), 0,0),
         
-        HOLD(-220, 10, 20),
-        HOARD(0,10,60)
+        HOLD(10, 0, 20),//-220
+        // HOARD(0,10,60)
         ;
 
         @Getter private final Rotation2d turretAngle;

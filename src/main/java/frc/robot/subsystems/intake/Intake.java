@@ -34,8 +34,8 @@ public class Intake implements Sendable {
         }
 
         public enum WheelVelocity {
-            INTAKE(-100),
-            OUTTAKE(100),
+            INTAKE(-80),
+            OUTTAKE(80),
             STOP(0)
             ;
 
