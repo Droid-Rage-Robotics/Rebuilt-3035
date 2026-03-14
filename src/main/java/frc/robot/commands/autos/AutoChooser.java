@@ -100,7 +100,7 @@ public class AutoChooser implements Dashboard {
 
     public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision) {
         autoChooser.setDefaultOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightCrossNeutral(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightNeutralOutpostDouble(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("rightCrossNeutral", Autos.rightCrossNeutral(drive, intake, indexer, kicker, shooter, vision));
     }
     
