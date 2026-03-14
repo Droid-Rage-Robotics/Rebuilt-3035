@@ -36,7 +36,17 @@ public class Shooter implements Dashboard, Sendable {
         
         HOLD(10, 0, 20),//-220
         // HOARD(0,10,60)
+
+        CORNER_RIGHT(
+            -50, 18, 60
+        ),
+        CORNER_LEFT(
+            50, 
+            CORNER_RIGHT.getHoodAngle().getDegrees(),
+            CORNER_RIGHT.getVelocity()
+        )
         ;
+        
 
         @Getter private final Rotation2d turretAngle;
         @Getter private final Rotation2d hoodAngle;
