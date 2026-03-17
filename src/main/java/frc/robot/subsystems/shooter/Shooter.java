@@ -22,12 +22,12 @@ public class Shooter implements Dashboard, Sendable {
         SHORT(0, 10, 45), //v52
         FAR(0,0,0),
 
-        SHOOT_TRENCH_RIGHT(141.5,5.57,56), //v52
+        SHOOT_TRENCH_RIGHT(138.5,5.57,57.5), //v52
 
         AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),0,0), //v52
         
         SHOOT_TRENCH_LEFT(
-            -141.5, 
+            -138.5, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
             SHOOT_TRENCH_RIGHT.getVelocity()
         ),
