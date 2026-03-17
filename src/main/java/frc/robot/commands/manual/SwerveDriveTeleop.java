@@ -38,6 +38,8 @@ public class SwerveDriveTeleop extends Command {
 
         driver.rightBumper().onTrue(drive.setSpeed(Speed.SLOW))
             .onFalse(drive.setSpeed(Speed.NORMAL));
+
+        driver.leftBumper().whileTrue(drive.applyRequest(()->brakeRequest));
         
         // driver.rightBumper().onTrue(drive.setSpeed(Speed.SUPER_SLOW))
             // .onFalse(drive.setSpeed(Speed.SLOW));

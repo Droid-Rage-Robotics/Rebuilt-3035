@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -10,6 +12,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
+import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.shooter.Shooter;
@@ -48,7 +51,7 @@ public class TeleopCommands {
     
     public static Command indexerWiggleIntake(Intake intake) {
         return new SequentialCommandGroup(
-            new WaitCommand(2),
+            new WaitCommand(1),
             new SequentialCommandGroup(
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
                 new WaitCommand(0.5),
@@ -87,5 +90,12 @@ public class TeleopCommands {
 
     // public static Command lowerHoodCommand(Shooter shooter) {
     //     return shooter.getHood().setTargetPositionCommand(Rotation2d.kZero);
+    // }
+
+    // public void setDriveX(SwerveDrive drive){
+    //     drive.setControl(new SwerveRequest(
+
+    //         )
+    //     );
     // }
 }
