@@ -34,21 +34,13 @@ public class TeleopCommands {
             new WaitCommand(1)
         );
     }
-
-    public static Command indexerIntakeCommand(Indexer indexer, Intake intake) { // TODO: test
-        return new SequentialCommandGroup(
-            indexer.setTargetVelocityCommand(Indexer.IndexerValue.INTAKE.getIndexerValue()),
-            intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(-30)),
-            new WaitCommand(2),
-            new SequentialCommandGroup(
-                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
-                new WaitCommand(0.5),
-                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
-                new WaitCommand(0.5)
-            ).repeatedly()
-        );
-    }
     
+    /**
+     * Returns a command which brings the pivot up and down rapidly after
+     * a wait time of 1 second.
+     * @param intake 
+     * @return a new sequential command group
+     */
     public static Command indexerWiggleIntake(Intake intake) {
         return new SequentialCommandGroup(
             new WaitCommand(1),

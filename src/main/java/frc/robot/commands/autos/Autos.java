@@ -37,4 +37,13 @@ public final class Autos {
         );
     }
 
+    public static Command leftNeutralDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            PathPlannerFollow.create(drive, "leftNeutralDepot")
+                .setMaxVelocity(6)
+                .setAcceleration(6)
+                .build()
+        );
+    }
+
 }

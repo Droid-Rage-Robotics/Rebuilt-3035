@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.75,
-        "y": 4.470596026490066
+        "x": 8.0,
+        "y": 3.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.75,
-        "y": 7.370596026490066
+        "x": 8.0,
+        "y": 7.3
       },
       "isLocked": false,
       "linkedName": "L-Neutral"
@@ -20,7 +20,7 @@
         "y": 7.420281690140845
       },
       "prevControl": {
-        "x": 7.375316901408452,
+        "x": 7.875316901408451,
         "y": 7.420281690140844
       },
       "nextControl": null,
@@ -31,14 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -49,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -89.94132168924243
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

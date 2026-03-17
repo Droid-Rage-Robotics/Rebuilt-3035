@@ -47,7 +47,7 @@ public class RobotContainer {
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
-	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, climb, null);
+	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, null);
 
     // private final Light light = new Light(0);
     

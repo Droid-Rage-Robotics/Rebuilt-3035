@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.shooter.ShootHub;
-import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.Climb.ClimbValue;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.Indexer;
@@ -28,13 +26,10 @@ import frc.utility.TelemetryUtils.Dashboard;
 public class AutoChooser implements Dashboard {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-    public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision){
+    public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision){
         NamedCommands.registerCommand("startPivot", AutoCommands.startPivotCommand(intake));
         NamedCommands.registerCommand("intakeDown",  intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle()));
         NamedCommands.registerCommand("intakeUp", intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP.getAngle()));
-
-        NamedCommands.registerCommand("climbDown", climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
-        NamedCommands.registerCommand("climbUp", climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
 
         NamedCommands.registerCommand("intake",
             intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
@@ -67,7 +62,7 @@ public class AutoChooser implements Dashboard {
 
         
         // addTuningAuto(drive);
-        addAutos(drive, intake, indexer, kicker, shooter, climb, vision);
+        addAutos(drive, intake, indexer, kicker, shooter, vision);
         // addTurretTesting(drive, shooter);
 
         TelemetryUtils.registerDashboard(this);
@@ -98,10 +93,11 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("LessForwardTest", TuningAutos.lessForwardTest(drive));
     }
 
-    public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Climb climb, Vision vision) {
+    public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         autoChooser.setDefaultOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightNeutralOutpostDouble(drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("rightCrossNeutral", Autos.rightCrossNeutral(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("leftNeutralDepot", Autos.leftNeutralDepot(drive, intake, indexer, kicker, shooter, vision));
+
     }
     
     @Override
@@ -124,4 +120,3 @@ public class AutoChooser implements Dashboard {
         }
     }
 }
-

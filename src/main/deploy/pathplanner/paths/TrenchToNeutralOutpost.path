@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.375071573928288,
-        "y": 0.6931790303695443
+        "x": 7.875316901408451,
+        "y": 0.65
       },
       "isLocked": false,
       "linkedName": "R-Trench"
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.05208601343043
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
