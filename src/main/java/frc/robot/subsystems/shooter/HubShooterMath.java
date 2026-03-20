@@ -122,6 +122,28 @@ public class HubShooterMath {
         return InchesPerSecond.of(velocity);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     // see https://www.desmos.com/calculator/ezjqolho6g
     public static ShotData calculateShotFromFunnelClearance(
             Pose2d robot, Translation3d actualTarget, Translation3d predictedTarget) {

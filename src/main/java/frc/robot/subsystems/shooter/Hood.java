@@ -19,7 +19,7 @@ public class Hood extends ArmTemplate {
         .withConversionFactor(1.0/(4.0 * (155.0/9.0)))
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.zero())
-        .withMaxAngle(Degrees.of(28))
+        .withMaxAngle(Degrees.of(28))//28
         .withName("Hood")
         .withOffset(0)
         .withMainNum(0);

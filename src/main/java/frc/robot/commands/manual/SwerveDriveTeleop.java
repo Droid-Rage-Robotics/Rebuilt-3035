@@ -23,26 +23,23 @@ public class SwerveDriveTeleop extends Command {
     
     private final Supplier<Double> x, y, turn;
     private volatile double xSpeed, ySpeed, turnSpeed;
-    private static final PIDController antiTipY = 
-        new PIDController(0.006, 0, 0.0005);
-    private static final PIDController antiTipX = 
-        new PIDController(0.006, 0, 0.0005);
+    // private static final PIDController antiTipY = 
+    //     new PIDController(0.006, 0, 0.0005);
+    // private static final PIDController antiTipX = 
+    //     new PIDController(0.006, 0, 0.0005);
 
     public SwerveDriveTeleop(SwerveDrive drive, CommandXboxController driver) {
         this.drive = drive;
         this.x = driver::getLeftX;
         this.y = driver::getLeftY;
         this.turn = driver::getRightX;
-        antiTipX.setTolerance(2);
-        antiTipY.setTolerance(2);
+        // antiTipX.setTolerance(2);
+        // antiTipY.setTolerance(2);
 
         driver.rightBumper().onTrue(drive.setSpeed(Speed.SLOW))
             .onFalse(drive.setSpeed(Speed.NORMAL));
 
         driver.leftBumper().whileTrue(drive.applyRequest(()->brakeRequest));
-        
-        // driver.rightBumper().onTrue(drive.setSpeed(Speed.SUPER_SLOW))
-            // .onFalse(drive.setSpeed(Speed.SLOW));
 
         driver.b().onTrue(new InstantCommand(drive::seedFieldCentric));
         // driver.b().and(driver.back()).onTrue(new InstantCommand(drive::tareEverything)); //This is bad idea
@@ -66,21 +63,17 @@ public class SwerveDriveTeleop extends Command {
             turnSpeed = DroidRageConstants.squareInput(turnSpeed);
         }
 
-        // // Apply Anti-Tip
-        // double xTilt = drive.getRoll(); //Is this Roll or pitch
-        // double yTilt = drive.getPitch();// Is this Roll or pitch
-
-        // if(drive.getTippingState()==TippingState.ANTI_TIP) {//Need to take into account on the direction of the tip
-        //     if (Math.abs(xTilt) > 10)
-        //         xSpeed = -antiTipX.calculate(xTilt, 0);
-        //     if (Math.abs(yTilt) >10)
-        //         ySpeed = -antiTipY.calculate(yTilt, 0);
-        // }
 
         // Apply deadzone
         if (Math.abs(xSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) xSpeed = 0;
         if (Math.abs(ySpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) ySpeed = 0;
         if (Math.abs(turnSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) turnSpeed = 0;
+
+        // if(Math.abs(xSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE &&
+        //     Math.abs(ySpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE &&
+        //     Math.abs(turnSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE){
+        //     drive.setControl(brakeRequest);
+        // }
 
         // Smooth driving and apply speed
         xSpeed = 

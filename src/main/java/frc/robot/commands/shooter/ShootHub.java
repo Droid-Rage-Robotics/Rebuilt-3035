@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot .subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
 
 public class ShootHub extends Command{
