@@ -20,36 +20,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public final class DroidRageConstants {
-    public enum Alignment {
-        RIGHT,
-        LEFT,
-        MIDDLE
-    }
-    
-    public static Alignment alignmentMode = Alignment.LEFT;
-
-    private static final AtomicReference<String> alignmentWriter = new AtomicReference<>(alignmentMode.toString());
 
     public static final AngularVelocity KRAKEN_X60_MAX_VELOCITY = RPM.of(6000);
     public static final AngularVelocity KRAKEN_X44_MAX_VELOCITY = RPM.of(7750);
 
     public static final double LOOP_PERIOD_SECS = 0.02;
-
-
-    public static void setAlignment(Alignment alignment){
-        alignmentMode = alignment;
-        alignmentWriter.set(alignmentMode.toString());
-    }
-
-
-    public static final Sendable robotMisc = new Sendable() {
-        @Override
-        public void initSendable(SendableBuilder builder) {
-            builder.addStringProperty("Vision Alignment", alignmentWriter::get, null);
-        };
-    };
-
-    
     
     public static class Gamepad {
         public static final int DRIVER_CONTROLLER_PORT = 0;
@@ -140,21 +115,19 @@ public final class DroidRageConstants {
         public static final Translation3d HUB_BLUE = new Translation3d(4.625, 4.025, 2.05);
         public static final Translation3d HUB_RED = new Translation3d(4.625, 4.025, 2.05); // TODO: set
 
-        public static Translation3d queryOurHub() {
-            return DroidRageConstants.alliance == Alliance.Red 
-                ? FieldConstants.HUB_RED 
-                : FieldConstants.HUB_BLUE;
-        }
-
+        // public static Translation3d queryOurHub() {
+        //     return DroidRageConstants.alliance == Alliance.Red 
+        //         ? FieldConstants.HUB_RED 
+        //         : FieldConstants.HUB_BLUE;
+        // }
     }
     
 
-    public enum SimState {
-        REAL,
-        SIM
-    }
-
-    public static SimState simState = SimState.REAL;
+    // public enum SimState {
+    //     REAL,
+    //     SIM
+    // }
+    // public static SimState simState = SimState.REAL;
 
     public static Alliance alliance = DriverStation.Alliance.Blue; //Default to Blue
 }

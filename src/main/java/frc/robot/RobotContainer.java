@@ -9,6 +9,7 @@ import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
 import frc.robot.commands.manual.ManualClimb;
 import frc.robot.commands.manual.SwerveDriveTeleop;
+import frc.robot.commands.shooter.DRShooter;
 import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Climb.ClimbValue;
@@ -73,7 +74,7 @@ public class RobotContainer {
 	public void configureTeleOpBindings() {
 
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new ShootHub(drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 
 		// driver.rightTrigger()
