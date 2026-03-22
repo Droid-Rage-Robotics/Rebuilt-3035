@@ -1,5 +1,6 @@
 package frc.robot.commands.shooter;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -7,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
@@ -51,8 +53,12 @@ public class DRShooter extends Command{
         flywheelSpeedMap.put(4.84, 70.0);
 
         //Distance to hub (m) -> hood angle (degrees)
+        hoodMap.put(1.0, 15.0); //Max Pos next to Hub
         hoodMap.put(2.8, 10.0); //Short Hub
         hoodMap.put(3.47, 5.57); //Trench
+        hoodMap.put(4.5, 0.0); //Against Field wall Straighy
+
+
     }
 
     public DRShooter(SwerveDrive drive, Shooter shooter) {
@@ -85,7 +91,8 @@ public class DRShooter extends Command{
 
         double distanceRobotToHub = getDistanceToHub(drive.getState().Pose, hubPose);
 
-        shooter.getTurret().setGoalAngle(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
+        // shooter.getTurret().setGoalAngle(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
+        shooter.getTurret().setGoalAngle(getTurretAngleDegrees(drive.getState().Pose, hubPose));
         shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToHub)));
         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToHub)));
 
@@ -101,6 +108,21 @@ public class DRShooter extends Command{
         double predictedY = currentPose.getY() - fieldSpeeds.vyMetersPerSecond;
 
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());
+    }
+    public Angle getTurretAngleDegrees( Pose2d robotPose, Translation3d target) {
+        double dx = target.getX() - robotPose.getX();
+        double dy = target.getY() - robotPose.getY();
+
+        // Angle from robot to goal (field-relative)
+        Rotation2d goalAngle = Rotation2d.fromRadians(Math.atan2(dy, dx));
+
+        // Turret relative Radian angle
+        double turretAngle = goalAngle.getRadians() - robotPose.getRotation().getRadians();
+
+        // // Normalize to 0 → 2π
+        // turretAngle = Math.atan2(Math.sin(turretAngle), Math.cos(turretAngle));
+
+        return Radians.of(turretAngle);
     }
 
 }
