@@ -79,9 +79,9 @@ public class DRShooter extends Command{
     @Override 
     public void execute(){
         //Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
-        Pose2d lookAheadPose = predictPosePos(
-            drive.getState().Pose, 
-            drive.getCurrentRobotChassisSpeeds());
+        // Pose2d lookAheadPose = predictPosePos(
+        //     drive.getState().Pose, 
+        //     drive.getCurrentRobotChassisSpeeds());
 
         double distanceRobotToHub = getDistanceToHub(drive.getState().Pose, hubPose);
 

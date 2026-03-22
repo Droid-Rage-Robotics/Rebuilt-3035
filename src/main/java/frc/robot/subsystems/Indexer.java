@@ -6,7 +6,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
@@ -49,10 +48,6 @@ public class Indexer extends FlywheelTemplate {
         .withStatorCurrentLimit(80)//100
         .withSupplyCurrentLimit(75);//100
         //SUPERNERDS have 40 stator
-    private Timer stallTimer = new Timer();
-    // private double intakeTime = 0;
-    private boolean isStalling = false;
-    private boolean isReversing = false;
 
     public Indexer(boolean isEnabled) {
         super(isEnabled, constants, motor);
