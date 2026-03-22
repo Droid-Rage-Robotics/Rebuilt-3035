@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 3.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 7.413434287712171
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.1,
+        "x": 4.3,
         "y": 7.6
       },
       "prevControl": {
-        "x": 8.042772808586761,
+        "x": 8.24277280858676,
         "y": 7.583774597495527
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L-Trench"
+      "linkedName": "L-Trench-Shoot"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "folder": "Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -100.0
   },
   "useDefaultConstraints": true
 }

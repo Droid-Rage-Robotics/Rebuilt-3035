@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.067620751341681,
+        "x": 4.3,
         "y": 0.4572987477638639
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.367620751341681,
+        "x": 8.6,
         "y": 0.4572987477638639
       },
       "isLocked": false,
-      "linkedName": "R-Trench"
+      "linkedName": "R-Trench-Shoot"
     },
     {
       "anchor": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 3.8
       },
       "prevControl": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 0.7999999999999998
       },
       "nextControl": null,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 110.0
   },
   "reversed": false,
   "folder": "Outpost",

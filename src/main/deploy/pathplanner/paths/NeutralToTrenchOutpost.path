@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 3.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 0.7999999999999998
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.067620751341681,
-        "y": 0.4572987477638639
+        "x": 4.3,
+        "y": 0.46
       },
       "prevControl": {
-        "x": 8.367620751341686,
-        "y": 0.45729874776386337
+        "x": 8.600000000000005,
+        "y": 0.45999999999999946
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R-Trench"
+      "linkedName": "R-Trench-Shoot"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 110.0
   },
   "useDefaultConstraints": true
 }

@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.1,
+        "x": 4.3,
         "y": 7.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.332541390728476,
+        "x": 8.532541390728476,
         "y": 7.654428807947019
       },
       "isLocked": false,
-      "linkedName": "L-Trench"
+      "linkedName": "L-Trench-Shoot"
     },
     {
       "anchor": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 3.5
       },
       "prevControl": {
-        "x": 8.0,
+        "x": 8.2,
         "y": 6.885255039717255
       },
       "nextControl": null,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -100.0
   },
   "reversed": false,
   "folder": "Depot",
