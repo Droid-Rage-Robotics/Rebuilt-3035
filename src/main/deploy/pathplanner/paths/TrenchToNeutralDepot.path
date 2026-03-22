@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.3,
+        "x": 4.5,
         "y": 7.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.532541390728476,
-        "y": 7.654428807947019
+        "x": 8.7,
+        "y": 7.6
       },
       "isLocked": false,
-      "linkedName": "L-Trench-Shoot"
+      "linkedName": "L-Trench"
     },
     {
       "anchor": {

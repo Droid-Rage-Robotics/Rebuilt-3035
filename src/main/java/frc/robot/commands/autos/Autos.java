@@ -26,7 +26,7 @@ public final class Autos {
                 .setAcceleration(8)
                 .build(),
             // shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
-            PathPlannerFollow.create(drive, "rightNeutralOutpost")
+            PathPlannerFollow.create(drive, "rightNeutralOutpost2")
                 .setMaxVelocity(8)
                 .setAcceleration(8)
                 .build()
@@ -48,7 +48,7 @@ public final class Autos {
                 .setMaxVelocity(8)
                 .setAcceleration(8)
                 .build(),
-            PathPlannerFollow.create(drive, "leftNeutralDepot")
+            PathPlannerFollow.create(drive, "leftNeutralDepot2")
                 .setMaxVelocity(8)
                 .setAcceleration(8)
                 .build()
