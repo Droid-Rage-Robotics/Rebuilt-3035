@@ -54,8 +54,7 @@ public class Indexer extends FlywheelTemplate {
         .withDeviceId(17)
         .withCANBus(DroidRageConstants.driveCanBus)
         .withMotorAlignment(MotorAlignmentValue.Opposed)
-        .withDirection(Direction.Reversed)
-        .withIdleMode(NeutralModeValue.Brake)
+        .withIdleMode(NeutralModeValue.Coast)
         .withSupplyCurrentLimit(80)
         .withStatorCurrentLimit(75); 
 
