@@ -85,7 +85,7 @@ public class DRShooter extends Command{
 
         double distanceRobotToHub = getDistanceToHub(drive.getState().Pose, hubPose);
 
-        shooter.getTurret().setGoalAngle(HubShooterMath.calculateTurretAngle(drive.getState().Pose, hubPose));
+        shooter.getTurret().setGoalAngle(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
         shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToHub)));
         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToHub)));
 

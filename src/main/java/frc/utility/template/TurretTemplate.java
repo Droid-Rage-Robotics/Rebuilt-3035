@@ -48,7 +48,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     private final boolean isEnabled;
 
-    private final AtomicReference<Rotation2d> goalAngle = new AtomicReference<Rotation2d>(Rotation2d.kZero);
+    private final AtomicReference<Angle> goalAngle = new AtomicReference<Angle>(Degrees.zero());
 
     private final MechanismLigament2d ligament;
     private final Mechanism2d mechanism;
@@ -129,8 +129,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     @Override
     public void updateTelemetry() {
-        Logger.recordOutput(name + "/Goal Angle", getGoalAngle());
-        Logger.recordOutput(name + "/Current Angle", getCurrentAngle().getDegrees());
+        Logger.recordOutput(name + "/Goal Angle", getGoalAngle().in(Degrees));
+        Logger.recordOutput(name + "/Current Angle", getCurrentAngle().in(Degrees));
         Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint());
         Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
         Logger.recordOutput(name + "/Current Velocity", getVelocity());
@@ -145,9 +145,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     @Override
     public void periodic() {
-        ligament.setAngle(getCurrentAngle());
+        ligament.setAngle(getCurrentAngle().in(Degree));
 
-        motor.setControl(motionMagicRequest.withPosition(goalAngle.get().getMeasure())); // isEnabled safety in motor file and auto unit conversion
+        motor.setControl(motionMagicRequest.withPosition(goalAngle.get())); // isEnabled safety in motor file and auto unit conversion
     }
 
     @Override
@@ -157,44 +157,22 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     /* ---------------- Commands ---------------- */
 
-    public Command setTargetPositionCommand(Rotation2d goalAngle) {
+    public Command setTargetPositionCommand(Angle goalAngle) {
         return runOnce(() -> setGoalAngle(goalAngle));
     }
 
     /* ---------------- Manual Goal Control ---------------- */
+    public void setGoalAngle(Angle angle) {
+        double clamped = MathUtil.clamp(
+            angle.in(Radians),
+            minAngleRad,
+            maxAngleRad
+        );
 
-    public void setTargetPositionDegrees(double degrees) {
-        setGoalAngle(Rotation2d.fromDegrees(degrees));
+        goalAngle.set(Radians.of(clamped));
     }
 
-    public void setGoalAngle(Rotation2d angle) {
-        double angleRad = angle.getRadians();
-        
-        // Check if within valid range - if so, use as-is
-        if (angleRad >= minAngleRad && angleRad <= maxAngleRad) {
-            goalAngle.set(new Rotation2d(angleRad));
-            return;
-        }
-        
-        // Out of range - try flipping 180°
-        double flippedAngle = angleRad + Math.PI;
-        
-        // Normalize flipped angle to [-π, π]
-        flippedAngle = MathUtil.angleModulus(flippedAngle);
-        
-        // Check if flipped angle is within range
-        if (flippedAngle >= minAngleRad && flippedAngle <= maxAngleRad) {
-            goalAngle.set(new Rotation2d(flippedAngle));
-            return;
-        }
-        
-        // Neither original nor flipped works - clamp to nearest limit
-        // This is a fallback that shouldn't normally happen
-        double clamped = MathUtil.clamp(angleRad, minAngleRad, maxAngleRad);
-        goalAngle.set(new Rotation2d(clamped));
-    }
-
-    public Rotation2d getGoalAngle() {
+    public Angle getGoalAngle() {
         return goalAngle.get();
     }
 
@@ -213,8 +191,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     
     /* ---------------- Sensor Access ---------------- */
 
-    public Rotation2d getCurrentAngle() {
-        return new Rotation2d(motor.getPosition());
+    public Angle getCurrentAngle() {
+        return motor.getPosition();
     }
 
     public AngularVelocity getVelocity() {
@@ -269,7 +247,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
             new SysIdRoutine.Mechanism(
                 (voltage) -> {
                     // Only apply voltage if within safe bounds
-                    double currentAngle = getCurrentAngle().getRadians();
+                    double currentAngle = getCurrentAngle().in(Radians);
                     if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
                         setVoltage(voltage);
                     } else {
@@ -279,7 +257,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
                 (log) -> {
                     log.motor("motor")
                         .voltage(Volts.of(getVoltage()))
-                        .angularPosition(this.getCurrentAngle().getMeasure())
+                        .angularPosition(this.getCurrentAngle())
                         .angularVelocity(this.getVelocity());
                 }, 
                 this
@@ -314,10 +292,10 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     // }
 
     private boolean isAtUpperLimit() {
-        return getCurrentAngle().getRadians() >= maxAngleRad - 0.05; // 0.05 rad buffer
+        return getCurrentAngle().in(Radians) >= maxAngleRad - 0.05; // 0.05 rad buffer
     }
 
     private boolean isAtLowerLimit() {
-        return getCurrentAngle().getRadians() <= minAngleRad + 0.05; // 0.05 rad buffer
+        return getCurrentAngle().in(Radians) <= minAngleRad + 0.05; // 0.05 rad buffer
     }
 }

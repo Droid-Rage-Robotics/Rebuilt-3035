@@ -110,7 +110,7 @@ public final class DroidRageConstants {
         // public static final Distance NEUTRAL_ZONE_END = Inches.of(0);
 
         public static final Translation3d HUB_BLUE = new Translation3d(4.625, 4.025, 2.05);
-        public static final Translation3d HUB_RED = new Translation3d(11.95,4, 2.05); // TODO: set
+        public static final Translation3d HUB_RED = new Translation3d(11.95,4, 2.05);
 
         // public static Translation3d queryOurHub() {
         //     return DroidRageConstants.alliance == Alliance.Red 

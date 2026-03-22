@@ -24,7 +24,7 @@ public class ManualTurret extends Command{
 
         // if(ControllerUtils.getRightStickRotation2d(operator) != new Rotation2d(0)){
             // shooter.getTurret().setTargetPositionDegrees(ControllerUtils.getRightStickDeg(operator)); //ToDo: Test
-            shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
+            shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator).getMeasure()); //ToDo: Test
             // System.out.println(ControllerUtils.getRightStickDeg(operator));
             System.out.println(ControllerUtils.getRightStickRotation2d(operator));
 

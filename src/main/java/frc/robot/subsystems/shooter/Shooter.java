@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -24,7 +25,7 @@ public class Shooter implements Dashboard, Sendable {
 
         SHOOT_TRENCH_RIGHT(138.5,5.57,57.5), //v52
 
-        AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().getDegrees(),0,0), //v52
+        AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,0), //v52
         
         SHOOT_TRENCH_LEFT(
             -138.5, 
@@ -32,7 +33,7 @@ public class Shooter implements Dashboard, Sendable {
             SHOOT_TRENCH_RIGHT.getVelocity()
         ),
 
-        AUTO_SHOOT_TRENCH_LEFT(SHOOT_TRENCH_LEFT.getTurretAngle().getDegrees(), 0,0),
+        AUTO_SHOOT_TRENCH_LEFT(SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees), 0,0),
         
         HOLD(10, 0, 20),//-220
         // HOARD(0,10,60)
@@ -48,17 +49,17 @@ public class Shooter implements Dashboard, Sendable {
         ;
         
 
-        @Getter private final Rotation2d turretAngle;
+        @Getter private final Angle turretAngle;
         @Getter private final Rotation2d hoodAngle;
         @Getter private final AngularVelocity velocity;
 
         private ShooterValue(double turretAngle, double hoodAngle, double velocity) {
-            this.turretAngle = Rotation2d.fromDegrees(turretAngle);
+            this.turretAngle = Degrees.of(turretAngle);
             this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
             this.velocity = RotationsPerSecond.of(velocity);
         }
         private ShooterValue(double turretAngle, double hoodAngle, AngularVelocity velocity) {
-            this.turretAngle = Rotation2d.fromDegrees(turretAngle);
+            this.turretAngle = Degrees.of(turretAngle);
             this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
             this.velocity = velocity;
         }
