@@ -41,7 +41,6 @@ public class RobotContainer {
         new Hood(false),
         new ShooterWheel(false)
     );
-    // private final Climb climb = new Climb(false);
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
