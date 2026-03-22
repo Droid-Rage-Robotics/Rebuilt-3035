@@ -89,8 +89,8 @@ public final class DroidRageConstants {
 
     public static final CANBus driveCanBus = new CANBus("drive");
     public static final CANBus rioCanBus = new CANBus();
-    public static final String leftLL = "limelight-left";
-    public static final String rightLL = "limelight-right";
+    public static final String leftLL = "limelight-left"; // 10.30.35.12
+    public static final String rightLL = "limelight-right"; // 10.30.35.11
     public static final String middleLL = "limelight-middle";
     
     public interface MutableSupplier<T> {
@@ -111,7 +111,8 @@ public final class DroidRageConstants {
 
         public static final Translation3d HUB_BLUE = new Translation3d(4.625, 4.025, 2.05);
         public static final Translation3d HUB_RED = new Translation3d(11.95,4, 2.05);
-
+        public static final Translation3d ALLIANCE_BLUE = new Translation3d(4.625, 4.025, 2.05);
+        public static final Translation3d ALLIANCE_RED = new Translation3d(11.95,4, 2.05);
         // public static Translation3d queryOurHub() {
         //     return DroidRageConstants.alliance == Alliance.Red 
         //         ? FieldConstants.HUB_RED 

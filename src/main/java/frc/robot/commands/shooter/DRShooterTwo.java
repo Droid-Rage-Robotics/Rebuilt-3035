@@ -11,17 +11,21 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.shooter.HubShooterMath;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.utility.DRAreaManager;
 
-public class DRShooter extends Command{
+public class DRShooterTwo extends Command{
 
     private final Shooter shooter;    
-    private final Translation3d hubPose;
+    private final Translation3d hubPose, alliancePose;
+    private Translation3d goalPose;
     private final SwerveDrive drive;
+    private double distanceRobotToGoal = 0.0;
     // private final Supplier<SwerveDriveState> robot;
 
     // private static final InterpolatingTreeMap<Distance, Rotation2d> hoodMap =
@@ -61,7 +65,7 @@ public class DRShooter extends Command{
 
     }
 
-    public DRShooter(SwerveDrive drive, Shooter shooter) {
+    public DRShooterTwo(SwerveDrive drive, Shooter shooter) {
         this.shooter = shooter;
         // this.robot = drive::getState;
         this.drive = drive;
@@ -69,12 +73,18 @@ public class DRShooter extends Command{
         this.hubPose = DroidRageConstants.alliance == Alliance.Red 
             ? FieldConstants.HUB_RED 
             : FieldConstants.HUB_BLUE;
+        this.alliancePose = DroidRageConstants.alliance == Alliance.Red 
+            ? FieldConstants.ALLIANCE_RED 
+            : FieldConstants.ALLIANCE_BLUE;
+        this.goalPose = this.hubPose;
 
 
         addRequirements(
             shooter.getHood(),
             shooter.getShooterWheel(),
             shooter.getTurret());
+
+        
     }
 
     @Override
@@ -89,12 +99,35 @@ public class DRShooter extends Command{
         //     drive.getState().Pose, 
         //     drive.getCurrentRobotChassisSpeeds());
 
-        double distanceRobotToHub = getDistanceToHub(drive.getState().Pose, hubPose);
+        switch(DRAreaManager.getCurrentZone()){
+            case ALLIANCE_ZONE:
+                this.goalPose = this.hubPose;
+                break;
+            case BETWEEN:
+                break;
+            case NEUTRAL:
+                this.goalPose = this.alliancePose;
+                break;
+            case OPPOSITION:
+                this.goalPose = this.alliancePose;
+                break;
+        }
+        distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);
 
-        shooter.getTurret().setGoalAngle(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
         // shooter.getTurret().setGoalAngle(getTurretAngleDegrees(drive.getState().Pose, hubPose));
-        shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToHub)));
-        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToHub)));
+        DRAreaManager.inAllianceZone().or(DRAreaManager.inNeutral()).whileTrue(new ParallelCommandGroup(
+            shooter.getTurret().setTargetPositionCommand(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose)),
+            shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal))),
+            shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
+        ));
+
+        DRAreaManager.inOpposition();
+
+        DRAreaManager.inBetween().onTrue(
+            new ParallelCommandGroup(
+                shooter.getHood().setTargetPositionCommand(Rotation2d.kZero) 
+            )
+        );
 
     }
     

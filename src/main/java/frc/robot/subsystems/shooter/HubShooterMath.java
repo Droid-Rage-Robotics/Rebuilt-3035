@@ -94,7 +94,25 @@ public class HubShooterMath {
         return MetersPerSecond.of(vel.in(RadiansPerSecond) * radius.in(Meters));
     }
 
-    // calculates the angle of a turret relative to the robot to hit a target
+    // // calculates the angle of a turret relative to the robot to hit a target
+    // public static Angle calculateAzimuthAngle(Pose2d robot, Translation3d target) {
+    //     Translation2d turretTranslation = new Pose3d(robot)
+    //             .transformBy(ROBOT_TO_TURRET_TRANSFORM)
+    //             .toPose2d()
+    //             .getTranslation();
+
+    //     Translation2d direction = target.toTranslation2d().minus(turretTranslation);
+
+    //     return Radians.of(MathUtil.inputModulus(
+    //             direction.getAngle().minus(robot.getRotation()).getRadians(), 0, 2 * Math.PI));
+    // }
+
+    /**
+     * calculates the angle of a turret relative to the robot to hit a target
+     * @param robot robot pos
+     * @param target target pos
+     * @return new turret angle measure
+     */
     public static Angle calculateAzimuthAngle(Pose2d robot, Translation3d target) {
         Translation2d turretTranslation = new Pose3d(robot)
                 .transformBy(ROBOT_TO_TURRET_TRANSFORM)
@@ -103,8 +121,10 @@ public class HubShooterMath {
 
         Translation2d direction = target.toTranslation2d().minus(turretTranslation);
 
-        return Radians.of(MathUtil.inputModulus(
-                direction.getAngle().minus(robot.getRotation()).getRadians(), 0, 2 * Math.PI));
+        double rawAngle = direction.getAngle().minus(robot.getRotation()).getRadians();
+
+        // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
+        return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
     }
 
     // Move a target a set time in the future along a velocity defined by fieldSpeeds
