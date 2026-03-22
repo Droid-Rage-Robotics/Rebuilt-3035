@@ -13,26 +13,22 @@ public final class Autos {
     public static Command rightNeutralOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             PathPlannerFollow.create(drive, "rightNeutralOutpost")
-                .setMaxVelocity(6)
-                .setAcceleration(6)
-                .build()
-        );
-    }
-
-    public static Command rightCrossNeutral(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "crossNeutralOutpost")
-                .setMaxVelocity(6)
-                .setAcceleration(6)
+                .setMaxVelocity(8)
+                .setAcceleration(8)
                 .build()
         );
     }
 
     public static Command rightNeutralOutpostDouble(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "rightNeutralOutpostDouble")
-                .setMaxVelocity(6)
-                .setAcceleration(6)
+            PathPlannerFollow.create(drive, "rightNeutralOutpost")
+                .setMaxVelocity(8)
+                .setAcceleration(8)
+                .build(),
+            // shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
+            PathPlannerFollow.create(drive, "rightNeutralOutpost")
+                .setMaxVelocity(8)
+                .setAcceleration(8)
                 .build()
         );
     }
@@ -40,10 +36,22 @@ public final class Autos {
     public static Command leftNeutralDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             PathPlannerFollow.create(drive, "leftNeutralDepot")
-                .setMaxVelocity(6)
-                .setAcceleration(6)
+                .setMaxVelocity(8)
+                .setAcceleration(8)
                 .build()
         );
     }
 
+    public static Command leftNeutralDepotDouble(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            PathPlannerFollow.create(drive, "leftNeutralDepot")
+                .setMaxVelocity(8)
+                .setAcceleration(8)
+                .build(),
+            PathPlannerFollow.create(drive, "leftNeutralDepot")
+                .setMaxVelocity(8)
+                .setAcceleration(8)
+                .build()
+        );
+    }
 }

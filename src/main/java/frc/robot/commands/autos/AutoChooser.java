@@ -28,20 +28,20 @@ public class AutoChooser implements Dashboard {
 
     public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision){
         NamedCommands.registerCommand("startPivot", AutoCommands.startPivotCommand(intake));
+        
         NamedCommands.registerCommand("intakeDown",  intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle()));
         NamedCommands.registerCommand("intakeUp", intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP.getAngle()));
 
-        NamedCommands.registerCommand("intake",
-            intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
-        );
-
+        NamedCommands.registerCommand("intake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE));
         NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
+
         NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
+        NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
+
         NamedCommands.registerCommand("setShootTrenchR", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT));
+        NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
 
         NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
-        NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
-        NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
 
         NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
         NamedCommands.registerCommand("resetBot", AutoCommands.resetBot(shooter, indexer, kicker, intake));
@@ -97,6 +97,8 @@ public class AutoChooser implements Dashboard {
         autoChooser.setDefaultOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightNeutralOutpostDouble(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("leftNeutralDepot", Autos.leftNeutralDepot(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("leftNeutralDepotDouble", Autos.leftNeutralDepotDouble(drive, intake, indexer, kicker, shooter, vision));
+
 
     }
     

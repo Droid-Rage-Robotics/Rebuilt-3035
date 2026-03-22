@@ -15,19 +15,13 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
                         "name": "startPivot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
                       }
                     },
                     {
@@ -88,19 +82,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 12.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIndexer"
+            "waitTime": 8.0
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Right",
+  "folder": null,
   "choreoAuto": false
 }
