@@ -32,7 +32,7 @@ public class Pivot extends ArmTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withConversionFactor(1)
         .withDirection(Direction.Forward)
-        .withIdleMode(NeutralModeValue.Coast)
+        .withIdleMode(NeutralModeValue.Brake)
         .withStatorCurrentLimit(40) //Reefscape 50
         .withSupplyCurrentLimit(25); //Reefscape None
         //TODO: Uncomment and check the command to turn on and off current limit
