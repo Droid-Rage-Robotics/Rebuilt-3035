@@ -11,16 +11,10 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -50,10 +44,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     private final AtomicReference<Angle> goalAngle = new AtomicReference<Angle>(Degrees.zero());
 
-    private final MechanismLigament2d ligament;
-    private final Mechanism2d mechanism;
-    private final MechanismRoot2d center;
-
     private final String name;
 
     public TurretTemplate(
@@ -72,18 +62,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         motorConstants.isEnabled=isEnabled;
         
         this.motor = TalonEx.createWithConstants(motorConstants);
-        this.mechanism = new Mechanism2d(constants.width, 10);
-
-        center = mechanism.getRoot("center", 5, 5);
-
-        ligament = new MechanismLigament2d(
-            constants.name + "Ligma", 
-            constants.length/2, 
-            0, 
-            1, 
-            new Color8Bit(Color.kRed));
-
-        center.append(ligament);
 
         var motorConfig = motor.getConfig();
 
@@ -145,8 +123,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     @Override
     public void periodic() {
-        ligament.setAngle(getCurrentAngle().in(Degree));
-
         motor.setControl(motionMagicRequest.withPosition(goalAngle.get())); // isEnabled safety in motor file and auto unit conversion
     }
 
@@ -162,12 +138,27 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     }
 
     /* ---------------- Manual Goal Control ---------------- */
+    // public void setGoalAngle(Angle angle) {
+    //     double clamped = MathUtil.clamp(
+    //         angle.in(Radians),
+    //         minAngleRad,
+    //         maxAngleRad
+    //     );
+
+    //     goalAngle.set(Radians.of(clamped));
+    // }
     public void setGoalAngle(Angle angle) {
-        double clamped = MathUtil.clamp(
-            angle.in(Radians),
-            minAngleRad,
-            maxAngleRad
-        );
+        double angleRad = MathUtil.inputModulus(angle.in(Radians), 0, 2 * Math.PI);
+
+        double clamped;
+        if (angleRad > maxAngleRad) {
+            // In the forbidden zone — figure out which endpoint is closer
+            double distToMax = angleRad - maxAngleRad;
+            double distToMin = (2 * Math.PI) - angleRad + minAngleRad;
+            clamped = (distToMax <= distToMin) ? maxAngleRad : minAngleRad;
+        } else {
+            clamped = MathUtil.clamp(angleRad, minAngleRad, maxAngleRad);
+        }
 
         goalAngle.set(Radians.of(clamped));
     }

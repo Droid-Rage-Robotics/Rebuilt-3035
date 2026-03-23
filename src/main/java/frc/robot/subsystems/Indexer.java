@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -40,17 +41,27 @@ public class Indexer extends FlywheelTemplate {
         .withOffset(0)
         .withMainNum(0);
     
-    private static final MotorConstants motor = new MotorConstants() 
+    private static final MotorConstants leftMotor = new MotorConstants() 
         .withDeviceId(14)
         .withCANBus(DroidRageConstants.driveCanBus)
-        .withDirection(Direction.Forward)
+        //.withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
+        .withMotorAlignment(MotorAlignmentValue.Opposed)
         .withStatorCurrentLimit(80)//100
         .withSupplyCurrentLimit(75);//100
         //SUPERNERDS have 40 stator
 
+    private static final MotorConstants rightMotor = new MotorConstants()
+        .withDeviceId(17)
+        .withCANBus(DroidRageConstants.driveCanBus)
+        .withDirection(Direction.Reversed)
+        .withIdleMode(NeutralModeValue.Coast)
+        .withSupplyCurrentLimit(80)
+        .withStatorCurrentLimit(75); 
+
+
     public Indexer(boolean isEnabled) {
-        super(isEnabled, constants, motor);
+        super(isEnabled, constants, rightMotor, leftMotor);
     }
         
     @Override

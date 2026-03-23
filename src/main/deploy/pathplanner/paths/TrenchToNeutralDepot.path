@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.5,
+        "x": 4.425,
         "y": 7.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.7,
-        "y": 7.6
+        "x": 6.476796357615894,
+        "y": 7.63592715231788
       },
       "isLocked": false,
       "linkedName": "L-Trench"
     },
     {
       "anchor": {
-        "x": 8.2,
-        "y": 3.5
+        "x": 7.936043046357616,
+        "y": 3.911581125827814
       },
       "prevControl": {
-        "x": 8.2,
-        "y": 6.885255039717255
+        "x": 8.262740066225165,
+        "y": 6.989793046357615
       },
       "nextControl": null,
       "isLocked": false,

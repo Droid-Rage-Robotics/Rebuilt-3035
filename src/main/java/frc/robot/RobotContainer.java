@@ -22,13 +22,14 @@ import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
-	// private final Vision vision = new Vision();
+	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(true),
         new IntakeWheel(true)
@@ -40,11 +41,10 @@ public class RobotContainer {
         new Hood(false),
         new ShooterWheel(true)
     );
-    // private final Climb climb = new Climb(false);
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
-	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, null);
+	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, vision);
 
     // private final Light light = new Light(0);
     
@@ -68,6 +68,10 @@ public class RobotContainer {
 	}
 
 	public void configureTeleOpBindings() {
+        DRAreaManager.inAllianceZone().onTrue(new DRShooter(drive, shooter));
+
+
+
 
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));

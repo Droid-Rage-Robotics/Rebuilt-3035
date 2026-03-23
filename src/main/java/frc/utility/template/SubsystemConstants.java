@@ -21,6 +21,7 @@ public final class SubsystemConstants {
     public Angle minAngle;
     public AngularVelocity maxVelocity;
     public AngularAcceleration maxAcceleration;
+    public double maxJerk;
     public AngularVelocity minVelocity;
     public double conversionFactor;
     public double offset;
@@ -69,6 +70,31 @@ public final class SubsystemConstants {
 
     public SubsystemConstants withMaxAcceleration(AngularAcceleration max) {
         this.maxAcceleration=max;
+        return this;
+    }
+
+    /**
+     * This is the target jerk (acceleration derivative) Motion Magic®
+     * based control modes are allowed to use.  Motion Magic® Expo control
+     * modes do not use this config.  This allows Motion Magic® to
+     * generate S-Curve profiles.
+     * <p>
+     * Jerk is optional; if this is set to zero, then Motion Magic® will
+     * not apply a Jerk limit.
+     * 
+     * <p>
+     * A good starting point is around 10x your acceleration, which means 
+     * the acceleration would take 0.1 s to reach the max.
+     * 
+     * <ul>
+     *   <li> <b>Minimum Value:</b> 0
+     *   <li> <b>Maximum Value:</b> 9999
+     *   <li> <b>Default Value:</b> 0
+     *   <li> <b>Units:</b> rot per sec³
+     * </ul>
+     */
+    public SubsystemConstants withMaxJerk(double max) {
+        this.maxJerk=max;
         return this;
     }
 

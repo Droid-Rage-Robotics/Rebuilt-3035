@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
-import frc.utility.devices.LimelightEx;
 import lombok.Getter;
 
 public class Vision extends SubsystemBase {
@@ -50,27 +49,10 @@ public class Vision extends SubsystemBase {
 
     public int targetHubIds[], targetOdoIds[];
     private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
-    // Set Up the team number - http://limelight.local:5801/
 
-    @Getter private final LimelightEx leftLL = LimelightEx.create(DroidRageConstants.leftLL) // webgui at 10.30.35.12:5801
-        .withStreamMode_Standard()
-        .withFieldLayout(Constants.FIELD_LAYOUT)
-        .withCropWindow(-1, 1, -1, 1);
-    @Getter private final LimelightEx rightLL = LimelightEx.create(DroidRageConstants.rightLL) // webgui at 10.30.35.12:5801
-        .withStreamMode_Standard()
-        .withFieldLayout(Constants.FIELD_LAYOUT)
-        .withCropWindow(-1, 1, -1, 1);
-
-    // @Getter private final LimelightEx middleLL = LimelightEx.create(DroidRageConstants.middleLL)
-    //     .withStreamMode_Standard()
-    //     .withFieldLayout(Constants.FIELD_LAYOUT)
-    //     .withCropWindow(-1, 1, -1, 1);
-
-
-    // Initialize Limelight network tables
     public Vision() {
         // Change the camera pose relative to robot center (x forward, y left, z up, degrees)
-        leftLL.setMountPose(
+        LimelightHelpers.setCameraPose_RobotSpace(DroidRageConstants.leftLL,
             MountPose.LEFT_FORWARD.getValue(), // Forward offset (meters)
             MountPose.LEFT_SIDE.getValue(), // Side offset (meters)
             MountPose.LEFT_UP.getValue(), // Height offset (meters)
@@ -78,7 +60,8 @@ public class Vision extends SubsystemBase {
             MountPose.LEFT_PITCH.getValue(), // Pitch (degrees)
             MountPose.LEFT_YAW.getValue() // Yaw (degrees)
         );
-        rightLL.setMountPose(
+
+        LimelightHelpers.setCameraPose_RobotSpace(DroidRageConstants.rightLL,
             MountPose.RIGHT_FORWARD.getValue(), // Forward offset (meters) - Will Change; Should not cause issues
             MountPose.RIGHT_SIDE.getValue(), // Side offset (meters) - Will Change; Should not cause issues
             MountPose.RIGHT_UP.getValue(), // Height offset (meters) - Will Change; Should not cause issues
@@ -86,26 +69,25 @@ public class Vision extends SubsystemBase {
             MountPose.RIGHT_PITCH.getValue(), // Pitch (degrees)
             MountPose.RIGHT_YAW.getValue() // Yaw (degrees) - Will Change; Should not cause issues
         );
-
     }
 
     @Override
     public void periodic() {}
 
     public void setUpVision() {
-        if (DroidRageConstants.alliance == Alliance.Red) {
-            targetHubIds = new int[] { 2,3,4,5,8,9,10,11};
-            targetOdoIds= new int [] {}; //TODO:Set Up
-            leftLL.setPipelineIndex(odoPipeline);
-            rightLL.setPipelineIndex(redHubPipeline);
+        // if (DroidRageConstants.alliance == Alliance.Red) {
+        //     targetHubIds = new int[] { 2,3,4,5,8,9,10,11};
+        //     targetOdoIds= new int [] {}; //TODO:Set Up
+        //     leftLL.setPipelineIndex(odoPipeline);
+        //     rightLL.setPipelineIndex(redHubPipeline);
 
-        } else if (DroidRageConstants.alliance == Alliance.Blue) {
-            targetHubIds = new int[] { 18,19,20,21,24,25,26,27};
-            targetOdoIds = new int[] {};// TODO:Set Up
+        // } else if (DroidRageConstants.alliance == Alliance.Blue) {
+        //     targetHubIds = new int[] { 18,19,20,21,24,25,26,27};
+        //     targetOdoIds = new int[] {};// TODO:Set Up
 
-            leftLL.setPipelineIndex(odoPipeline);
-            rightLL.setPipelineIndex(blueHubPipeline);
-        }
+        //     leftLL.setPipelineIndex(odoPipeline);
+        //     rightLL.setPipelineIndex(blueHubPipeline);
+        // }
     }
 
     @Override
