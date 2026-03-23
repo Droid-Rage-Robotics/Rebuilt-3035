@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.5,
-        "y": 0.4572987477638639
+        "x": 3.625,
+        "y": 0.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.5,
-        "y": 0.4572987477638639
+        "x": 6.875,
+        "y": 0.45
       },
       "isLocked": false,
-      "linkedName": "R-Trench"
+      "linkedName": "R-Trench-SHOOT"
     },
     {
       "anchor": {
-        "x": 8.197400662251654,
-        "y": 3.9261009933774824
+        "x": 6.625,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 8.495057947024497,
-        "y": 0.484892384109195
+        "x": 6.625,
+        "y": 0.4249999999999998
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R-Neutral"
+      "linkedName": "R-Neutral-Sec"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 110.0
+    "rotation": 115.0
   },
   "reversed": false,
-  "folder": "Outpost",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0
