@@ -31,15 +31,15 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(true);
-    private final Kicker kicker = new Kicker(true);
+    private final Indexer indexer = new Indexer(false);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
+        new Turret(true),
         new Hood(false),
-        new ShooterWheel(true)
+        new ShooterWheel(false)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
@@ -63,8 +63,8 @@ public class RobotContainer {
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		configureTeleOpBindings();
-		// testShootingMove();
+		// configureTeleOpBindings();
+		testShootingMove();
 	}
 
 	public void configureTeleOpBindings() {
