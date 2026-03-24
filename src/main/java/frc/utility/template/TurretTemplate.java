@@ -89,7 +89,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
         motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
         motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
-        motorConfig.MotionMagic.MotionMagicJerk = 0; // optional, set nonzero for S-curve smoothing
+        motorConfig.MotionMagic.MotionMagicJerk = constants.maxJerk; // optional, set nonzero for S-curve smoothing
 
         motor.getMotor().getConfigurator().apply(motorConfig);
         
