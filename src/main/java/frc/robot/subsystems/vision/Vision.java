@@ -12,20 +12,20 @@ import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
 import lombok.Getter;
 
 public class Vision extends SubsystemBase {
-    public enum MountPose {
+    public enum MountPose { // ONLY APPLY IN LIMELIGHT WEB UI
         LEFT_FORWARD(Units.inchesToMeters(-10)),
         LEFT_SIDE(Units.inchesToMeters(-10.25)),
         LEFT_UP(Units.inchesToMeters(7.35)),
         LEFT_ROLL(0),
         LEFT_PITCH(55),
-        LEFT_YAW(-40),
+        LEFT_YAW(140),
         
         RIGHT_FORWARD(Units.inchesToMeters(-10)),
         RIGHT_SIDE(Units.inchesToMeters(10.25)),
         RIGHT_UP(Units.inchesToMeters(7.35)),
         RIGHT_ROLL(0),
         RIGHT_PITCH(55),
-        RIGHT_YAW(40),
+        RIGHT_YAW(-140),
         ;
 
         // MIDDLE_FORWARD(Units.inchesToMeters(0)),
@@ -42,6 +42,9 @@ public class Vision extends SubsystemBase {
             this.value=value;
         }
     }
+
+    public static final int[] BLUE_HUB_IDS = {18,19,20,21,24,25,26,27};
+    public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
     
     public static class Constants {
         public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
@@ -51,24 +54,6 @@ public class Vision extends SubsystemBase {
     private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
 
     public Vision() {
-        // Change the camera pose relative to robot center (x forward, y left, z up, degrees)
-        LimelightHelpers.setCameraPose_RobotSpace(DroidRageConstants.leftLL,
-            MountPose.LEFT_FORWARD.getValue(), // Forward offset (meters)
-            MountPose.LEFT_SIDE.getValue(), // Side offset (meters)
-            MountPose.LEFT_UP.getValue(), // Height offset (meters)
-            MountPose.LEFT_ROLL.getValue(), // Roll (degrees)
-            MountPose.LEFT_PITCH.getValue(), // Pitch (degrees)
-            MountPose.LEFT_YAW.getValue() // Yaw (degrees)
-        );
-
-        LimelightHelpers.setCameraPose_RobotSpace(DroidRageConstants.rightLL,
-            MountPose.RIGHT_FORWARD.getValue(), // Forward offset (meters) - Will Change; Should not cause issues
-            MountPose.RIGHT_SIDE.getValue(), // Side offset (meters) - Will Change; Should not cause issues
-            MountPose.RIGHT_UP.getValue(), // Height offset (meters) - Will Change; Should not cause issues
-            MountPose.RIGHT_ROLL.getValue(), // Roll (degrees)
-            MountPose.RIGHT_PITCH.getValue(), // Pitch (degrees)
-            MountPose.RIGHT_YAW.getValue() // Yaw (degrees) - Will Change; Should not cause issues
-        );
     }
 
     @Override
@@ -88,11 +73,6 @@ public class Vision extends SubsystemBase {
         //     leftLL.setPipelineIndex(odoPipeline);
         //     rightLL.setPipelineIndex(blueHubPipeline);
         // }
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        periodic();
     }
     
     /**
