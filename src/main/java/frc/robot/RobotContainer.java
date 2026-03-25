@@ -68,13 +68,13 @@ public class RobotContainer {
 	}
 
 	public void configureTeleOpBindings() {
-        DRAreaManager.inAllianceZone().onTrue(new DRShooter(drive, shooter));
+        // DRAreaManager.inAllianceZone().onTrue(new DRShooter(drive, shooter));
 
 
 
 
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 
 		driver.rightTrigger()

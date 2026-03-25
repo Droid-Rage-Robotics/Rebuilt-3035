@@ -247,10 +247,10 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     @Override
     public void periodic() {
         LimelightHelpers.SetRobotOrientation(DroidRageConstants.leftLL, 
-            getState().RawHeading.getDegrees(), 0, 0, 0, 0, 0);
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
         LimelightHelpers.SetRobotOrientation(DroidRageConstants.rightLL, 
-            getState().RawHeading.getDegrees(), 0, 0, 0, 0, 0);
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
         
         updateVisionOdometry();
 

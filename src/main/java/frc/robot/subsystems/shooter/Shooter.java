@@ -20,31 +20,31 @@ import lombok.Setter;
 public class Shooter implements Dashboard, Sendable {
     public enum ShooterValue {
         // SHOOT_HUB(180,15,70),
-        SHOOT_OUTPOST(180,15,70), //v70
+        SHOOT_OUTPOST(0,15,70), //v70
 
-        SHORT(0, 10, 45), //v52
-        FAR(0,0,0),
+        SHORT(217, 10, 20),// 45
+        FAR(217,0,0),
 
-        SHOOT_TRENCH_RIGHT(138.5,5.57,57.5), //v52
+        SHOOT_TRENCH_RIGHT(355.5,5.57,57.5), //v52
 
         AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,0), //v52
         
         SHOOT_TRENCH_LEFT(
-            -138.5, 
+            -78.5, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
             SHOOT_TRENCH_RIGHT.getVelocity()
         ),
 
         AUTO_SHOOT_TRENCH_LEFT(SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees), 0,0),
         
-        HOLD(10, 0, 20),//-220
+        HOLD(0, 0, 20),//-220
         // HOARD(0,10,60)
 
         CORNER_RIGHT(
-            -50, 18, 60
+            267, 18, 60
         ),
         CORNER_LEFT(
-            50, 
+            167, 
             CORNER_RIGHT.getHoodAngle().getDegrees(),
             CORNER_RIGHT.getVelocity()
         )
