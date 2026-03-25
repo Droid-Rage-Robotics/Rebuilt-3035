@@ -1,11 +1,20 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
+import frc.robot.commands.manual.ManualHood;
+import frc.robot.commands.manual.ManualShooterWheel;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.DRShooter;
 import frc.robot.subsystems.Indexer;
@@ -29,22 +38,22 @@ import frc.utility.DRAreaManager;
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
-	private final Vision vision = new Vision();
+	// private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(false),
         new IntakeWheel(false)
     );
-    private final Indexer indexer = new Indexer(false);
-    private final Kicker kicker = new Kicker(false);
+    private final Indexer indexer = new Indexer(true);
+    private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
-        new Hood(false),
-        new ShooterWheel(false)
+        new Turret(false),
+        new Hood(true),
+        new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
-	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, vision);
+	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, null);
 
     // private final Light light = new Light(0);
     
@@ -67,56 +76,74 @@ public class RobotContainer {
 		testShootingMove();
 	}
 
-	public void configureTeleOpBindings() {
-        // DRAreaManager.inAllianceZone().onTrue(new DRShooter(drive, shooter));
+	// public void configureTeleOpBindings() {
+    //     // DRAreaManager.inAllianceZone().onTrue(new DRShooter(drive, shooter));
 
 
 
 
+	// 	drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+	// 	// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+	// 	// light.setDefaultCommand(new LightCommand(light));
+
+	// 	driver.rightTrigger()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
+	// 		.onTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	driver.leftTrigger()
+	// 		.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+
+
+	// 	// driver.povUp()
+	// 	// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
+	// 	// driver.povDown()
+	// 	// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+		
+	// 	// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
+
+
+	// 	// climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
+	// 	operator.y()
+	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
+	// 	operator.b()
+	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT));
+	// 	operator.x()
+	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT));
+	// 	operator.a()
+	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
+		
+	// 	operator.povUp()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
+
+	// 	operator.povRight()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
+
+	// 	// operator.povDown()
+	// 	// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
+
+	// 	operator.rightBumper()
+	// 		.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+	// 		.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
+	// 		.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
+
+
+	// 	operator.leftBumper()
+	// 		.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+	// 		.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+	// 		.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
+	// 		.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+	// }
+
+	public void testShootingMove(){
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
-		// light.setDefaultCommand(new LightCommand(light));
-
-		driver.rightTrigger()
-			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
-			.onTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-		driver.leftTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-
-
-		// driver.povUp()
-		// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
-		// driver.povDown()
-		// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
-		
-		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
-
-
-		// climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
-		operator.y()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
+		shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
+		shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
 		operator.b()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT));
-		operator.x()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT));
-		operator.a()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
-		
-		operator.povUp()
-			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
-
-		operator.povRight()
-			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
-
-		// operator.povDown()
-		// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
-
-		operator.rightBumper()
-			.onTrue(TeleopCommands.operatorRightBumperOnTrue(shooter, indexer, kicker,intake))
-			.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
-			.onFalse(TeleopCommands.operatorRightBumperOnFalse(shooter, indexer, kicker,intake));
+			.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+			// .whileTrue(TeleopCommands.indexerWiggleIntake(intake))
+			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
 
 		operator.leftBumper()
@@ -124,15 +151,41 @@ public class RobotContainer {
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-	}
 
-	public void testShootingMove(){
-		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		driver.a()
+			.onTrue(
+				new InstantCommand(()-> drive.resetPose(
+					new Pose2d(3.5,0.5,new Rotation2d(
+						0
+					))
+				))
+			);
+		
+		// operator.povUp()
+		// 	.whileTrue(
+		// 		shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(shooter.getHood().getGoalAngle().getDegrees()+2))
+		// 	);
+		// operator.povDown()
+		// 	.whileTrue(
+		// 		shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(shooter.getHood().getGoalAngle().getDegrees()-2))
+		// 	);
+
+		// operator.povRight()
+		// 	.whileTrue(
+		// 		shooter.getShooterWheel().setTargetVelocityCommand(
+		// 			RotationsPerSecond.of(shooter.getShooterWheel().getTargetVelocity().magnitude()+5))
+		// 	);
+		// operator.povLeft()
+		// 	.whileTrue(
+		// 		shooter.getShooterWheel().setTargetVelocityCommand(
+		// 			RotationsPerSecond.of(shooter.getShooterWheel().getTargetVelocity().magnitude()-5))
+		// 	);
 	}
 
 	public void periodic() {
 		areaManager.periodic();
+		double distanceRobotToHub = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);
+        System.out.println(distanceRobotToHub);
 	}
 
 	public Command getAutonomousCommand() {

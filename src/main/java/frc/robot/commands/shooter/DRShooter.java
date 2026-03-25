@@ -39,24 +39,24 @@ public class DRShooter extends Command{
         // flywheelSpeedMap.put(1.1, 1.1);
 
         //meters to hub -> flywheel speed (RPM)
-        flywheelSpeedMap.put(0.96, 20.0);
-        flywheelSpeedMap.put(1.16, 30.0);
-        flywheelSpeedMap.put(1.58, 40.0);
-        flywheelSpeedMap.put(2.07, 48.0);//Short Hub
-        flywheelSpeedMap.put(2.37, 50.0);
-        flywheelSpeedMap.put(2.47, 52.0);
-        flywheelSpeedMap.put(2.70, 53.0);
-        flywheelSpeedMap.put(2.94, 55.0);
-        flywheelSpeedMap.put(3.47, 57.5); //Trench
-        flywheelSpeedMap.put(3.92, 60.0);
-        flywheelSpeedMap.put(4.35, 67.0);
-        flywheelSpeedMap.put(4.84, 70.0);
+        // flywheelSpeedMap.put(0.96, 20.0);
+        // flywheelSpeedMap.put(1.16, 30.0);
+        // flywheelSpeedMap.put(1.58, 40.0);
+        // flywheelSpeedMap.put(2.07, 44.0);//Short Hub
+        // flywheelSpeedMap.put(2.37, 48.0);
+        // flywheelSpeedMap.put(2.47, 50.0);
+        // flywheelSpeedMap.put(2.70, 53.0);
+        // flywheelSpeedMap.put(2.94, 55.0);
+        // flywheelSpeedMap.put(3.47, 57.5); //Trench
+        // flywheelSpeedMap.put(3.92, 60.0);
+        // flywheelSpeedMap.put(4.35, 67.0);
+        // flywheelSpeedMap.put(4.84, 70.0);
 
-        //Distance to hub (m) -> hood angle (degrees)
-        hoodMap.put(1.0, 15.0); //Max Pos next to Hub
-        hoodMap.put(2.8, 10.0); //Short Hub
-        hoodMap.put(3.47, 5.57); //Trench
-        hoodMap.put(4.5, 0.0); //Against Field wall Straighy
+        // //Distance to hub (m) -> hood angle (degrees)
+        // hoodMap.put(1.0, 0.0); //Max Pos next to Hub
+        // hoodMap.put(2.8, 9.0); //Short Hub
+        // hoodMap.put(3.47, 15.0); //Trench SA: 5.57
+        // hoodMap.put(4.5, 19.0); //Against Field wall Straighy
 
 
     }
@@ -90,15 +90,16 @@ public class DRShooter extends Command{
         //     drive.getCurrentRobotChassisSpeeds());
 
         double distanceRobotToHub = getDistanceToHub(drive.getState().Pose, hubPose);
+        System.out.println(distanceRobotToHub);
 
         shooter.getTurret().setGoalAngle(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
         // shooter.getTurret().setGoalAngle(getTurretAngleDegrees(drive.getState().Pose, hubPose));
         shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToHub)));
-        //shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToHub)));
-        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(20));
+        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToHub)));
+        // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(20));
     }
     
-    public double getDistanceToHub(Pose2d robotPose, Translation3d target){
+    public static double getDistanceToHub(Pose2d robotPose, Translation3d target){
         Translation2d target2d = new Translation2d(target.getX(), target.getY());
         return robotPose.getTranslation().getDistance(target2d);
     }

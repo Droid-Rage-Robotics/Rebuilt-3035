@@ -50,7 +50,7 @@ public class TeleopCommands {
         );
     }
 
-    public static Command operatorRightBumperOnTrue(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
+    public static Command operatorRightBumperOnTrue(Indexer indexer, Kicker kicker, Intake intake) {
         return new SequentialCommandGroup(
             // TeleopCommands.raiseHoodCommand(shooter),
             // shooter.setHoodPositionCommand(shooter.getCurrentShooterPos()),
@@ -63,7 +63,7 @@ public class TeleopCommands {
         );
     }
 
-    public static Command operatorRightBumperOnFalse(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
+    public static Command operatorRightBumperOnFalse(Indexer indexer, Kicker kicker, Intake intake) {
         return new ParallelCommandGroup(
             // TeleopCommands.lowerHoodCommand(shooter),
             // shooter.setHoodPositionCommand(ShooterValue.HOLD),
