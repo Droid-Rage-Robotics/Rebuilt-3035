@@ -58,6 +58,37 @@ public class DRShooter extends Command{
         // hoodMap.put(3.47, 15.0); //Trench SA: 5.57
         // hoodMap.put(4.5, 19.0); //Against Field wall Straighy
 
+        //Don't Delete
+        /*  hub
+            pos 1.25
+            hood 0 - 2
+            vel 40
+
+            bump
+            pos 1.89
+            setpoint - is
+            hood 11.2 - 10.6
+            vel 42
+
+            pos 3.05
+            hood 12,1 - 12.3
+            vel 47
+
+            pos 4.27
+            setpoint -is
+            hood 12.75-12.2
+            vel - 50.2 
+        */
+
+        flywheelSpeedMap.put(1.25,40.0);
+        flywheelSpeedMap.put(1.89,42.0);
+        flywheelSpeedMap.put(3.05,47.0);
+        flywheelSpeedMap.put(4.27,50.2);
+
+        hoodMap.put(1.25,.0);
+        hoodMap.put(1.89,11.2);
+        hoodMap.put(3.05,12.1);
+        hoodMap.put(4.27,12.75);
 
     }
 
@@ -94,6 +125,7 @@ public class DRShooter extends Command{
 
         shooter.getTurret().setGoalAngle(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
         // shooter.getTurret().setGoalAngle(getTurretAngleDegrees(drive.getState().Pose, hubPose));
+
         shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToHub)));
         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToHub)));
         // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(20));

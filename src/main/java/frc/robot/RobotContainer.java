@@ -137,15 +137,14 @@ public class RobotContainer {
 
 	public void testShootingMove(){
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
-		shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
-		shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		
+		// shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
+		// shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
 		operator.b()
 			.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
 			// .whileTrue(TeleopCommands.indexerWiggleIntake(intake))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
-
-
 		operator.leftBumper()
 			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
