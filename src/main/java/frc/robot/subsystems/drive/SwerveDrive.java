@@ -252,8 +252,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         LimelightHelpers.SetRobotOrientation(DroidRageConstants.rightLL, 
             getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
         
-        // updateVisionOdometry();
-        //TODO: Uncomment
+        updateVisionOdometry();
 
         /*
          * Periodically try to apply the operator perspective.

@@ -22,8 +22,8 @@ public class Shooter implements Dashboard, Sendable {
         // SHOOT_HUB(180,15,70),
         SHOOT_OUTPOST(0,15,70), //v70
 
-        SHORT(217, 10, 20),// 45
-        FAR(217,0,0),
+        SHORT(180, 10, 20),// 45
+        FAR(180,0,0),
 
         SHOOT_TRENCH_RIGHT(355.5,5.57,57.5), //v52
 

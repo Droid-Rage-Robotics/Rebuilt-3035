@@ -105,7 +105,7 @@
 //     @Override
 //     public void end(boolean interrupted) {
 //         shooter.getHood().setGoalAngle(Rotation2d.kZero);
-//         shooter.getTurret().setGoalAngle(Rotation2d.kZero);
+//         shooter.getTurret().setGoalAngle(Degrees.zero());
 //         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.zero());
 //     }
 

@@ -36,9 +36,8 @@ public class SwerveDriveTeleop extends Command {
         // antiTipX.setTolerance(2);
         // antiTipY.setTolerance(2);
 
-        //TODO:FIX
-        driver.rightBumper().onTrue(drive.setSpeed(Speed.NORMAL))
-            .onFalse(drive.setSpeed(Speed.SLOW));
+        driver.rightBumper().onTrue(drive.setSpeed(Speed.SLOW))
+            .onFalse(drive.setSpeed(Speed.NORMAL));
 
         driver.leftBumper().whileTrue(drive.applyRequest(()->brakeRequest));
 

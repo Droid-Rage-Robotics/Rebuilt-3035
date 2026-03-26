@@ -17,6 +17,7 @@ import frc.robot.commands.manual.ManualHood;
 import frc.robot.commands.manual.ManualShooterWheel;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.DRShooter;
+import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Indexer.IndexerValue;
@@ -38,7 +39,7 @@ import frc.utility.DRAreaManager;
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
-	// private final Vision vision = new Vision();
+	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(false),
         new IntakeWheel(false)
@@ -46,14 +47,14 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer(true);
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
+        new Turret(true),
         new Hood(true),
         new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
 
-	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, null);
+	private final AutoChooser autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, vision);
 
     // private final Light light = new Light(0);
     
@@ -63,7 +64,6 @@ public class RobotContainer {
 	private final CommandXboxController operator =		
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 	
-    // private final Telemetry logger = new Telemetry();
 
 	public RobotContainer() {
 		// drive.registerTelemetry(logger::telemeterize);
@@ -72,68 +72,61 @@ public class RobotContainer {
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		// configureTeleOpBindings();
-		testShootingMove();
+		configureTeleOpBindings();
+		// testShootingMove();
 	}
 
-	// public void configureTeleOpBindings() {
-    //     // DRAreaManager.inAllianceZone().onTrue(new DRShooter(drive, shooter));
+	public void configureTeleOpBindings() {
+        DRAreaManager.inAllianceZone().onTrue(new ShootHub(drive, shooter));
 
 
 
 
-	// 	drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-	// 	// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
-	// 	// light.setDefaultCommand(new LightCommand(light));
+		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
+		// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		// light.setDefaultCommand(new LightCommand(light));
 
-	// 	driver.rightTrigger()
-	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
-	// 		.onTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
-	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-	// 	driver.leftTrigger()
-	// 		.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
-	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-
-
-	// 	// driver.povUp()
-	// 	// 	.onTrue(climb.setTargetPositionCommand(ClimbValue.CLIMB.getHeight()));
-	// 	// driver.povDown()
-	// 	// 	.onFalse(climb.setTargetPositionCommand(ClimbValue.START.getHeight()));
+		driver.rightTrigger()
+			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
+			.onTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+		driver.leftTrigger()
+			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 		
-	// 	// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
+		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
 
 
-	// 	// climb.setDefaultCommand(new ManualClimb(climb, operator::getLeftY));
-	// 	operator.y()
-	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
-	// 	operator.b()
-	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT));
-	// 	operator.x()
-	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT));
-	// 	operator.a()
-	// 		.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
+		operator.y()
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
+		operator.b()
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT));
+		operator.x()
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT));
+		operator.a()
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
 		
-	// 	operator.povUp()
-	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
+		operator.povUp()
+			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
 
-	// 	operator.povRight()
-	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
+		operator.povRight()
+			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
 
-	// 	// operator.povDown()
-	// 	// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
+		// operator.povDown()
+		// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
 
-	// 	operator.rightBumper()
-	// 		.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
-	// 		.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
-	// 		.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
+		operator.rightBumper()
+			.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+			.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
+			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
 
-	// 	operator.leftBumper()
-	// 		.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-	// 		.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-	// 		.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
-	// 		.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-	// }
+		operator.leftBumper()
+			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
+			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
+	}
 
 	public void testShootingMove(){
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
@@ -183,8 +176,8 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
-		double distanceRobotToHub = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);
-        System.out.println(distanceRobotToHub);
+		// double distanceRobotToHub = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);
+        // System.out.println(distanceRobotToHub);
 	}
 
 	public Command getAutonomousCommand() {

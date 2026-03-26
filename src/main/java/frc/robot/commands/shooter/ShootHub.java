@@ -18,6 +18,7 @@ import frc.robot .subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.HubShooterMath.ShotData;
 
 public class ShootHub extends Command{
+    private final SwerveDrive drive;
     private final Shooter shooter;    
 
     private final Translation3d hubPose;
@@ -29,6 +30,7 @@ public class ShootHub extends Command{
     private Time timeOfFlight;
 
     public ShootHub(SwerveDrive drive, Shooter shooter) {
+        this.drive=drive;
         this.shooter = shooter;
         this.robot = drive::getState;
 
@@ -45,26 +47,26 @@ public class ShootHub extends Command{
 
     @Override
     public void initialize() {
-        var state = robot.get();
+        // var state = robot.get();
         // Perform initial estimation (assuming unmoving robot) to get time of flight estimate
-        shot = calculateShotFromFunnelClearance(state.Pose, hubPose, hubPose);
-        Distance distance = getDistanceToTarget(state.Pose, hubPose);
+        shot = calculateShotFromFunnelClearance(drive.getState().Pose, hubPose, hubPose);
+        Distance distance = getDistanceToTarget(drive.getState().Pose, hubPose);
         timeOfFlight = calculateTimeOfFlight(shot.getExitVelocity(), shot.getHoodAngle(), distance);
         predictedTarget = hubPose;
     }
     @Override
     public void execute() {
-        var state = robot.get();
+        // var state = robot.get();
         shooter.getHood().setGoalAngle(new Rotation2d(shot.getHoodAngle()));
-        shooter.getShooterWheel().setTargetVelocity(linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS)
-            .plus(RotationsPerSecond.of(20)));
-        shooter.getTurret().setGoalAngle(calculateAzimuthAngle(state.Pose, predictedTarget).unaryMinus());
+        shooter.getShooterWheel().setTargetVelocity(linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS));
+            // .plus(RotationsPerSecond.of(20)));
+        shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, predictedTarget));
         
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
-        predictedTarget = predictTargetPos(hubPose, state.Speeds, timeOfFlight);
-        shot = calculateShotFromFunnelClearance(state.Pose, hubPose, predictedTarget);
+        predictedTarget = predictTargetPos(hubPose, drive.getState().Speeds, timeOfFlight);
+        shot = calculateShotFromFunnelClearance(drive.getState().Pose, hubPose, predictedTarget);
         timeOfFlight = calculateTimeOfFlight(
-            shot.getExitVelocity(), shot.getHoodAngle(), getDistanceToTarget(state.Pose, predictedTarget));
+            shot.getExitVelocity(), shot.getHoodAngle(), getDistanceToTarget(drive.getState().Pose, predictedTarget));
         
     }
 
