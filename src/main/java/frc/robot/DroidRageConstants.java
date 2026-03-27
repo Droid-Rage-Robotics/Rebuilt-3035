@@ -98,6 +98,7 @@ public final class DroidRageConstants {
         void set(T value);
     }
 
+
     public static Supplier<Boolean> BatteryLow = () -> RobotController.getBatteryVoltage()<12.5;
     
     public static boolean didWeWin = true; //Win Auto?

@@ -65,6 +65,7 @@ public class TeleopCommands {
             // TeleopCommands.lowerHoodCommand(shooter),
             // shooter.setHoodPositionCommand(ShooterValue.HOLD),
             // shooter.getHood().setTargetPositionCommand(Rotation2d.kZero),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
             indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
             kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
         );

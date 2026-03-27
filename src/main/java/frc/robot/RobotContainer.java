@@ -71,7 +71,7 @@ public class RobotContainer {
 
 	public void configureTeleOpBindings() {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(operator,drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 
 		driver.rightTrigger()
@@ -107,15 +107,15 @@ public class RobotContainer {
 
 
 		operator.leftBumper()
-			.whileTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
-			.whileTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
+			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 
 	public void testShootingMove(){
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(operator,drive, shooter));
 		
 		// shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
 		// shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));

@@ -21,7 +21,9 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
@@ -77,7 +79,9 @@ public class DRShooter extends Command{
 
     }
 
-    public DRShooter(SwerveDrive drive, Shooter shooter) {
+    private boolean isManual = false;
+
+    public DRShooter(CommandXboxController operator, SwerveDrive drive, Shooter shooter) {
         this.shooter = shooter;
         this.drive = drive;
 
@@ -88,6 +92,8 @@ public class DRShooter extends Command{
             ? FieldConstants.ALLIANCE_RED 
             : FieldConstants.ALLIANCE_BLUE;
         this.goalPose = this.hubPose;
+
+        operator.a().onTrue(new InstantCommand(()-> isManual = !isManual));
 
 
         addRequirements(
@@ -122,14 +128,14 @@ public class DRShooter extends Command{
 
         distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
         
-        DRAreaManager.inAllianceZone().or(DRAreaManager.inNeutral()).whileTrue(
+        DRAreaManager.inAllianceZone().and(()->!isManual).or(DRAreaManager.inNeutral()).and(()->!isManual).whileTrue(
             new ParallelCommandGroup(
                 shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
                 shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal))),
                 shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
             )
         );
-        DRAreaManager.inBetween().onTrue(
+        DRAreaManager.inBetween().and(()->!isManual).onTrue(
             new ParallelCommandGroup(
                 shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
                 shooter.getHood().setTargetPositionCommand(Rotation2d.kZero), 
