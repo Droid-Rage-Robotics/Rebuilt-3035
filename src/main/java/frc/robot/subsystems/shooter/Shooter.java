@@ -90,6 +90,8 @@ public class Shooter implements Dashboard, Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addStringProperty("ShooterMode", () -> getCurrentShooterPos().toString(), null);
+        // builder.addStringProperty("ShooterMode", () -> DRShooter.getDistanceToHub(null, null), null);
+
     }
 
     @Override

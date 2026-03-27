@@ -47,7 +47,7 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer(true);
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
+        new Turret(false),
         new Hood(true),
         new ShooterWheel(true)
     );
@@ -72,8 +72,8 @@ public class RobotContainer {
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		configureTeleOpBindings();
-		// testShootingMove();
+		// configureTeleOpBindings();
+		testShootingMove();
 	}
 
 	public void configureTeleOpBindings() {

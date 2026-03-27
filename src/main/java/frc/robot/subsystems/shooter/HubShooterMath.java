@@ -121,10 +121,15 @@ public class HubShooterMath {
 
         Translation2d direction = target.toTranslation2d().minus(turretTranslation);
 
-        double rawAngle = direction.getAngle().minus(robot.getRotation()).getRadians();
+        double rawAngle = direction.getAngle()
+            .minus(robot.getRotation())
+            .plus(Rotation2d.fromDegrees(180)) //TESTING
+            .getRadians();
 
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
         return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
+        // return Radians.of(MathUtil.inputModulus(rawAngle, -Math.PI, Math.PI));
+
     }
 
     // Move a target a set time in the future along a velocity defined by fieldSpeeds

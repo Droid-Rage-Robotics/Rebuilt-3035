@@ -10,6 +10,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
@@ -121,10 +122,14 @@ public class DRShooter extends Command{
         //     drive.getCurrentRobotChassisSpeeds());
 
         double distanceRobotToHub = getDistanceToHub(drive.getState().Pose, hubPose);
-        System.out.println(distanceRobotToHub);
+        // System.out.println("distance:"+distanceRobotToHub);
+        //TODO: Output Distance
+                // SmartDashboard.putData("Shooter/Distance", distanceRobotToHub);
 
         shooter.getTurret().setGoalAngle(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
         // shooter.getTurret().setGoalAngle(getTurretAngleDegrees(drive.getState().Pose, hubPose));
+
+        System.out.println(HubShooterMath.calculateAzimuthAngle(drive.getState().Pose, hubPose));
 
         shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToHub)));
         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToHub)));
