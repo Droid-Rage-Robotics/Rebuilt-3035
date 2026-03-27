@@ -21,6 +21,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
@@ -121,24 +122,26 @@ public class DRShooter extends Command{
 
         distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
         
-        // DRAreaManager.inAllianceZone().or(DRAreaManager.inNeutral()).whileTrue(
-        //     new ParallelCommandGroup(
-        //         shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
-        //         shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal))),
-        //         shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
-        //     )
-        // );
-        // DRAreaManager.inBetween().onTrue(
-        //     new ParallelCommandGroup(
-        //         shooter.getHood().setTargetPositionCommand(Rotation2d.kZero) 
-        //     )
-        // );
+        DRAreaManager.inAllianceZone().or(DRAreaManager.inNeutral()).whileTrue(
+            new ParallelCommandGroup(
+                shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
+                shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal))),
+                shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
+            )
+        );
+        DRAreaManager.inBetween().onTrue(
+            new ParallelCommandGroup(
+                shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
+                shooter.getHood().setTargetPositionCommand(Rotation2d.kZero), 
+                shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
+            )
+        );
 
-        shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, goalPose));
-        System.out.println(calculateAzimuthAngle(drive.getState().Pose, goalPose));
+        // shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, goalPose));
+        // System.out.println(calculateAzimuthAngle(drive.getState().Pose, goalPose));
 
-        shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
-        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+        // shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
+        // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
         // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(20));
     }
     
