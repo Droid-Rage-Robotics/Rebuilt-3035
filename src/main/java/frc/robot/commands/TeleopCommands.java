@@ -52,9 +52,6 @@ public class TeleopCommands {
 
     public static Command operatorRightBumperOnTrue(Indexer indexer, Kicker kicker, Intake intake) {
         return new SequentialCommandGroup(
-            // TeleopCommands.raiseHoodCommand(shooter),
-            // shooter.setHoodPositionCommand(shooter.getCurrentShooterPos()),
-            new WaitCommand(0.2),
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
             new WaitCommand(0.1),
             indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()),
