@@ -1,8 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -10,14 +7,10 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
-import frc.robot.commands.manual.ManualHood;
-import frc.robot.commands.manual.ManualShooterWheel;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.DRShooter;
-import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Indexer.IndexerValue;
@@ -77,13 +70,8 @@ public class RobotContainer {
 	}
 
 	public void configureTeleOpBindings() {
-        DRAreaManager.inAllianceZone().onTrue(new ShootHub(drive, shooter));
-
-
-
-
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 
 		driver.rightTrigger()
@@ -93,9 +81,6 @@ public class RobotContainer {
 		driver.leftTrigger()
 			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-		
-		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
-
 
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));

@@ -10,8 +10,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.shooter.DRShooter;
-import frc.utility.DRAreaManager;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import lombok.Getter;
