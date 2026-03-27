@@ -1,8 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -10,14 +7,10 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
-import frc.robot.commands.manual.ManualHood;
-import frc.robot.commands.manual.ManualShooterWheel;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.DRShooter;
-import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Indexer.IndexerValue;
@@ -47,7 +40,7 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer(true);
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
+        new Turret(false),
         new Hood(true),
         new ShooterWheel(true)
     );
@@ -72,30 +65,22 @@ public class RobotContainer {
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		configureTeleOpBindings();
-		// testShootingMove();
+		// configureTeleOpBindings();
+		testShootingMove();
 	}
 
 	public void configureTeleOpBindings() {
-        // DRAreaManager.inAllianceZone().onTrue(new ShootHub(drive, shooter));
-
-
-
-
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(operator,drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 
 		driver.rightTrigger()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
-			.onTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
+			.whileTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 		driver.leftTrigger()
 			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-		
-		// shooter.getTurret().setGoalAngle(ControllerUtils.getRightStickRotation2d(operator)); //ToDo: Test
-
 
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
@@ -116,7 +101,7 @@ public class RobotContainer {
 		// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
 
 		operator.rightBumper()
-			.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
 			.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
@@ -130,7 +115,7 @@ public class RobotContainer {
 
 	public void testShootingMove(){
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(operator,drive, shooter));
 		
 		// shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
 		// shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));

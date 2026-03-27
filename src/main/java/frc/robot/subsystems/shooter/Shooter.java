@@ -10,8 +10,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.shooter.DRShooter;
-import frc.utility.DRAreaManager;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import lombok.Getter;
@@ -90,6 +88,8 @@ public class Shooter implements Dashboard, Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addStringProperty("ShooterMode", () -> getCurrentShooterPos().toString(), null);
+        // builder.addStringProperty("ShooterMode", () -> DRShooter.getDistanceToHub(null, null), null);
+
     }
 
     @Override

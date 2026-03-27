@@ -4,7 +4,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
@@ -51,7 +50,7 @@ public class Vision extends SubsystemBase {
     }
 
     public int targetHubIds[], targetOdoIds[];
-    private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
+    // private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
 
     public Vision() {
     }
@@ -59,22 +58,6 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {}
 
-    public void setUpVision() {
-        // if (DroidRageConstants.alliance == Alliance.Red) {
-        //     targetHubIds = new int[] { 2,3,4,5,8,9,10,11};
-        //     targetOdoIds= new int [] {}; //TODO:Set Up
-        //     leftLL.setPipelineIndex(odoPipeline);
-        //     rightLL.setPipelineIndex(redHubPipeline);
-
-        // } else if (DroidRageConstants.alliance == Alliance.Blue) {
-        //     targetHubIds = new int[] { 18,19,20,21,24,25,26,27};
-        //     targetOdoIds = new int[] {};// TODO:Set Up
-
-        //     leftLL.setPipelineIndex(odoPipeline);
-        //     rightLL.setPipelineIndex(blueHubPipeline);
-        // }
-    }
-    
     /**
      * Used to get the distance to the closest april tag seen by the limelight
      * from a pose estimate.

@@ -5,10 +5,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.TeleopCommands;
-import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.Indexer;
@@ -72,16 +70,16 @@ public class AutoChooser implements Dashboard {
         return autoChooser.getSelected();
     }
 
-    public static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
-        autoChooser.addOption("TurretTestStrafeRight", new ParallelCommandGroup(
-            TuningAutos.strafeRight(drive),
-            new ShootHub(drive, shooter))
-        ); // Use this for Turret Testing
-        autoChooser.addOption("TurretTestStrafeLeft", new ParallelCommandGroup(
-            TuningAutos.strafeLeft(drive),
-            new ShootHub(drive, shooter))
-        ); // Use this for Turret Testing
-    }
+    // public static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
+    //     autoChooser.addOption("TurretTestStrafeRight", new ParallelCommandGroup(
+    //         TuningAutos.strafeRight(drive),
+    //         new ShootHub(drive, shooter))
+    //     ); // Use this for Turret Testing
+    //     autoChooser.addOption("TurretTestStrafeLeft", new ParallelCommandGroup(
+    //         TuningAutos.strafeLeft(drive),
+    //         new ShootHub(drive, shooter))
+    //     ); // Use this for Turret Testing
+    // }
     
     public static void addTuningAuto(SwerveDrive drive) {
         autoChooser.addOption("BackTest", TuningAutos.backTest(drive));
