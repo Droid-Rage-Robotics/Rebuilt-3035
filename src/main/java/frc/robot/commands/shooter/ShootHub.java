@@ -58,6 +58,7 @@ public class ShootHub extends Command{
     public void execute() {
         // var state = robot.get();
         shooter.getHood().setGoalAngle(new Rotation2d(shot.getHoodAngle()));
+        System.out.println(new Rotation2d(shot.getHoodAngle()));
         shooter.getShooterWheel().setTargetVelocity(linearToAngularVelocity(shot.getExitVelocity(), SHOOTER_WHEEL_RADIUS));
             // .plus(RotationsPerSecond.of(20)));
         shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, predictedTarget));

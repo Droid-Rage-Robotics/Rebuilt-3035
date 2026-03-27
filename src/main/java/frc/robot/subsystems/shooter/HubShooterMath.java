@@ -75,7 +75,7 @@ public class HubShooterMath {
         double angle = Math.atan(
                 ((vel * vel) + Math.sqrt(Math.pow(vel, 4) - g * (g * x_dist * x_dist + 2 * y_dist * vel * vel)))
                         / (g * x_dist));
-        return Radians.of(angle);
+        return Radians.of(angle); 
     }
 
     // calculates how long it will take for a projectile to travel a set distance given its initial velocity and angle

@@ -77,13 +77,13 @@ public class RobotContainer {
 	}
 
 	public void configureTeleOpBindings() {
-        DRAreaManager.inAllianceZone().onTrue(new ShootHub(drive, shooter));
+        // DRAreaManager.inAllianceZone().onTrue(new ShootHub(drive, shooter));
 
 
 
 
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		// shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 
 		driver.rightTrigger()
@@ -176,8 +176,8 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
-		// double distanceRobotToHub = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);
-        // System.out.println(distanceRobotToHub);
+		double distanceRobotToHub = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);
+        System.out.println(distanceRobotToHub);
 	}
 
 	public Command getAutonomousCommand() {
