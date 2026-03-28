@@ -66,21 +66,21 @@ public class DRAreaManager implements Dashboard, Sendable{
 		return currentZone;
 	}
 
-	public static Trigger inAllianceZone() {
-		return new Trigger(() -> (currentZone==Zone.ALLIANCE_ZONE));
-	}
+	// public static Trigger inAllianceZone() {
+	// 	return new Trigger(() -> (currentZone==Zone.ALLIANCE_ZONE));
+	// }
 
-	public static Trigger inOpposition() {
-		return new Trigger(() -> (currentZone==Zone.OPPOSITION));
-	}
+	// public static Trigger inOpposition() {
+	// 	return new Trigger(() -> (currentZone==Zone.OPPOSITION));
+	// }
 
-	public static Trigger inNeutral() {
-		return new Trigger(() -> (currentZone==Zone.NEUTRAL));
-	}
+	// public static Trigger inNeutral() {
+	// 	return new Trigger(() -> (currentZone==Zone.NEUTRAL));
+	// }
 
-	public static Trigger inBetween() {
-		return new Trigger(() -> (currentZone==Zone.BETWEEN));
-	}
+	// public static Trigger inBetween() {
+	// 	return new Trigger(() -> (currentZone==Zone.BETWEEN));
+	// }
 
 	@Override
 	public void elasticInit() {

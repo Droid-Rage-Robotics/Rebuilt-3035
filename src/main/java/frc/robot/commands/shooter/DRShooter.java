@@ -44,29 +44,7 @@ public class DRShooter extends Command{
         new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
         new InterpolatingDoubleTreeMap();
-    static {
-        //Don't Delete
-        /*  hub
-            pos 1.25
-            hood 0 - 2
-            vel 40
-
-            bump
-            pos 1.89
-            setpoint - is
-            hood 11.2 - 10.6
-            vel 42
-
-            pos 3.05
-            hood 12,1 - 12.3
-            vel 47
-
-            pos 4.27
-            setpoint -is
-            hood 12.75-12.2
-            vel - 50.2 
-        */
-
+    static{
         flywheelSpeedMap.put(1.25,40.0);
         flywheelSpeedMap.put(1.89,42.0);
         flywheelSpeedMap.put(3.05,47.0);
@@ -76,7 +54,6 @@ public class DRShooter extends Command{
         hoodMap.put(1.89,11.2);
         hoodMap.put(3.05,12.1);
         hoodMap.put(4.27,12.75);
-
     }
 
     private boolean isShooterManual = false;
@@ -126,33 +103,22 @@ public class DRShooter extends Command{
         // Pose2d lookAheadPose = predictPosePos(
         //     drive.getState().Pose, 
         //     drive.getCurrentRobotChassisSpeeds());
-
-        distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
+        // distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
         
-        // DRAreaManager.inAllianceZone().and(()->!isShooterManual).or(DRAreaManager.inNeutral()).and(()->!isShooterManual).whileTrue(
-        //     new ParallelCommandGroup(
-        //         shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
-        //         shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal))),
-        //         shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
-        //     )
-        // );
-        // DRAreaManager.inBetween().and(()->!isShooterManual).onTrue(
-        //     new ParallelCommandGroup(
-        //         shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
-        //         shooter.getHood().setTargetPositionCommand(Rotation2d.kZero),
-        //         shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
-        //     )
-        // );
-        shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
-        shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
-        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+        distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
 
-        // shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, goalPose));
-        // System.out.println(calculateAzimuthAngle(drive.getState().Pose, goalPose));
-
-        // shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
-        // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
-        // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(20));
+        switch(DRAreaManager.getCurrentZone()){
+            case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
+                shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
+                shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+                break;
+            case BETWEEN:
+                shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                shooter.getHood().setGoalAngle(Rotation2d.kZero);
+                shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+                break;
+        }
     }
     
     public static double getDistanceToHub(Pose2d robotPose, Translation3d target){
@@ -163,6 +129,7 @@ public class DRShooter extends Command{
     public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds) {
         double predictedX = currentPose.getX() - fieldSpeeds.vxMetersPerSecond;
         double predictedY = currentPose.getY() - fieldSpeeds.vyMetersPerSecond;
+        // double predictedRot = currentPose.getRotation() - fieldSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, null)
 
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());
     }
@@ -192,10 +159,10 @@ public class DRShooter extends Command{
     }
 
     // Move a target a set time in the future along a velocity defined by fieldSpeeds
-    public static Translation3d predictTargetPos(Translation3d target, ChassisSpeeds fieldSpeeds, Time timeOfFlight) {
-        double predictedX = target.getX() - fieldSpeeds.vxMetersPerSecond * timeOfFlight.in(Seconds);
-        double predictedY = target.getY() - fieldSpeeds.vyMetersPerSecond * timeOfFlight.in(Seconds);
+    // public static Translation3d predictTargetPos(Translation3d target, ChassisSpeeds fieldSpeeds, Time timeOfFlight) {
+    //     double predictedX = target.getX() - fieldSpeeds.vxMetersPerSecond * timeOfFlight.in(Seconds);
+    //     double predictedY = target.getY() - fieldSpeeds.vyMetersPerSecond * timeOfFlight.in(Seconds);
 
-        return new Translation3d(predictedX, predictedY, target.getZ());
-    }
+    //     return new Translation3d(predictedX, predictedY, target.getZ());
+    // }
 }

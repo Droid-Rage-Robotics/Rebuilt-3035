@@ -134,7 +134,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     /* ---------------- Commands ---------------- */
 
     public Command setTargetPositionCommand(Angle goalAngle) {
-        return runOnce(() -> setGoalAngle(goalAngle));
+        return new InstantCommand(() -> setGoalAngle(goalAngle));
     }
 
     /* ---------------- Manual Goal Control ---------------- */
