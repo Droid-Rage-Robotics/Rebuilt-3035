@@ -282,8 +282,8 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         return controller.atSetpoint();
     }
     
-    public double getSetpointError() {
-        return controller.getPositionError();
+    public Angle getSetpointError() {
+        return Radians.of(controller.getPositionError());
     }
 
     public boolean atGoal(){

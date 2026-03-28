@@ -89,8 +89,7 @@ public class Shooter implements Dashboard, Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addStringProperty("ShooterMode", () -> getCurrentShooterPos().toString(), null);
-        // builder.addStringProperty("ShooterMode", () -> DRShooter.getDistanceToHub(null, null), null);
-
+        builder.addBooleanProperty("Is Shooter Ready?", this::isShooterReady, null);
     }
 
     @Override
@@ -124,5 +123,13 @@ public class Shooter implements Dashboard, Sendable {
         return hood.setTargetPositionCommand(shooterValue.getHoodAngle());
     }
 
+    public boolean isShooterReady() {
+        return (
+            hood.getSetpointError().in(Degrees) < 5 && 
+            turret.getPositionError().in(Degrees) < 5 &&
+            hood.getSetpointError().in(Degrees) > -5 && 
+            turret.getPositionError().in(Degrees) > -5
+        );
+    }
     
 }
