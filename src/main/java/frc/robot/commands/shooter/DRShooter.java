@@ -56,7 +56,7 @@ public class DRShooter extends Command{
         hoodMap.put(4.27,12.75);
     }
 
-    private boolean isShooterManual = false;
+    // private boolean isShooterManual = false;
 
     public DRShooter(CommandXboxController operator, SwerveDrive drive, Shooter shooter) {
         this.shooter = shooter;
@@ -100,12 +100,12 @@ public class DRShooter extends Command{
         }
 
         // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
-        // Pose2d lookAheadPose = predictPosePos(
-        //     drive.getState().Pose, 
-        //     drive.getCurrentRobotChassisSpeeds());
-        // distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
-        
-        distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
+        Pose2d lookAheadPose = predictPosePos(
+            drive.getState().Pose, 
+            drive.getCurrentRobotChassisSpeeds());
+        distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
+
+        // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
 
         switch(DRAreaManager.getCurrentZone()){
             case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
@@ -150,7 +150,7 @@ public class DRShooter extends Command{
 
         double rawAngle = direction.getAngle()
             .minus(robot.getRotation())
-            .plus(Rotation2d.fromDegrees(32.5)) //TESTING
+            .plus(Rotation2d.fromDegrees(32.5)) //The Offset for Starting Turret at Angle
             .getRadians();
 
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle

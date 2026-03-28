@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -40,7 +41,7 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer(true);
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
+        new Turret(true),
         new Hood(true),
         new ShooterWheel(true)
     );
@@ -60,13 +61,12 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		// drive.registerTelemetry(logger::telemeterize);
-		
 		DriverStation.silenceJoystickConnectionWarning(true);
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
-		// configureTeleOpBindings();
-		testShootingMove();
+		configureTeleOpBindings();
+		// testShootingMove();
 	}
 
 	public void configureTeleOpBindings() {
@@ -119,7 +119,7 @@ public class RobotContainer {
 		
 		// shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
 		// shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
-		operator.b()
+		operator.rightBumper()
 			.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
 			// .whileTrue(TeleopCommands.indexerWiggleIntake(intake))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
@@ -161,8 +161,6 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
-		double distanceRobotToHub = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);
-        System.out.println(distanceRobotToHub);
 	}
 
 	public Command getAutonomousCommand() {
