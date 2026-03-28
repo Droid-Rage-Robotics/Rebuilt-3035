@@ -102,31 +102,20 @@ public final class DroidRageConstants {
     public static Supplier<Boolean> BatteryLow = () -> RobotController.getBatteryVoltage()<12.5;
     
     public static boolean didWeWin = true; //Win Auto?
+    public static boolean isShooterManual = true; //True - Manual; False - Tracking
+    // public static setIsShooterManual(boolean isManual){
+    //     isShooterManual = isManual;
+    // }
 
     public static class FieldConstants {
-        public static final Distance FUNNEL_RADIUS = Inches.of(24);
-        public static final Distance FUNNEL_HEIGHT = Inches.of(69);
-
-        // public static final Distance NEUTRAL_ZONE_START = Inches.of(0);
-        // public static final Distance NEUTRAL_ZONE_END = Inches.of(0);
+        // public static final Distance FUNNEL_RADIUS = Inches.of(24);
+        // public static final Distance FUNNEL_HEIGHT = Inches.of(69);
 
         public static final Translation3d HUB_BLUE = new Translation3d(4.625, 4.025, 2.05);
         public static final Translation3d HUB_RED = new Translation3d(11.95,4, 2.05);
         public static final Translation3d ALLIANCE_BLUE = new Translation3d(4.625, 4.025, 2.05);
         public static final Translation3d ALLIANCE_RED = new Translation3d(11.95,4, 2.05);
-        // public static Translation3d queryOurHub() {
-        //     return DroidRageConstants.alliance == Alliance.Red 
-        //         ? FieldConstants.HUB_RED 
-        //         : FieldConstants.HUB_BLUE;
-        // }
     }
-    
-
-    // public enum SimState {
-    //     REAL,
-    //     SIM
-    // }
-    // public static SimState simState = SimState.REAL;
 
     public static Alliance alliance = DriverStation.Alliance.Blue; //Default to Blue
 }

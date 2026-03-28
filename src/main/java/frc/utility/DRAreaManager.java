@@ -31,6 +31,8 @@ public class DRAreaManager implements Dashboard, Sendable{
 		redAllianceZone = new Rectangle2d(new Translation2d(12.5,0), new Translation2d(16.5, 8));
 		blueAllianceZone = new Rectangle2d(new Translation2d(0,0), new Translation2d(4,8));
 		nuetralZone = new Rectangle2d(new Translation2d(5, 0), new Translation2d(11,8));
+
+		TelemetryUtils.registerDashboard(this);
 	}
 
 	public void periodic() {

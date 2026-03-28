@@ -39,7 +39,7 @@ public class DRShooter extends Command{
     private double distanceRobotToGoal;
     public static final Transform3d ROBOT_TO_TURRET_TRANSFORM =
         new Transform3d(new Translation3d(Inches.zero(), Inches.of(6.613), Inches.of(-13.25)), 
-            new Rotation3d(Rotations.of(0), Rotations.of(0), Degrees.of(0)));
+            new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(0)));//-32.5
     private static final InterpolatingDoubleTreeMap hoodMap =
         new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
@@ -79,7 +79,7 @@ public class DRShooter extends Command{
 
     }
 
-    private boolean isManual = false;
+    private boolean isShooterManual = false;
 
     public DRShooter(CommandXboxController operator, SwerveDrive drive, Shooter shooter) {
         this.shooter = shooter;
@@ -93,7 +93,7 @@ public class DRShooter extends Command{
             : FieldConstants.ALLIANCE_BLUE;
         this.goalPose = this.hubPose;
 
-        operator.a().onTrue(new InstantCommand(()-> isManual = !isManual));
+        // operator.a().onTrue(new InstantCommand(()-> isManual = !isManual));
 
 
         addRequirements(
@@ -114,6 +114,7 @@ public class DRShooter extends Command{
                 this.goalPose = this.hubPose;
                 break;
             case BETWEEN:
+                this.goalPose = this.hubPose;
                 break;
             case NEUTRAL, OPPOSITION:
                 this.goalPose = this.hubPose;
@@ -128,20 +129,23 @@ public class DRShooter extends Command{
 
         distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
         
-        DRAreaManager.inAllianceZone().and(()->!isManual).or(DRAreaManager.inNeutral()).and(()->!isManual).whileTrue(
-            new ParallelCommandGroup(
-                shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
-                shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal))),
-                shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
-            )
-        );
-        DRAreaManager.inBetween().and(()->!isManual).onTrue(
-            new ParallelCommandGroup(
-                shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
-                shooter.getHood().setTargetPositionCommand(Rotation2d.kZero), 
-                shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
-            )
-        );
+        // DRAreaManager.inAllianceZone().and(()->!isShooterManual).or(DRAreaManager.inNeutral()).and(()->!isShooterManual).whileTrue(
+        //     new ParallelCommandGroup(
+        //         shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
+        //         shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal))),
+        //         shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
+        //     )
+        // );
+        // DRAreaManager.inBetween().and(()->!isShooterManual).onTrue(
+        //     new ParallelCommandGroup(
+        //         shooter.getTurret().setTargetPositionCommand(calculateAzimuthAngle(drive.getState().Pose, hubPose)),
+        //         shooter.getHood().setTargetPositionCommand(Rotation2d.kZero),
+        //         shooter.getShooterWheel().setTargetVelocityCommand(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)))
+        //     )
+        // );
+        shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+        shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
+        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
 
         // shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, goalPose));
         // System.out.println(calculateAzimuthAngle(drive.getState().Pose, goalPose));
@@ -179,7 +183,7 @@ public class DRShooter extends Command{
 
         double rawAngle = direction.getAngle()
             .minus(robot.getRotation())
-            .plus(Rotation2d.fromDegrees(180)) //TESTING
+            .plus(Rotation2d.fromDegrees(32.5)) //TESTING
             .getRadians();
 
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
