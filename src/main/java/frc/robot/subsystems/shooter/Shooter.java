@@ -9,7 +9,9 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.DroidRageConstants;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import lombok.Getter;
@@ -106,6 +108,7 @@ public class Shooter implements Dashboard, Sendable {
     public Command setShooterTargetCommand(ShooterValue shooterValue) {
         return new ParallelCommandGroup(
             // Commands.runOnce(()->setCurrentShooterPos(shooterValue)),
+            new InstantCommand(()-> DroidRageConstants.isShooterManual = true),
             hood.setTargetPositionCommand(shooterValue.getHoodAngle()),
             turret.setTargetPositionCommand(shooterValue.getTurretAngle()),
             shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())

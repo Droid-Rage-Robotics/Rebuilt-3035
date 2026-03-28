@@ -71,7 +71,7 @@ public class RobotContainer {
 
 	public void configureTeleOpBindings() {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(operator,drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 
 		driver.rightTrigger()
@@ -97,8 +97,8 @@ public class RobotContainer {
 		operator.povRight()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
 
-		// operator.povDown()
-		// 	.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOARD));
+		operator.povDown()
+			.onTrue(new InstantCommand(()->DroidRageConstants.isShooterManual = false));
 
 		operator.rightBumper()
 			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
@@ -115,7 +115,7 @@ public class RobotContainer {
 
 	public void testShootingMove(){
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(operator,drive, shooter));
+		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		
 		// shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
 		// shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
