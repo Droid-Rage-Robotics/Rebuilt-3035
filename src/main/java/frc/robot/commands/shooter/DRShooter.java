@@ -38,7 +38,7 @@ public class DRShooter extends Command{
     private final SwerveDrive drive;
     private double distanceRobotToGoal;
     public static final Transform3d ROBOT_TO_TURRET_TRANSFORM =
-        new Transform3d(new Translation3d(Inches.zero(), Inches.of(6.613), Inches.of(-13.25)), 
+        new Transform3d(new Translation3d(Inches.zero(), Inches.of(-13.25), Inches.of(6.613)), 
             new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(0)));//-32.5
     private static final InterpolatingDoubleTreeMap hoodMap =
         new InterpolatingDoubleTreeMap();
@@ -95,12 +95,12 @@ public class DRShooter extends Command{
         }
 
         // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
-        Pose2d lookAheadPose = predictPosePos(
-            drive.getState().Pose, 
-            drive.getCurrentRobotChassisSpeeds());
-        distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
+        // Pose2d lookAheadPose = predictPosePos(
+        //     drive.getState().Pose, 
+        //     drive.getCurrentRobotChassisSpeeds());
+        // distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
-        // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
+        distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
@@ -147,7 +147,7 @@ public class DRShooter extends Command{
 
         double rawAngle = direction.getAngle()
             .minus(robot.getRotation())
-            .plus(Rotation2d.fromDegrees(32.5)) //The Offset for Starting Turret at Angle
+            .plus(Rotation2d.fromDegrees(28)) //The Offset for Starting Turret at Angle
             .getRadians();
 
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
