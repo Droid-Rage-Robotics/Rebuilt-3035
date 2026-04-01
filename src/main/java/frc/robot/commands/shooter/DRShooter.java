@@ -101,9 +101,10 @@ public class DRShooter extends Command{
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
-                    shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                    // shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                    // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
                     // shooter.getTurret().setGoalAngle(calculateTurretAngle(drive.getState().Pose, hubPose));
-                    // shooter.getTurret().setGoalAngle(getTurretSetpoint());
+                    shooter.getTurret().setGoalAngle(getTurretSetpoint());
 
                     shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
@@ -155,7 +156,7 @@ public class DRShooter extends Command{
         Translation2d direction = target.toTranslation2d().minus(turretTranslation);
 
         double rawAngle = direction.getAngle()
-            // .minus(robot.getRotation()) //Why are we  using the robot angle again after its initial use? 
+            .minus(robot.getRotation()) //Why are we  using the robot angle again after its initial use? 
             // ^^ Is problem?
             .plus(Rotation2d.fromDegrees(28)) //The Offset for Starting Turret at Angle
             .getRadians();

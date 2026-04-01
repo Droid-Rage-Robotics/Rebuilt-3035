@@ -36,7 +36,7 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(true),
@@ -107,9 +107,9 @@ public class RobotContainer {
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
 		operator.b()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT));
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT)); //CORNER_RIGHT
 		operator.x()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT));
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT)); //ORNER_LEFT
 		operator.a()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
 		
