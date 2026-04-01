@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TrenchToNeutralLeft"
+                  "pathName": "TrenchToNeutralRight"
                 }
               },
               {
@@ -48,7 +48,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "setShootTrenchL"
+                  "name": "setShootTrenchR"
                 }
               }
             ]
@@ -61,13 +61,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "NeutralToTrenchLeft"
+                  "pathName": "NeutralToTrenchRight"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "shootTrenchL"
+                  "name": "shootTrenchR"
                 }
               },
               {
@@ -108,7 +108,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 12.0
+            "waitTime": 8.0
           }
         },
         {
@@ -124,7 +124,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TrenchToNeutralLeftSec"
+                  "pathName": "TrenchToNeutralRightSec"
                 }
               },
               {
@@ -161,7 +161,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "setShootTrenchL"
+                  "name": "setShootTrenchR"
                 }
               }
             ]
@@ -171,6 +171,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Right",
   "choreoAuto": false
 }

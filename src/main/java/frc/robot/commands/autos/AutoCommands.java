@@ -37,6 +37,7 @@ public class AutoCommands{
     }
 
     public static Command resetBot(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
+        System.out.println("Resetting bot...");
         return new SequentialCommandGroup(
             shooter.setShooterTargetCommand(ShooterValue.HOLD),
             indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP),
