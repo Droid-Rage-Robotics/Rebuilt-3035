@@ -1,5 +1,6 @@
 package frc.robot.commands.autos;
 
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -25,6 +26,8 @@ public class AutoCommands{
             ),
             new WaitCommand(1),
             new InstantCommand(()->intake.getPivot().changeCurrentLimit(true))
+            // new DifferentialDriveKinematicsConstraint(null, 0)
+            // new Race
         );
     }
 
@@ -37,13 +40,25 @@ public class AutoCommands{
     }
 
     public static Command resetBot(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
-        System.out.println("Resetting bot...");
-        return new SequentialCommandGroup(
+        // System.out.println("Resetting bot...");
+        return new ParallelCommandGroup(
             shooter.setShooterTargetCommand(ShooterValue.HOLD),
             indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP),
             kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()),
             intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
             intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP)
+        );
+    }
+
+    public static Command autoIndexerWiggleIntake(Intake intake) {
+        return new SequentialCommandGroup(
+            new WaitCommand(1),
+            new SequentialCommandGroup(
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
+                new WaitCommand(0.5),
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+                new WaitCommand(0.5)
+            ).raceWith(new WaitCommand(5)) // Wait to START A New Cycle
         );
     }
 

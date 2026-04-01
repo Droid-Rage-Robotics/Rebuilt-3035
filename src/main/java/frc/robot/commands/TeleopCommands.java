@@ -14,7 +14,6 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.Indexer.IndexerValue;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
-import frc.robot.subsystems.shooter.Shooter;
 
 public class TeleopCommands {
     public static Command shootIntakeCommand(Intake intake) {

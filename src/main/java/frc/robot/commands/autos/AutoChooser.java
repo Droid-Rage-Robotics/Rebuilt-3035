@@ -46,7 +46,7 @@ public class AutoChooser implements Dashboard {
         NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
         NamedCommands.registerCommand("resetBot", AutoCommands.resetBot(shooter, indexer, kicker, intake));
 
-        NamedCommands.registerCommand("wiggleIntake", TeleopCommands.indexerWiggleIntake(intake));
+        NamedCommands.registerCommand("wiggleIntake", AutoCommands.autoIndexerWiggleIntake(intake));
         NamedCommands.registerCommand("index", new SequentialCommandGroup(
             indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
