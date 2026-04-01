@@ -6,10 +6,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.Indexer;
+// import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
-import frc.robot.subsystems.Indexer.IndexerValue;
+// import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.Indexer.IndexerValue;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.shooter.Shooter;
@@ -54,7 +56,7 @@ public class TeleopCommands {
         return new SequentialCommandGroup(
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
             new WaitCommand(0.1),
-            indexer.setTargetVelocityCommand(IndexerValue.INTAKE.getIndexerValue()),
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
             new WaitCommand(2),
             intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(-30))
         );
@@ -66,7 +68,7 @@ public class TeleopCommands {
             // shooter.setHoodPositionCommand(ShooterValue.HOLD),
             // shooter.getHood().setTargetPositionCommand(Rotation2d.kZero),
             intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
-            indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
+            indexer.setTargetVelocityCommand(IndexerValue.STOP),
             kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
         );
     }

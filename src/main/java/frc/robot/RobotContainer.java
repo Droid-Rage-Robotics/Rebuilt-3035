@@ -12,12 +12,16 @@ import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.DRShooter;
-import frc.robot.subsystems.Indexer;
+// import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
-import frc.robot.subsystems.Indexer.IndexerValue;
+// import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.indexer.BottomRollers;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.Indexer.IndexerValue;
+import frc.robot.subsystems.indexer.TopRoller;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.intake.IntakeWheel;
@@ -32,13 +36,18 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
-    private final Indexer indexer = new Indexer(true);
+    // private final Indexer indexer = new Indexer(true);
+	private final Indexer indexer = new Indexer(
+		new BottomRollers(true), 
+		new TopRoller(true)
+	);
+
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
         new Turret(true),
@@ -66,6 +75,9 @@ public class RobotContainer {
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
 		configureTeleOpBindings();
+		// operator.a().onTrue(indexer.getBottomRollers().getSysIdCommand());
+		// operator.a().onTrue(indexer.getTopRoller().getSysIdCommand());
+
 		// testShootingMove();
 	}
 
@@ -107,9 +119,9 @@ public class RobotContainer {
 
 
 		operator.leftBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
+			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 
@@ -124,9 +136,9 @@ public class RobotContainer {
 			// .whileTrue(TeleopCommands.indexerWiggleIntake(intake))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 		operator.leftBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE.getIndexerValue()))
+			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE))
 			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()))
+			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
 		driver.a()
@@ -169,7 +181,7 @@ public class RobotContainer {
 
 	public void resetSubsystemsAutoExit() {
 		shooter.setShooterTarget(ShooterValue.HOLD);
-		indexer.setTargetVelocity(Indexer.IndexerValue.STOP.getIndexerValue());
+		indexer.setTargetVelocity(Indexer.IndexerValue.STOP);
 		kicker.setTargetVelocity(KickerValue.STOP.getKickerValue());
 		intake.getIntakeWheel().setTargetVelocity(IntakeValue.WheelVelocity.STOP.getVelocity());
 	}
