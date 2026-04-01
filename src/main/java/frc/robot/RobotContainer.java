@@ -85,6 +85,16 @@ public class RobotContainer {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
+		
+		driver.a()
+			.onTrue(
+				new InstantCommand(()-> drive.resetPose(
+					new Pose2d(3.5,0.5,new Rotation2d(
+						0
+					))
+				))
+			);
+		
 
 		driver.rightTrigger()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))

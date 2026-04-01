@@ -3,31 +3,27 @@ package frc.robot.commands.shooter;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Turret;
 import frc.utility.DRAreaManager;
 
 public class DRShooter extends Command{
@@ -38,7 +34,7 @@ public class DRShooter extends Command{
     private final SwerveDrive drive;
     private double distanceRobotToGoal;
     public static final Transform3d ROBOT_TO_TURRET_TRANSFORM =
-        new Transform3d(new Translation3d(Inches.zero(), Inches.of(6.613), Inches.of(-13.25)), 
+        new Transform3d(new Translation3d(Inches.zero(), Inches.of(-13.25), Inches.of(6.613)), 
             new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(0)));//-32.5
     private static final InterpolatingDoubleTreeMap hoodMap =
         new InterpolatingDoubleTreeMap();
@@ -95,17 +91,20 @@ public class DRShooter extends Command{
         }
 
         // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
-        Pose2d lookAheadPose = predictPosePos(
-            drive.getState().Pose, 
-            drive.getCurrentRobotChassisSpeeds());
-        distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
+        // Pose2d lookAheadPose = predictPosePos(
+        //     drive.getState().Pose, 
+        //     drive.getCurrentRobotChassisSpeeds());
+        // distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
-        // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
+        distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                    // shooter.getTurret().setGoalAngle(calculateTurretAngle(drive.getState().Pose, hubPose));
+                    // shooter.getTurret().setGoalAngle(getTurretSetpoint());
+
                     shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
                     break;
@@ -126,7 +125,17 @@ public class DRShooter extends Command{
     public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds) {
         double predictedX = currentPose.getX() - fieldSpeeds.vxMetersPerSecond;
         double predictedY = currentPose.getY() - fieldSpeeds.vyMetersPerSecond;
-        // double predictedRot = currentPose.getRotation() - fieldSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, null)
+
+        // double turretVelocityX =
+        //         fieldVelocity.vxMetersPerSecond
+        //                 + fieldVelocity.omegaRadiansPerSecond
+        //                         * (robotToTurret.getY() * Math.cos(robotAngle)
+        //                                 - robotToTurret.getX() * Math.sin(robotAngle));
+        // double turretVelocityY =
+        //         fieldVelocity.vyMetersPerSecond
+        //                 + fieldVelocity.omegaRadiansPerSecond
+        //                         * (robotToTurret.getX() * Math.cos(robotAngle)
+        //                                 - robotToTurret.getY() * Math.sin(robotAngle));
 
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());
     }
@@ -146,20 +155,59 @@ public class DRShooter extends Command{
         Translation2d direction = target.toTranslation2d().minus(turretTranslation);
 
         double rawAngle = direction.getAngle()
-            .minus(robot.getRotation())
-            .plus(Rotation2d.fromDegrees(32.5)) //The Offset for Starting Turret at Angle
+            // .minus(robot.getRotation()) //Why are we  using the robot angle again after its initial use? 
+            // ^^ Is problem?
+            .plus(Rotation2d.fromDegrees(28)) //The Offset for Starting Turret at Angle
             .getRadians();
 
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
         return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
-        // return Radians.of(MathUtil.inputModulus(rawAngle, -Math.PI, Math.PI));
     }
 
-    // Move a target a set time in the future along a velocity defined by fieldSpeeds
-    // public static Translation3d predictTargetPos(Translation3d target, ChassisSpeeds fieldSpeeds, Time timeOfFlight) {
-    //     double predictedX = target.getX() - fieldSpeeds.vxMetersPerSecond * timeOfFlight.in(Seconds);
-    //     double predictedY = target.getY() - fieldSpeeds.vyMetersPerSecond * timeOfFlight.in(Seconds);
+    //https://github.com/FRC-8557-Conquera/Frc2026autoaimtry/blob/main/src/main/java/frc/robot/subsystems/shooter/ShooterSubsystem.java#L133
+    public Angle getTurretSetpoint() {
+        Pose2d robotPose = drive.getState().Pose;
+        Translation2d turretOffset = new Translation2d(Inches.of(0), Inches.of(-13.25));  //Inches.zero(), Inches.of(-13.25), Inches.of(6.613)
+        Translation2d turretFieldPosition = robotPose.getTranslation().plus(turretOffset.rotateBy(robotPose.getRotation()));
 
-    //     return new Translation3d(predictedX, predictedY, target.getZ());
+        Translation2d targetTranslation =  hubPose.toTranslation2d();
+        Rotation2d fieldAngle = targetTranslation.minus(turretFieldPosition).getAngle();
+        double setpointDeg = fieldAngle.minus(robotPose.getRotation()).getDegrees();
+        
+        return Degrees.of(MathUtil.inputModulus(setpointDeg, 0, 360));
+       
+    }
+
+    // public Angle getSpectrumTurretAngle(Pose2d estimatedPose) {
+    //     Pose2d turretPose = estimatedPose.transformBy(new Transform2d(Inches.of(0), Inches.of(-13.25), new Rotation2d()));
+    //     // double turretToTargetDistance = target.getDistance(turretPose.getTranslation());
+
+    //     return Degrees.of(0);
     // }
+
+    public static Angle calculateTurretAngle(Pose2d robot, Translation3d target) {
+        // 1. Convert robot pose (2D) to 3D
+        Pose3d robotPose3d = new Pose3d(robot);
+
+        // 2. Get turret pose in field coordinates
+        Pose3d turretPose3d = robotPose3d.transformBy(ROBOT_TO_TURRET_TRANSFORM);
+
+        // 3. Extract turret position in 2D (ignore height for azimuth)
+        Translation2d turretPos = turretPose3d.toPose2d().getTranslation();
+
+        // 4. Target position in 2D
+        Translation2d targetPos = new Translation2d(target.getX(), target.getY());
+
+        // 5. Vector from turret to target
+        Translation2d delta = targetPos.minus(turretPos);
+
+        // 6. Angle from turret to target (field-relative)
+        Rotation2d fieldAngle = delta.getAngle();
+
+        // 7. Convert to robot-relative turret angle
+        Rotation2d turretAngle = fieldAngle.minus(robot.getRotation());
+
+        return Radians.of(MathUtil.inputModulus(turretAngle.getRadians(), 0, 2 * Math.PI));
+    }
+
 }
