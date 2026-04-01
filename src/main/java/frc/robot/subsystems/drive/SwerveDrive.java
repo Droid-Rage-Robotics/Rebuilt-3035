@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -156,6 +157,8 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        configNeutralMode(NeutralModeValue.Coast);
 
         SmartDashboard.putData("Drive/fieldPose", fieldPose);
         configurePathPlanner();
