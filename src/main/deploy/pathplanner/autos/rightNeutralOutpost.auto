@@ -19,6 +19,12 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    },
+                    {
                       "type": "wait",
                       "data": {
                         "waitTime": 0.7
@@ -28,18 +34,6 @@
                       "type": "named",
                       "data": {
                         "name": "startPivot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intake"
                       }
                     }
                   ]
@@ -65,19 +59,19 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "shootTrenchR"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shootTrenchR"
                       }
                     },
                     {
