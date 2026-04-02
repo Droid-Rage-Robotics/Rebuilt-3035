@@ -86,7 +86,7 @@ public class RobotContainer {
 		driver.a()
 			.onTrue(
 				new InstantCommand(()-> drive.resetPose(
-					new Pose2d(3.5,0.5,new Rotation2d(
+					new Pose2d(3.534, 3.977, new Rotation2d(
 						0
 					))
 				))
