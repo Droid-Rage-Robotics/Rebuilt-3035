@@ -113,7 +113,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
         Logger.recordOutput(name + "/Current Velocity", getVelocity());
         Logger.recordOutput(name + "/Applied Voltage", getVoltage());
-        Logger.recordOutput(name + "/Position Error", getPositionError());
+        Logger.recordOutput(name + "/Position Error", getPositionError().in(Degrees));
     }
 
     @Override public void practiceWriters() {}

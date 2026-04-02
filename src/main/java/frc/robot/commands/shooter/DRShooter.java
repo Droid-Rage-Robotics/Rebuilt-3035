@@ -97,12 +97,12 @@ public class DRShooter extends Command{
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
-                    update(drive.getState().Pose, drive.getCurrentRobotChassisSpeeds());
-                    // shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                    // update(drive.getState().Pose, drive.getCurrentRobotChassisSpeeds());
+                    shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
                     // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
 
-                    // shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
-                    // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+                    shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
+                    shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
                     break;
                 case BETWEEN:
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
@@ -152,7 +152,7 @@ public class DRShooter extends Command{
 
         double rawAngle = direction.getAngle()
             .minus(robot.getRotation())
-            .plus(Rotation2d.fromDegrees(28)) //The Offset for Starting Turret at Angle
+            // .plus(Rotation2d.fromDegrees(28)) //The Offset for Starting Turret at Angle
             .getRadians();
 
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
@@ -192,8 +192,9 @@ public class DRShooter extends Command{
         double ratio = Math.min(newHorizontalSpeed / totalExitVelocity, 1.0);
         double newPitch = Math.acos(ratio);
 
+        turretAngle = MathUtil.inputModulus(turretAngle, 0, 360);
         // 7. SET OUTPUTS
-        shooter.getTurret().setGoalAngle(Degrees.of(turretAngle));
+        shooter.getTurret().setGoalAngle(Degrees.of(turretAngle).plus(Degrees.of(28)));
         // shooter.setRPM(calcRPM(totalExitVelocity));
         shooter.getHood().setGoalAngle(Rotation2d.fromRadians(newPitch));
         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
