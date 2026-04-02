@@ -15,6 +15,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
@@ -93,6 +94,7 @@ public class DRShooter extends Command{
         // distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
         distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
+        SmartDashboard.putNumber("Shooter/Goal Distance", distanceRobotToGoal);
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
