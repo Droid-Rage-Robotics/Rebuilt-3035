@@ -97,11 +97,12 @@ public class DRShooter extends Command{
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
-                    shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
-                    System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
+                    update(drive.getState().Pose, drive.getCurrentRobotChassisSpeeds());
+                    // shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                    // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
 
-                    shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
-                    shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+                    // shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
+                    // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
                     break;
                 case BETWEEN:
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
