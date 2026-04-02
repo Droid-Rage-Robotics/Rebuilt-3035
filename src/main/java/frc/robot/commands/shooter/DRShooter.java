@@ -150,8 +150,7 @@ public class DRShooter extends Command{
         Translation2d direction = target.toTranslation2d().minus(turretTranslation);
 
         double rawAngle = direction.getAngle()
-            .minus(robot.getRotation()) //Why are we  using the robot angle again after its initial use? 
-            // ^^ Is problem?
+            .minus(robot.getRotation())
             .plus(Rotation2d.fromDegrees(28)) //The Offset for Starting Turret at Angle
             .getRadians();
 
