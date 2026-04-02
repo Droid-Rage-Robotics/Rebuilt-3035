@@ -101,10 +101,8 @@ public class DRShooter extends Command{
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
-                    // shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
-                    // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
-                    // shooter.getTurret().setGoalAngle(calculateTurretAngle(drive.getState().Pose, hubPose));
-                    shooter.getTurret().setGoalAngle(getTurretSetpoint());
+                    shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                    System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
 
                     shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
@@ -164,51 +162,4 @@ public class DRShooter extends Command{
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
         return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
     }
-
-    //https://github.com/FRC-8557-Conquera/Frc2026autoaimtry/blob/main/src/main/java/frc/robot/subsystems/shooter/ShooterSubsystem.java#L133
-    public Angle getTurretSetpoint() {
-        Pose2d robotPose = drive.getState().Pose;
-        Translation2d turretOffset = new Translation2d(Inches.of(0), Inches.of(-13.25));  //Inches.zero(), Inches.of(-13.25), Inches.of(6.613)
-        Translation2d turretFieldPosition = robotPose.getTranslation().plus(turretOffset.rotateBy(robotPose.getRotation()));
-
-        Translation2d targetTranslation =  hubPose.toTranslation2d();
-        Rotation2d fieldAngle = targetTranslation.minus(turretFieldPosition).getAngle();
-        double setpointDeg = fieldAngle.minus(robotPose.getRotation()).getDegrees();
-        
-        return Degrees.of(MathUtil.inputModulus(setpointDeg, 0, 360));
-       
-    }
-
-    // public Angle getSpectrumTurretAngle(Pose2d estimatedPose) {
-    //     Pose2d turretPose = estimatedPose.transformBy(new Transform2d(Inches.of(0), Inches.of(-13.25), new Rotation2d()));
-    //     // double turretToTargetDistance = target.getDistance(turretPose.getTranslation());
-
-    //     return Degrees.of(0);
-    // }
-
-    public static Angle calculateTurretAngle(Pose2d robot, Translation3d target) {
-        // 1. Convert robot pose (2D) to 3D
-        Pose3d robotPose3d = new Pose3d(robot);
-
-        // 2. Get turret pose in field coordinates
-        Pose3d turretPose3d = robotPose3d.transformBy(ROBOT_TO_TURRET_TRANSFORM);
-
-        // 3. Extract turret position in 2D (ignore height for azimuth)
-        Translation2d turretPos = turretPose3d.toPose2d().getTranslation();
-
-        // 4. Target position in 2D
-        Translation2d targetPos = new Translation2d(target.getX(), target.getY());
-
-        // 5. Vector from turret to target
-        Translation2d delta = targetPos.minus(turretPos);
-
-        // 6. Angle from turret to target (field-relative)
-        Rotation2d fieldAngle = delta.getAngle();
-
-        // 7. Convert to robot-relative turret angle
-        Rotation2d turretAngle = fieldAngle.minus(robot.getRotation());
-
-        return Radians.of(MathUtil.inputModulus(turretAngle.getRadians(), 0, 2 * Math.PI));
-    }
-
 }
