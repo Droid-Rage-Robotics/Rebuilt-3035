@@ -1,14 +1,11 @@
 package frc.robot.commands.autos;
 
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-// import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
-// import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.Indexer.IndexerValue;
@@ -26,8 +23,6 @@ public class AutoCommands{
             ),
             new WaitCommand(1),
             new InstantCommand(()->intake.getPivot().changeCurrentLimit(true))
-            // new DifferentialDriveKinematicsConstraint(null, 0)
-            // new Race
         );
     }
 
@@ -40,7 +35,6 @@ public class AutoCommands{
     }
 
     public static Command resetBot(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
-        // System.out.println("Resetting bot...");
         return new ParallelCommandGroup(
             shooter.setShooterTargetCommand(ShooterValue.HOLD),
             indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP),

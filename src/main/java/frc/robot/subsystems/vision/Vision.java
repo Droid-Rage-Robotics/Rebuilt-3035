@@ -41,12 +41,12 @@ public class Vision extends SubsystemBase {
             this.value=value;
         }
     }
-
-    public static final int[] BLUE_HUB_IDS = {18,19,20,21,24,25,26,27};
-    public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
     
     public static class Constants {
         public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+        
+        public static final int[] BLUE_HUB_IDS = {18,19,20,21,24,25,26,27};
+        public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
     }
 
     public int targetHubIds[], targetOdoIds[];

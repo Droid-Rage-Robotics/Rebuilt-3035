@@ -2,15 +2,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-
 import java.util.function.Supplier;
-
 import com.ctre.phoenix6.CANBus;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;

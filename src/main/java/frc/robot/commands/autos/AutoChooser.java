@@ -6,10 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.TeleopCommands;
-// import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
-// import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
@@ -113,13 +110,4 @@ public class AutoChooser implements Dashboard {
 
     @Override
     public void alerts() {}
-
-    // ShootCommand.java
-    public class ShootCommand extends SequentialCommandGroup {
-        public ShootCommand(Shooter shooter, Indexer indexer) {
-            addCommands(
-                
-            );
-        }
-    }
 }
