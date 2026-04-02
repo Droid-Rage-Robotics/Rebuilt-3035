@@ -157,4 +157,44 @@ public class DRShooter extends Command{
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
         return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
     }
+
+    //https://blog.eeshwark.com/robotblog/shooting-on-the-fly
+    public void update(Pose2d robotPose, ChassisSpeeds robotSpeed) {
+
+        // 1. LATENCY COMP
+        double latency = 0.15; // Tuned constant
+        Translation2d futurePos = robotPose.getTranslation().plus(
+            new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond).times(latency)
+        );
+
+        // 2. GET TARGET VECTOR
+        Translation2d goalLocation = FieldConstants.HUB_RED.toTranslation2d();
+        Translation2d targetVec = goalLocation.minus(futurePos);
+        double dist = targetVec.getNorm();
+
+        // 3. CALCULATE IDEAL SHOT (Stationary)
+        // Note: This returns HORIZONTAL velocity component
+        double idealHorizontalSpeed = flywheelSpeedMap.get(dist);
+
+        // 4. VECTOR SUBTRACTION
+        Translation2d robotVelVec = new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
+        Translation2d shotVec = targetVec.div(dist).times(idealHorizontalSpeed).minus(robotVelVec);
+
+        // 5. CONVERT TO CONTROLS
+        double turretAngle = shotVec.getAngle().getDegrees();
+        double newHorizontalSpeed = shotVec.getNorm();
+
+        // 6. SOLVE FOR NEW PITCH/RPM
+        // Assuming constant total exit velocity, variable hood:
+        double totalExitVelocity = 15.0; // m/s
+        // Clamp to avoid domain errors if we need more speed than possible
+        double ratio = Math.min(newHorizontalSpeed / totalExitVelocity, 1.0);
+        double newPitch = Math.acos(ratio);
+
+        // 7. SET OUTPUTS
+        shooter.getTurret().setGoalAngle(Degrees.of(turretAngle));
+        // shooter.setRPM(calcRPM(totalExitVelocity));
+        shooter.getHood().setGoalAngle(Rotation2d.fromRadians(newPitch));
+        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+    }
 }
