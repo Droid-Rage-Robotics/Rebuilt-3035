@@ -34,9 +34,12 @@ public class AutoChooser implements Dashboard {
 
         NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
         NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
+        NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.SHOOT_DEPOT));
 
         NamedCommands.registerCommand("setShootTrenchR", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT));
         NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
+        NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_DEPOT));
+
 
         NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
 
@@ -95,6 +98,7 @@ public class AutoChooser implements Dashboard {
         // autoChooser.setDefaultOption("test", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
         // autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightNeutralOutpostDouble(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("leftNeutralDepot", Autos.leftNeutralDepot(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("centerHubDepot", Autos.centerHubDepot(drive, intake, indexer, kicker, shooter, vision));
         // autoChooser.addOption("leftNeutralDepotDouble", Autos.leftNeutralDepotDouble(drive, intake, indexer, kicker, shooter, vision));
 
 
