@@ -28,7 +28,7 @@ public class BottomRollers extends FlywheelTemplate {
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Coast)
         .withStatorCurrentLimit(80)//100
-        .withSupplyCurrentLimit(75);//100
+        .withSupplyCurrentLimit(50);//100
     
     public BottomRollers(boolean isEnabled) {
         super(isEnabled, constants, leftMotor);

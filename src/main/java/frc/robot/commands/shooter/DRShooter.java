@@ -33,7 +33,7 @@ public class DRShooter extends Command{
     private double distanceRobotToGoal;
     public static final Transform2d ROBOT_TO_TURRET_TRANSFORM =
         new Transform2d(
-            new Translation2d(Inches.zero(), Inches.of(-9)), //-13.25
+            new Translation2d(Inches.zero(), Inches.of(-9.32)), //-13.25
             new Rotation2d(Degrees.of(0)));//-32.5
     private static final InterpolatingDoubleTreeMap hoodMap =
         new InterpolatingDoubleTreeMap();
