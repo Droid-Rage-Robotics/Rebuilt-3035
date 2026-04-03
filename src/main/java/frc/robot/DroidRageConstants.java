@@ -5,7 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.function.Supplier;
 import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -107,10 +107,10 @@ public final class DroidRageConstants {
         // public static final Distance FUNNEL_RADIUS = Inches.of(24);
         // public static final Distance FUNNEL_HEIGHT = Inches.of(69);
 
-        public static final Translation3d HUB_BLUE = new Translation3d(4.625, 4.025, 2.05);
-        public static final Translation3d HUB_RED = new Translation3d(11.95,4, 2.05);
-        public static final Translation3d ALLIANCE_BLUE = new Translation3d(4.625, 4.025, 2.05);
-        public static final Translation3d ALLIANCE_RED = new Translation3d(11.95,4, 2.05);
+        public static final Translation2d HUB_BLUE = new Translation2d(4.625, 4.025);
+        public static final Translation2d HUB_RED = new Translation2d(11.95,4.025);
+        public static final Translation2d ALLIANCE_BLUE = new Translation2d(4.625, 4.025);
+        public static final Translation2d ALLIANCE_RED = new Translation2d(11.95,4);
     }
 
     public static Alliance alliance = DriverStation.Alliance.Blue; //Default to Blue

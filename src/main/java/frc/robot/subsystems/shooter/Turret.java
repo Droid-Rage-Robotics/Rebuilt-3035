@@ -25,7 +25,7 @@ public class Turret extends TurretTemplate {
         // .withMinAngle(Degrees.of(-145))
         // .withMaxAngle(Degrees.of(185))
         .withMinAngle(Degrees.of(0))
-        .withMaxAngle(Degrees.of(335))
+        .withMaxAngle(Degrees.of(303)) //335
         .withName("Turret")
         .withOffset(0)
         .withMainNum(0);

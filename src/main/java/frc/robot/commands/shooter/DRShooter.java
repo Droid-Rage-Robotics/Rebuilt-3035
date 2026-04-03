@@ -26,8 +26,8 @@ import frc.utility.DRAreaManager;
 public class DRShooter extends Command{
 
     private final Shooter shooter;    
-    private final Translation3d hubPose, alliancePose;
-    private Translation3d goalPose;
+    private final Translation2d hubPose, alliancePose;
+    private Translation2d goalPose;
     private final SwerveDrive drive;
     private double distanceRobotToGoal;
     public static final Transform3d ROBOT_TO_TURRET_TRANSFORM =
@@ -38,6 +38,20 @@ public class DRShooter extends Command{
     private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
         new InterpolatingDoubleTreeMap();
     static{
+        //Springs
+        // flywheelSpeedMap.put(1.25,40.0);
+        // flywheelSpeedMap.put(1.89,42.0);
+        // flywheelSpeedMap.put(3.05,47.0);
+        // flywheelSpeedMap.put(4.27,50.2);
+
+        // hoodMap.put(1.25,.0);
+        // hoodMap.put(1.89,11.2);
+        // hoodMap.put(3.05,12.1);
+        // hoodMap.put(4.27,12.75);
+
+
+
+        //Home Positions
         flywheelSpeedMap.put(1.25,40.0);
         flywheelSpeedMap.put(1.89,42.0);
         flywheelSpeedMap.put(3.05,47.0);
@@ -94,12 +108,12 @@ public class DRShooter extends Command{
         // distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
         distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
-        SmartDashboard.putNumber("Shooter/Goal Distance", distanceRobotToGoal);
+        System.out.println(distanceRobotToGoal);
+        // SmartDashboard.putNumber("Shooter/Goal Distance", distanceRobotToGoal);
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
-                    // update(drive.getState().Pose, drive.getCurrentRobotChassisSpeeds());
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
                     // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
 
@@ -115,9 +129,10 @@ public class DRShooter extends Command{
         }
     }
     
-    public static double getDistanceToHub(Pose2d robotPose, Translation3d target){
-        Translation2d target2d = new Translation2d(target.getX(), target.getY());
-        return robotPose.getTranslation().getDistance(target2d);
+    public static double getDistanceToHub(Pose2d robotPose, Translation2d target){
+        // Translation2d target2d = new Translation2d(target.getX(), target.getY());
+        return target.getDistance(robotPose.getTranslation());
+        // return robotPose.getTranslation().getDistance(target2d);
     }
 
     public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds) {
@@ -144,13 +159,13 @@ public class DRShooter extends Command{
      * @param target target pos
      * @return new turret angle measure
      */
-    public static Angle calculateAzimuthAngle(Pose2d robot, Translation3d target) {
+    public static Angle calculateAzimuthAngle(Pose2d robot, Translation2d target) {
         Translation2d turretTranslation = new Pose3d(robot)
                 .transformBy(ROBOT_TO_TURRET_TRANSFORM)
                 .toPose2d()
                 .getTranslation();
 
-        Translation2d direction = target.toTranslation2d().minus(turretTranslation);
+        Translation2d direction = target.minus(turretTranslation);
 
         double rawAngle = direction.getAngle()
             .minus(robot.getRotation())
@@ -162,43 +177,43 @@ public class DRShooter extends Command{
     }
 
     //https://blog.eeshwark.com/robotblog/shooting-on-the-fly
-    public void update(Pose2d robotPose, ChassisSpeeds robotSpeed) {
+//     public void update(Pose2d robotPose, ChassisSpeeds robotSpeed) {
 
-        // 1. LATENCY COMP
-        double latency = 0.15; // Tuned constant
-        Translation2d futurePos = robotPose.getTranslation().plus(
-            new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond).times(latency)
-        );
+//         // 1. LATENCY COMP
+//         double latency = 0.15; // Tuned constant
+//         Translation2d futurePos = robotPose.getTranslation().plus(
+//             new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond).times(latency)
+//         );
 
-        // 2. GET TARGET VECTOR
-        Translation2d goalLocation = FieldConstants.HUB_RED.toTranslation2d();
-        Translation2d targetVec = goalLocation.minus(futurePos);
-        double dist = targetVec.getNorm();
+//         // 2. GET TARGET VECTOR
+//         Translation2d goalLocation = FieldConstants.HUB_RED;
+//         Translation2d targetVec = goalLocation.minus(futurePos);
+//         double dist = targetVec.getNorm();
 
-        // 3. CALCULATE IDEAL SHOT (Stationary)
-        // Note: This returns HORIZONTAL velocity component
-        double idealHorizontalSpeed = flywheelSpeedMap.get(dist);
+//         // 3. CALCULATE IDEAL SHOT (Stationary)
+//         // Note: This returns HORIZONTAL velocity component
+//         double idealHorizontalSpeed = flywheelSpeedMap.get(dist);
 
-        // 4. VECTOR SUBTRACTION
-        Translation2d robotVelVec = new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
-        Translation2d shotVec = targetVec.div(dist).times(idealHorizontalSpeed).minus(robotVelVec);
+//         // 4. VECTOR SUBTRACTION
+//         Translation2d robotVelVec = new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
+//         Translation2d shotVec = targetVec.div(dist).times(idealHorizontalSpeed).minus(robotVelVec);
 
-        // 5. CONVERT TO CONTROLS
-        double turretAngle = shotVec.getAngle().getDegrees();
-        double newHorizontalSpeed = shotVec.getNorm();
+//         // 5. CONVERT TO CONTROLS
+//         double turretAngle = shotVec.getAngle().getDegrees();
+//         double newHorizontalSpeed = shotVec.getNorm();
 
-        // 6. SOLVE FOR NEW PITCH/RPM
-        // Assuming constant total exit velocity, variable hood:
-        double totalExitVelocity = 15.0; // m/s
-        // Clamp to avoid domain errors if we need more speed than possible
-        double ratio = Math.min(newHorizontalSpeed / totalExitVelocity, 1.0);
-        double newPitch = Math.acos(ratio);
+//         // 6. SOLVE FOR NEW PITCH/RPM
+//         // Assuming constant total exit velocity, variable hood:
+//         double totalExitVelocity = 15.0; // m/s
+//         // Clamp to avoid domain errors if we need more speed than possible
+//         double ratio = Math.min(newHorizontalSpeed / totalExitVelocity, 1.0);
+//         double newPitch = Math.acos(ratio);
 
-        turretAngle = MathUtil.inputModulus(turretAngle, 0, 360);
-        // 7. SET OUTPUTS
-        shooter.getTurret().setGoalAngle(Degrees.of(turretAngle).plus(Degrees.of(28)));
-        // shooter.setRPM(calcRPM(totalExitVelocity));
-        shooter.getHood().setGoalAngle(Rotation2d.fromRadians(newPitch));
-        shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
-    }
+//         turretAngle = MathUtil.inputModulus(turretAngle, 0, 360);
+//         // 7. SET OUTPUTS
+//         shooter.getTurret().setGoalAngle(Degrees.of(turretAngle).plus(Degrees.of(28)));
+//         // shooter.setRPM(calcRPM(totalExitVelocity));
+//         shooter.getHood().setGoalAngle(Rotation2d.fromRadians(newPitch));
+//         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+//     }
 }

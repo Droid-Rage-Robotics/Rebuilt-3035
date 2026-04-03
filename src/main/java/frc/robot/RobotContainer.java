@@ -3,12 +3,15 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
+import frc.robot.commands.manual.ManualHood;
+import frc.robot.commands.manual.ManualShooterWheel;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.DRShooter;
 import frc.robot.subsystems.Kicker;
@@ -36,8 +39,8 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(true),
-        new IntakeWheel(true)
+        new Pivot(false),
+        new IntakeWheel(false)
     );
     // private final Indexer indexer = new Indexer(true);
 	private final Indexer indexer = new Indexer(
@@ -66,15 +69,11 @@ public class RobotContainer {
 	
 
 	public RobotContainer() {
-		// drive.registerTelemetry(logger::telemeterize);
 		DriverStation.silenceJoystickConnectionWarning(true);
         
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
 		configureTeleOpBindings();
-		// operator.a().onTrue(indexer.getBottomRollers().getSysIdCommand());
-		// operator.a().onTrue(indexer.getTopRoller().getSysIdCommand());
-
 		// testShootingMove();
 	}
 
@@ -82,8 +81,8 @@ public class RobotContainer {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
-		
-		driver.a()
+		// if(DroidRageConstants.alliance==Alliance.Blue){
+			driver.a()
 			.onTrue(
 				new InstantCommand(()-> drive.resetPose(
 					new Pose2d(3.534, 3.977, new Rotation2d(
@@ -91,6 +90,25 @@ public class RobotContainer {
 					))
 				))
 			);
+		// } 
+		// else {
+		// 	driver.a()
+		// 	.onTrue(
+		// 		new InstantCommand(()-> drive.resetPose(
+		// 			new Pose2d(13, 3.977, new Rotation2d(
+		// 				0
+		// 			))
+		// 		))
+		// 	);
+		// }
+		// driver.a()
+		// 	.onTrue(
+		// 		new InstantCommand(()-> drive.resetPose(
+		// 			new Pose2d(3.534, 3.977, new Rotation2d(
+		// 				0
+		// 			))
+		// 		))
+		// 	);
 		
 
 		driver.rightTrigger()
@@ -136,8 +154,8 @@ public class RobotContainer {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		
-		// shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
-		// shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
+		shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
+		shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
 		operator.rightBumper()
 			.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
 			// .whileTrue(TeleopCommands.indexerWiggleIntake(intake))
@@ -148,10 +166,20 @@ public class RobotContainer {
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-		driver.a()
+		driver.b()
 			.onTrue(
 				new InstantCommand(()-> drive.resetPose(
 					new Pose2d(3.5,0.5,new Rotation2d(
+						0
+					)
+					)
+				))
+			);
+
+		driver.a()
+			.onTrue(
+				new InstantCommand(()-> drive.resetPose(
+					new Pose2d(3.534, 3.977, new Rotation2d(
 						0
 					))
 				))

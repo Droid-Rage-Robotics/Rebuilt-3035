@@ -30,3 +30,5 @@ Auto to Teleop Robot reset
 Turret Wraapping
 Update Wiring Diagram
 telemetry kicker, indexer, intake on
+
+vision on or oiff
