@@ -49,9 +49,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "NeutralToTrenchRight"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NeutralToTrenchRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setShootTrenchRTwo"
+                }
+              }
+            ]
           }
         },
         {

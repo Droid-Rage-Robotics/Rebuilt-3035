@@ -29,7 +29,9 @@ public class Shooter implements Dashboard, Sendable {
 
         SHOOT_TRENCH_RIGHT(-11,5.57,57.5), //v52.5
 
-        AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,0), //v52
+        AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,0), 
+        AUTO_SHOOT_TRENCH_RIGHT_TWO(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,SHOOT_TRENCH_RIGHT.getVelocity()), 
+
         
         SHOOT_TRENCH_LEFT(
             11, 
@@ -38,6 +40,7 @@ public class Shooter implements Dashboard, Sendable {
         ),
 
         AUTO_SHOOT_TRENCH_LEFT(SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees), 0,0),
+        AUTO_SHOOT_TRENCH_LEFT_TWO(SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees),0,SHOOT_TRENCH_LEFT.getVelocity()), 
         
         HOLD(210, 0, 20),//-220
         // HOARD(0,10,60)
