@@ -89,17 +89,17 @@ public class DRShooter extends Command{
 
     @Override
     public void initialize(){
-
-    }
-    
-    @Override 
-    public void execute(){
         if(DroidRageConstants.alliance == Alliance.Red){
             this.hubPose = FieldConstants.HUB_RED;
         } else if (DroidRageConstants.alliance == Alliance.Blue){
             this.hubPose = FieldConstants.HUB_BLUE;
 
         }
+    }
+    
+    @Override 
+    public void execute(){
+        
             // this.hubPose = FieldConstants.HUB_RED;
 
         switch(DRAreaManager.getCurrentZone()){

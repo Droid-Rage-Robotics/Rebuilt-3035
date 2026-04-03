@@ -165,6 +165,12 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     }
 
     public void updateVisionOdometry() {
+        LimelightHelpers.SetRobotOrientation(DroidRageConstants.leftLL, 
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+
+        LimelightHelpers.SetRobotOrientation(DroidRageConstants.rightLL, 
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+
         PoseEstimate left = Vision.getLeftEstimate();
         PoseEstimate right = Vision.getRightEstimate();
 
@@ -249,13 +255,9 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     @Override
     public void periodic() {
-        LimelightHelpers.SetRobotOrientation(DroidRageConstants.leftLL, 
-            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-
-        LimelightHelpers.SetRobotOrientation(DroidRageConstants.rightLL, 
-            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        
-        updateVisionOdometry(); 
+        if (DroidRageConstants.isVisionEnabled) {
+            updateVisionOdometry();
+        }
 
         /*
          * Periodically try to apply the operator perspective.
