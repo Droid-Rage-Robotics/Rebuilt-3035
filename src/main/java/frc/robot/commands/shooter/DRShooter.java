@@ -39,6 +39,8 @@ public class DRShooter extends Command{
         new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
         new InterpolatingDoubleTreeMap();
+    private static final InterpolatingDoubleTreeMap timeOffFlightMap =
+        new InterpolatingDoubleTreeMap();
     static{
         // Springs
         flywheelSpeedMap.put(1.0,42.5);
@@ -54,7 +56,11 @@ public class DRShooter extends Command{
         hoodMap.put(4.10,9.8);
         hoodMap.put(5.30,11.5);
 
-
+        timeOffFlightMap.put(5.68,1.16);
+        timeOffFlightMap.put(4.55,1.12);
+        timeOffFlightMap.put(3.15,1.11);
+        timeOffFlightMap.put(1.88,1.01);
+        timeOffFlightMap.put(1.38,0.9);
 
 
         //Home Positions
@@ -114,14 +120,15 @@ public class DRShooter extends Command{
                 break;
             case NEUTRAL, OPPOSITION:
                 // this.goalPose = this.hubPose;
-                this.goalPose = new Translation2d(this.alliancePose.getX(), drive.getState().Pose.getY());
+                // this.goalPose = new Translation2d(this.alliancePose.getX(), drive.getState().Pose.getY());
                 break;
         }
 
         // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
         Pose2d lookAheadPose = predictPosePos(
             drive.getState().Pose, 
-            drive.getCurrentRobotChassisSpeeds());
+            drive.getCurrentRobotChassisSpeeds(),
+            timeOffFlightMap.get(getDistanceToHub(drive.getState().Pose, goalPose)));
         distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
         // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
@@ -129,12 +136,19 @@ public class DRShooter extends Command{
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
-                case ALLIANCE_ZONE,NEUTRAL,OPPOSITION:
+                case ALLIANCE_ZONE:
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
                     // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
 
                     shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
+                    break;
+                case NEUTRAL,OPPOSITION:
+                    shooter.getHood().setGoalAngle(Rotation2d.kZero);
+                    shooter.getShooterWheel().setTargetVelocity(Shooter.IDLE_VELOCITY);
+                    // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(0));
+
+
                     break;
                 case BETWEEN:
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
@@ -151,9 +165,9 @@ public class DRShooter extends Command{
         // return robotPose.getTranslation().getDistance(target2d);
     }
 
-    public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds) {
-        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond;
-        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond;
+    public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds, double timeOffFlight) {
+        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * timeOffFlight;
+        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * timeOffFlight;
 
         // double turretVelocityX =
         //         fieldVelocity.vxMetersPerSecond
