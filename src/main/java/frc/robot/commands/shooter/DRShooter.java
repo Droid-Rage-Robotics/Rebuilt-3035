@@ -23,6 +23,7 @@ import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.utility.DRAreaManager;
 
+
 public class DRShooter extends Command{
 
     private final Shooter shooter;    
@@ -30,9 +31,10 @@ public class DRShooter extends Command{
     private Translation2d goalPose;
     private final SwerveDrive drive;
     private double distanceRobotToGoal;
-    public static final Transform3d ROBOT_TO_TURRET_TRANSFORM =
-        new Transform3d(new Translation3d(Inches.zero(), Inches.of(-13.25), Inches.of(6.613)), 
-            new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(0)));//-32.5
+    public static final Transform2d ROBOT_TO_TURRET_TRANSFORM =
+        new Transform2d(
+            new Translation2d(Inches.zero(), Inches.of(-9)), //-13.25
+            new Rotation2d(Degrees.of(0)));//-32.5
     private static final InterpolatingDoubleTreeMap hoodMap =
         new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
@@ -51,6 +53,7 @@ public class DRShooter extends Command{
         hoodMap.put(3.28,7.6);
         hoodMap.put(4.10,9.8);
         hoodMap.put(5.30,11.5);
+
 
 
 
@@ -116,14 +119,13 @@ public class DRShooter extends Command{
         }
 
         // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
-        // Pose2d lookAheadPose = predictPosePos(
-        //     drive.getState().Pose, 
-        //     drive.getCurrentRobotChassisSpeeds());
-        // distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
+        Pose2d lookAheadPose = predictPosePos(
+            drive.getState().Pose, 
+            drive.getCurrentRobotChassisSpeeds());
+        distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
-        distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
+        // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
         System.out.println(distanceRobotToGoal);
-        // SmartDashboard.putNumber("Shooter/Goal Distance", distanceRobotToGoal);
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
@@ -150,8 +152,8 @@ public class DRShooter extends Command{
     }
 
     public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds) {
-        double predictedX = currentPose.getX() - fieldSpeeds.vxMetersPerSecond;
-        double predictedY = currentPose.getY() - fieldSpeeds.vyMetersPerSecond;
+        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond;
+        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond;
 
         // double turretVelocityX =
         //         fieldVelocity.vxMetersPerSecond
@@ -174,9 +176,8 @@ public class DRShooter extends Command{
      * @return new turret angle measure
      */
     public static Angle calculateAzimuthAngle(Pose2d robot, Translation2d target) {
-        Translation2d turretTranslation = new Pose3d(robot)
+        Translation2d turretTranslation = robot
                 .transformBy(ROBOT_TO_TURRET_TRANSFORM)
-                .toPose2d()
                 .getTranslation();
 
         Translation2d direction = target.minus(turretTranslation);

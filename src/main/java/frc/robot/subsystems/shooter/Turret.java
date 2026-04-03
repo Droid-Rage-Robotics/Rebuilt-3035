@@ -35,7 +35,7 @@ public class Turret extends TurretTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Brake)
-        .withSupplyCurrentLimit(25)
+        .withSupplyCurrentLimit(15)
         .withStatorCurrentLimit(30);
     
     private static final EncoderConstants encoderConstants = new EncoderConstants()

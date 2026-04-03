@@ -39,7 +39,7 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
+        new Pivot(true),
         new IntakeWheel(true)
     );
     // private final Indexer indexer = new Indexer(true);
@@ -82,14 +82,14 @@ public class RobotContainer {
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 		// if(DroidRageConstants.alliance==Alliance.Blue){
-			driver.a()
-			.onTrue(
-				new InstantCommand(()-> drive.resetPose(
-					new Pose2d(3.534, 3.977, new Rotation2d(
-						0
-					))
-				))
-			);
+			// driver.a()
+			// .onTrue(
+			// 	new InstantCommand(()-> drive.resetPose(
+			// 		new Pose2d(3.534, 3.977, new Rotation2d(
+			// 			0
+			// 		))
+			// 	))
+			// );
 		// } 
 		// else {
 		// 	driver.a()
@@ -213,8 +213,8 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
-		 double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);//TODO: Output Distance
-        System.out.println(distanceRobotToGoal);
+		//  double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);//TODO: Output Distance
+        // System.out.println(distanceRobotToGoal);
 	}
 
 	public Command getAutonomousCommand() {

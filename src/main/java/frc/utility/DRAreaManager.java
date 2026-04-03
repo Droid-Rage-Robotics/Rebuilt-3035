@@ -27,9 +27,10 @@ public class DRAreaManager implements Dashboard, Sendable{
 
 	public DRAreaManager(SwerveDrive drive) {
 		this.drive = drive;
-		redAllianceZone = new Rectangle2d(new Translation2d(12.5,0), new Translation2d(16.5, 8));
-		blueAllianceZone = new Rectangle2d(new Translation2d(0,0), new Translation2d(4,8));
-		nuetralZone = new Rectangle2d(new Translation2d(5, 0), new Translation2d(11,8));
+		blueAllianceZone = new Rectangle2d(new Translation2d(0,0), new Translation2d(3.25,8));
+		nuetralZone = new Rectangle2d(new Translation2d(5.75, 0), new Translation2d(10.25,8));
+		redAllianceZone = new Rectangle2d(new Translation2d(12.75,0), new Translation2d(16.5, 8));
+
 
 		TelemetryUtils.registerDashboard(this);
 	}

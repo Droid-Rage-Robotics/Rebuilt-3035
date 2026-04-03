@@ -28,8 +28,8 @@ public class TopRoller extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Coast)
-        .withSupplyCurrentLimit(80)
-        .withStatorCurrentLimit(75); 
+        .withSupplyCurrentLimit(50)
+        .withStatorCurrentLimit(50); 
 
     public TopRoller(boolean isEnabled) {
         super(isEnabled, constants, rightMotor);
