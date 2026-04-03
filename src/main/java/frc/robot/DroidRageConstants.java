@@ -110,8 +110,8 @@ public final class DroidRageConstants {
 
         public static final Translation2d HUB_BLUE = new Translation2d(4.625, 4.025);
         public static final Translation2d HUB_RED = new Translation2d(11.95,4.025);
-        public static final Translation2d ALLIANCE_BLUE = new Translation2d(4.625, 4.025);
-        public static final Translation2d ALLIANCE_RED = new Translation2d(11.95,4);
+        public static final Translation2d ALLIANCE_BLUE = new Translation2d(.5, 0);
+        public static final Translation2d ALLIANCE_RED = new Translation2d(15.5,0);
     }
 
     public static Alliance alliance = DriverStation.Alliance.Blue; //Default to Blue

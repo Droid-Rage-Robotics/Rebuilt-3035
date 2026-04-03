@@ -70,18 +70,14 @@ public class DRShooter extends Command{
         this.shooter = shooter;
         this.drive = drive;
 
+        //this part does NOT initialize Positions correctly; Check initialize()
         if(DroidRageConstants.alliance == Alliance.Red){
             this.hubPose = FieldConstants.HUB_RED;
-        } else{// if (DroidRageConstants.alliance == Alliance.Blue){
+            this.alliancePose = FieldConstants.ALLIANCE_RED;
+        } else if (DroidRageConstants.alliance == Alliance.Blue){
             this.hubPose = FieldConstants.HUB_BLUE;
-
+            this.alliancePose = FieldConstants.ALLIANCE_BLUE;
         }
-        // this.hubPose = DroidRageConstants.alliance == Alliance.Red 
-        //     ? FieldConstants.HUB_RED 
-        //     : FieldConstants.HUB_BLUE;
-        this.alliancePose = DroidRageConstants.alliance == Alliance.Red 
-            ? FieldConstants.ALLIANCE_RED 
-            : FieldConstants.ALLIANCE_BLUE;
         this.goalPose = this.hubPose;
 
         addRequirements(
@@ -94,9 +90,10 @@ public class DRShooter extends Command{
     public void initialize(){
         if(DroidRageConstants.alliance == Alliance.Red){
             this.hubPose = FieldConstants.HUB_RED;
+            this.alliancePose = FieldConstants.ALLIANCE_RED;
         } else if (DroidRageConstants.alliance == Alliance.Blue){
             this.hubPose = FieldConstants.HUB_BLUE;
-
+            this.alliancePose = FieldConstants.ALLIANCE_BLUE;
         }
     }
     
@@ -113,8 +110,8 @@ public class DRShooter extends Command{
                 this.goalPose = this.hubPose;
                 break;
             case NEUTRAL, OPPOSITION:
-                this.goalPose = this.hubPose;
-                // this.goalPose = this.alliancePose;
+                // this.goalPose = this.hubPose;
+                this.goalPose = new Translation2d(this.alliancePose.getX(), drive.getState().Pose.getY());
                 break;
         }
 
