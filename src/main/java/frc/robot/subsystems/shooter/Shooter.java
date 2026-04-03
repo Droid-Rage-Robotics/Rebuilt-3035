@@ -29,18 +29,27 @@ public class Shooter implements Dashboard, Sendable {
 
         SHOOT_TRENCH_RIGHT(-11,5.57,57.5), //v52.5
 
-        AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,0), 
-        AUTO_SHOOT_TRENCH_RIGHT_TWO(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,SHOOT_TRENCH_RIGHT.getVelocity()), 
+        AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),
+            0,
+            0), 
+        AUTO_SHOOT_TRENCH_RIGHT_TWO(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,
+        SHOOT_TRENCH_RIGHT.getVelocity().in(RotationsPerSecond)), 
 
         
         SHOOT_TRENCH_LEFT(
             11, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
-            SHOOT_TRENCH_RIGHT.getVelocity()
+            SHOOT_TRENCH_RIGHT.getVelocity().in(RotationsPerSecond)
         ),
 
-        AUTO_SHOOT_TRENCH_LEFT(SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees), 0,0),
-        AUTO_SHOOT_TRENCH_LEFT_TWO(SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees),0,SHOOT_TRENCH_LEFT.getVelocity()), 
+        AUTO_SHOOT_TRENCH_LEFT(
+            SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees), 
+            0,
+            0),
+        AUTO_SHOOT_TRENCH_LEFT_TWO(
+            SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees),
+            0,
+            SHOOT_TRENCH_LEFT.getVelocity().in(RotationsPerSecond)), 
         
         HOLD(210, 0, 20),//-220
         // HOARD(0,10,60)
@@ -51,7 +60,7 @@ public class Shooter implements Dashboard, Sendable {
         CORNER_LEFT(
             148, 
             CORNER_RIGHT.getHoodAngle().getDegrees(),
-            CORNER_RIGHT.getVelocity()
+            CORNER_RIGHT.getVelocity().in(RotationsPerSecond)
         )
         ;
         
@@ -65,11 +74,11 @@ public class Shooter implements Dashboard, Sendable {
             this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
             this.velocity = RotationsPerSecond.of(velocity);
         }
-        private ShooterValue(double turretAngle, double hoodAngle, AngularVelocity velocity) {
-            this.turretAngle = Degrees.of(turretAngle);
-            this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
-            this.velocity = velocity;
-        }
+        // private ShooterValue(double turretAngle, double hoodAngle, AngularVelocity velocity) {
+        //     this.turretAngle = Degrees.of(turretAngle);
+        //     this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
+        //     this.velocity = velocity;
+        // }
     }
 
     @Getter private final Turret turret;
