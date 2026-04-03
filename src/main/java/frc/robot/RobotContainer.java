@@ -113,7 +113,7 @@ public class RobotContainer {
 
 		driver.rightTrigger()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
-			.whileTrue(intake.setTargetVelocityWaitCommand(IntakeValue.WheelVelocity.INTAKE))
+			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 		driver.leftTrigger()
 			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))

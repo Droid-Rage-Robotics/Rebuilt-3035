@@ -17,7 +17,7 @@ import lombok.Getter;
 public class Intake implements Sendable {
     public class IntakeValue {
         public enum PivotAngle {
-            DOWN(160),
+            DOWN(161.5),
             HALF_THREE(DOWN.getAngle().getDegrees()-5),
             HALF_TWO(DOWN.getAngle().getDegrees()-10),
             HALF_ONE(DOWN.getAngle().getDegrees()-15),

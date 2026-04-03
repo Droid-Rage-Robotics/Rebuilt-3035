@@ -41,7 +41,7 @@ public class TeleopCommands {
      */
     public static Command indexerWiggleIntake(Intake intake) {
         return new SequentialCommandGroup(
-            new WaitCommand(2),
+            new WaitCommand(1),
             new SequentialCommandGroup(
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
                 new WaitCommand(0.5),
