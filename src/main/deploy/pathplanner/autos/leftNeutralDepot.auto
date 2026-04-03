@@ -140,6 +140,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": null,
   "choreoAuto": false
 }
