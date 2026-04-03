@@ -21,15 +21,15 @@ public class Shooter implements Dashboard, Sendable {
     public enum ShooterValue {
         SHOOT_OUTPOST(71,15,70), //v70
 
-        SHORT(210, 10, 20),// 45
-        FAR(210,0,0),
+        SHORT(180, 10, 45),// 45
+        FAR(180,0,0),
 
-        SHOOT_TRENCH_RIGHT(24,5.57,57.5), //v52
+        SHOOT_TRENCH_RIGHT(-15,5.57,47.5), //v52.5
 
         AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,0), //v52
         
         SHOOT_TRENCH_LEFT(
-            334, 
+            15, 
             SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
             SHOOT_TRENCH_RIGHT.getVelocity()
         ),
@@ -40,10 +40,10 @@ public class Shooter implements Dashboard, Sendable {
         // HOARD(0,10,60)
 
         CORNER_RIGHT(
-            50, 18, 60
+            210, 18, 60
         ),
         CORNER_LEFT(
-            310, 
+            148, 
             CORNER_RIGHT.getHoodAngle().getDegrees(),
             CORNER_RIGHT.getVelocity()
         )
