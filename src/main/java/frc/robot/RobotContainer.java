@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
 import frc.robot.commands.manual.ManualHood;
@@ -36,7 +37,7 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(false),
@@ -44,15 +45,15 @@ public class RobotContainer {
     );
     // private final Indexer indexer = new Indexer(true);
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(true), 
-		new TopRoller(true)
+		new BottomRollers(false), 
+		new TopRoller(false)
 	);
 
-    private final Kicker kicker = new Kicker(true);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
-        new Hood(true),
-        new ShooterWheel(true)
+        new Turret(false),
+        new Hood(false),
+        new ShooterWheel(false)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
@@ -154,6 +155,7 @@ public class RobotContainer {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		
+		
 		shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
 		shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
 		operator.rightBumper()
@@ -166,7 +168,7 @@ public class RobotContainer {
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-		driver.b()
+		driver.a()
 			.onTrue(
 				new InstantCommand(()-> drive.resetPose(
 					new Pose2d(3.5,0.5,new Rotation2d(
@@ -208,6 +210,8 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
+		//  double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);//TODO: Output Distance
+        // System.out.println(distanceRobotToGoal);
 	}
 
 	public Command getAutonomousCommand() {

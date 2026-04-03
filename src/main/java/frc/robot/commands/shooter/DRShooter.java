@@ -26,7 +26,7 @@ import frc.utility.DRAreaManager;
 public class DRShooter extends Command{
 
     private final Shooter shooter;    
-    private final Translation2d hubPose, alliancePose;
+    private  Translation2d hubPose, alliancePose;
     private Translation2d goalPose;
     private final SwerveDrive drive;
     private double distanceRobotToGoal;
@@ -67,9 +67,15 @@ public class DRShooter extends Command{
         this.shooter = shooter;
         this.drive = drive;
 
-        this.hubPose = DroidRageConstants.alliance == Alliance.Red 
-            ? FieldConstants.HUB_RED 
-            : FieldConstants.HUB_BLUE;
+        if(DroidRageConstants.alliance == Alliance.Red){
+            this.hubPose = FieldConstants.HUB_RED;
+        } else{// if (DroidRageConstants.alliance == Alliance.Blue){
+            this.hubPose = FieldConstants.HUB_BLUE;
+
+        }
+        // this.hubPose = DroidRageConstants.alliance == Alliance.Red 
+        //     ? FieldConstants.HUB_RED 
+        //     : FieldConstants.HUB_BLUE;
         this.alliancePose = DroidRageConstants.alliance == Alliance.Red 
             ? FieldConstants.ALLIANCE_RED 
             : FieldConstants.ALLIANCE_BLUE;
@@ -88,6 +94,14 @@ public class DRShooter extends Command{
     
     @Override 
     public void execute(){
+        if(DroidRageConstants.alliance == Alliance.Red){
+            this.hubPose = FieldConstants.HUB_RED;
+        } else if (DroidRageConstants.alliance == Alliance.Blue){
+            this.hubPose = FieldConstants.HUB_BLUE;
+
+        }
+            // this.hubPose = FieldConstants.HUB_RED;
+
         switch(DRAreaManager.getCurrentZone()){
             case ALLIANCE_ZONE:
                 this.goalPose = this.hubPose;
