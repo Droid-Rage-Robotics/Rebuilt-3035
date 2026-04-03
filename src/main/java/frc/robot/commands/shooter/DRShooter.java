@@ -38,7 +38,23 @@ public class DRShooter extends Command{
     private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
         new InterpolatingDoubleTreeMap();
     static{
-        //Springs
+        // Springs
+        flywheelSpeedMap.put(1.0,42.5);
+        flywheelSpeedMap.put(2.15,47.0);
+        flywheelSpeedMap.put(3.28,50.6);
+        flywheelSpeedMap.put(4.10,54.5);
+        flywheelSpeedMap.put(5.30,58.0);
+
+
+        hoodMap.put(1.0,.0);
+        hoodMap.put(2.15, 5.77);
+        hoodMap.put(3.28,7.6);
+        hoodMap.put(4.10,9.8);
+        hoodMap.put(5.30,11.5);
+
+
+
+        //Home Positions
         // flywheelSpeedMap.put(1.25,40.0);
         // flywheelSpeedMap.put(1.89,42.0);
         // flywheelSpeedMap.put(3.05,47.0);
@@ -48,19 +64,6 @@ public class DRShooter extends Command{
         // hoodMap.put(1.89,11.2);
         // hoodMap.put(3.05,12.1);
         // hoodMap.put(4.27,12.75);
-
-
-
-        //Home Positions
-        flywheelSpeedMap.put(1.25,40.0);
-        flywheelSpeedMap.put(1.89,42.0);
-        flywheelSpeedMap.put(3.05,47.0);
-        flywheelSpeedMap.put(4.27,50.2);
-
-        hoodMap.put(1.25,.0);
-        hoodMap.put(1.89,11.2);
-        hoodMap.put(3.05,12.1);
-        hoodMap.put(4.27,12.75);
     }
 
     public DRShooter(SwerveDrive drive, Shooter shooter) {
