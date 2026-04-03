@@ -21,19 +21,19 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "intake"
+                        "name": "startPivot"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.7
+                        "waitTime": 0.25
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "startPivot"
+                        "name": "intake"
                       }
                     }
                   ]
@@ -119,12 +119,6 @@
                 "type": "sequential",
                 "data": {
                   "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.7
-                      }
-                    },
                     {
                       "type": "named",
                       "data": {
