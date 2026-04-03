@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,10 +28,10 @@ import frc.robot.subsystems.intake.IntakeWheel;
 import frc.robot.subsystems.intake.Pivot;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.utility.DRAreaManager;
 
 public class RobotContainer {
@@ -41,19 +40,19 @@ public class RobotContainer {
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(false),
-        new IntakeWheel(false)
+        new IntakeWheel(true)
     );
     // private final Indexer indexer = new Indexer(true);
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(false), 
-		new TopRoller(false)
+		new BottomRollers(true), 
+		new TopRoller(true)
 	);
 
-    private final Kicker kicker = new Kicker(false);
+    private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
-        new ShooterWheel(false)
+        new Turret(true),
+        new Hood(true),
+        new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
@@ -123,9 +122,13 @@ public class RobotContainer {
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
 		operator.b()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT)); //CORNER_RIGHT
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT)); 
+			// .onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT)); //CORNER_RIGHT
+
 		operator.x()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT)); //ORNER_LEFT
+			// .onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT)); //ORNER_LEFT
+
 		operator.a()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
 		
@@ -210,8 +213,8 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
-		//  double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);//TODO: Output Distance
-        // System.out.println(distanceRobotToGoal);
+		 double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);//TODO: Output Distance
+        System.out.println(distanceRobotToGoal);
 	}
 
 	public Command getAutonomousCommand() {
