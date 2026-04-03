@@ -49,51 +49,31 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
+          "data": {
+            "pathName": "NeutralToTrenchRight"
+          }
+        },
+        {
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "NeutralToTrenchRight"
+                  "name": "shootTrenchR"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.1
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shootTrenchR"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "index"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "wiggleIntake"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "index"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "wiggleIntake"
                 }
               }
             ]
@@ -138,12 +118,6 @@
                       }
                     }
                   ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "setShootTrenchR"
                 }
               }
             ]

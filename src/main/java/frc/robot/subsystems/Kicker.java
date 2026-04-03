@@ -47,7 +47,7 @@ public class Kicker extends FlywheelTemplate {
         .withIdleMode(NeutralModeValue.Coast)
         .withConversionFactor( 1)
         .withSupplyCurrentLimit(35)
-        .withStatorCurrentLimit(50);
+        .withStatorCurrentLimit(35);
 
     public Kicker(boolean isEnabled) {
         super(isEnabled, constants, motor);
