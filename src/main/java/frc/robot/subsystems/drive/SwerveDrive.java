@@ -158,7 +158,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             startSimThread();
         }
 
-        configNeutralMode(NeutralModeValue.Coast);
+        configNeutralMode(NeutralModeValue.Brake);
 
         SmartDashboard.putData("Drive/fieldPose", fieldPose);
         configurePathPlanner();
