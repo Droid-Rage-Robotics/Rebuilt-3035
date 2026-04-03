@@ -20,6 +20,9 @@ import lombok.Setter;
 public class Shooter implements Dashboard, Sendable {
     public enum ShooterValue {
         SHOOT_OUTPOST(71,15,70), //v70
+        SHOOT_DEPOT(0,0,0),
+
+        AUTO_SHOOT_DEPOT(SHOOT_DEPOT.getTurretAngle().in(Degrees),SHOOT_DEPOT.getHoodAngle().getDegrees(),0),
 
         SHORT(180, 10, 45),// 45
         FAR(180,0,0),
