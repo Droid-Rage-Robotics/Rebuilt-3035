@@ -37,8 +37,10 @@ public class SwerveDriveTeleop extends Command {
 
         driver.rightBumper().onTrue(drive.setSpeed(Speed.SLOW))
             .onFalse(drive.setSpeed(Speed.NORMAL));
+        driver.leftBumper().onTrue(drive.setSpeed(Speed.SUPER_SLOW))
+            .onFalse(drive.setSpeed(Speed.NORMAL));
 
-        driver.leftBumper().whileTrue(drive.applyRequest(()->brakeRequest));
+        driver.x().whileTrue(drive.applyRequest(()->brakeRequest));
 
         driver.b().onTrue(new InstantCommand(drive::seedFieldCentric));
         // driver.b().and(driver.back()).onTrue(new InstantCommand(drive::tareEverything)); //This is bad idea

@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 8.7,
-        "y": 3.5
+        "x": 8.3,
+        "y": 4.5
       },
       "prevControl": {
-        "x": 8.7,
-        "y": 7.0
+        "x": 8.3,
+        "y": 8.0
       },
       "nextControl": null,
       "isLocked": false,

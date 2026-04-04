@@ -63,6 +63,8 @@ public class DRShooter extends Command{
         flywheelSpeedMap.put(4.20,50.0);
         flywheelSpeedMap.put(5.10,53.5);
         flywheelSpeedMap.put(5.6,58.1);
+        flywheelSpeedMap.put(6.1,60.0);
+
 
 
 
@@ -72,6 +74,8 @@ public class DRShooter extends Command{
         hoodMap.put(4.2,16.8);
         hoodMap.put(5.10,18.5);
         hoodMap.put(5.6,19.5);
+        hoodMap.put(6.1,20.0);
+
 
 
         timeOffFlightMap.put(5.68,1.16);
@@ -150,7 +154,7 @@ public class DRShooter extends Command{
         distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
         // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
-        System.out.println(distanceRobotToGoal);
+        // System.out.println(distanceRobotToGoal);
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){

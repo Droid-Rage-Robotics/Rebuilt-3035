@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5820120481927713,
-        "y": 0.6036987951807224
+        "x": 3.582,
+        "y": 0.25
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.832012048192771,
-        "y": 0.6036987951807224
+        "x": 6.832,
+        "y": 0.25
       },
       "isLocked": false,
       "linkedName": "R-Trench-SHOOT"
     },
     {
       "anchor": {
-        "x": 8.0,
+        "x": 8.5,
         "y": 4.0
       },
       "prevControl": {
-        "x": 8.0,
+        "x": 8.5,
         "y": 0.4249999999999998
       },
       "nextControl": null,

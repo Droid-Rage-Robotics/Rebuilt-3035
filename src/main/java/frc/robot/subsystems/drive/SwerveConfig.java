@@ -54,7 +54,7 @@ public class SwerveConfig {
         TURBO(1, 1),
         NORMAL(1.6, 1.),//3.5, 1 //1,.4
         SLOW(.2, 0.25),
-        SUPER_SLOW(0.05, 0.05),
+        SUPER_SLOW(0.15, 0.17),
         ;
         private final double translationalValue;
         private final double angularValue;

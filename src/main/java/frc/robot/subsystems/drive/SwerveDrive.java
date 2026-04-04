@@ -188,19 +188,19 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             // }
         }
 
-        // if (right != null && right.tagCount > 0) {
-        //     double dist = Vision.closestTagDistance(right);
-        //     double std = Vision.distanceToStdDev(dist);
-        //     double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+        if (right != null && right.tagCount > 0) {
+            double dist = Vision.closestTagDistance(right);
+            double std = Vision.distanceToStdDev(dist);
+            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
 
-        //     // if (Vision.isReasonable(getEstimatedPose(), right.pose)) {
-        //         addVisionMeasurement(
-        //             right.pose,
-        //             right.timestampSeconds,
-        //             VecBuilder.fill(std, std, stdTheta)
-        //         );
-        //     // }  
-        // }
+            // if (Vision.isReasonable(getEstimatedPose(), right.pose)) {
+                addVisionMeasurement(
+                    right.pose,
+                    right.timestampSeconds,
+                    VecBuilder.fill(std, std, stdTheta)
+                );
+            // }  
+        }
     }
     
     @Override

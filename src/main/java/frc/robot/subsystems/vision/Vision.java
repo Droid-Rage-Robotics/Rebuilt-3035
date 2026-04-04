@@ -4,13 +4,17 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
+import frc.utility.TelemetryUtils;
+import frc.utility.TelemetryUtils.Dashboard;
 import lombok.Getter;
 
-public class Vision extends SubsystemBase {
+public class Vision extends SubsystemBase implements Dashboard {
     public enum MountPose { // ONLY APPLY IN LIMELIGHT WEB UI
         LEFT_FORWARD(Units.inchesToMeters(-10)),
         LEFT_SIDE(Units.inchesToMeters(-10.25)),
@@ -53,6 +57,14 @@ public class Vision extends SubsystemBase {
     // private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
 
     public Vision() {
+        TelemetryUtils.registerDashboard(this);
+    }
+    
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addBooleanProperty("Right Target", () -> LimelightHelpers.getTV(DroidRageConstants.rightLL), null);
+        builder.addBooleanProperty("Left Target", () -> LimelightHelpers.getTV(DroidRageConstants.leftLL), null);
+
     }
 
     @Override
@@ -156,4 +168,15 @@ public class Vision extends SubsystemBase {
     public static PoseEstimate getRightEstimate() {
         return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.rightLL);
     }
+
+    @Override
+    public void elasticInit() {
+        SmartDashboard.putData("Vision", this);
+    }
+
+    @Override
+    public void practiceWriters() {}
+
+    @Override
+    public void alerts() {}
 }
