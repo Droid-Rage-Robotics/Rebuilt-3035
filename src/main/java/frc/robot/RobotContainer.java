@@ -173,24 +173,32 @@ public class RobotContainer {
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP))
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 
-		driver.a()
+		// driver.a()
+		// 	.onTrue(
+		// 		new InstantCommand(()-> drive.resetPose(
+		// 			new Pose2d(3.5,0.5,new Rotation2d(
+		// 				0
+		// 			)
+		// 			)
+		// 		))
+		// 	);
+			driver.a()
 			.onTrue(
 				new InstantCommand(()-> drive.resetPose(
-					new Pose2d(3.5,0.5,new Rotation2d(
-						0
-					)
-					)
-				))
-			);
-
-		driver.a()
-			.onTrue(
-				new InstantCommand(()-> drive.resetPose(
-					new Pose2d(3.534, 3.977, new Rotation2d(
+					new Pose2d(13, 3.977, new Rotation2d(
 						0
 					))
 				))
 			);
+
+		// driver.a()
+		// 	.onTrue(
+		// 		new InstantCommand(()-> drive.resetPose(
+		// 			new Pose2d(3.534, 3.977, new Rotation2d(
+		// 				0
+		// 			))
+		// 		))
+		// 	);
 		
 		// operator.povUp()
 		// 	.whileTrue(
@@ -215,7 +223,7 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
-		//  double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_BLUE);//TODO: Output Distance
+		// double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_RED);//TODO: Output Distance
         // System.out.println(distanceRobotToGoal);
 		// System.out.println(Shooter.ShooterValue.SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees));
 	}

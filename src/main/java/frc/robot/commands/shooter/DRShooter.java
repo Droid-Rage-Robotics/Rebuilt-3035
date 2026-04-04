@@ -42,19 +42,37 @@ public class DRShooter extends Command{
     private static final InterpolatingDoubleTreeMap timeOffFlightMap =
         new InterpolatingDoubleTreeMap();
     static{
-        // Springs
-        flywheelSpeedMap.put(1.0,42.5);
-        flywheelSpeedMap.put(2.15,47.0);
-        flywheelSpeedMap.put(3.28,50.6);
-        flywheelSpeedMap.put(4.10,54.5);
-        flywheelSpeedMap.put(5.30,58.0);
+        // Springs Old
+        // flywheelSpeedMap.put(1.0,42.5);
+        // flywheelSpeedMap.put(2.15,47.0);
+        // flywheelSpeedMap.put(3.28,50.6);
+        // flywheelSpeedMap.put(4.10,54.5);
+        // flywheelSpeedMap.put(5.30,58.0);
 
 
-        hoodMap.put(1.0,.0);
-        hoodMap.put(2.15, 5.77);
-        hoodMap.put(3.28,7.6);
-        hoodMap.put(4.10,9.8);
-        hoodMap.put(5.30,11.5);
+        // hoodMap.put(1.0,.0);
+        // hoodMap.put(2.15, 5.77);
+        // hoodMap.put(3.28,7.6);
+        // hoodMap.put(4.10,9.8);
+        // hoodMap.put(5.30,11.5);
+
+
+        flywheelSpeedMap.put(1.5,41.5);
+        flywheelSpeedMap.put(2.0,42.7);
+        flywheelSpeedMap.put(2.9,46.0);
+        flywheelSpeedMap.put(4.20,50.0);
+        flywheelSpeedMap.put(5.10,53.5);
+        flywheelSpeedMap.put(5.6,58.1);
+
+
+
+        hoodMap.put(1.5,2.85);
+        hoodMap.put(2.00, 7.8);
+        hoodMap.put(2.9,10.7);
+        hoodMap.put(4.2,16.8);
+        hoodMap.put(5.10,18.5);
+        hoodMap.put(5.6,19.5);
+
 
         timeOffFlightMap.put(5.68,1.16);
         timeOffFlightMap.put(4.55,1.12);

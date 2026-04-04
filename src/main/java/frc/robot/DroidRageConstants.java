@@ -98,7 +98,7 @@ public final class DroidRageConstants {
     public static Supplier<Boolean> BatteryLow = () -> RobotController.getBatteryVoltage()<12.5;
     
     public static boolean didWeWin = true; //Win Auto?
-    public static boolean isShooterManual = true; //True - Manual; False - Tracking
+    public static boolean isShooterManual = false; //True - Manual; False - Tracking
     public static final boolean isVisionEnabled = true;
     // public static setIsShooterManual(boolean isManual){
     //     isShooterManual = isManual;
