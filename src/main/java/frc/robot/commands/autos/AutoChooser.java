@@ -99,12 +99,12 @@ public class AutoChooser implements Dashboard {
 
     public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         autoChooser.addOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("rightNeutralOutpostSh", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("rightNeutralOutpostSh", Autos.rightNeutralOutpostSh(drive, intake, indexer, kicker, shooter, vision));
         
         // autoChooser.setDefaultOption("test", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
         // autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightNeutralOutpostDouble(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("leftNeutralDepot", Autos.leftNeutralDepot(drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("leftNeutralDepotSh", Autos.leftNeutralDepot(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("leftNeutralDepotSh", Autos.leftNeutralDepotSh(drive, intake, indexer, kicker, shooter, vision));
         // autoChooser.addOption("centerHubDepot", Autos.centerHubDepot(drive, intake, indexer, kicker, shooter, vision));
         // autoChooser.addOption("leftNeutralDepotDouble", Autos.leftNeutralDepotDouble(drive, intake, indexer, kicker, shooter, vision));
 
