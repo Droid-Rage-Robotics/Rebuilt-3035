@@ -28,6 +28,7 @@ public class Shooter implements Dashboard, Sendable {
         FAR(180,0,0),
 
         SHOOT_TRENCH_RIGHT(-11,5.57,57.5), //v52.5
+        // SHOOT_TRENCH_RIGHT_AP(-11,5.57,57.5), //v52.5
 
         AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),
             0,

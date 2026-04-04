@@ -42,7 +42,7 @@ public class AutoChooser implements Dashboard {
         NamedCommands.registerCommand("setShootTrenchRTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO));
         NamedCommands.registerCommand("setShootTrenchLTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO));
         
-        NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_DEPOT));
+        // NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_DEPOT));
 
 
         NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
