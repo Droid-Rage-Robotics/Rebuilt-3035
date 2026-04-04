@@ -19,6 +19,15 @@ public final class Autos {
                 .build()
         );
     }
+    public static Command rightNeutralOutpostSh(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            PathPlannerFollow.create(drive, "rightNeutralOutpostSh")
+            // PathPlannerFollow.create(drive, "test")
+                .setMaxVelocity(8)
+                .setAcceleration(8)
+                .build()
+        );
+    }
 
     public static Command centerHubDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
@@ -28,6 +37,8 @@ public final class Autos {
                 .build()
         );
     }
+
+    
 
     // public static Command rightNeutralOutpostDouble(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
     //     return new SequentialCommandGroup(
@@ -46,6 +57,15 @@ public final class Autos {
     public static Command leftNeutralDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             PathPlannerFollow.create(drive, "leftNeutralDepot")
+                .setMaxVelocity(8)
+                .setAcceleration(8)
+                .build()
+        );
+    }
+    
+    public static Command leftNeutralDepotSh(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            PathPlannerFollow.create(drive, "leftNeutralDepotSh")
                 .setMaxVelocity(8)
                 .setAcceleration(8)
                 .build()
