@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.4,
+        "x": 4.3,
         "y": 0.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.6000000000000005,
-        "y": 0.45
+        "x": 8.09236804564907,
+        "y": 0.4315834522111266
       },
       "isLocked": false,
       "linkedName": "R-Trench"
     },
     {
       "anchor": {
-        "x": 8.3,
+        "x": 8.25,
         "y": 3.2
       },
       "prevControl": {
-        "x": 8.3,
-        "y": -0.2999999999999998
+        "x": 8.25706134094151,
+        "y": 0.19868758915834572
       },
       "nextControl": null,
       "isLocked": false,
