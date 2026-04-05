@@ -33,8 +33,8 @@ public class Pivot extends ArmTemplate {
         .withConversionFactor(1)
         .withDirection(Direction.Forward)
         .withIdleMode(NeutralModeValue.Brake)
-        .withStatorCurrentLimit(45) //Reefscape 50
-        .withSupplyCurrentLimit(35); //Reefscape None
+        .withStatorCurrentLimit(40) //Reefscape 50
+        .withSupplyCurrentLimit(30); //Reefscape None
         //TODO: Uncomment and check the command to turn on and off current limit
 
 
