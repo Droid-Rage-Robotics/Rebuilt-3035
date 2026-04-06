@@ -14,6 +14,7 @@ public class PathPlannerFollow {
     private double acceleration = 0.5;
     private HashMap<String, Command> eventMap = new HashMap<>();
 
+    //You might not actually need the DT
     private PathPlannerFollow(SwerveDrive drive, String autoName, double maxVelocity, double acceleration, HashMap<String, Command> eventMap) {
         this.drive = drive;
         this.autoName = autoName;

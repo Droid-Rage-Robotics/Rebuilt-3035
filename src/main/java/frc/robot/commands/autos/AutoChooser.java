@@ -108,6 +108,8 @@ public class AutoChooser implements Dashboard {
         // autoChooser.addOption("centerHubDepot", Autos.centerHubDepot(drive, intake, indexer, kicker, shooter, vision));
         // autoChooser.addOption("leftNeutralDepotDouble", Autos.leftNeutralDepotDouble(drive, intake, indexer, kicker, shooter, vision));
 
+        autoChooser.addOption("TestFindtoPose", Autos.testPathFindingtoPath());
+
 
     }
     

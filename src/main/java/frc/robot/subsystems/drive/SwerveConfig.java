@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -26,6 +27,13 @@ import edu.wpi.first.units.measure.Voltage;
 import lombok.Getter;
 
 public class SwerveConfig {
+
+    public static PathConstraints pathConstraint = new PathConstraints(
+            7.6, 
+            7.6,
+            Math.toRadians(360), //1506
+            Math.toRadians(360));
+
     public static class ModuleConstants {
         public static final Distance WHEEL_DIAMETER = Inches.of(4);
         // public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();

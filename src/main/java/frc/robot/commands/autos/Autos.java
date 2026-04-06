@@ -1,8 +1,20 @@
 package frc.robot.commands.autos;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
+
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Kicker;
+import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -84,4 +96,25 @@ public final class Autos {
     //             .build()
     //     );
     // }
+
+    public static Command testPathFindingtoPath(){
+        // Since AutoBuilder is configured, we can use it to build pathfinding commands
+        // Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
+        //     PathPlannerPath.fromPathFile("ForwardTest"),
+        //     SwerveConfig.pathConstraint);
+        // return pathfindingCommand;
+        return new InstantCommand();
+    }
+    public static Command testPathFinding(SwerveDrive drive){
+        return new SequentialCommandGroup(
+            PathPlannerFollow.create(drive, "ForwardTest")
+                .setMaxVelocity(1)
+                .setAcceleration(1)
+                .build(),
+            AutoBuilder.pathfindToPose(
+                new Pose2d(Meters.of(3), Meters.of(3), new Rotation2d(Degrees.of(0))), 
+                SwerveConfig.pathConstraint)
+        );
+        
+    }
 }

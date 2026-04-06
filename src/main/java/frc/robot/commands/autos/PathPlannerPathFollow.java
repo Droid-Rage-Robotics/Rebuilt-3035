@@ -20,8 +20,7 @@ public class PathPlannerPathFollow {
     private double acceleration = 0.5;
     private HashMap<String, Command> eventMap = new HashMap<>();
 
-    
-
+    /*  */
     private PathPlannerPathFollow(SwerveDrive drive, String pathName, double maxVelocity, double acceleration, HashMap<String, Command> eventMap) {
         this.drive = drive;
         this.pathName = pathName;
@@ -60,7 +59,4 @@ public class PathPlannerPathFollow {
         return AutoBuilder.followPath(path);
 
     }
-    //Translation PID constants - PID constants to correct for translation error (used to create the X and Y PID controllers)
-    //Rotation PID constants - PID constants to correct for rotation error (used to create the rotation controller)
-    
 }
