@@ -28,6 +28,7 @@ public class TalonEx implements Dashboard {
     private final TalonFXConfigurator configurator;
     private final int deviceId;
     private final CANBus canBus;
+    private double supplyCurrentLimit = 70, statorCurrentLimit = 120;
     private double conversionFactor = 1;
     private Subsystem subsystem;
     private boolean isEnabled;
@@ -90,6 +91,7 @@ public class TalonEx implements Dashboard {
      * @return TalonEx (for call chaining)
      */
     public TalonEx withSupplyCurrentLimit(double value) {
+        this.supplyCurrentLimit=value;
         config.CurrentLimits.SupplyCurrentLimit = value;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         configurator.apply(config);
@@ -103,6 +105,7 @@ public class TalonEx implements Dashboard {
      * @return TalonEx (for call chaining)
      */
     public TalonEx withStatorCurrentLimit(double value) {
+        this.statorCurrentLimit=value;
         config.CurrentLimits.StatorCurrentLimit = value;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         configurator.apply(config);
@@ -140,12 +143,31 @@ public class TalonEx implements Dashboard {
         config.MotionMagic=configs;
         return this;
     }
-
-    public TalonEx changeCurrentLimits(boolean isCurrentOn){
-        config.CurrentLimits.SupplyCurrentLimitEnable = isCurrentOn;
-        config.CurrentLimits.StatorCurrentLimitEnable = isCurrentOn;
+    
+    public void turnCurrentLimitOff() {
+        config.CurrentLimits.SupplyCurrentLimitEnable = false;
+        config.CurrentLimits.StatorCurrentLimitEnable = false;
         configurator.apply(config);
-        return this;
+    }
+    public void turnCurrentLimitOn() {
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        configurator.apply(config);
+    }
+
+    public void changeCurrentLimits(double newSupplyLimit, double newStatorLimit) {
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config.CurrentLimits.SupplyCurrentLimit = newSupplyLimit;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = newStatorLimit;
+        configurator.apply(config);
+    }
+    public void revertCurrentLimits() {
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config.CurrentLimits.SupplyCurrentLimit = this.supplyCurrentLimit;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = this.statorCurrentLimit;
+        configurator.apply(config);
     }
 
     /**

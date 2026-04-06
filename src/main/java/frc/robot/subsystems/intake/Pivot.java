@@ -75,9 +75,14 @@ public class Pivot extends ArmTemplate {
     //     }
     // }
 
-    public void changeCurrentLimit(boolean isCurrentOn){ 
+    public void turnCurrentLimitOff(){ 
         for (int i = 0; i < getAllMotor().length; i++) {
-            getAllMotor()[i].changeCurrentLimits(isCurrentOn);
+            getAllMotor()[i].turnCurrentLimitOff();
+        }
+    }
+    public void turnCurrentLimitOn(){ 
+        for (int i = 0; i < getAllMotor().length; i++) {
+            getAllMotor()[i].turnCurrentLimitOn();
         }
     }
 }

@@ -18,11 +18,11 @@ public class AutoCommands{
     public static Command startPivotCommand(Intake intake){ //TODO: Test
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new InstantCommand(()->intake.getPivot().changeCurrentLimit(false)),
+                new InstantCommand(()->intake.getPivot().turnCurrentLimitOff()),
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN)
             ),
             new WaitCommand(1),
-            new InstantCommand(()->intake.getPivot().changeCurrentLimit(true))
+            new InstantCommand(()->intake.getPivot().turnCurrentLimitOn())
         );
     }
 

@@ -77,6 +77,7 @@ public class RobotContainer {
 		
 		configureTeleOpBindings();
 		// testShootingMove();
+		// testCurrentChangingLimits();
 	}
 
 	public void configureTeleOpBindings() {
@@ -118,7 +119,7 @@ public class RobotContainer {
 			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 		driver.leftTrigger()
-			.onTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 
 		operator.y()
@@ -161,69 +162,25 @@ public class RobotContainer {
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 
-	public void testShootingMove(){
-		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
-		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
-		
-		
-		shooter.getHood().setDefaultCommand(new ManualHood(shooter, operator));
-		shooter.getShooterWheel().setDefaultCommand(new ManualShooterWheel(shooter, operator));
-		operator.rightBumper()
-			.onTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
-			// .whileTrue(TeleopCommands.indexerWiggleIntake(intake))
-			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
-		operator.leftBumper()
-			.onTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE))
-			.onTrue(kicker.setTargetVelocityCommand(KickerValue.OUTTAKE.getKickerValue()))
-			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP))
-			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
-
-		// driver.a()
-		// 	.onTrue(
-		// 		new InstantCommand(()-> drive.resetPose(
-		// 			new Pose2d(3.5,0.5,new Rotation2d(
-		// 				0
-		// 			)
-		// 			)
-		// 		))
-		// 	);
-			driver.a()
-			.onTrue(
-				new InstantCommand(()-> drive.resetPose(
-					new Pose2d(13, 3.977, new Rotation2d(
-						0
-					))
-				))
-			);
-
-		// driver.a()
-		// 	.onTrue(
-		// 		new InstantCommand(()-> drive.resetPose(
-		// 			new Pose2d(3.534, 3.977, new Rotation2d(
-		// 				0
-		// 			))
-		// 		))
-		// 	);
-		
-		// operator.povUp()
-		// 	.whileTrue(
-		// 		shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(shooter.getHood().getGoalAngle().getDegrees()+2))
-		// 	);
-		// operator.povDown()
-		// 	.whileTrue(
-		// 		shooter.getHood().setTargetPositionCommand(Rotation2d.fromDegrees(shooter.getHood().getGoalAngle().getDegrees()-2))
-		// 	);
-
-		// operator.povRight()
-		// 	.whileTrue(
-		// 		shooter.getShooterWheel().setTargetVelocityCommand(
-		// 			RotationsPerSecond.of(shooter.getShooterWheel().getTargetVelocity().magnitude()+5))
-		// 	);
-		// operator.povLeft()
-		// 	.whileTrue(
-		// 		shooter.getShooterWheel().setTargetVelocityCommand(
-		// 			RotationsPerSecond.of(shooter.getShooterWheel().getTargetVelocity().magnitude()-5))
-		// 	);
+	public void testCurrentChangingLimits(){
+		driver.rightTrigger()
+			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
+			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOn()))
+			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+		driver.leftTrigger()
+			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOn()))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+		driver.rightBumper()
+			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
+			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOff()))
+			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+		driver.leftBumper()
+			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOff()))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
 	}
 
 	public void periodic() {
