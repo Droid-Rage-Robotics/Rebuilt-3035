@@ -162,11 +162,11 @@ public class DRShooter extends Command{
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
                     // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
 
-                    shooter.getHood().setGoalAngle(Rotation2d.fromDegrees(hoodMap.get(distanceRobotToGoal)));
+                    shooter.getHood().setGoalAngle(Degrees.of(hoodMap.get(distanceRobotToGoal)));
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
                     break;
                 case NEUTRAL,OPPOSITION:
-                    shooter.getHood().setGoalAngle(Rotation2d.kZero);
+                    shooter.getHood().setGoalAngle(Degrees.zero());
                     shooter.getShooterWheel().setTargetVelocity(Shooter.IDLE_VELOCITY);
                     // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(0));
 
@@ -174,7 +174,7 @@ public class DRShooter extends Command{
                     break;
                 case BETWEEN:
                     shooter.getTurret().setGoalAngle(calculateAzimuthAngle(drive.getState().Pose, hubPose));
-                    shooter.getHood().setGoalAngle(Rotation2d.kZero);
+                    shooter.getHood().setGoalAngle(Degrees.zero());
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
                     break;
             }

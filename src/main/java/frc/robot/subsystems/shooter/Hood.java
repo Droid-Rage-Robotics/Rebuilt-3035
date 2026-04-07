@@ -3,10 +3,6 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
@@ -16,7 +12,11 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Hood extends ArmTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/(4.0 * (155.0/9.0)))
+        .withPID(20, 0, 15)
+        .withFeedforward(0.4334, 0, 0.28114, 2.0731)
+        .withMaxVelocity(RotationsPerSecond.of(1))
+        .withMaxAcceleration(RotationsPerSecondPerSecond.of(0.5))
+        .withGearRatio(4.0 * (155.0/9.0))
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.zero())
         .withMaxAngle(Degrees.of(28))//28
@@ -34,21 +34,15 @@ public class Hood extends ArmTemplate {
         .withStatorCurrentLimit(50);
 
     public Hood(boolean isEnabled) {
-        super(isEnabled, 
-            new ProfiledPIDController(15, 0, 0,
-            new TrapezoidProfile.Constraints(5, 5)), 
-            new ArmFeedforward(0.4334, 0,0.28114, 2.0731), 
-            constants, 
-            null, 
-            motorConstants);
+        super(isEnabled, constants, null, motorConstants);
     }
 
     @Override
     public void periodic() {
         super.periodic();
 
-        if (getCurrentAngle().getDegrees()<0) {
-            resetEncoder(Degrees.of(0));
+        if (getCurrentAngle().in(Degrees)<0) {
+            resetEncoder(0);
         }
     }
 }

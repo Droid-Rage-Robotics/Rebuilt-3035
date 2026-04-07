@@ -1,10 +1,12 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -18,18 +20,18 @@ public class Intake implements Sendable {
     public class IntakeValue {
         public enum PivotAngle {
             DOWN(161.5),
-            HALF_THREE(DOWN.getAngle().getDegrees()-5),
-            HALF_TWO(DOWN.getAngle().getDegrees()-10),
-            HALF_ONE(DOWN.getAngle().getDegrees()-15),
+            HALF_THREE(DOWN.getAngle().in(Degrees)-5),
+            HALF_TWO(DOWN.getAngle().in(Degrees)-10),
+            HALF_ONE(DOWN.getAngle().in(Degrees)-15),
 
             UP(40),
             HALF(105),
             ;
 
-            @Getter private final Rotation2d angle;
+            @Getter private final Angle angle;
 
             private PivotAngle(double angle) {
-                this.angle = Rotation2d.fromDegrees(angle);
+                this.angle = Degrees.of(angle);
             }
         }
 
@@ -51,12 +53,12 @@ public class Intake implements Sendable {
     @Getter private final IntakeWheel intakeWheel;
 
     private IntakeValue intakeValue;
-    public final BooleanSupplier atGoal;
+    // public final BooleanSupplier atGoal;
 
     public Intake(Pivot pivot, IntakeWheel intakeWheel){
         this.pivot = pivot;
         this.intakeWheel = intakeWheel;
-        this.atGoal = pivot::atGoal;
+        // this.atGoal = pivot::atGoal;
 
         // CommandScheduler.getInstance().schedule(setPositionCommand(IntakeValue.STOP));
     }

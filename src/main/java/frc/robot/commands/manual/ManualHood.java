@@ -1,5 +1,7 @@
 package frc.robot.commands.manual;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -21,7 +23,7 @@ public class ManualHood extends Command{
     public void execute(){
         if(!DroidRageConstants.isWithinDeadzone(operator.getRightY())){
             shooter.getHood().setGoalAngle(
-                Rotation2d.fromDegrees(shooter.getHood().getGoalAngle().getDegrees()+operator.getRightY()*-0.4)
+                Degrees.of(shooter.getHood().getGoalAngle().in(Degrees)+operator.getRightY()*-0.4)
             );
         }
     }

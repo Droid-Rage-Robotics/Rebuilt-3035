@@ -3,10 +3,8 @@ package frc.robot.subsystems.intake;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
@@ -17,14 +15,19 @@ import frc.utility.template.SubsystemConstants;
 import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class Pivot extends ArmTemplate {
-    private static double startingPosDegree = 35;
+    private static final double startingPosDegree = 35;
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1.0/54.0)
+        .withPID(25, 0, 0.35)
+        .withFeedforward(0.74109, 0.27134, 3.3, 0.23)
+        .withMaxVelocity(RotationsPerSecond.of(10))
+        .withMaxAcceleration(RotationsPerSecondPerSecond.of(15))
+        .withGearRatio(54.0)
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.of(35))
         .withMaxAngle(Degrees.of(168))
         .withName("Pivot")
-        .withOffset(Units.degreesToRotations(startingPosDegree))//Rotation
+        // .withOffset(Units.degreesToRotations(startingPosDegree))//Rotation
+        .withResetAngle(Degrees.of(startingPosDegree))
         .withMainNum(0);
 
     private static final MotorConstants motorConstants = new MotorConstants()
@@ -39,17 +42,16 @@ public class Pivot extends ArmTemplate {
 
 
     public Pivot(boolean isEnabled) {
-        super(isEnabled, 
-            new ProfiledPIDController(25, 0, .35,//4
-            new TrapezoidProfile.Constraints(10, 15)), 
-            new ArmFeedforward(0.74109, 0.27134, 3.3, 0.23), 
+        super(isEnabled, constants, null, motorConstants);
 
-            constants, 
-            null, 
-            motorConstants);
-            setTargetPositionDegrees(startingPosDegree);
+            setGoalAngle(Degrees.of(startingPosDegree));
 
         // controller.setTolerance(Units.degreesToRadians(1), 1);
+    }
+
+    @Override
+    public void elasticInit() {
+        SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand(Units.degreesToRotations(startingPosDegree)));
     }
 
     public Command setTargetPositionCommand(IntakeValue.PivotAngle goalAngle) {
@@ -62,9 +64,9 @@ public class Pivot extends ArmTemplate {
 
        // System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
         //TODO:TEst
-        if (getCurrentAngle().getDegrees()<35) {
-            resetEncoderCommand(0);
-        }
+        // if (getCurrentAngle().in(Degrees)<35) {
+        //     resetEncoderCommand(35);
+        // }
 
     }
 
@@ -76,13 +78,10 @@ public class Pivot extends ArmTemplate {
     // }
 
     public void turnCurrentLimitOff(){ 
-        for (int i = 0; i < getAllMotor().length; i++) {
-            getAllMotor()[i].turnCurrentLimitOff();
-        }
+        getMotor().turnCurrentLimitOff();
     }
     public void turnCurrentLimitOn(){ 
-        for (int i = 0; i < getAllMotor().length; i++) {
-            getAllMotor()[i].turnCurrentLimitOn();
-        }
+        getMotor().turnCurrentLimitOn();
+
     }
 }

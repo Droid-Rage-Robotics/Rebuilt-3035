@@ -25,6 +25,7 @@ public final class SubsystemConstants {
     public AngularVelocity minVelocity;
     public double conversionFactor;
     public double offset;
+    public Angle resetAngle;
     
     public double kP;
     public double kI;
@@ -139,6 +140,11 @@ public final class SubsystemConstants {
 
     public SubsystemConstants withMinAngle(Angle min) {
         this.minAngle=min;
+        return this;
+    }
+
+    public SubsystemConstants withResetAngle(Angle resetAngle) {
+        this.resetAngle=resetAngle;
         return this;
     }
 

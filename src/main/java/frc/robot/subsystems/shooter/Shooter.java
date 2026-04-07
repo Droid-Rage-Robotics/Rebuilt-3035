@@ -22,7 +22,7 @@ public class Shooter implements Dashboard, Sendable {
         SHOOT_OUTPOST(71,15,70), //v70
         SHOOT_DEPOT(0,0,0),
 
-        AUTO_SHOOT_DEPOT(SHOOT_DEPOT.getTurretAngle().in(Degrees),SHOOT_DEPOT.getHoodAngle().getDegrees(),0),
+        AUTO_SHOOT_DEPOT(SHOOT_DEPOT.getTurretAngle().in(Degrees),SHOOT_DEPOT.getHoodAngle().in(Degrees),0),
 
         SHORT(180, 10, 45),// 45
         FAR(180,0,0),
@@ -39,7 +39,7 @@ public class Shooter implements Dashboard, Sendable {
         
         SHOOT_TRENCH_LEFT(
             11, 
-            SHOOT_TRENCH_RIGHT.getHoodAngle().getDegrees(), 
+            SHOOT_TRENCH_RIGHT.getHoodAngle().in(Degrees), 
             SHOOT_TRENCH_RIGHT.getVelocity().in(RotationsPerSecond)
         ),
 
@@ -60,19 +60,19 @@ public class Shooter implements Dashboard, Sendable {
         ),
         CORNER_LEFT(
             148, 
-            CORNER_RIGHT.getHoodAngle().getDegrees(),
+            CORNER_RIGHT.getHoodAngle().in(Degrees),
             CORNER_RIGHT.getVelocity().in(RotationsPerSecond)
         )
         ;
         
 
         @Getter private final Angle turretAngle;
-        @Getter private final Rotation2d hoodAngle;
+        @Getter private final Angle hoodAngle;
         @Getter private final AngularVelocity velocity;
 
         private ShooterValue(double turretAngle, double hoodAngle, double velocity) {
             this.turretAngle = Degrees.of(turretAngle);
-            this.hoodAngle = Rotation2d.fromDegrees(hoodAngle);
+            this.hoodAngle = Degrees.of(hoodAngle);
             this.velocity = RotationsPerSecond.of(velocity);
         }
         // private ShooterValue(double turretAngle, double hoodAngle, AngularVelocity velocity) {
@@ -141,9 +141,9 @@ public class Shooter implements Dashboard, Sendable {
 
     public boolean isShooterReady() {
         return (
-            hood.getSetpointError().in(Degrees) < 5 && 
+            hood.getPositionError().in(Degrees) < 5 && 
             turret.getPositionError().in(Degrees) < 5 &&
-            hood.getSetpointError().in(Degrees) > -5 && 
+            hood.getPositionError().in(Degrees) > -5 && 
             turret.getPositionError().in(Degrees) > -5
         );
     }
