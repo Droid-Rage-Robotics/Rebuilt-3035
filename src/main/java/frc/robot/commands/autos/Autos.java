@@ -112,9 +112,22 @@ public final class Autos {
                 .setAcceleration(1)
                 .build(),
             AutoBuilder.pathfindToPose(
-                new Pose2d(Meters.of(3), Meters.of(3), new Rotation2d(Degrees.of(0))), 
+                new Pose2d(Meters.of(3), Meters.of(1), new Rotation2d(Degrees.of(90))), 
+                SwerveConfig.pathConstraint),
+            AutoBuilder.pathfindToPose(
+                new Pose2d(Meters.of(1), Meters.of(1.5), new Rotation2d(Degrees.of(180))), 
                 SwerveConfig.pathConstraint)
         );
+
+        // return new SequentialCommandGroup(
+        //     PathPlannerFollow.create(drive, "ForwardTest")
+        //         .setMaxVelocity(1)
+        //         .setAcceleration(1)
+        //         .build(),
+        //     AutoBuilder.pathfindToPose(
+        //         new Pose2d(Meters.of(13), Meters.of(7), new Rotation2d(Degrees.of(270))), 
+        //         SwerveConfig.pathConstraint)
+        // );
         
     }
 }
