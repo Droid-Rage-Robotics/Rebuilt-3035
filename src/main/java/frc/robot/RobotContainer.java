@@ -52,7 +52,7 @@ public class RobotContainer {
 
     private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
+        new Turret(true),
         new Hood(false),
         new ShooterWheel(false)
     );

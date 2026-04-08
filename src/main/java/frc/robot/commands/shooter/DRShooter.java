@@ -42,59 +42,35 @@ public class DRShooter extends Command{
     private static final InterpolatingDoubleTreeMap timeOffFlightMap =
         new InterpolatingDoubleTreeMap();
     static{
-        // Springs Old
-        // flywheelSpeedMap.put(1.0,42.5);
-        // flywheelSpeedMap.put(2.15,47.0);
-        // flywheelSpeedMap.put(3.28,50.6);
-        // flywheelSpeedMap.put(4.10,54.5);
-        // flywheelSpeedMap.put(5.30,58.0);
 
+        //Comp
+        // flywheelSpeedMap.put(1.5,41.5);
+        // flywheelSpeedMap.put(2.0,42.7);
+        // flywheelSpeedMap.put(2.9,46.0);
+        // flywheelSpeedMap.put(4.20,50.0);
+        // flywheelSpeedMap.put(5.10,53.5);
+        // flywheelSpeedMap.put(5.6,58.1);
+        // flywheelSpeedMap.put(6.1,60.0);
 
-        // hoodMap.put(1.0,.0);
-        // hoodMap.put(2.15, 5.77);
-        // hoodMap.put(3.28,7.6);
-        // hoodMap.put(4.10,9.8);
-        // hoodMap.put(5.30,11.5);
-
-
-        flywheelSpeedMap.put(1.5,41.5);
-        flywheelSpeedMap.put(2.0,42.7);
-        flywheelSpeedMap.put(2.9,46.0);
-        flywheelSpeedMap.put(4.20,50.0);
-        flywheelSpeedMap.put(5.10,53.5);
-        flywheelSpeedMap.put(5.6,58.1);
-        flywheelSpeedMap.put(6.1,60.0);
-
-
-
-
-        hoodMap.put(1.5,2.85);
-        hoodMap.put(2.00, 7.8);
-        hoodMap.put(2.9,10.7);
-        hoodMap.put(4.2,16.8);
-        hoodMap.put(5.10,18.5);
-        hoodMap.put(5.6,19.5);
-        hoodMap.put(6.1,20.0);
-
-
-
-        timeOffFlightMap.put(5.68,1.16);
-        timeOffFlightMap.put(4.55,1.12);
-        timeOffFlightMap.put(3.15,1.11);
-        timeOffFlightMap.put(1.88,1.01);
-        timeOffFlightMap.put(1.38,0.9);
+        // hoodMap.put(1.5,2.85);
+        // hoodMap.put(2.00, 7.8);
+        // hoodMap.put(2.9,10.7);
+        // hoodMap.put(4.2,16.8);
+        // hoodMap.put(5.10,18.5);
+        // hoodMap.put(5.6,19.5);
+        // hoodMap.put(6.1,20.0);
 
 
         //Home Positions
-        // flywheelSpeedMap.put(1.25,40.0);
-        // flywheelSpeedMap.put(1.89,42.0);
-        // flywheelSpeedMap.put(3.05,47.0);
-        // flywheelSpeedMap.put(4.27,50.2);
+        flywheelSpeedMap.put(1.25,40.0);
+        flywheelSpeedMap.put(1.89,42.0);
+        flywheelSpeedMap.put(3.05,47.0);
+        flywheelSpeedMap.put(4.27,50.2);
 
-        // hoodMap.put(1.25,.0);
-        // hoodMap.put(1.89,11.2);
-        // hoodMap.put(3.05,12.1);
-        // hoodMap.put(4.27,12.75);
+        hoodMap.put(1.25,.0);
+        hoodMap.put(1.89,11.2);
+        hoodMap.put(3.05,12.1);
+        hoodMap.put(4.27,12.75);
     }
 
     public DRShooter(SwerveDrive drive, Shooter shooter) {
