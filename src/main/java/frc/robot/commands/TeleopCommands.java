@@ -3,6 +3,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -10,10 +11,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Kicker;
 // import frc.robot.subsystems.Indexer.IndexerValue;
 import frc.robot.subsystems.Kicker.KickerValue;
+import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.Indexer.IndexerValue;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
+import frc.robot.subsystems.shooter.Shooter;
 
 public class TeleopCommands {
     public static Command shootIntakeCommand(Intake intake) {
@@ -72,18 +75,28 @@ public class TeleopCommands {
         );
     }
 
-    // public static Command raiseHoodCommand(Shooter shooter) {
-    //     return shooter.getHood().setTargetPositionCommand(shooter.getShooterValue().getHoodAngle());
-    // }
-
-    // public static Command lowerHoodCommand(Shooter shooter) {
-    //     return shooter.getHood().setTargetPositionCommand(Rotation2d.kZero);
-    // }
-
-    // public void setDriveX(SwerveDrive drive){
-    //     drive.setControl(new SwerveRequest(
-
-    //         )
-    //     );
-    // }
+    public static Command turboMode(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter) {
+        return new ParallelCommandGroup(
+            // drive.stopCurrentLimits(),
+            new InstantCommand(()->intake.getPivot().getMotor().changeCurrentLimits(0.5)),
+            new InstantCommand(()-> intake.getIntakeWheel().getMotor().changeCurrentLimits(0.5)),
+            new InstantCommand(()-> indexer.getBottomRollers().getMotor().changeCurrentLimits(0.5)),
+            new InstantCommand(()-> indexer.getTopRoller().getMotor().changeCurrentLimits(0.5)),
+            new InstantCommand(()-> kicker.getMotor().changeCurrentLimits(0.5))
+            // new InstantCommand(()-> shooter.getHood().getMotor().changeCurrentLimits(0.5)),
+            // new InstantCommand(()-> shooter.getTurret().getMotor().changeCurrentLimits(0.5)),
+        );
+    }
+    public static Command stopTurboMode(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter) {
+        return new ParallelCommandGroup(
+            // drive.stopCurrentLimits(),
+            new InstantCommand(()->intake.getPivot().getMotor().changeCurrentLimits(1)),
+            new InstantCommand(()-> intake.getIntakeWheel().getMotor().changeCurrentLimits(1)),
+            new InstantCommand(()-> indexer.getBottomRollers().getMotor().changeCurrentLimits(1)),
+            new InstantCommand(()-> indexer.getTopRoller().getMotor().changeCurrentLimits(1)),
+            new InstantCommand(()-> kicker.getMotor().changeCurrentLimits(1))
+            // new InstantCommand(()-> shooter.getHood().getMotor().changeCurrentLimits(1)),
+            // new InstantCommand(()-> shooter.getTurret().getMotor().changeCurrentLimits(1)),
+        );
+    }
 }
