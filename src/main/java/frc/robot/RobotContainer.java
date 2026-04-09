@@ -20,6 +20,7 @@ import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import frc.robot.subsystems.indexer.BottomRollers;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.Indexer.IndexerValue;
@@ -150,6 +151,7 @@ public class RobotContainer {
 		
 		operator.povLeft()
 			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+			.onTrue(drive.setSpeed(Speed.SUPER_SLOW))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
 		operator.rightBumper()
