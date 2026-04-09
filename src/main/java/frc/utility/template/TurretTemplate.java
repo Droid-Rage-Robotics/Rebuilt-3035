@@ -7,10 +7,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -38,13 +40,15 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     private final double maxAngleRad;
     private final SubsystemConstants constants;
 
-    private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
+    private final MotionMagicExpoVoltage motionMagicRequest = new MotionMagicExpoVoltage(0);
 
     private final boolean isEnabled;
 
     private final AtomicReference<Angle> goalAngle = new AtomicReference<Angle>(Degrees.zero());
 
     private final String name;
+
+    private boolean sysIdActive = false;
 
     public TurretTemplate(
         boolean isEnabled,
@@ -87,9 +91,12 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         motorConfig.Slot0.kA = constants.kA;
         motorConfig.Slot0.kS = constants.kS;
 
-        motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
-        motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
-        motorConfig.MotionMagic.MotionMagicJerk = constants.maxJerk; // optional, set nonzero for S-curve smoothing
+        motorConfig.MotionMagic.MotionMagicExpo_kV = constants.kV;
+        motorConfig.MotionMagic.MotionMagicExpo_kA = constants.kA;
+
+        // motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
+        // motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
+        // motorConfig.MotionMagic.MotionMagicJerk = constants.maxJerk; // optional, set nonzero for S-curve smoothing
 
         motor.getMotor().getConfigurator().apply(motorConfig);
         
@@ -123,7 +130,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     @Override
     public void periodic() {
-        motor.setControl(motionMagicRequest.withPosition(goalAngle.get())); // isEnabled safety in motor file and auto unit conversion
+        if (!sysIdActive) {
+            motor.setControl(motionMagicRequest.withPosition(goalAngle.get())); // isEnabled safety in motor file and auto unit conversion
+        }
     }
 
     @Override
@@ -230,9 +239,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     private SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(0.25).per(Second),
-                Volts.of(1),
-                Seconds.of(3),
+                Volts.of(0.6).per(Second),
+                Volts.of(3),
+                // Seconds.of(3),
                 null
             ), 
             new SysIdRoutine.Mechanism(
@@ -258,6 +267,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     public Command getSysIdCommand() {
         return new SequentialCommandGroup(
+            new InstantCommand(() -> sysIdActive = true),
             getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
                 .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
@@ -268,7 +278,8 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
                 .until(this::isAtUpperLimit),
             new WaitCommand(0.1),
             getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
-                .until(this::isAtLowerLimit)
+                .until(this::isAtLowerLimit),
+            new InstantCommand(() -> sysIdActive = false)            
         );
     }
     
@@ -283,10 +294,10 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     // }
 
     private boolean isAtUpperLimit() {
-        return getCurrentAngle().in(Radians) >= maxAngleRad - 0.05; // 0.05 rad buffer
+        return getCurrentAngle().in(Radians) >= maxAngleRad - Units.degreesToRadians(20); // 0.05 rad buffer
     }
 
     private boolean isAtLowerLimit() {
-        return getCurrentAngle().in(Radians) <= minAngleRad + 0.05; // 0.05 rad buffer
+        return getCurrentAngle().in(Radians) <= minAngleRad + Units.degreesToRadians(20); // 0.05 rad buffer
     }
 }

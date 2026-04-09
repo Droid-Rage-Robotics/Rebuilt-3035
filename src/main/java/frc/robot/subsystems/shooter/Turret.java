@@ -15,11 +15,12 @@ import frc.utility.template.TurretTemplate;
 
 public class Turret extends TurretTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withPID(80, 0, 0.35)
-        .withFeedforward(0.11055, 3.636, 0)
-        .withMaxVelocity(RotationsPerSecond.of(25))
-        .withMaxAcceleration(RotationsPerSecondPerSecond.of(10))
-        .withMaxJerk(100)
+        // .withPID(100, 0, 10)
+        .withPID(70, 0, 0.5)
+        .withFeedforward(0.19682, 4.0022, 0.14262)
+        // .withMaxVelocity(RotationsPerSecond.of(20))
+        // .withMaxAcceleration(RotationsPerSecondPerSecond.of(500))
+        // .withMaxJerk(0)
         .withGearRatio(24.0)
         .withEncoderType(EncoderType.EXTERNAL)
         // .withMinAngle(Degrees.of(-145))
