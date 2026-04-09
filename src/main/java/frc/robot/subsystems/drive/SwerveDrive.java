@@ -409,4 +409,9 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     public Translation2d getTranslation2d(){
         return fieldPose.getRobotPose().getTranslation();
     }
+    // public void stopCurrentLimits() {
+    //     config.getBackLeft().withDriveMotorInitialConfigs(config.getBackLeft().DriveMotorInitialConfigs.CurrentLimits
+    //     .withSupplyCurrentLimitEnable(true));
+    
+    // }
 }

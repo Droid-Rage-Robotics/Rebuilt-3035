@@ -20,6 +20,7 @@ import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import frc.robot.subsystems.indexer.BottomRollers;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.Indexer.IndexerValue;
@@ -50,7 +51,7 @@ public class RobotContainer {
 		new TopRoller(false)
 	);
 
-    private final Kicker kicker = new Kicker(true);
+    private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter(
         new Turret(true),
         new Hood(false),
@@ -119,9 +120,12 @@ public class RobotContainer {
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
 			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+		
 		driver.leftTrigger()
 			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+			.whileTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE))
+			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP))
+			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP));
 
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
@@ -148,6 +152,7 @@ public class RobotContainer {
 		
 		operator.povLeft()
 			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+			.onTrue(drive.setSpeed(Speed.SUPER_SLOW))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
 		operator.rightBumper()

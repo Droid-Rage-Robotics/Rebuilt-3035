@@ -154,7 +154,13 @@ public class TalonEx implements Dashboard {
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         configurator.apply(config);
     }
-
+    public void changeCurrentLimits(double factor) {
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config.CurrentLimits.SupplyCurrentLimit = this.supplyCurrentLimit*factor;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = this.statorCurrentLimit*factor;
+        configurator.apply(config);
+    }
     public void changeCurrentLimits(double newSupplyLimit, double newStatorLimit) {
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         config.CurrentLimits.SupplyCurrentLimit = newSupplyLimit;

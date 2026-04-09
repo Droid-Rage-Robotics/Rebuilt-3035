@@ -12,13 +12,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Kicker;
+import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.Indexer.IndexerValue;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.vision.Vision;
 
 public final class Autos {
@@ -111,10 +117,75 @@ public final class Autos {
                 .setMaxVelocity(1)
                 .setAcceleration(1)
                 .build(),
-            AutoBuilder.pathfindToPose(
-                new Pose2d(Meters.of(3), Meters.of(3), new Rotation2d(Degrees.of(0))), 
+            AutoBuilder.pathfindToPoseFlipped(
+                new Pose2d(Meters.of(3), Meters.of(1), new Rotation2d(Degrees.of(90))), 
+                SwerveConfig.pathConstraint),
+            AutoBuilder.pathfindToPoseFlipped(
+                new Pose2d(Meters.of(1), Meters.of(1.5), new Rotation2d(Degrees.of(180))), 
                 SwerveConfig.pathConstraint)
         );
+
+        // return new SequentialCommandGroup(
+        //     PathPlannerFollow.create(drive, "ForwardTest")
+        //         .setMaxVelocity(1)
+        //         .setAcceleration(1)
+        //         .build(),
+        //     AutoBuilder.pathfindToPose(
+        //         new Pose2d(Meters.of(13), Meters.of(7), new Rotation2d(Degrees.of(270))), 
+        //         SwerveConfig.pathConstraint)
+        // );
         
+    }
+
+    public static Command newRightOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "R_OUT")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+            PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
+            new ParallelCommandGroup(
+                PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO)
+            ),
+            PathPlannerPathFollow.create(drive, "R_IN")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build(),
+            shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT),
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
+            kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
+            AutoCommands.autoIndexerWiggleIntake(intake),
+            AutoCommands.resetBot(shooter, indexer, kicker, intake),
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "R_OUT_TWO")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+            PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
+            new ParallelCommandGroup(
+                PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO)
+            ),
+            PathPlannerPathFollow.create(drive, "R_IN")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build()
+        );
     }
 }

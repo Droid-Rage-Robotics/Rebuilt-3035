@@ -29,8 +29,8 @@ import lombok.Getter;
 public class SwerveConfig {
 
     public static PathConstraints pathConstraint = new PathConstraints(
-            7.6, 
-            7.6,
+            3, //7.6
+            3,//7.6
             Math.toRadians(360), //1506
             Math.toRadians(360));
 
