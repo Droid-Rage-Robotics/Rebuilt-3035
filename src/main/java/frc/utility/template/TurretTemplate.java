@@ -40,7 +40,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     private final double maxAngleRad;
     private final SubsystemConstants constants;
 
-    private final MotionMagicExpoVoltage motionMagicRequest = new MotionMagicExpoVoltage(0);
+    private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
+    // private final MotionMagicExpoVoltage motionMagicRequest = new MotionMagicExpoVoltage(0);
+
 
     private final boolean isEnabled;
 
@@ -91,12 +93,12 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         motorConfig.Slot0.kA = constants.kA;
         motorConfig.Slot0.kS = constants.kS;
 
-        motorConfig.MotionMagic.MotionMagicExpo_kV = constants.kV;
-        motorConfig.MotionMagic.MotionMagicExpo_kA = constants.kA;
+        // motorConfig.MotionMagic.MotionMagicExpo_kV = constants.kV;
+        // motorConfig.MotionMagic.MotionMagicExpo_kA = constants.kA;
 
-        // motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
-        // motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
-        // motorConfig.MotionMagic.MotionMagicJerk = constants.maxJerk; // optional, set nonzero for S-curve smoothing
+        motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
+        motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
+        motorConfig.MotionMagic.MotionMagicJerk = constants.maxJerk; // optional, set nonzero for S-curve smoothing
 
         motor.getMotor().getConfigurator().apply(motorConfig);
         

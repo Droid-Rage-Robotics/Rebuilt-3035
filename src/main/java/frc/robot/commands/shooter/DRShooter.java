@@ -67,7 +67,7 @@ public class DRShooter extends Command{
         flywheelSpeedMap.put(3.05,47.0);
         flywheelSpeedMap.put(4.27,50.2);
 
-        hoodMap.put(1.25,.0);
+        hoodMap.put(1.25,0.0);
         hoodMap.put(1.89,11.2);
         hoodMap.put(3.05,12.1);
         hoodMap.put(4.27,12.75);
@@ -126,7 +126,7 @@ public class DRShooter extends Command{
         Pose2d lookAheadPose = predictPosePos(
             drive.getState().Pose, 
             drive.getCurrentRobotChassisSpeeds(),
-            timeOffFlightMap.get(getDistanceToHub(drive.getState().Pose, goalPose)));
+            hoodMap.get(getDistanceToHub(drive.getState().Pose, goalPose)));
         distanceRobotToGoal = getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
         // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance
