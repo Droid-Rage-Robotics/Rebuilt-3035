@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.74,
+        "x": 4.74,
         "y": 7.6
       },
       "isLocked": false,
@@ -20,12 +20,12 @@
         "y": 7.6
       },
       "prevControl": {
-        "x": 6.5,
+        "x": 4.5,
         "y": 7.6
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L-OUT"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.06395175395456482
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
