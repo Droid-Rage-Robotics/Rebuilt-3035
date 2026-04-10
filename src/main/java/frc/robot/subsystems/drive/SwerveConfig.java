@@ -28,12 +28,6 @@ import lombok.Getter;
 
 public class SwerveConfig {
 
-    public static PathConstraints pathConstraint = new PathConstraints(
-            3, //7.6
-            3,//7.6
-            Math.toRadians(360), //1506
-            Math.toRadians(360));
-
     public static class ModuleConstants {
         public static final Distance WHEEL_DIAMETER = Inches.of(4);
         // public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();

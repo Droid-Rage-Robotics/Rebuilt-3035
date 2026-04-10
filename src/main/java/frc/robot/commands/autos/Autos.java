@@ -119,10 +119,10 @@ public final class Autos {
                 .build(),
             AutoBuilder.pathfindToPoseFlipped(
                 new Pose2d(Meters.of(3), Meters.of(1), new Rotation2d(Degrees.of(90))), 
-                SwerveConfig.pathConstraint),
+                PathPlannerPathFindingFollow.maxSpeedConstraint),
             AutoBuilder.pathfindToPoseFlipped(
                 new Pose2d(Meters.of(1), Meters.of(1.5), new Rotation2d(Degrees.of(180))), 
-                SwerveConfig.pathConstraint)
+                PathPlannerPathFindingFollow.maxSpeedConstraint)
         );
 
         // return new SequentialCommandGroup(
