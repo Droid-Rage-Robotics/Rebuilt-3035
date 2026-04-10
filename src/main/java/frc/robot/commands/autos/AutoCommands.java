@@ -52,7 +52,7 @@ public class AutoCommands{
                 new WaitCommand(0.5),
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
                 new WaitCommand(0.5)
-            ).repeatedly().raceWith(new WaitCommand(5)) // Wait to START A New Cycle
+            ).repeatedly().raceWith(new WaitCommand(8)) // Wait to START A New Cycle
         );
     }
 

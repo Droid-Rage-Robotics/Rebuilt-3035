@@ -188,4 +188,56 @@ public final class Autos {
                 .build()
         );
     }
+
+    public static Command newLeftDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "L_OUT")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT),
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+            PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_BALL).build(),
+            new ParallelCommandGroup(
+                PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_TRENCH).build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO)
+            ),
+            PathPlannerPathFollow.create(drive, "L_IN")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build(),
+            shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT),
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
+            kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
+            AutoCommands.autoIndexerWiggleIntake(intake),
+            AutoCommands.resetBot(shooter, indexer, kicker, intake),
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "L_OUT_TWO")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT),
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+            PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_BALL).build(),
+            new ParallelCommandGroup(
+                PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_TRENCH).build(),
+                shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO)
+            ),
+            PathPlannerPathFollow.create(drive, "L_IN")
+                .setMaxVelocity(3)
+                .setAcceleration(3)
+                .build()
+        );
+    }
 }
