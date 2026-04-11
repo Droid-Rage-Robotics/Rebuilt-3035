@@ -140,8 +140,8 @@ public final class Autos {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRight", true)
-                    .withMaxVelocity(10)
-                    .withMaxAcceleration(10)
+                    .withMaxVelocity(13)
+                    .withMaxAcceleration(13)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -152,21 +152,21 @@ public final class Autos {
             ),
 
             PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
-                .withMaxVelocity(10)
-                .withMaxAcceleration(10)
+                .withMaxVelocity(13)
+                .withMaxAcceleration(13)
                 .build(),
 
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
-                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake))
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
                 .raceWith(new WaitCommand(5)),
 
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
 
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRightSec")
-                    .withMaxVelocity(10)
-                    .withMaxAcceleration(10)
+                    .withMaxVelocity(13)
+                    .withMaxAcceleration(13)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -177,13 +177,13 @@ public final class Autos {
             ),
 
             PathPlannerPathFollow.create(drive, "NeutralToTrenchRightSec")
-                .withMaxVelocity(10)
-                .withMaxAcceleration(10)
+                .withMaxVelocity(13)
+                .withMaxAcceleration(13)
                 .build(),
 
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
-                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake))
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
                 // .raceWith(new WaitCommand(5))
 
             // new InstantCommand(()-> DroidRageConstants.isShooterManual = false),

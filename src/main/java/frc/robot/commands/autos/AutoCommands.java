@@ -56,5 +56,12 @@ public class AutoCommands{
         );
     }
 
+    public static Command index(Indexer indexer, Kicker kicker) {
+        return new SequentialCommandGroup(
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
+            kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
+        );
+    }
+
     
 }
