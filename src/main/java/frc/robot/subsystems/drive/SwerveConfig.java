@@ -147,7 +147,7 @@ public class SwerveConfig {
      *   <li> {@link Slot0Configs} ({@link #DriveMotorGains})
      *   <li> {@link CurrentLimitsConfigs#StatorCurrentLimit} / {@link
      *        TorqueCurrentConfigs#PeakForwardTorqueCurrent} / {@link
-     *        TorqueCurrentConfigs#PeakReverseTorqueCurrent} ({@link #kSlipCurrent})
+     *        TorqueCurrentConfigs#PeakReverseTorqueCurrent} ({@link ModuleConstants#DRIVE_SLIP_CURRENT})
      *   <li> {@link CurrentLimitsConfigs#StatorCurrentLimitEnable} (Enabled)
      *   <li> {@link FeedbackConfigs#RotorToSensorRatio} / {@link
      *        FeedbackConfigs#SensorToMechanismRatio} (1.0)
