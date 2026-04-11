@@ -46,6 +46,8 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     private final AtomicReference<Angle> goalAngle = new AtomicReference<Angle>(Degrees.zero());
 
+    public boolean controlLoopEnabled = true;
+
     private final String name;
 
     public ArmTemplate (
@@ -130,7 +132,9 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     @Override
     public void periodic() {
-        motor.setControl(motionMagicRequest.withPosition(goalAngle.get())); // isEnabled safety in motor file and auto unit conversion
+        if (controlLoopEnabled) {
+            motor.setControl(motionMagicRequest.withPosition(goalAngle.get())); // isEnabled safety in motor file and auto unit conversion
+        }
     }
 
     @Override
@@ -280,5 +284,13 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     private boolean isAtLowerLimit() {
         return getCurrentAngle().in(Radians) <= minAngleRad + 0.05; // 0.05 rad buffer
+    }
+
+    public Command disableControlLoop() {
+        return new InstantCommand(()->controlLoopEnabled = false);
+    }
+    
+    public Command enableControlLoop() {
+        return new InstantCommand(()->controlLoopEnabled = true);
     }
 }

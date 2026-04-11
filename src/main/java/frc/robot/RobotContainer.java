@@ -115,6 +115,21 @@ public class RobotContainer {
 		// 		))
 		// 	);
 		
+		driver.povRight()
+			.onTrue(new InstantCommand(() -> {
+				shooter.getHood().getMotor().setPower(1);
+				shooter.getHood().disableControlLoop();
+				})
+			)
+			.onFalse(shooter.getHood().enableControlLoop());
+
+		driver.povLeft()
+			.onTrue(new InstantCommand(() -> {
+				shooter.getHood().getMotor().setPower(1);
+				shooter.getHood().disableControlLoop();
+				})
+			)
+			.onFalse(shooter.getHood().enableControlLoop());
 
 		driver.rightTrigger()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
