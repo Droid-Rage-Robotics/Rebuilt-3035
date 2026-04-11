@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 4.3,
-        "y": 0.55
+        "y": 0.45
       },
       "prevControl": null,
       "nextControl": {
         "x": 8.09236804564907,
-        "y": 0.5315834522111267
+        "y": 0.4315834522111266
       },
       "isLocked": false,
       "linkedName": "R-Trench"
@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0.6951693503609098,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 3.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,

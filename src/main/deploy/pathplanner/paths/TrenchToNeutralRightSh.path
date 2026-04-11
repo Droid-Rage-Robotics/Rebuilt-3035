@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 4.3,
-        "y": 0.55
+        "y": 0.45
       },
       "prevControl": null,
       "nextControl": {
         "x": 8.09236804564907,
-        "y": 0.5315834522111267
+        "y": 0.4315834522111266
       },
       "isLocked": false,
       "linkedName": "R-Trench"
