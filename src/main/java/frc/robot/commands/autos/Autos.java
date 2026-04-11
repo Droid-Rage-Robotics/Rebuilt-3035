@@ -140,8 +140,8 @@ public final class Autos {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRight", true)
-                    .withMaxVelocity(7)
-                    .withMaxAcceleration(7)
+                    .withMaxVelocity(10)
+                    .withMaxAcceleration(10)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -152,8 +152,8 @@ public final class Autos {
             ),
 
             PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
-                .withMaxVelocity(7)
-                .withMaxAcceleration(7)
+                .withMaxVelocity(10)
+                .withMaxAcceleration(10)
                 .build(),
 
             new AutoDRShooter(drive, shooter)
@@ -165,8 +165,8 @@ public final class Autos {
 
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRightSec")
-                    .withMaxVelocity(7)
-                    .withMaxAcceleration(7)
+                    .withMaxVelocity(10)
+                    .withMaxAcceleration(10)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -174,7 +174,17 @@ public final class Autos {
                     new WaitCommand(0.25),
                     intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
                 )
-            )
+            ),
+
+            PathPlannerPathFollow.create(drive, "NeutralToTrenchRightSec")
+                .withMaxVelocity(10)
+                .withMaxAcceleration(10)
+                .build(),
+
+            new AutoDRShooter(drive, shooter)
+                .repeatedly()
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake))
+                // .raceWith(new WaitCommand(5))
 
             // new InstantCommand(()-> DroidRageConstants.isShooterManual = false),
             // new ParallelCommandGroup(
@@ -297,7 +307,6 @@ public final class Autos {
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake))
                 // .raceWith(new WaitCommand(5))
 
-            // TODO: 1678 "Swoop"
         //     new ParallelCommandGroup(
         //         PathPlannerPathFollow.create(drive, "L_OUT")
         //         .withMaxVelocity(3)

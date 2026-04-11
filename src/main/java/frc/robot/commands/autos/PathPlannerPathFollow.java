@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.drive.SwerveDrive;
 
 public class PathPlannerPathFollow {
@@ -68,10 +69,16 @@ public class PathPlannerPathFollow {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
             if (doesResetOdo) {
-                AutoBuilder.resetOdom(path.getStartingHolonomicPose().get());
+                return new SequentialCommandGroup(
+                    AutoBuilder.resetOdom(path.getStartingHolonomicPose().get()),
+                    AutoBuilder.followPath(path)
+                );
+            } else {
+                return AutoBuilder.followPath(path);
             }
 
-            return AutoBuilder.followPath(path);
+            
+            
         } catch (Exception e) {
             DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
             return Commands.none();
