@@ -137,10 +137,14 @@ public final class Autos {
     public static Command newRightOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                PathPlannerPathFollow.create(drive, "R_OUT")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
-                .build(),
+                // PathPlannerPathFollow.create(drive, "R_OUT")
+                // .setMaxVelocity(3)
+                // .setAcceleration(3)
+                // .build(),
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralRight", true)
+                    .withMaxVelocity(7)
+                    .withMaxAcceleration(7)
+                    .build(),
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
                 new SequentialCommandGroup(
                     AutoCommands.startPivotCommand(intake),
@@ -148,25 +152,33 @@ public final class Autos {
                     intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
                 )
             ),
-            PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
+            // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
             new ParallelCommandGroup(
-                PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
+                // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
+                PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
+                    .withMaxVelocity(7)
+                    .withMaxAcceleration(7)
+                    .build(),
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO)
             ),
-            PathPlannerPathFollow.create(drive, "R_IN")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
-                .build(),
+            // PathPlannerPathFollow.create(drive, "R_IN")
+            //     .setMaxVelocity(3)
+            //     .setAcceleration(3)
+            //     .build(),
             shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT),
             indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
             AutoCommands.autoIndexerWiggleIntake(intake),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
             new ParallelCommandGroup(
-                PathPlannerPathFollow.create(drive, "R_OUT_TWO")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
-                .build(),
+                // PathPlannerPathFollow.create(drive, "R_OUT_TWO")
+                // .setMaxVelocity(3)
+                // .setAcceleration(3)
+                // .build(),
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralRightSec")
+                    .withMaxVelocity(7)
+                    .withMaxAcceleration(7)
+                    .build(),
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
                 new SequentialCommandGroup(
                     AutoCommands.startPivotCommand(intake),
@@ -174,15 +186,19 @@ public final class Autos {
                     intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
                 )
             ),
-            PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
+            // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
             new ParallelCommandGroup(
-                PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
+                // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
+                PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
+                    .withMaxVelocity(7)
+                    .withMaxAcceleration(7)
+                    .build(),
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO)
-            ),
-            PathPlannerPathFollow.create(drive, "R_IN")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
-                .build()
+            )
+            // PathPlannerPathFollow.create(drive, "R_IN")
+            //     .setMaxVelocity(3)
+            //     .setAcceleration(3)
+            //     .build()
         );
     }
 
@@ -190,8 +206,8 @@ public final class Autos {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 PathPlannerPathFollow.create(drive, "L_OUT")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
+                .withMaxVelocity(3)
+                .withMaxAcceleration(3)
                 .build(),
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT),
                 new SequentialCommandGroup(
@@ -206,8 +222,8 @@ public final class Autos {
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO)
             ),
             PathPlannerPathFollow.create(drive, "L_IN")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
+                .withMaxVelocity(3)
+                .withMaxAcceleration(3)
                 .build(),
             shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT),
             indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
@@ -216,8 +232,8 @@ public final class Autos {
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
             new ParallelCommandGroup(
                 PathPlannerPathFollow.create(drive, "L_OUT_TWO")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
+                .withMaxVelocity(3)
+                .withMaxAcceleration(3)
                 .build(),
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT),
                 new SequentialCommandGroup(
@@ -232,8 +248,8 @@ public final class Autos {
                 shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO)
             ),
             PathPlannerPathFollow.create(drive, "L_IN")
-                .setMaxVelocity(3)
-                .setAcceleration(3)
+                .withMaxVelocity(3)
+                .withMaxAcceleration(3)
                 .build()
         );
     }

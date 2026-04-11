@@ -99,7 +99,7 @@ public final class DroidRageConstants {
     
     public static boolean didWeWin = true; //Win Auto?
     public static boolean isShooterManual = false; //True - Manual; False - Tracking
-    public static final boolean isVisionEnabled = true;
+    public static final boolean isVisionEnabled = false;
     // public static setIsShooterManual(boolean isManual){
     //     isShooterManual = isManual;
     // }
