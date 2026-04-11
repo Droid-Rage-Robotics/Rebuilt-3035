@@ -140,16 +140,12 @@ public class RobotContainer {
 		operator.a()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
 		
-		operator.povUp()
+		driver.povUp()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.UP));
-
-		operator.povRight()
-			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.HALF));
 
 		operator.povDown()
 			.onTrue(new InstantCommand(()->DroidRageConstants.isShooterManual = false));
 
-		
 		operator.povLeft()
 			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
 			.onTrue(drive.setSpeed(Speed.SUPER_SLOW))
