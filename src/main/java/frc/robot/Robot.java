@@ -47,10 +47,6 @@ public class Robot extends LoggedRobot {
         commandScheduler.run();
         TelemetryUtils.onRobotPeriodic();
         robotContainer.periodic();
-
-        // if(DriverStation.isEStopped()){ //Robot Estopped
-        //     light.flashingColors(light.red, light.white);
-        // }
     }
 
     @Override
@@ -75,11 +71,7 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {
-        // if(DriverStation.isEStopped()){ //Robot Estopped
-        //     light.flashingColors(light.red, light.white);
-        // }
-    }
+    public void autonomousPeriodic() {}
 
     @Override
     public void autonomousExit(){
