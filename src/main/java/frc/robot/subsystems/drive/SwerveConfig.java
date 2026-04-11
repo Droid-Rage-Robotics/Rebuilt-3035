@@ -4,17 +4,23 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -27,24 +33,13 @@ import edu.wpi.first.units.measure.Voltage;
 import lombok.Getter;
 
 public class SwerveConfig {
-
     public static class ModuleConstants {
-        public static final Distance WHEEL_DIAMETER = Inches.of(4);
-        // public static final double DRIVE_MOTOR_GEAR_RATIO = GearRatio.R3.getConversionFactor();
-        // public static final double TURN_MOTOR_GEAR_RATIO = GearRatio.TURN.getConversionFactor();
-
-        // public static final double DRIVE_ENCODER_ROT_2_METER = DRIVE_MOTOR_GEAR_RATIO * Math.PI * WHEEL_DIAMETER.in(Meters);
-        // public static final double DRIVE_ENCODER_RPM_2_METER_PER_SEC = DRIVE_ENCODER_ROT_2_METER / 60;
-        public static final double READINGS_PER_REVOLUTION = 1;//4096
-
-        //Used for the CANCoder
-        public static final double TURN_ENCODER_ROT_2_RAD = 2 * Math.PI / READINGS_PER_REVOLUTION;
-        public static final double TURN_ENCODER_ROT_2_RAD_SEC = TURN_ENCODER_ROT_2_RAD/60;
-
         /* Current Limits */
         public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35; //MA:40
-        public static final double DRIVE_STATOR_CURRENT_LIMIT = 70; //MA:80
         public static final double TURN_SUPPLY_CURRENT_LIMIT = 35; //MA:40 //2025=80
+        
+        private static final Current DRIVE_SLIP_CURRENT = Amps.of(70);
+
         //SUPERNURDS had STATOR at 60, no supply
     }
 
@@ -133,21 +128,66 @@ public class SwerveConfig {
     // The remote sensor feedback type to use for the steer motors;
     // When not Pro-licensed, Fused*/Sync* automatically fall back to Remote*
     private static final SteerFeedbackType kSteerFeedbackType = SteerFeedbackType.RemoteCANcoder;
-
-    // The stator current at which the wheels start to slip;
-    // This needs to be tuned to your individual robot
-    private static final Current kSlipCurrent = Amps.of(70);
-
-    // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
-    // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
+    
+    /**
+     * The initial configs used to configure the drive motor of the swerve module.
+     * The default value is the factory-default.
+     * <p>
+     * Users may change the initial configuration as they need. Any config that's
+     * not referenced in the {@link SwerveModuleConstants} class is available to be
+     * changed.
+     * <p>
+     * The list of configs that will be overwritten is as follows:
+     * 
+     * <ul>
+     *   <li> {@link MotorOutputConfigs#NeutralMode} (Brake mode, overwritten with
+     *        {@link SwerveDrivetrain#configNeutralMode})
+     *   <li> {@link MotorOutputConfigs#Inverted} ({@link
+     *        SwerveModuleConstants#DriveMotorInverted})
+     *   <li> {@link Slot0Configs} ({@link #DriveMotorGains})
+     *   <li> {@link CurrentLimitsConfigs#StatorCurrentLimit} / {@link
+     *        TorqueCurrentConfigs#PeakForwardTorqueCurrent} / {@link
+     *        TorqueCurrentConfigs#PeakReverseTorqueCurrent} ({@link #kSlipCurrent})
+     *   <li> {@link CurrentLimitsConfigs#StatorCurrentLimitEnable} (Enabled)
+     *   <li> {@link FeedbackConfigs#RotorToSensorRatio} / {@link
+     *        FeedbackConfigs#SensorToMechanismRatio} (1.0)
+     * </ul>
+     * 
+     */
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
                 .withSupplyCurrentLimit(Amps.of(ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT))
                 .withSupplyCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Amps.of(ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT))
-                .withStatorCurrentLimitEnable(true)   
         );
+
+    /**
+     * The initial configs used to configure the steer motor of the swerve module.
+     * The default value is the factory-default.
+     * <p>
+     * Users may change the initial configuration as they need. Any config that's
+     * not referenced in the {@link SwerveModuleConstants} class is available to be
+     * changed.
+     * <p>
+     * The list of configs that will be overwritten is as follows:
+     * 
+     * <ul>
+     *   <li> {@link MotorOutputConfigs#NeutralMode} (Brake mode)
+     *   <li> {@link MotorOutputConfigs#Inverted} ({@link
+     *        SwerveModuleConstants#SteerMotorInverted})
+     *   <li> {@link Slot0Configs} ({@link #SteerMotorGains})
+     *   <li> {@link FeedbackConfigs#FeedbackRemoteSensorID} ({@link
+     *        SwerveModuleConstants#EncoderId})
+     *   <li> {@link FeedbackConfigs#FeedbackSensorSource} ({@link #FeedbackSource})
+     *   <li> {@link FeedbackConfigs#RotorToSensorRatio} ({@link
+     *        #SteerMotorGearRatio})
+     *   <li> {@link FeedbackConfigs#SensorToMechanismRatio} (1.0)
+     *   <li> {@link MotionMagicConfigs#MotionMagicExpo_kV} / {@link
+     *        MotionMagicConfigs#MotionMagicExpo_kA} (Calculated from gear ratios)
+     *   <li> {@link ClosedLoopGeneralConfigs#ContinuousWrap} (true)
+     * </ul>
+     * 
+     */
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
@@ -158,7 +198,27 @@ public class SwerveConfig {
                 // .withStatorCurrentLimit(Amps.of(DriveConstants.ModuleConstants.TURN_SUPPLY_CURRENT_LIMIT))
                 // .withStatorCurrentLimitEnable(true)
         );
+
+    /**
+     * The initial configs used to configure the azimuth encoder of the swerve
+     * module. The default value is the factory-default.
+     * <p>
+     * Users may change the initial configuration as they need. Any config that's
+     * not referenced in the {@link SwerveModuleConstants} class is available to be
+     * changed.
+     * <p>
+     * For CANcoder, the list of configs that will be overwritten is as follows:
+     * 
+     * <ul>
+     *   <li> {@link MagnetSensorConfigs#MagnetOffset} ({@link
+     *        SwerveModuleConstants#EncoderOffset})
+     *   <li> {@link MagnetSensorConfigs#SensorDirection} ({@link
+     *        SwerveModuleConstants#EncoderInverted})
+     * </ul>
+     * 
+     */
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
+    
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     private static final Pigeon2Configuration pigeonConfigs = null;
 
@@ -290,7 +350,7 @@ public class SwerveConfig {
             .withDriveMotorGains(driveGains)
             .withSteerMotorClosedLoopOutput(kSteerClosedLoopOutput)
             .withDriveMotorClosedLoopOutput(kDriveClosedLoopOutput)
-            .withSlipCurrent(kSlipCurrent)
+            .withSlipCurrent(ModuleConstants.DRIVE_SLIP_CURRENT)
             .withSpeedAt12Volts(ATTAINABLE_MAX_SPEED)
             .withDriveMotorType(kDriveMotorType)
             .withSteerMotorType(kSteerMotorType)
