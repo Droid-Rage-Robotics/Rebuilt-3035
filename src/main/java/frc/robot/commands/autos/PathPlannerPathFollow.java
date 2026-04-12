@@ -17,15 +17,13 @@ public class PathPlannerPathFollow {
     private final String pathName;
     private final boolean doesResetOdo;
     private double maxVelocity = 0.3;
-    private double acceleration = 0.5;
+    private double maxAcceleration = 0.5;
     private HashMap<String, Command> eventMap = new HashMap<>();
 
     /*  */
-    private PathPlannerPathFollow(SwerveDrive drive, String pathName, double maxVelocity, double acceleration, HashMap<String, Command> eventMap, boolean doesResetOdo) {
+    private PathPlannerPathFollow(SwerveDrive drive, String pathName, HashMap<String, Command> eventMap, boolean doesResetOdo) {
         this.drive = drive;
         this.pathName = pathName;
-        this.maxVelocity = maxVelocity;
-        this.acceleration = acceleration;
         this.eventMap = eventMap;
         this.doesResetOdo=doesResetOdo;
     }
@@ -41,30 +39,29 @@ public class PathPlannerPathFollow {
     }
 
     public static PathPlannerPathFollow create(SwerveDrive drive, String pathName, boolean doesResetOdo) {
-        return new PathPlannerPathFollow(drive, pathName, doesResetOdo);
-        
+        return new PathPlannerPathFollow(drive, pathName, doesResetOdo);   
     }
 
     public PathPlannerPathFollow withMaxVelocity(double maxVelocity) {
-        return new PathPlannerPathFollow(drive, pathName, maxVelocity, acceleration, eventMap, doesResetOdo);
+        this.maxVelocity=maxVelocity;
+        return this;
     }
 
-    public PathPlannerPathFollow withMaxAcceleration(double acceleration) {
-        return new PathPlannerPathFollow(drive, pathName, maxVelocity, acceleration, eventMap, doesResetOdo);
+    public PathPlannerPathFollow withMaxAcceleration(double maxAcceleration) {
+        this.maxAcceleration=maxAcceleration;
+        return this;
     }
 
     public PathPlannerPathFollow addMarker(String name, Command toRun) {
         eventMap.put(name, toRun);
-        return new PathPlannerPathFollow(drive, pathName, maxVelocity, acceleration, eventMap, doesResetOdo);
+        return new PathPlannerPathFollow(drive, pathName, eventMap, doesResetOdo);
     }
     public PathPlannerPathFollow addMarker(String name, ParallelCommandGroup toRun) {
         eventMap.put(name, toRun);
-        return new PathPlannerPathFollow(drive, pathName, maxVelocity, acceleration, eventMap,doesResetOdo);
+        return new PathPlannerPathFollow(drive, pathName, eventMap,doesResetOdo);
     }
-    public Command build(){
-        // PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-        // return AutoBuilder.followPath(path);
 
+    public Command build(){
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
@@ -76,9 +73,6 @@ public class PathPlannerPathFollow {
             } else {
                 return AutoBuilder.followPath(path);
             }
-
-            
-            
         } catch (Exception e) {
             DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
             return Commands.none();

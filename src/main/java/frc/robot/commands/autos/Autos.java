@@ -27,58 +27,42 @@ import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.vision.Vision;
 
 public final class Autos {
-    public static Command rightNeutralOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "rightNeutralOutpost")
-            // PathPlannerFollow.create(drive, "test")
-                .setMaxVelocity(8)
-                .setAcceleration(8)
-                .build()
-        );
-    }
-    public static Command rightNeutralOutpostSh(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "rightNeutralOutpostSh")
-            // PathPlannerFollow.create(drive, "test")
-                .setMaxVelocity(8)
-                .setAcceleration(8)
-                .build()
-        );
-    }
-
-    public static Command centerHubDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "centerHubDepot")
-                .setMaxVelocity(8)
-                .setAcceleration(8)
-                .build()
-        );
-    }
-
-    
-
-    // public static Command rightNeutralOutpostDouble(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    // public static Command rightNeutralOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
     //     return new SequentialCommandGroup(
     //         PathPlannerFollow.create(drive, "rightNeutralOutpost")
+    //         // PathPlannerFollow.create(drive, "test")
     //             .setMaxVelocity(8)
     //             .setAcceleration(8)
-    //             .build(),
-    //         // shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
-    //         PathPlannerFollow.create(drive, "rightNeutralOutpost2")
+    //             .build()
+    //     );
+    // }
+    // public static Command rightNeutralOutpostSh(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    //     return new SequentialCommandGroup(
+    //         PathPlannerFollow.create(drive, "rightNeutralOutpostSh")
+    //         // PathPlannerFollow.create(drive, "test")
     //             .setMaxVelocity(8)
     //             .setAcceleration(8)
     //             .build()
     //     );
     // }
 
-    public static Command leftNeutralDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "leftNeutralDepot")
-                .setMaxVelocity(8)
-                .setAcceleration(8)
-                .build()
-        );
-    }
+    // public static Command centerHubDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    //     return new SequentialCommandGroup(
+    //         PathPlannerFollow.create(drive, "centerHubDepot")
+    //             .setMaxVelocity(8)
+    //             .setAcceleration(8)
+    //             .build()
+    //     );
+    // }
+
+    // public static Command leftNeutralDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    //     return new SequentialCommandGroup(
+    //         PathPlannerFollow.create(drive, "leftNeutralDepot")
+    //             .setMaxVelocity(8)
+    //             .setAcceleration(8)
+    //             .build()
+    //     );
+    // }
     
     public static Command leftNeutralDepotSh(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
@@ -89,57 +73,10 @@ public final class Autos {
         );
     }
 
-    // public static Command leftNeutralDepotDouble(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-    //     return new SequentialCommandGroup(
-    //         PathPlannerFollow.create(drive, "leftNeutralDepot")
-    //             .setMaxVelocity(8)
-    //             .setAcceleration(8)
-    //             .build(),
-    //         PathPlannerFollow.create(drive, "leftNeutralDepot2")
-    //             .setMaxVelocity(8)
-    //             .setAcceleration(8)
-    //             .build()
-    //     );
-    // }
-
-    public static Command testPathFindingtoPath(){
-        // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        // Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
-        //     PathPlannerPath.fromPathFile("ForwardTest"),
-        //     SwerveConfig.pathConstraint);
-        // return pathfindingCommand;
-        return new InstantCommand();
-    }
-    public static Command testPathFinding(SwerveDrive drive){
-        return new SequentialCommandGroup(
-            PathPlannerFollow.create(drive, "ForwardTest")
-                .setMaxVelocity(1)
-                .setAcceleration(1)
-                .build(),
-            AutoBuilder.pathfindToPoseFlipped(
-                new Pose2d(Meters.of(3), Meters.of(1), new Rotation2d(Degrees.of(90))), 
-                PathPlannerPathFindingFollow.maxSpeedConstraint),
-            AutoBuilder.pathfindToPoseFlipped(
-                new Pose2d(Meters.of(1), Meters.of(1.5), new Rotation2d(Degrees.of(180))), 
-                PathPlannerPathFindingFollow.maxSpeedConstraint)
-        );
-
-        // return new SequentialCommandGroup(
-        //     PathPlannerFollow.create(drive, "ForwardTest")
-        //         .setMaxVelocity(1)
-        //         .setAcceleration(1)
-        //         .build(),
-        //     AutoBuilder.pathfindToPose(
-        //         new Pose2d(Meters.of(13), Meters.of(7), new Rotation2d(Degrees.of(270))), 
-        //         SwerveConfig.pathConstraint)
-        // );
-        
-    }
-
-    public static Command newRightOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command newRightOutpost(String depth, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
-                PathPlannerPathFollow.create(drive, "TrenchToNeutralRight", true)
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralRight" + depth, true)
                     .withMaxVelocity(13)
                     .withMaxAcceleration(13)
                     .build(),
@@ -147,11 +84,11 @@ public final class Autos {
                 new SequentialCommandGroup(
                     AutoCommands.startPivotCommand(intake),
                     new WaitCommand(0.25),
-                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE) 
                 )
             ),
 
-            PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
+            PathPlannerPathFollow.create(drive, "NeutralToTrenchRight" + depth)
                 .withMaxVelocity(13)
                 .withMaxAcceleration(13)
                 .build(),
@@ -184,83 +121,13 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
-                // .raceWith(new WaitCommand(5))
-
-            // new InstantCommand(()-> DroidRageConstants.isShooterManual = false),
-            // new ParallelCommandGroup(
-            //     // PathPlannerPathFollow.create(drive, "R_OUT")
-            //     // .setMaxVelocity(3)
-            //     // .setAcceleration(3)
-            //     // .build(),
-            //     PathPlannerPathFollow.create(drive, "TrenchToNeutralRight", true)
-            //         .withMaxVelocity(7)
-            //         .withMaxAcceleration(7)
-            //         .build(),
-            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
-            //     new SequentialCommandGroup(
-            //         AutoCommands.startPivotCommand(intake),
-            //         new WaitCommand(0.25),
-            //         intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
-            //     )
-            // ),
-            // PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
-            // //         .withMaxVelocity(7)
-            // //         .withMaxAcceleration(7)
-            // //         .build(),
-            // // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
-            // // new ParallelCommandGroup(
-            // //     // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
-            // //     PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
-            // //         .withMaxVelocity(7)
-            // //         .withMaxAcceleration(7)
-            // //         .build(),
-            // //     // shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO)
-            // // ),
-            // // PathPlannerPathFollow.create(drive, "R_IN")
-            // //     .setMaxVelocity(3)
-            // //     .setAcceleration(3)
-            // //     .build(),
-            // // shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT),
-            // // indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
-            // // kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
-            // AutoCommands.autoIndexerWiggleIntake(intake),
-            // AutoCommands.resetBot(shooter, indexer, kicker, intake),
-            // new ParallelCommandGroup(
-            //     // PathPlannerPathFollow.create(drive, "R_OUT_TWO")
-            //     // .setMaxVelocity(3)
-            //     // .setAcceleration(3)
-            //     // .build(),
-            //     PathPlannerPathFollow.create(drive, "TrenchToNeutralRightSec")
-            //         .withMaxVelocity(7)
-            //         .withMaxAcceleration(7)
-            //         .build(),
-            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT),
-            //     new SequentialCommandGroup(
-            //         AutoCommands.startPivotCommand(intake),
-            //         new WaitCommand(0.25),
-            //         intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
-            //     )
-            // ),
-            // // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_BALL).build(),
-            // new ParallelCommandGroup(
-            //     // PathPlannerPathFindingFollow.create(drive, AutoPose.R_OUTPOST_TRENCH).build(),
-            //     PathPlannerPathFollow.create(drive, "NeutralToTrenchRight")
-            //         .withMaxVelocity(7)
-            //         .withMaxAcceleration(7)
-            //         .build(),
-            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO)
-            // )
-            // // PathPlannerPathFollow.create(drive, "R_IN")
-            // //     .setMaxVelocity(3)
-            // //     .setAcceleration(3)
-            // //     .build()
         );
     }
 
-    public static Command newLeftDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command newLeftDepot(String depth, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
-                PathPlannerPathFollow.create(drive, "TrenchToNeutralLeft", true)
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralLeft" + depth, true)
                     .withMaxVelocity(13)
                     .withMaxAcceleration(13)
                     .build(),
@@ -272,7 +139,7 @@ public final class Autos {
                 )
             ),
 
-            PathPlannerPathFollow.create(drive, "NeutralToTrenchLeft")
+            PathPlannerPathFollow.create(drive, "NeutralToTrenchLeft" + depth)
                 .withMaxVelocity(13)
                 .withMaxAcceleration(13)
                 .build(),
@@ -305,55 +172,6 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
-                // .raceWith(new WaitCommand(5))
-
-        //     new ParallelCommandGroup(
-        //         PathPlannerPathFollow.create(drive, "L_OUT")
-        //         .withMaxVelocity(3)
-        //         .withMaxAcceleration(3)
-        //         .build(),
-        //         shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT),
-        //         new SequentialCommandGroup(
-        //             AutoCommands.startPivotCommand(intake),
-        //             new WaitCommand(0.25),
-        //             intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
-        //         )
-        //     ),
-        //     PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_BALL).build(),
-        //     new ParallelCommandGroup(
-        //         PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_TRENCH).build(),
-        //         shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO)
-        //     ),
-        //     PathPlannerPathFollow.create(drive, "L_IN")
-        //         .withMaxVelocity(3)
-        //         .withMaxAcceleration(3)
-        //         .build(),
-        //     shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT),
-        //     indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
-        //     kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
-        //     AutoCommands.autoIndexerWiggleIntake(intake),
-        //     AutoCommands.resetBot(shooter, indexer, kicker, intake),
-        //     new ParallelCommandGroup(
-        //         PathPlannerPathFollow.create(drive, "L_OUT_TWO")
-        //         .withMaxVelocity(3)
-        //         .withMaxAcceleration(3)
-        //         .build(),
-        //         shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT),
-        //         new SequentialCommandGroup(
-        //             AutoCommands.startPivotCommand(intake),
-        //             new WaitCommand(0.25),
-        //             intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
-        //         )
-        //     ),
-        //     PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_BALL).build(),
-        //     new ParallelCommandGroup(
-        //         PathPlannerPathFindingFollow.create(drive, AutoPose.L_DEPOT_TRENCH).build(),
-        //         shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO)
-        //     ),
-        //     PathPlannerPathFollow.create(drive, "L_IN")
-        //         .withMaxVelocity(3)
-        //         .withMaxAcceleration(3)
-        //         .build()
         );
     }
 }

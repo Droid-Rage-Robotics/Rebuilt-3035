@@ -8,28 +8,42 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.3,
-        "y": 7.6
+        "x": 8.194536376604852,
+        "y": 7.535306704707561
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "L-Trench"
     },
     {
       "anchor": {
-        "x": 5.5,
-        "y": 7.6
+        "x": 8.25706134094151,
+        "y": 4.235549215406562
       },
       "prevControl": {
-        "x": 4.5,
-        "y": 7.6
+        "x": 8.282938659058486,
+        "y": 7.483152639087019
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "L-Neutral-D"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6951693503609118,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,7 +59,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

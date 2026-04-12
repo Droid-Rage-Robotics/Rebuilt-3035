@@ -1,21 +1,13 @@
 package frc.robot.commands.autos;
 
-import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.Indexer.IndexerValue;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.Intake.IntakeValue;
-import frc.robot.subsystems.intake.Intake.IntakeValue.WheelVelocity;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.vision.Vision;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
@@ -24,41 +16,41 @@ public class AutoChooser implements Dashboard {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
     public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision){
-        NamedCommands.registerCommand("startPivot", AutoCommands.startPivotCommand(intake));
+        // NamedCommands.registerCommand("startPivot", AutoCommands.startPivotCommand(intake));
         
-        NamedCommands.registerCommand("intakeDown",  intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle()));
-        NamedCommands.registerCommand("intakeUp", intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP.getAngle()));
+        // NamedCommands.registerCommand("intakeDown",  intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle()));
+        // NamedCommands.registerCommand("intakeUp", intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP.getAngle()));
 
-        NamedCommands.registerCommand("intake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE));
-        NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
+        // NamedCommands.registerCommand("intake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE));
+        // NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
 
-        NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
-        NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
-        NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.SHOOT_DEPOT));
+        // NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
+        // NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
+        // NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.SHOOT_DEPOT));
 
-        NamedCommands.registerCommand("setShootTrenchR", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT));
-        NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
+        // NamedCommands.registerCommand("setShootTrenchR", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT));
+        // NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
 
-        NamedCommands.registerCommand("setShootTrenchRTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO));
-        NamedCommands.registerCommand("setShootTrenchLTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO));
+        // NamedCommands.registerCommand("setShootTrenchRTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO));
+        // NamedCommands.registerCommand("setShootTrenchLTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO));
         
-        // NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_DEPOT));
+        // // NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_DEPOT));
 
 
-        NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
+        // NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
 
-        NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
-        NamedCommands.registerCommand("resetBot", AutoCommands.resetBot(shooter, indexer, kicker, intake));
+        // NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
+        // NamedCommands.registerCommand("resetBot", AutoCommands.resetBot(shooter, indexer, kicker, intake));
 
-        NamedCommands.registerCommand("wiggleIntake", AutoCommands.autoIndexerWiggleIntake(intake));
-        NamedCommands.registerCommand("index", new SequentialCommandGroup(
-            indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
-            kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
-        ));
-        NamedCommands.registerCommand("stopIndexer", new SequentialCommandGroup(
-            indexer.setTargetVelocityCommand(IndexerValue.STOP),
-            kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
-        ));
+        // NamedCommands.registerCommand("wiggleIntake", AutoCommands.autoIndexerWiggleIntake(intake));
+        // NamedCommands.registerCommand("index", new SequentialCommandGroup(
+        //     indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
+        //     kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
+        // ));
+        // NamedCommands.registerCommand("stopIndexer", new SequentialCommandGroup(
+        //     indexer.setTargetVelocityCommand(IndexerValue.STOP),
+        //     kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
+        // ));
         // NamedCommands.registerCommand("resetShooter", new SequentialCommandGroup(
         //     indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
         //     kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
@@ -87,7 +79,7 @@ public class AutoChooser implements Dashboard {
     //     ); // Use this for Turret Testing
     // }
     
-    public static void addTuningAuto(SwerveDrive drive) {
+    public static void addTuningAutos(SwerveDrive drive) {
         autoChooser.addOption("BackTest", TuningAutos.backTest(drive));
         autoChooser.addOption("ForwardTest", TuningAutos.forwardTest(drive));
         autoChooser.addOption("TurnTest", TuningAutos.turnTest(drive));
@@ -98,20 +90,23 @@ public class AutoChooser implements Dashboard {
     }
 
     public static void addAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        autoChooser.addOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("rightNeutralOutpostSh", Autos.rightNeutralOutpostSh(drive, intake, indexer, kicker, shooter, vision));
+        // autoChooser.addOption("rightNeutralOutpost", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
+        // autoChooser.addOption("rightNeutralOutpostSh", Autos.rightNeutralOutpostSh(drive, intake, indexer, kicker, shooter, vision));
         
-        // autoChooser.setDefaultOption("test", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
-        // autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightNeutralOutpostDouble(drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("leftNeutralDepot", Autos.leftNeutralDepot(drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("leftNeutralDepotSh", Autos.leftNeutralDepotSh(drive, intake, indexer, kicker, shooter, vision));
-        // autoChooser.addOption("centerHubDepot", Autos.centerHubDepot(drive, intake, indexer, kicker, shooter, vision));
-        // autoChooser.addOption("leftNeutralDepotDouble", Autos.leftNeutralDepotDouble(drive, intake, indexer, kicker, shooter, vision));
+        // // autoChooser.setDefaultOption("test", Autos.rightNeutralOutpost(drive, intake, indexer, kicker, shooter, vision));
+        // // autoChooser.addOption("rightNeutralOutpostDouble", Autos.rightNeutralOutpostDouble(drive, intake, indexer, kicker, shooter, vision));
+        // autoChooser.addOption("leftNeutralDepot", Autos.leftNeutralDepot(drive, intake, indexer, kicker, shooter, vision));
+        // autoChooser.addOption("leftNeutralDepotSh", Autos.leftNeutralDepotSh(drive, intake, indexer, kicker, shooter, vision));
+        // // autoChooser.addOption("centerHubDepot", Autos.centerHubDepot(drive, intake, indexer, kicker, shooter, vision));
+        // // autoChooser.addOption("leftNeutralDepotDouble", Autos.leftNeutralDepotDouble(drive, intake, indexer, kicker, shooter, vision));
 
-        autoChooser.addOption("TestFindtoPose", Autos.testPathFinding(drive));
-        autoChooser.addOption("newRightOutpost", Autos.newRightOutpost(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("DeepRightOutpost", Autos.newRightOutpost("D",drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("MediumRightOutpost", Autos.newRightOutpost("M",drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ShallowRightOutpost", Autos.newRightOutpost("S",drive, intake, indexer, kicker, shooter, vision));
 
-
+        autoChooser.addOption("DeepLeftDepot", Autos.newLeftDepot("D",drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("MediumLeftDepot", Autos.newLeftDepot("M",drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ShallowLeftDepot", Autos.newLeftDepot("S",drive, intake, indexer, kicker, shooter, vision));
     }
     
     @Override

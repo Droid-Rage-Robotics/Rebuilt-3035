@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.74,
-        "y": 0.45
+        "x": 8.25,
+        "y": 3.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.74,
-        "y": 0.45
+        "x": 8.25,
+        "y": 0.7000000000000002
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "R-Neutral-D"
     },
     {
       "anchor": {
-        "x": 5.5,
-        "y": 0.45
+        "x": 3.1,
+        "y": 0.5
       },
       "prevControl": {
-        "x": 4.5,
-        "y": 0.4500000000000001
+        "x": 8.28670969045798,
+        "y": 0.4999999999999994
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "R-Trench-SHOOT"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.2252260442442698
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -1.6569633862553297
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

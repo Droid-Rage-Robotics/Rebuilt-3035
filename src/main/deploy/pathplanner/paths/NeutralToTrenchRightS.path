@@ -3,43 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.25706134094151,
-        "y": 4.235549215406562
+        "x": 7.3,
+        "y": 3.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.992430298192782,
-        "y": 6.776378631351973
+        "x": 6.7636376604850215,
+        "y": 0.5480313837375181
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "R-Neutral-S"
     },
     {
       "anchor": {
-        "x": 3.2239229671897287,
-        "y": 7.573723252496434
+        "x": 3.1,
+        "y": 0.5
       },
       "prevControl": {
-        "x": 7.52392296718973,
-        "y": 7.573723252496433
+        "x": 7.420656205420826,
+        "y": 0.7074607703281026
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "R-Trench-SHOOT"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.6885245901639312,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 13.0,
-    "maxAcceleration": 13.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -50,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Left",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.299988208805196,
-        "y": 0.44514384405361196
+        "x": 8.09236804564907,
+        "y": 0.4315834522111266
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "R-Trench"
     },
     {
       "anchor": {
-        "x": 5.5,
-        "y": 0.45
+        "x": 8.25,
+        "y": 3.2
       },
       "prevControl": {
-        "x": 4.5,
-        "y": 0.4500000000000001
+        "x": 8.25706134094151,
+        "y": 0.19868758915834572
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R-OUT"
+      "linkedName": "R-Neutral-D"
     }
   ],
   "rotationTargets": [],
@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0.6951693503609098,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 3.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -59,7 +59,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0

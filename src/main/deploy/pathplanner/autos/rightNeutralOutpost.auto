@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchToNeutralRight"
+            "pathName": "TrenchToNeutralRightD"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NeutralToTrenchRight"
+            "pathName": "NeutralToTrenchRightD"
           }
         },
         {

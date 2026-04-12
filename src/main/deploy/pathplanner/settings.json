@@ -7,9 +7,7 @@
     "Right",
     "Test"
   ],
-  "autoFolders": [
-    "Tuning"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 13.0,
   "defaultMaxAccel": 13.0,
   "defaultMaxAngVel": 540.0,
