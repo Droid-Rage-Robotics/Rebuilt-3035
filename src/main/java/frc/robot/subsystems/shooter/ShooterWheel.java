@@ -13,8 +13,8 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 
 public class ShooterWheel extends FlywheelTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
-        .withPID(0.043, 0, 0) //0.035014
-        .withFeedforward(0.085, 0.11738, 0.0072731) //ks: 0.083079
+        .withPID(0.046955, 0, 0) //0.035014
+        .withFeedforward(0.10211, 0.11705, 0.010939) //ks: 0.083079
         .withConversionFactor(1)
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinVelocity(RotationsPerSecond.of(-60))
@@ -28,7 +28,7 @@ public class ShooterWheel extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Coast)
-        .withConversionFactor( 1)
+        .withConversionFactor(1)
         .withSupplyCurrentLimit(55)//80
         .withStatorCurrentLimit(60);//80
 
