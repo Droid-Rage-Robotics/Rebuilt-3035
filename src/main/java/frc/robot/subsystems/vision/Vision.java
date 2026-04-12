@@ -47,7 +47,7 @@ public class Vision extends SubsystemBase implements Dashboard {
     }
     
     public static class Constants {
-        public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+        public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
         
         public static final int[] BLUE_HUB_IDS = {18,19,20,21,24,25,26,27};
         public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
@@ -64,7 +64,7 @@ public class Vision extends SubsystemBase implements Dashboard {
     public void initSendable(SendableBuilder builder) {
         builder.addBooleanProperty("Right Target", () -> LimelightHelpers.getTV(DroidRageConstants.rightLL), null);
         builder.addBooleanProperty("Left Target", () -> LimelightHelpers.getTV(DroidRageConstants.leftLL), null);
-
+        builder.addBooleanProperty("Middle Target", () -> LimelightHelpers.getTV(DroidRageConstants.middleLL), null);
     }
 
     @Override
@@ -167,6 +167,17 @@ public class Vision extends SubsystemBase implements Dashboard {
      */
     public static PoseEstimate getRightEstimate() {
         return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.rightLL);
+    }
+
+    /**
+     * Gets the MegaTag2 Pose2d and timestamp from the left limelight for use with WPILib pose estimator
+     * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
+     * Make sure you are calling setRobotOrientation() before calling this method.
+     * 
+     * @return a new PoseEstimate
+     */
+    public static PoseEstimate getMiddleEstimate() {
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.middleLL);
     }
 
     @Override

@@ -171,8 +171,13 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         LimelightHelpers.SetRobotOrientation(DroidRageConstants.rightLL, 
             getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
+        LimelightHelpers.SetRobotOrientation(DroidRageConstants.middleLL, 
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+
         PoseEstimate left = Vision.getLeftEstimate();
         PoseEstimate right = Vision.getRightEstimate();
+        PoseEstimate middle = Vision.getMiddleEstimate();
+
 
         if (left != null && left.tagCount > 0) {
             double dist = Vision.closestTagDistance(left);
@@ -197,6 +202,20 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
                 addVisionMeasurement(
                     right.pose,
                     right.timestampSeconds,
+                    VecBuilder.fill(std, std, stdTheta)
+                );
+            // }  
+        }
+
+        if (middle != null && middle.tagCount > 0) {
+            double dist = Vision.closestTagDistance(middle);
+            double std = Vision.distanceToStdDev(dist);
+            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+
+            // if (Vision.isReasonable(getEstimatedPose(), middle.pose)) {
+                addVisionMeasurement(
+                    middle.pose,
+                    middle.timestampSeconds,
                     VecBuilder.fill(std, std, stdTheta)
                 );
             // }  
