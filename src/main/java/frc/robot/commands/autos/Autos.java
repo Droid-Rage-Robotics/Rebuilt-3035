@@ -261,8 +261,8 @@ public final class Autos {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralLeft", true)
-                    .withMaxVelocity(7)
-                    .withMaxAcceleration(7)
+                    .withMaxVelocity(13)
+                    .withMaxAcceleration(13)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -273,21 +273,21 @@ public final class Autos {
             ),
 
             PathPlannerPathFollow.create(drive, "NeutralToTrenchLeft")
-                .withMaxVelocity(7)
-                .withMaxAcceleration(7)
+                .withMaxVelocity(13)
+                .withMaxAcceleration(13)
                 .build(),
 
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
-                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake))
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
                 .raceWith(new WaitCommand(5)),
 
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
 
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralLeftSec")
-                    .withMaxVelocity(7)
-                    .withMaxAcceleration(7)
+                    .withMaxVelocity(13)
+                    .withMaxAcceleration(13)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -298,13 +298,13 @@ public final class Autos {
             ),
 
             PathPlannerPathFollow.create(drive, "NeutralToTrenchLeftSec")
-                .withMaxVelocity(7)
-                .withMaxAcceleration(7)
+                .withMaxVelocity(13)
+                .withMaxAcceleration(13)
                 .build(),
 
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
-                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake))
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
                 // .raceWith(new WaitCommand(5))
 
         //     new ParallelCommandGroup(
