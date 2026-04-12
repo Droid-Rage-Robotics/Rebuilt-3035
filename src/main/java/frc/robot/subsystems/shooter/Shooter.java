@@ -129,6 +129,14 @@ public class Shooter implements Dashboard, Sendable {
         hoodMap.put(1.89,11.2);
         hoodMap.put(3.05,12.1);
         hoodMap.put(4.27,12.75);
+
+        
+        //Values for on the fly
+        timeOffFlightMap.put(5.68,1.16);
+        timeOffFlightMap.put(4.55,1.12);
+        timeOffFlightMap.put(3.15,1.11);
+        timeOffFlightMap.put(1.88,1.01);
+        timeOffFlightMap.put(1.38,0.9);
     }
 
     @Getter private final Turret turret;
