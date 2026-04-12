@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -35,6 +37,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     private final boolean isEnabled;
 
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
+    private final VoltageOut voltageOut = new VoltageOut(0);
     private final AtomicReference<AngularVelocity> targetVelocity = new AtomicReference<AngularVelocity>(RotationsPerSecond.zero());
 
     public FlywheelTemplate(
@@ -156,17 +159,19 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     
     protected void setVoltage(double voltage) {
         if (isEnabled) {
-            for (TalonEx motor: motors) {
-                motor.setVoltage(voltage);
-            }
+            // for (TalonEx motor: motors) {
+            //     motor.setVoltage(voltage);
+            // }
+            motors[mainNum].setControl(voltageOut.withOutput(voltage));
         }
     }
 
     public void setVoltage(Voltage voltage) {
         if (isEnabled) {
-            for (TalonEx motor: motors) {
-                motor.setVoltage(voltage);
-            }
+            // for (TalonEx motor: motors) {
+            //     motor.setVoltage(voltage);
+            // }
+            motors[mainNum].setControl(voltageOut.withOutput(voltage));
         }
     }
 
@@ -181,7 +186,9 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
                 null
             ), 
             new SysIdRoutine.Mechanism(
-                this::setVoltage,
+                (voltage) -> {
+                    motors[mainNum].setControl(voltageOut.withOutput(voltage));
+                },
                 (log) -> {
                     log.motor("motor")
                         .voltage(Volts.of(getVoltage()))
@@ -197,12 +204,13 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
         return new SequentialCommandGroup(
             new InstantCommand(() -> sysIdActive = true),
             sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward),
-            new WaitCommand(3),
+            new WaitCommand(10),
             sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse),
-            new WaitCommand(3),
+            new WaitCommand(10),
             sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward),
-            new WaitCommand(3),
+            new WaitCommand(10),
             sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse),
+            new WaitCommand(10),
             new InstantCommand(() -> sysIdActive = false)
         );
     }
