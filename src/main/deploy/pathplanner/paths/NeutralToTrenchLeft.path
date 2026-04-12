@@ -12,23 +12,28 @@
         "y": 6.776378631351973
       },
       "isLocked": false,
-      "linkedName": "L-Neutral"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1,
-        "y": 7.71
+        "x": 3.2239229671897287,
+        "y": 7.573723252496434
       },
       "prevControl": {
-        "x": 7.4,
-        "y": 7.709999999999999
+        "x": 7.52392296718973,
+        "y": 7.573723252496433
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L-Trench-SHOOT"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6885245901639312,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Left",
