@@ -8,10 +8,14 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
@@ -37,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.DroidRageConstants;
+import frc.robot.subsystems.drive.SwerveConfig.ModuleConstants;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.LimelightHelpers;
@@ -333,6 +338,46 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     public double getAngularSpeed() {
         return speed.getAngularSpeed();
+    }
+
+    public Command enableTurboTorque() {
+        return new InstantCommand(() -> {
+            var disableCurrentLimits = new CurrentLimitsConfigs()
+                .withSupplyCurrentLimitEnable(false)
+                .withStatorCurrentLimitEnable(false);
+                
+            SwerveModule<TalonFX, TalonFX, CANcoder>[] modules = getModules();
+            TalonFX[] driveMotors = new TalonFX[modules.length];
+
+            for (int i = 0; i < modules.length; i++) {
+                driveMotors[i] = modules[i].getDriveMotor();
+            }
+
+            for (TalonFX motor: driveMotors) {
+                motor.getConfigurator().apply(disableCurrentLimits);
+            }
+        });
+    }
+
+    public Command disableTurboTorque() {
+        return new InstantCommand(() -> {
+            var enableCurrentLimits = new CurrentLimitsConfigs()
+                .withSupplyCurrentLimit(ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT)
+                .withSupplyCurrentLimitEnable(true)
+                .withStatorCurrentLimit(ModuleConstants.DRIVE_SLIP_CURRENT)
+                .withStatorCurrentLimitEnable(true);
+                
+            SwerveModule<TalonFX, TalonFX, CANcoder>[] modules = getModules();
+            TalonFX[] driveMotors = new TalonFX[modules.length];
+
+            for (int i = 0; i < modules.length; i++) {
+                driveMotors[i] = modules[i].getDriveMotor();
+            }
+
+            for (TalonFX motor: driveMotors) {
+                motor.getConfigurator().apply(enableCurrentLimits);
+            }
+        });
     }
 
     /**

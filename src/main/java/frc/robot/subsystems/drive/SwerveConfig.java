@@ -38,7 +38,7 @@ public class SwerveConfig {
         public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35; //MA:40
         public static final double TURN_SUPPLY_CURRENT_LIMIT = 35; //MA:40 //2025=80
         
-        private static final Current DRIVE_SLIP_CURRENT = Amps.of(70); // STATOR
+        public static final Current DRIVE_SLIP_CURRENT = Amps.of(70); // STATOR
 
         //SUPERNURDS had STATOR at 60, no supply
     }
