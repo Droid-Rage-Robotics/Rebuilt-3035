@@ -1,19 +1,12 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.DroidRageConstants.FieldConstants;
 import frc.robot.commands.TeleopCommands;
 import frc.robot.commands.autos.AutoChooser;
-import frc.robot.commands.manual.ManualHood;
-import frc.robot.commands.manual.ManualShooterWheel;
 import frc.robot.commands.manual.SwerveDriveTeleop;
 import frc.robot.commands.shooter.DRShooter;
 import frc.robot.subsystems.Kicker;
@@ -86,34 +79,6 @@ public class RobotContainer {
 		drive.setDefaultCommand(new SwerveDriveTeleop(drive, driver));
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
-		// if(DroidRageConstants.alliance==Alliance.Blue){
-			// driver.a()
-			// .onTrue(
-			// 	new InstantCommand(()-> drive.resetPose(
-			// 		new Pose2d(3.534, 3.977, new Rotation2d(
-			// 			0
-			// 		))
-			// 	))
-			// );
-		// } 
-		// else {
-		// 	driver.a()
-		// 	.onTrue(
-		// 		new InstantCommand(()-> drive.resetPose(
-		// 			new Pose2d(13, 3.977, new Rotation2d(
-		// 				0
-		// 			))
-		// 		))
-		// 	);
-		// }
-		// driver.a()
-		// 	.onTrue(
-		// 		new InstantCommand(()-> drive.resetPose(
-		// 			new Pose2d(3.534, 3.977, new Rotation2d(
-		// 				0
-		// 			))
-		// 		))
-		// 	);
 		
 		driver.povRight()
 			.onTrue(new InstantCommand(() -> {
@@ -146,11 +111,11 @@ public class RobotContainer {
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
 		operator.b()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT)); 
-			// .onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT)); //CORNER_RIGHT
+			// .onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_RIGHT));
 
 		operator.x()
-			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT)); //ORNER_LEFT
-			// .onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT)); //ORNER_LEFT
+			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
+			// .onTrue(shooter.setShooterTargetCommand(ShooterValue.CORNER_LEFT));
 
 		operator.a()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.HOLD));
@@ -202,7 +167,7 @@ public class RobotContainer {
 
 	public void periodic() {
 		areaManager.periodic();
-		// double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_RED);//TODO: Output Distance
+		// double distanceRobotToGoal = DRShooter.getDistanceToHub(drive.getState().Pose, FieldConstants.HUB_RED);
         // System.out.println(distanceRobotToGoal);
 		// System.out.println(Shooter.ShooterValue.SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees));
 	}

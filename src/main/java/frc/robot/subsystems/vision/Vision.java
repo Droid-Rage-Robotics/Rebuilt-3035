@@ -140,8 +140,8 @@ public class Vision extends SubsystemBase implements Dashboard {
      * @return true if the position difference is reasonable; false otherwise
      */
     public static boolean isReasonable(Pose2d current, Pose2d vision) {
-        double posDiff = current.getTranslation().getDistance(vision.getTranslation());
-        double rotDiff = Math.abs(current.getRotation().minus(vision.getRotation()).getDegrees());
+        // double posDiff = current.getTranslation().getDistance(vision.getTranslation());
+        // double rotDiff = Math.abs(current.getRotation().minus(vision.getRotation()).getDegrees());
 
         // return posDiff < Constants.MAX_POSITION_JUMP && rotDiff < Constants.MAX_ROTATION_JUMP;
         return true;
