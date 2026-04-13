@@ -4,44 +4,44 @@
     {
       "anchor": {
         "x": 4.3,
-        "y": 0.5
+        "y": 7.6
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.3,
-        "y": 0.5000000000000001
+        "y": 7.6
       },
-      "isLocked": true,
-      "linkedName": "R-Trench-Swoop"
+      "isLocked": false,
+      "linkedName": "L-Trench-Swoop"
     },
     {
       "anchor": {
         "x": 5.75,
-        "y": 0.5
+        "y": 7.6
       },
       "prevControl": {
         "x": 5.25,
-        "y": 0.5
+        "y": 7.6
       },
       "nextControl": {
         "x": 7.25,
-        "y": 0.5
+        "y": 7.6
       },
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
         "x": 8.625,
-        "y": 2.5
+        "y": 5.5
       },
       "prevControl": {
-        "x": 8.22638169670205,
-        "y": 0.5401266754517362
+        "x": 8.27770364466614,
+        "y": 7.469615506024416
       },
       "nextControl": {
-        "x": 8.82430915164897,
-        "y": 3.479936662274133
+        "x": 8.79864817766693,
+        "y": 4.515192246987792
       },
       "isLocked": false,
       "linkedName": null
@@ -49,15 +49,15 @@
     {
       "anchor": {
         "x": 7.0,
-        "y": 2.5
+        "y": 5.5
       },
       "prevControl": {
         "x": 7.34729635533386,
-        "y": 4.469615506024415
+        "y": 3.530384493975584
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R-Swoop"
+      "linkedName": "L-Swoop"
     }
   ],
   "rotationTargets": [
@@ -67,14 +67,14 @@
     },
     {
       "waypointRelativePos": 1.7,
-      "rotationDegrees": 45.0
+      "rotationDegrees": -45.0
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": 90.0
+      "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 2.5,
+      "waypointRelativePos": 2.6,
       "rotationDegrees": 180.0
     }
   ],
@@ -91,10 +91,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -100.0
+    "rotation": 100.0
   },
   "reversed": false,
-  "folder": "RightSwoop",
+  "folder": "LeftSwoop",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

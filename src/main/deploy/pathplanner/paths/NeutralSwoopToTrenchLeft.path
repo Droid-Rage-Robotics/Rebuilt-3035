@@ -4,52 +4,47 @@
     {
       "anchor": {
         "x": 7.0,
-        "y": 2.5
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.65270364466614,
-        "y": 0.5303844939755837
+        "y": 7.469615506024416
       },
       "isLocked": false,
-      "linkedName": "R-Swoop"
+      "linkedName": "L-Swoop"
     },
     {
       "anchor": {
         "x": 5.75,
-        "y": 0.5
+        "y": 7.5
       },
       "prevControl": {
         "x": 6.0,
-        "y": 0.4999999999999999
+        "y": 7.5
       },
       "nextControl": {
         "x": 5.5,
-        "y": 0.5
+        "y": 7.5
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1,
-        "y": 0.5
+        "x": 3.2239229671897287,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 4.1,
-        "y": 0.4999999999999999
+        "x": 4.223922967189729,
+        "y": 7.5
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 180.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -66,10 +61,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "RightSwoop",
+  "folder": "LeftSwoop",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -100.0
+    "rotation": 100.0
   },
   "useDefaultConstraints": true
 }
