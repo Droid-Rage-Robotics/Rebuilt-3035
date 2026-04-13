@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.903582443653619,
-        "y": 3.1258481613285882
+        "x": 7.0,
+        "y": 2.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.902977461447213,
-        "y": 1.780948991696323
+        "x": 6.647494199336132,
+        "y": 0.5008402613852179
       },
       "isLocked": false,
       "linkedName": "R-Swoop"
     },
     {
       "anchor": {
-        "x": 6.0,
-        "y": 0.675
+        "x": 5.75,
+        "y": 0.5
       },
       "prevControl": {
-        "x": 6.984593131329,
-        "y": 1.3644195326260686
+        "x": 6.0,
+        "y": 0.4999999999999999
       },
       "nextControl": {
-        "x": 5.590423977855509,
-        "y": 0.3882117818244804
+        "x": 5.25,
+        "y": 0.5000000000000001
       },
       "isLocked": false,
       "linkedName": null
@@ -44,7 +44,12 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -64,7 +69,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": -100.0
   },
   "useDefaultConstraints": true
 }
