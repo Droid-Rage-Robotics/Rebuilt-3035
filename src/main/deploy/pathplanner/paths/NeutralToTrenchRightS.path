@@ -16,19 +16,24 @@
     },
     {
       "anchor": {
-        "x": 3.1,
-        "y": 0.5
+        "x": 3.0502279202279197,
+        "y": 0.5594586894586906
       },
       "prevControl": {
-        "x": 7.420656205420826,
-        "y": 0.7074607703281026
+        "x": 7.370884125648746,
+        "y": 0.7669194597867932
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "R-Trench-SHOOT"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5233906437425024,
+      "rotationDegrees": 0.9513873979144688
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
