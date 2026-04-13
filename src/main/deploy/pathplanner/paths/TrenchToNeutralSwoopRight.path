@@ -4,44 +4,44 @@
     {
       "anchor": {
         "x": 4.3,
-        "y": 0.45
+        "y": 0.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.3,
-        "y": 0.4500000000000002
+        "y": 0.5000000000000001
       },
       "isLocked": true,
-      "linkedName": "R-Trench"
+      "linkedName": "R-Trench-Swoop"
     },
     {
       "anchor": {
         "x": 5.75,
-        "y": 0.45
+        "y": 0.5
       },
       "prevControl": {
         "x": 5.25,
-        "y": 0.45000000000000007
+        "y": 0.5
       },
       "nextControl": {
-        "x": 6.25,
-        "y": 0.45
+        "x": 7.25,
+        "y": 0.5
       },
       "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.549739027283511,
-        "y": 2.4049822064056934
+        "x": 8.625,
+        "y": 2.405
       },
       "prevControl": {
-        "x": 8.162408066429418,
-        "y": 0.5006049822064038
+        "x": 8.237669039145906,
+        "y": 0.5006227758007102
       },
       "nextControl": {
-        "x": 8.728845049618444,
-        "y": 3.2855868162191113
+        "x": 8.804106022334933,
+        "y": 3.2856046098134177
       },
       "isLocked": false,
       "linkedName": null
@@ -60,7 +60,20 @@
       "linkedName": "R-Swoop"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.2,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.7,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -80,7 +93,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
