@@ -140,11 +140,12 @@ public class Shooter implements Dashboard, Sendable {
         // timeOffFlightMap.put(1.88,1.01);
         // timeOffFlightMap.put(1.38,0.9);
 
-        driveSpeedMap.put(1.,1.0);
-        driveSpeedMap.put(3.,2.0);
-        driveSpeedMap.put(5.,3.0);
-        driveSpeedMap.put(7.,4.0);
-        driveSpeedMap.put(10.,5.0);
+        // driveSpeedMap.put(1.,1.0);
+        // driveSpeedMap.put(3.,2.0);
+        // driveSpeedMap.put(5.,3.0);
+        // driveSpeedMap.put(7.,4.0);
+        // driveSpeedMap.put(10.,5.0);
+        driveSpeedMap.put(0.1,1.0);
 
     }
 
@@ -218,11 +219,12 @@ public class Shooter implements Dashboard, Sendable {
         return target.getDistance(robotPose.getTranslation());
     }
 
-    public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds, double multiplier) {
-        System.out.println("X:" + fieldSpeeds.vxMetersPerSecond);
-        System.out.println("Y:" + fieldSpeeds.vyMetersPerSecond);
+    public static Pose2d predictPosePos(Pose2d currentPose, Translation2d goalPose, ChassisSpeeds fieldSpeeds) {
+        // System.out.println("X:" + fieldSpeeds.vxMetersPerSecond);
+        // System.out.println("Y:" + fieldSpeeds.vyMetersPerSecond);
         System.out.println("B:" + Math.sqrt(Math.pow(fieldSpeeds.vxMetersPerSecond, 2) + Math.pow(fieldSpeeds.vyMetersPerSecond, 2)));
 
+        double multiplier = Shooter.driveSpeedMap.get(getDistanceToHub(currentPose, goalPose)); // Lookahead time in seconds
         double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * multiplier;
         double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * multiplier;
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());
