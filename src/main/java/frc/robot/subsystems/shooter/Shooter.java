@@ -146,6 +146,7 @@ public class Shooter implements Dashboard, Sendable {
         // driveSpeedMap.put(7.,4.0);
         // driveSpeedMap.put(10.,5.0);
         driveSpeedMap.put(0.1,1.0);
+        driveSpeedMap.put(.8,1.4);
 
     }
 
@@ -222,9 +223,10 @@ public class Shooter implements Dashboard, Sendable {
     public static Pose2d predictPosePos(Pose2d currentPose, Translation2d goalPose, ChassisSpeeds fieldSpeeds) {
         // System.out.println("X:" + fieldSpeeds.vxMetersPerSecond);
         // System.out.println("Y:" + fieldSpeeds.vyMetersPerSecond);
-        System.out.println("B:" + Math.sqrt(Math.pow(fieldSpeeds.vxMetersPerSecond, 2) + Math.pow(fieldSpeeds.vyMetersPerSecond, 2)));
+        double num = Math.sqrt(Math.pow(fieldSpeeds.vxMetersPerSecond, 2) + Math.pow(fieldSpeeds.vyMetersPerSecond, 2));
+        System.out.println("B:" + num);
 
-        double multiplier = Shooter.driveSpeedMap.get(getDistanceToHub(currentPose, goalPose)); // Lookahead time in seconds
+        double multiplier = Shooter.driveSpeedMap.get(num); // Lookahead time in seconds
         double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * multiplier;
         double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * multiplier;
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());

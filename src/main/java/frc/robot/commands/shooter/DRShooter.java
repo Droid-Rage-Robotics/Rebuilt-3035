@@ -26,13 +26,13 @@ public class DRShooter extends Command {
         this.drive = drive;
 
         //this part does NOT initialize Positions correctly; Check initialize()
-        // if(DroidRageConstants.alliance == Alliance.Red){
-        //     this.hubPose = FieldConstants.HUB_RED;
-        //     this.alliancePose = FieldConstants.ALLIANCE_RED;
-        // } else if (DroidRageConstants.alliance == Alliance.Blue){
-        //     this.hubPose = FieldConstants.HUB_BLUE;
-        //     this.alliancePose = FieldConstants.ALLIANCE_BLUE;
-        // }
+        if(DroidRageConstants.alliance == Alliance.Red){
+            this.hubPose = FieldConstants.HUB_RED;
+            // this.alliancePose = FieldConstants.ALLIANCE_RED;
+        } else if (DroidRageConstants.alliance == Alliance.Blue){
+            this.hubPose = FieldConstants.HUB_BLUE;
+            // this.alliancePose = FieldConstants.ALLIANCE_BLUE;
+        }
         
         this.goalPose = this.hubPose;
 
