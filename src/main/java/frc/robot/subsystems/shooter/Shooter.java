@@ -148,7 +148,7 @@ public class Shooter implements Dashboard, Sendable {
 
         //M/s to Multiplier 
         driveSpeedMap.put(0.1,1.05);
-        driveSpeedMap.put(1.0,1.3);
+        driveSpeedMap.put(1.0,1.35);
         driveSpeedMap.put(1.5,1.6);
 
 
