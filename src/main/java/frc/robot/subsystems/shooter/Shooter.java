@@ -134,11 +134,18 @@ public class Shooter implements Dashboard, Sendable {
 
         
         //Values for on the fly
-        timeOffFlightMap.put(5.68,1.16);
-        timeOffFlightMap.put(4.55,1.12);
-        timeOffFlightMap.put(3.15,1.11);
-        timeOffFlightMap.put(1.88,1.01);
-        timeOffFlightMap.put(1.38,0.9);
+        // timeOffFlightMap.put(5.68,1.16);
+        // timeOffFlightMap.put(4.55,1.12);
+        // timeOffFlightMap.put(3.15,1.11);
+        // timeOffFlightMap.put(1.88,1.01);
+        // timeOffFlightMap.put(1.38,0.9);
+
+        timeOffFlightMap.put(1.38,0.9); // NOT CALIBRATED
+        timeOffFlightMap.put(1.76, 1.84);
+        // timeOffFlightMap.put(2.79, 1.75); // adjusted
+        timeOffFlightMap.put(3.50, 1.92);
+        timeOffFlightMap.put(5.00, 2.00); // NOT CALIBRATED
+
 
         // driveSpeedMap.put(1.,1.0);
         // driveSpeedMap.put(3.,2.0);
@@ -150,6 +157,10 @@ public class Shooter implements Dashboard, Sendable {
         // driveSpeedMap.put(0.1,1.05);
         // driveSpeedMap.put(1.0,1.3);
         // driveSpeedMap.put(1.5,1.6);
+
+
+
+        
 
 
     }
@@ -225,7 +236,7 @@ public class Shooter implements Dashboard, Sendable {
         return target.getDistance(robotPose.getTranslation());
     }
 
-    public static Pose2d predictPosePos(Pose2d currentPose, Translation2d goalPose, ChassisSpeeds fieldSpeeds) {
+    public static Pose2d predictPosePos(Pose2d currentPose, Translation2d goalPose, ChassisSpeeds fieldSpeeds, double distanceRobotToGoal) {
         // System.out.println("X:" + fieldSpeeds.vxMetersPerSecond);
         // System.out.println("Y:" + fieldSpeeds.vyMetersPerSecond);
         // double num = Math.sqrt(Math.pow(fieldSpeeds.vxMetersPerSecond, 2) + Math.pow(fieldSpeeds.vyMetersPerSecond, 2));
@@ -235,8 +246,12 @@ public class Shooter implements Dashboard, Sendable {
         // double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * Shooter.driveSpeedMap.get(Math.abs(fieldSpeeds.vxMetersPerSecond));
         // double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * Shooter.driveSpeedMap.get(Math.abs(fieldSpeeds.vyMetersPerSecond));
         
-        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond;
-        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond;
+        
+        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * timeOffFlightMap.get(distanceRobotToGoal);
+        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * timeOffFlightMap.get(distanceRobotToGoal);
+        
+        // double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond;
+        // double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond;
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());
     }
 
