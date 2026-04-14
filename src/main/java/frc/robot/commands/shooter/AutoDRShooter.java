@@ -44,8 +44,8 @@ public class AutoDRShooter extends Command {
         // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
         Pose2d lookAheadPose = Shooter.predictPosePos(
             drive.getState().Pose, 
-            drive.getCurrentRobotChassisSpeeds(),
-            Shooter.driveSpeedMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
+            goalPose,
+            drive.getCurrentRobotChassisSpeeds());
             // Shooter.timeOffFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
         
         distanceRobotToGoal = Shooter.getDistanceToHub(lookAheadPose, goalPose);
