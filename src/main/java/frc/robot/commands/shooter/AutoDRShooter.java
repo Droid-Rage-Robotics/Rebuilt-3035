@@ -46,7 +46,7 @@ public class AutoDRShooter extends Command {
             drive.getState().Pose, 
             goalPose,
             drive.getCurrentRobotChassisSpeeds(),
-            Shooter.timeOffFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
+            Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
 
             // Shooter.timeOffFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
         

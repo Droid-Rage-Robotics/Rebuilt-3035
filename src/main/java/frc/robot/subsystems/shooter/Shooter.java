@@ -97,7 +97,7 @@ public class Shooter implements Dashboard, Sendable {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap flywheelSpeedMap =
         new InterpolatingDoubleTreeMap();
-    public static final InterpolatingDoubleTreeMap timeOffFlightMap =
+    public static final InterpolatingDoubleTreeMap timeOfFlightMap =
         new InterpolatingDoubleTreeMap();
     // public static final InterpolatingDoubleTreeMap driveSpeedMap =
     //     new InterpolatingDoubleTreeMap();
@@ -140,11 +140,21 @@ public class Shooter implements Dashboard, Sendable {
         // timeOffFlightMap.put(1.88,1.01);
         // timeOffFlightMap.put(1.38,0.9);
 
-        timeOffFlightMap.put(1.38,0.9); // NOT CALIBRATED
-        timeOffFlightMap.put(1.76, 1.84);
-        // timeOffFlightMap.put(2.79, 1.75); // adjusted
-        timeOffFlightMap.put(3.50, 1.92);
-        timeOffFlightMap.put(5.00, 2.00); // NOT CALIBRATED
+        // DR Values for on the fly
+        // timeOfFlightMap.put(1.38,0.9); // NOT CALIBRATED
+        // timeOfFlightMap.put(1.76, 1.84);
+        // timeOfFlightMap.put(3.50, 1.92);
+        // timeOfFlightMap.put(5.00, 2.00); // NOT CALIBRATED
+
+
+
+        //Mech Advantage
+        timeOfFlightMap.put(1.63, 1.017);
+        timeOfFlightMap.put(2.40, 0.967);
+        timeOfFlightMap.put(3.25, 1.19);
+        timeOfFlightMap.put(4.15, 1.18);
+        timeOfFlightMap.put(4.875, 1.25);
+
 
 
         // driveSpeedMap.put(1.,1.0);
@@ -247,8 +257,8 @@ public class Shooter implements Dashboard, Sendable {
         // double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * Shooter.driveSpeedMap.get(Math.abs(fieldSpeeds.vyMetersPerSecond));
         
         
-        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * timeOffFlightMap.get(distanceRobotToGoal);
-        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * timeOffFlightMap.get(distanceRobotToGoal);
+        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * timeOfFlightMap.get(distanceRobotToGoal);
+        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * timeOfFlightMap.get(distanceRobotToGoal);
         
         // double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond;
         // double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond;

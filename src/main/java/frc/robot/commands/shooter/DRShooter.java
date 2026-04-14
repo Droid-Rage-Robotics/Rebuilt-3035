@@ -76,7 +76,7 @@ public class DRShooter extends Command {
             drive.getState().Pose, 
             goalPose,
             drive.getCurrentRobotChassisSpeeds(),
-            Shooter.timeOffFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
+            Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
         distanceRobotToGoal = Shooter.getDistanceToHub(lookAheadPose, goalPose);
 
         if (!DroidRageConstants.isShooterManual) {
