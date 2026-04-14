@@ -75,7 +75,7 @@ public class DRShooter extends Command {
         Pose2d lookAheadPose = Shooter.predictPosePos(
             drive.getState().Pose, 
             drive.getCurrentRobotChassisSpeeds(),
-            Shooter.timeOffFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
+            Shooter.driveSpeedMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
         distanceRobotToGoal = Shooter.getDistanceToHub(lookAheadPose, goalPose);//TODO: Output Distance
 
         // distanceRobotToGoal = getDistanceToHub(drive.getState().Pose, goalPose);//TODO: Output Distance

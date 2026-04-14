@@ -97,7 +97,9 @@ public class Shooter implements Dashboard, Sendable {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap flywheelSpeedMap =
         new InterpolatingDoubleTreeMap();
-    public static final InterpolatingDoubleTreeMap timeOffFlightMap =
+    // public static final InterpolatingDoubleTreeMap timeOffFlightMap =
+    //     new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap driveSpeedMap =
         new InterpolatingDoubleTreeMap();
     static{
 
@@ -132,11 +134,18 @@ public class Shooter implements Dashboard, Sendable {
 
         
         //Values for on the fly
-        timeOffFlightMap.put(5.68,1.16);
-        timeOffFlightMap.put(4.55,1.12);
-        timeOffFlightMap.put(3.15,1.11);
-        timeOffFlightMap.put(1.88,1.01);
-        timeOffFlightMap.put(1.38,0.9);
+        // timeOffFlightMap.put(5.68,1.16);
+        // timeOffFlightMap.put(4.55,1.12);
+        // timeOffFlightMap.put(3.15,1.11);
+        // timeOffFlightMap.put(1.88,1.01);
+        // timeOffFlightMap.put(1.38,0.9);
+
+        driveSpeedMap.put(1.,1.0);
+        driveSpeedMap.put(3.,2.0);
+        driveSpeedMap.put(5.,3.0);
+        driveSpeedMap.put(7.,4.0);
+        driveSpeedMap.put(10.,5.0);
+
     }
 
     @Getter private final Turret turret;
@@ -206,26 +215,16 @@ public class Shooter implements Dashboard, Sendable {
     }
 
     public static double getDistanceToHub(Pose2d robotPose, Translation2d target){
-        // Translation2d target2d = new Translation2d(target.getX(), target.getY());
         return target.getDistance(robotPose.getTranslation());
-        // return robotPose.getTranslation().getDistance(target2d);
     }
 
-    public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds, double timeOffFlight) {
-        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * timeOffFlight;
-        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * timeOffFlight;
+    public static Pose2d predictPosePos(Pose2d currentPose, ChassisSpeeds fieldSpeeds, double multiplier) {
+        System.out.println("X:" + fieldSpeeds.vxMetersPerSecond);
+        System.out.println("Y:" + fieldSpeeds.vyMetersPerSecond);
+        System.out.println("B:" + Math.sqrt(Math.pow(fieldSpeeds.vxMetersPerSecond, 2) + Math.pow(fieldSpeeds.vyMetersPerSecond, 2)));
 
-        // double turretVelocityX =
-        //         fieldVelocity.vxMetersPerSecond
-        //                 + fieldVelocity.omegaRadiansPerSecond
-        //                         * (robotToTurret.getY() * Math.cos(robotAngle)
-        //                                 - robotToTurret.getX() * Math.sin(robotAngle));
-        // double turretVelocityY =
-        //         fieldVelocity.vyMetersPerSecond
-        //                 + fieldVelocity.omegaRadiansPerSecond
-        //                         * (robotToTurret.getX() * Math.cos(robotAngle)
-        //                                 - robotToTurret.getY() * Math.sin(robotAngle));
-
+        double predictedX = currentPose.getX() + fieldSpeeds.vxMetersPerSecond * multiplier;
+        double predictedY = currentPose.getY() + fieldSpeeds.vyMetersPerSecond * multiplier;
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());
     }
 
@@ -250,46 +249,4 @@ public class Shooter implements Dashboard, Sendable {
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
         return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
     }
-
-    //https://blog.eeshwark.com/robotblog/shooting-on-the-fly
-//     public void update(Pose2d robotPose, ChassisSpeeds robotSpeed) {
-
-//         // 1. LATENCY COMP
-//         double latency = 0.15; // Tuned constant
-//         Translation2d futurePos = robotPose.getTranslation().plus(
-//             new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond).times(latency)
-//         );
-
-//         // 2. GET TARGET VECTOR
-//         Translation2d goalLocation = FieldConstants.HUB_RED;
-//         Translation2d targetVec = goalLocation.minus(futurePos);
-//         double dist = targetVec.getNorm();
-
-//         // 3. CALCULATE IDEAL SHOT (Stationary)
-//         // Note: This returns HORIZONTAL velocity component
-//         double idealHorizontalSpeed = flywheelSpeedMap.get(dist);
-
-//         // 4. VECTOR SUBTRACTION
-//         Translation2d robotVelVec = new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
-//         Translation2d shotVec = targetVec.div(dist).times(idealHorizontalSpeed).minus(robotVelVec);
-
-//         // 5. CONVERT TO CONTROLS
-//         double turretAngle = shotVec.getAngle().getDegrees();
-//         double newHorizontalSpeed = shotVec.getNorm();
-
-//         // 6. SOLVE FOR NEW PITCH/RPM
-//         // Assuming constant total exit velocity, variable hood:
-//         double totalExitVelocity = 15.0; // m/s
-//         // Clamp to avoid domain errors if we need more speed than possible
-//         double ratio = Math.min(newHorizontalSpeed / totalExitVelocity, 1.0);
-//         double newPitch = Math.acos(ratio);
-
-//         turretAngle = MathUtil.inputModulus(turretAngle, 0, 360);
-//         // 7. SET OUTPUTS
-//         shooter.getTurret().setGoalAngle(Degrees.of(turretAngle).plus(Degrees.of(28)));
-//         // shooter.setRPM(calcRPM(totalExitVelocity));
-//         shooter.getHood().setGoalAngle(Rotation2d.fromRadians(newPitch));
-//         shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(flywheelSpeedMap.get(distanceRobotToGoal)));
-//     }
-    
 }
