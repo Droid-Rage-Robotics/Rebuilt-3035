@@ -66,7 +66,7 @@ public class DRShooter extends Command {
                 this.goalPose = this.hubPose;
                 break;
             case NEUTRAL, OPPOSITION:
-                // this.goalPose = this.hubPose;
+                this.goalPose = this.hubPose;
                 // this.goalPose = new Translation2d(this.alliancePose.getX(), drive.getState().Pose.getY());
                 break;
         }
@@ -99,7 +99,9 @@ public class DRShooter extends Command {
                     break;
                 case BETWEEN:
                     shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drive.getState().Pose, hubPose));
-                    shooter.getHood().setGoalAngle(Degrees.zero());
+                    shooter.getHood().setGoalAngle(Degrees.of(Shooter.hoodMap.get(distanceRobotToGoal)));
+
+                    // shooter.getHood().setGoalAngle(Degrees.zero());
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.flywheelSpeedMap.get(distanceRobotToGoal)));
                     break;
             }

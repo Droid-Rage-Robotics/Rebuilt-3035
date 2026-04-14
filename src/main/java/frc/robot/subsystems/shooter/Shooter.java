@@ -222,7 +222,7 @@ public class Shooter implements Dashboard, Sendable {
 
     public static Pose2d predictPosePos(Pose2d currentPose, Translation2d goalPose, ChassisSpeeds fieldSpeeds) {
         System.out.println("X:" + fieldSpeeds.vxMetersPerSecond);
-        // System.out.println("Y:" + fieldSpeeds.vyMetersPerSecond);
+        System.out.println("Y:" + fieldSpeeds.vyMetersPerSecond);
         // double num = Math.sqrt(Math.pow(fieldSpeeds.vxMetersPerSecond, 2) + Math.pow(fieldSpeeds.vyMetersPerSecond, 2));
         // System.out.println("B:" + num);
 
