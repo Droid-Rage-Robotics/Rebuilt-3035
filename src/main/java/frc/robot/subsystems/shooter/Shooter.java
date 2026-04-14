@@ -97,10 +97,10 @@ public class Shooter implements Dashboard, Sendable {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap flywheelSpeedMap =
         new InterpolatingDoubleTreeMap();
-    // public static final InterpolatingDoubleTreeMap timeOffFlightMap =
-    //     new InterpolatingDoubleTreeMap();
-    public static final InterpolatingDoubleTreeMap driveSpeedMap =
+    public static final InterpolatingDoubleTreeMap timeOffFlightMap =
         new InterpolatingDoubleTreeMap();
+    // public static final InterpolatingDoubleTreeMap driveSpeedMap =
+    //     new InterpolatingDoubleTreeMap();
     static{
 
         //Comp
@@ -134,11 +134,11 @@ public class Shooter implements Dashboard, Sendable {
 
         
         //Values for on the fly
-        // timeOffFlightMap.put(5.68,1.16);
-        // timeOffFlightMap.put(4.55,1.12);
-        // timeOffFlightMap.put(3.15,1.11);
-        // timeOffFlightMap.put(1.88,1.01);
-        // timeOffFlightMap.put(1.38,0.9);
+        timeOffFlightMap.put(5.68,1.16);
+        timeOffFlightMap.put(4.55,1.12);
+        timeOffFlightMap.put(3.15,1.11);
+        timeOffFlightMap.put(1.88,1.01);
+        timeOffFlightMap.put(1.38,0.9);
 
         // driveSpeedMap.put(1.,1.0);
         // driveSpeedMap.put(3.,2.0);
@@ -147,9 +147,9 @@ public class Shooter implements Dashboard, Sendable {
         // driveSpeedMap.put(10.,5.0);
 
         //M/s to Multiplier 
-        driveSpeedMap.put(0.1,1.05);
-        driveSpeedMap.put(1.0,1.3);
-        driveSpeedMap.put(1.5,1.6);
+        // driveSpeedMap.put(0.1,1.05);
+        // driveSpeedMap.put(1.0,1.3);
+        // driveSpeedMap.put(1.5,1.6);
 
 
     }
@@ -221,6 +221,7 @@ public class Shooter implements Dashboard, Sendable {
     }
 
     public static double getDistanceToHub(Pose2d robotPose, Translation2d target){
+        System.out.println("Distance:" + target.getDistance(robotPose.getTranslation()));
         return target.getDistance(robotPose.getTranslation());
     }
 
