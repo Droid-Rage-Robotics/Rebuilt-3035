@@ -174,4 +174,77 @@ public final class Autos {
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
         );
     }
+
+    public static Command rightNeutralSwoop(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralSwoopRight")
+                    .build(),
+
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "NeutralSwoopToTrenchRight")
+                    .build(),
+
+                intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP)
+            ),
+            
+            new AutoDRShooter(drive, shooter)
+                .repeatedly()
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+        );
+    }
+
+    public static Command leftNeutralSwoop(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralSwoopLeft")
+                    .build(),
+
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "NeutralSwoopToTrenchLeft")
+                    .build(),
+
+                intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP)
+            ),
+
+            new AutoDRShooter(drive, shooter)
+                .repeatedly()
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+        );
+    }
+
+    public static Command centerDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "HubToDepot")
+                    .build(),
+
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+
+            new AutoDRShooter(drive, shooter)
+                .repeatedly()
+                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+        );
+    }
+
+
 }
