@@ -199,6 +199,9 @@ public class Shooter implements Dashboard, Sendable {
         this.turret=turret;
         this.hood=hood;
         this.shooterWheel=shooter;
+
+        shooterWheel.setTargetVelocity(IDLE_VELOCITY);
+
         TelemetryUtils.registerDashboard(this);
 
     }

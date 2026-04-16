@@ -189,8 +189,8 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         if (left != null && left.tagCount > 0) {
             double dist = Vision.closestTagDistance(left);
             double std = Vision.distanceToStdDev(dist);
-            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
-            // double stdTheta = 999;
+            // double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+            double stdTheta = 9999999.0;
 
             // if (Vision.isReasonable(getEstimatedPose(), left.pose)) {
                 addVisionMeasurement(
@@ -204,8 +204,8 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         if (right != null && right.tagCount > 0) {
             double dist = Vision.closestTagDistance(right);
             double std = Vision.distanceToStdDev(dist);
-            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
-            // double stdTheta = 999;
+            // double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+            double stdTheta = 9999999.0;
 
             // if (Vision.isReasonable(getEstimatedPose(), right.pose)) {
                 addVisionMeasurement(
@@ -219,8 +219,8 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         if (middle != null && middle.tagCount > 0) {
             double dist = Vision.closestTagDistance(middle);
             double std = Vision.distanceToStdDev(dist);
-            double stdTheta = Math.toRadians(Math.max(5, dist * 4));
-            // double stdTheta = 999;
+            // double stdTheta = Math.toRadians(Math.max(5, dist * 4));
+            double stdTheta = 9999999.0;
 
 
             // if (Vision.isReasonable(getEstimatedPose(), middle.pose)) {

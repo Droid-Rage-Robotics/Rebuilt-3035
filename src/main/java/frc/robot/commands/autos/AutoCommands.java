@@ -1,5 +1,7 @@
 package frc.robot.commands.autos;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -36,7 +38,9 @@ public class AutoCommands{
 
     public static Command resetBot(Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
         return new ParallelCommandGroup(
-            shooter.setShooterTargetCommand(ShooterValue.HOLD),
+            // shooter.setShooterTargetCommand(ShooterValue.HOLD),
+            shooter.getHood().setTargetPositionCommand(Degrees.zero()),
+            shooter.getShooterWheel().setTargetVelocityCommand(Shooter.IDLE_VELOCITY),
             indexer.setTargetVelocityCommand(Indexer.IndexerValue.STOP),
             kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()),
             intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
