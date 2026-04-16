@@ -13,7 +13,7 @@ import frc.utility.template.SubsystemConstants.EncoderType;
 public class Hood extends ArmTemplate {
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withPID(20, 0, 20)
-        .withFeedforward(0.4334, 0, 0.28114, 2.0731)
+        .withFeedforward(0.4334, 0, 0.28114, 2.2) // kA 2.0731
         .withMaxVelocity(RotationsPerSecond.of(1))
         .withMaxAcceleration(RotationsPerSecondPerSecond.of(0.5))
         .withGearRatio(4.0 * (155.0/9.0))

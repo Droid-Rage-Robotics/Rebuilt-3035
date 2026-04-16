@@ -36,11 +36,14 @@ public class Shooter implements Dashboard, Sendable {
         SHOOT_TRENCH_RIGHT(-11,5.57,57.5), //v52.5
         // SHOOT_TRENCH_RIGHT_AP(-11,5.57,57.5), //v52.5
 
-        AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),
-            0,
-            0), 
-        AUTO_SHOOT_TRENCH_RIGHT_TWO(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,
-        SHOOT_TRENCH_RIGHT.getVelocity().in(RotationsPerSecond)), 
+        AUTO_SHOOT_TRENCH_RIGHT_FAR(-15,6.57,63),
+        AUTO_SHOOT_TRENCH_LEFT_FAR(15,6.57,63),
+    
+        // AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),
+        //     0,
+        //     0), 
+        // AUTO_SHOOT_TRENCH_RIGHT_TWO(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),0,
+        // SHOOT_TRENCH_RIGHT.getVelocity().in(RotationsPerSecond)), 
 
         
         SHOOT_TRENCH_LEFT(
@@ -49,14 +52,14 @@ public class Shooter implements Dashboard, Sendable {
             SHOOT_TRENCH_RIGHT.getVelocity().in(RotationsPerSecond)
         ),
 
-        AUTO_SHOOT_TRENCH_LEFT(
-            SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees), 
-            0,
-            0),
-        AUTO_SHOOT_TRENCH_LEFT_TWO(
-            SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees),
-            0,
-            SHOOT_TRENCH_LEFT.getVelocity().in(RotationsPerSecond)), 
+        // AUTO_SHOOT_TRENCH_LEFT(
+        //     SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees), 
+        //     0,
+        //     0),
+        // AUTO_SHOOT_TRENCH_LEFT_TWO(
+        //     SHOOT_TRENCH_LEFT.getTurretAngle().in(Degrees),
+        //     0,
+        //     SHOOT_TRENCH_LEFT.getVelocity().in(RotationsPerSecond)), 
         
         HOLD(210, 0, 20),//-220
         // HOARD(0,10,60)
@@ -146,6 +149,11 @@ public class Shooter implements Dashboard, Sendable {
         // timeOfFlightMap.put(3.50, 1.92);
         // timeOfFlightMap.put(5.00, 2.00); // NOT CALIBRATED
 
+        //State Comp...
+        // timeOfFlightMap.put(1.38,1.); // NOT CALIBRATED
+        // timeOfFlightMap.put(2.6, 0.546);
+        // timeOfFlightMap.put(3.4, .647);
+        // timeOfFlightMap.put(4.26, .7025); // NOT CALIBRATED
 
 
         //Mech Advantage
@@ -197,8 +205,10 @@ public class Shooter implements Dashboard, Sendable {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addStringProperty("ShooterMode", () -> getCurrentShooterPos().toString(), null);
+        // builder.addStringProperty("ShooterMode", () -> getCurrentShooterPos().toString(), null);
         builder.addBooleanProperty("Is Shooter Ready?", this::isShooterReady, null);
+        builder.addBooleanProperty("Is Hood Down", ()-> hood.getCurrentAngle().in(Degree) < 2, null);
+
     }
 
     @Override

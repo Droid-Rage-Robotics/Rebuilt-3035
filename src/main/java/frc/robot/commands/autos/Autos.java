@@ -121,6 +121,12 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+
+            // new ParallelCommandGroup(
+            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR),
+            //     AutoCommands.autoIndexerWiggleIntake(intake),
+            //     AutoCommands.index(indexer, kicker)
+            // )
         );
     }
 
@@ -172,6 +178,12 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+
+            // new ParallelCommandGroup(
+            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR),
+            //     AutoCommands.autoIndexerWiggleIntake(intake),
+            //     AutoCommands.index(indexer, kicker)
+            // )
         );
     }
 
@@ -198,6 +210,11 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+            // new ParallelCommandGroup(
+            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR),
+            //     AutoCommands.autoIndexerWiggleIntake(intake),
+            //     AutoCommands.index(indexer, kicker)
+            // )
         );
     }
 
@@ -224,6 +241,11 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+            // new ParallelCommandGroup(
+            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR),
+            //     AutoCommands.autoIndexerWiggleIntake(intake),
+            //     AutoCommands.index(indexer, kicker)
+            // )
         );
     }
 
