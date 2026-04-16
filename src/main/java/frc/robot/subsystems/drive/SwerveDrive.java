@@ -171,13 +171,13 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     public void updateVisionOdometry() {
         LimelightHelpers.SetRobotOrientation(DroidRageConstants.leftLL, 
-            getPigeon2().getYaw().getValue().in(Degrees), 0, 0, 0, 0, 0);
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
         LimelightHelpers.SetRobotOrientation(DroidRageConstants.rightLL, 
-            getPigeon2().getYaw().getValue().in(Degrees), 0, 0, 0, 0, 0);
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
         LimelightHelpers.SetRobotOrientation(DroidRageConstants.middleLL, 
-            getPigeon2().getYaw().getValue().in(Degrees), 0, 0, 0, 0, 0);
+            getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
         
 
