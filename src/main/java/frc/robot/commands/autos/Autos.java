@@ -80,8 +80,8 @@ public final class Autos {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRight" + depth, true)
-                    .withMaxVelocity(9)
-                    .withMaxAcceleration(9)
+                    .withMaxVelocity(11)
+                    .withMaxAcceleration(11)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -170,8 +170,8 @@ public final class Autos {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralLeft" + depth, true)
-                    .withMaxVelocity(9)
-                    .withMaxAcceleration(9)
+                    .withMaxVelocity(11)
+                    .withMaxAcceleration(11)
                     .build(),
 
                 new SequentialCommandGroup(
