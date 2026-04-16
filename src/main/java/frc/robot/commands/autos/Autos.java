@@ -8,6 +8,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,6 +26,8 @@ import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.vision.Vision;
+import frc.utility.DRAreaManager;
+import frc.utility.DRAreaManager.Zone;
 
 public final class Autos {
     // public static Command rightNeutralOutpost(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
@@ -121,6 +124,24 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+            // new ConditionalCommand(
+            //     new AutoDRShooter(drive, shooter)
+            //         .repeatedly()
+            //         .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker)
+            //     ),
+            //     new SequentialCommandGroup(
+            //         PathPlannerPathFindingFollow.create(drive, AutoChooser.getStartingPoseFromPath("NeutralToTrenchRightSec"))
+            //             .build(),
+            //         PathPlannerPathFollow.create(drive, "NeutralToTrenchRightSec")
+            //             .withMaxVelocity(13)
+            //             .withMaxAcceleration(13)
+            //             .build(),
+            //         new AutoDRShooter(drive, shooter)
+            //             .repeatedly()
+            //             .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+            //     ),
+            //     ()->DRAreaManager.getCurrentZone()==Zone.ALLIANCE_ZONE
+            // )
 
             // new ParallelCommandGroup(
             //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR),
@@ -178,6 +199,25 @@ public final class Autos {
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
                 .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+
+            // new ConditionalCommand(
+            //     new AutoDRShooter(drive, shooter)
+            //         .repeatedly()
+            //         .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker)
+            //     ),
+            //     new SequentialCommandGroup(
+            //         PathPlannerPathFindingFollow.create(drive, AutoChooser.getStartingPoseFromPath("NeutralToTrenchLeftSec"))
+            //             .build(),
+            //         PathPlannerPathFollow.create(drive, "NeutralToTrenchLeftSec")
+            //             .withMaxVelocity(13)
+            //             .withMaxAcceleration(13)
+            //             .build(),
+            //         new AutoDRShooter(drive, shooter)
+            //             .repeatedly()
+            //             .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+            //     ),
+            //     ()->DRAreaManager.getCurrentZone()==Zone.ALLIANCE_ZONE
+            // )
 
             // new ParallelCommandGroup(
             //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR),

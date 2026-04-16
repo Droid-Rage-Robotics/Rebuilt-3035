@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.3,
-        "y": 0.45
+        "x": 7.559698795180722,
+        "y": 0.3632891566265073
       },
       "isLocked": false,
       "linkedName": "R-Trench"
@@ -20,8 +20,8 @@
         "y": 3.2
       },
       "prevControl": {
-        "x": 7.3,
-        "y": 0.4500000000000002
+        "x": 7.275578313253012,
+        "y": 0.42885542168674773
       },
       "nextControl": null,
       "isLocked": false,

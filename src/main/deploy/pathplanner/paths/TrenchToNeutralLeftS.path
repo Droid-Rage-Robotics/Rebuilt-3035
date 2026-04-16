@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.3,
-        "y": 7.6
+        "x": 7.974951807228916,
+        "y": 7.608361445783132
       },
       "isLocked": false,
       "linkedName": "L-Trench"
@@ -20,8 +20,8 @@
         "y": 4.8
       },
       "prevControl": {
-        "x": 7.3,
-        "y": 7.6
+        "x": 7.570626506024096,
+        "y": 7.728566265060241
       },
       "nextControl": null,
       "isLocked": false,
