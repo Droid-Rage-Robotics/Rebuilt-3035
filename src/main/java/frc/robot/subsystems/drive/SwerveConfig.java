@@ -2,6 +2,8 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import org.opencv.video.TrackerGOTURN;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
@@ -38,7 +40,9 @@ public class SwerveConfig {
         public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35; //MA:40
         public static final double TURN_SUPPLY_CURRENT_LIMIT = 35; //MA:40 //2025=80
         
-        public static final Current DRIVE_SLIP_CURRENT = Amps.of(70); // STATOR
+        public static final double DRIVE_STATOR_CURRENT_LIMIT = 70; // STATOR
+        public static final Current DRIVE_SLIP_CURRENT = Amps.of(DRIVE_STATOR_CURRENT_LIMIT); // STATOR
+
 
         //SUPERNURDS had STATOR at 60, no supply
     }
@@ -159,6 +163,8 @@ public class SwerveConfig {
             new CurrentLimitsConfigs()
                 .withSupplyCurrentLimit(Amps.of(ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT))
                 .withSupplyCurrentLimitEnable(true)
+                .withStatorCurrentLimit(Amps.of(ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT))
+                .withStatorCurrentLimitEnable(true)
         );
 
     /**

@@ -45,3 +45,18 @@ Wiring
 
 Setting Up Telemetry
 - Add FMS Info: In the left hand pane, select the Network Tables Tab. Scroll down to block of data titled FMSinfo, and drag
+
+
+
+Dripping Spring Val
+drive supply 35
+drive stator 70====
+turn supply 35
+bottom rollers stator 80, supply 75
+top roller stator 80 supply 75
+intake wheel stator 65, supply 65
+pivot - stator 45, supply 35====
+shooter hood stator 50, supply 45
+wheel - stator 60, supply 55
+turret - stator 30, supply 15
+kicker stator50, supply 45
