@@ -116,10 +116,13 @@ public final class Autos {
             //     ),
             //     ()->DRAreaManager.getCurrentZone()==Zone.ALLIANCE_ZONE
             // )
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE),
+                new WaitCommand(.5),
+                new ParallelCommandGroup(
                 AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
+                )
             ),
             // new AutoDRShooter(drive, shooter)
             //     .repeatedly()
@@ -152,10 +155,13 @@ public final class Autos {
             // new AutoDRShooter(drive, shooter)
             //     .repeatedly()
             //     .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_TWO),
+                new WaitCommand(.5),
+                new ParallelCommandGroup(
                 AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
+                )
             )
 
             // new ParallelCommandGroup(
@@ -209,10 +215,13 @@ public final class Autos {
             //     .repeatedly()
             //     .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
             //     .raceWith(new WaitCommand(5)),
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE),
+                new WaitCommand(.5),
+                new ParallelCommandGroup(
                 AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
+                )
             ),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
                 //IF Manual, give robot time to reset
@@ -242,8 +251,11 @@ public final class Autos {
             //     .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
             new ParallelCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_TWO),
+                new WaitCommand(.5),
+                new ParallelCommandGroup(
                 AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
+                )
             )
             // new ConditionalCommand(
             //     new AutoDRShooter(drive, shooter)
