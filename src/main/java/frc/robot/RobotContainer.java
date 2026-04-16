@@ -128,7 +128,7 @@ public class RobotContainer {
 
 		operator.povLeft()
 			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
-			.onTrue(drive.setSpeed(Speed.SUPER_SLOW))
+			.onTrue(drive.setSpeed(Speed.SLOW))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
 		operator.rightBumper()

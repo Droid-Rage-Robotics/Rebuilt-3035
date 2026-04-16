@@ -79,6 +79,13 @@ public class DRShooter extends Command {
             Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
         distanceRobotToGoal = Shooter.getDistanceToHub(lookAheadPose, goalPose);
 
+        // this.goalPose = Shooter.predictPosePosMoveHub(
+        //     drive.getState().Pose, 
+        //     goalPose,
+        //     drive.getCurrentRobotChassisSpeeds(),
+        //     Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
+        // distanceRobotToGoal = Shooter.getDistanceToHub(drive.getState().Pose, goalPose);
+
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE:

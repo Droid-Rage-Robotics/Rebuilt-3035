@@ -265,6 +265,14 @@ public class Shooter implements Dashboard, Sendable {
         return new Pose2d(predictedX, predictedY, currentPose.getRotation());
     }
 
+    public static Translation2d predictPosePosMoveHub(Pose2d currentPose, Translation2d goalPose, ChassisSpeeds fieldSpeeds, double distanceRobotToGoal) {
+    
+        double newGoalX = goalPose.getX() + fieldSpeeds.vxMetersPerSecond * timeOfFlightMap.get(distanceRobotToGoal);
+        double newGoalY = goalPose.getY() + fieldSpeeds.vyMetersPerSecond * timeOfFlightMap.get(distanceRobotToGoal);
+        
+        return new Translation2d(newGoalX, newGoalY);
+    }
+
     /**
      * calculates the angle of a turret relative to the robot to hit a target
      * @param robot robot pos
