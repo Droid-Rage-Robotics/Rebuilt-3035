@@ -136,12 +136,12 @@ public class Shooter implements Dashboard, Sendable {
         // hoodMap.put(4.27,12.75);
 
         
-        //Values for on the fly
-        // timeOffFlightMap.put(5.68,1.16);
-        // timeOffFlightMap.put(4.55,1.12);
-        // timeOffFlightMap.put(3.15,1.11);
-        // timeOffFlightMap.put(1.88,1.01);
-        // timeOffFlightMap.put(1.38,0.9);
+        //Values for on the fly Dripping Springs
+        timeOfFlightMap.put(5.68,1.16);
+        timeOfFlightMap.put(4.55,1.12);
+        timeOfFlightMap.put(3.15,1.11);
+        timeOfFlightMap.put(1.88,1.01);
+        timeOfFlightMap.put(1.38,0.9);
 
         // DR Values for on the fly
         // timeOfFlightMap.put(1.38,0.9); // NOT CALIBRATED
@@ -157,11 +157,11 @@ public class Shooter implements Dashboard, Sendable {
 
 
         //Mech Advantage
-        timeOfFlightMap.put(1.63, 1.017);
-        timeOfFlightMap.put(2.40, 0.967);
-        timeOfFlightMap.put(3.25, 1.19);
-        timeOfFlightMap.put(4.15, 1.18);
-        timeOfFlightMap.put(4.875, 1.25);
+        // timeOfFlightMap.put(1.63, 1.017);
+        // timeOfFlightMap.put(2.40, 0.967);
+        // timeOfFlightMap.put(3.25, 1.19);
+        // timeOfFlightMap.put(4.15, 1.18);
+        // timeOfFlightMap.put(4.875, 1.25);
 
 
 
