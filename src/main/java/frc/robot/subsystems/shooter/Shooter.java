@@ -104,33 +104,33 @@ public class Shooter implements Dashboard, Sendable {
     static{
 
         //Comp
-        // flywheelSpeedMap.put(1.5,41.5);
-        // flywheelSpeedMap.put(2.0,42.7);
-        // flywheelSpeedMap.put(2.9,46.0);
-        // flywheelSpeedMap.put(4.20,50.0);
-        // flywheelSpeedMap.put(5.10,53.5);
-        // flywheelSpeedMap.put(5.6,58.1);
-        // flywheelSpeedMap.put(6.1,60.0);
+        flywheelSpeedMap.put(1.5,41.5);
+        flywheelSpeedMap.put(2.0,42.7);
+        flywheelSpeedMap.put(2.9,46.0);
+        flywheelSpeedMap.put(4.20,50.0);
+        flywheelSpeedMap.put(5.10,53.5);
+        flywheelSpeedMap.put(5.6,58.5);//58.1
+        flywheelSpeedMap.put(6.1,60.0);
 
-        // hoodMap.put(1.5,2.85);
-        // hoodMap.put(2.00, 7.8);
-        // hoodMap.put(2.9,10.7);
-        // hoodMap.put(4.2,16.8);
-        // hoodMap.put(5.10,18.5);
-        // hoodMap.put(5.6,19.5);
-        // hoodMap.put(6.1,20.0);
+        hoodMap.put(1.5,2.85);
+        hoodMap.put(2.00, 7.8);
+        hoodMap.put(2.9,10.7);
+        hoodMap.put(4.2,16.8);
+        hoodMap.put(5.10,18.5);
+        hoodMap.put(5.6,19.5);
+        hoodMap.put(6.1,20.0);
 
 
-        //Home Positions
-        flywheelSpeedMap.put(1.25,40.0);
-        flywheelSpeedMap.put(1.89,42.0);
-        flywheelSpeedMap.put(3.05,47.0);
-        flywheelSpeedMap.put(4.27,50.2);
+        // //Home Positions
+        // flywheelSpeedMap.put(1.25,40.0);
+        // flywheelSpeedMap.put(1.89,42.0);
+        // flywheelSpeedMap.put(3.05,47.0);
+        // flywheelSpeedMap.put(4.27,50.2);
 
-        hoodMap.put(1.25,0.0);
-        hoodMap.put(1.89,11.2);
-        hoodMap.put(3.05,12.1);
-        hoodMap.put(4.27,12.75);
+        // hoodMap.put(1.25,0.0);
+        // hoodMap.put(1.89,11.2);
+        // hoodMap.put(3.05,12.1);
+        // hoodMap.put(4.27,12.75);
 
         
         //Values for on the fly
