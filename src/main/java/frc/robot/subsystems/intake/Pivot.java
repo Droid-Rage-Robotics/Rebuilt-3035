@@ -18,7 +18,7 @@ public class Pivot extends ArmTemplate {
     private static final double startingPosDegree = 35;
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withPID(25, 0, 0.35)
-        .withFeedforward(0.74109, 0.27134, 3.3, 0.23)
+        .withFeedforward(0.74109, 0.27134, 3.3, 0.25)//kA:0.23
         .withMaxVelocity(RotationsPerSecond.of(10))
         .withMaxAcceleration(RotationsPerSecondPerSecond.of(15))
         .withGearRatio(54.0)

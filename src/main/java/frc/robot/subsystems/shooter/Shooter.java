@@ -36,8 +36,11 @@ public class Shooter implements Dashboard, Sendable {
         SHOOT_TRENCH_RIGHT(-11,5.57,57.5), //v52.5
         // SHOOT_TRENCH_RIGHT_AP(-11,5.57,57.5), //v52.5
 
-        AUTO_SHOOT_TRENCH_RIGHT_FAR(-15,6.57,63),
-        AUTO_SHOOT_TRENCH_LEFT_FAR(15,6.57,63),
+        AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE(64,16,50),
+        AUTO_SHOOT_TRENCH_LEFT_FAR_ONE(298,16,50),
+    
+        AUTO_SHOOT_TRENCH_RIGHT_FAR_TWO(244,16,50),
+        AUTO_SHOOT_TRENCH_LEFT_FAR_TWO(118,16,50),
     
         // AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),
         //     0,
@@ -234,6 +237,11 @@ public class Shooter implements Dashboard, Sendable {
             shooterWheel.setTargetVelocityCommand(shooterValue.getVelocity())
         );
     }
+    public Command setTurretCommand(ShooterValue shooterValue) {
+        return new ParallelCommandGroup(
+            turret.setTargetPositionCommand(shooterValue.getTurretAngle())
+        );
+    }
 
     public void setShooterTarget(ShooterValue shooterValue) {
         hood.setGoalAngle(shooterValue.getHoodAngle());
@@ -255,7 +263,7 @@ public class Shooter implements Dashboard, Sendable {
     }
 
     public static double getDistanceToHub(Pose2d robotPose, Translation2d target){
-        System.out.println("Distance:" + target.getDistance(robotPose.getTranslation()));
+        // System.out.println("Distance:" + target.getDistance(robotPose.getTranslation()));
         return target.getDistance(robotPose.getTranslation());
     }
 
