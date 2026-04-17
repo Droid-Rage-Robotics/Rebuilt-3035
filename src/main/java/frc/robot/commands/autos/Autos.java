@@ -287,7 +287,7 @@ public final class Autos {
     public static Command rightNeutralSwoop(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                PathPlannerPathFollow.create(drive, "TrenchToNeutralSwoopRight")
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralSwoopRight", true)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -318,7 +318,7 @@ public final class Autos {
     public static Command leftNeutralSwoop(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                PathPlannerPathFollow.create(drive, "TrenchToNeutralSwoopLeft")
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralSwoopLeft", true)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -349,7 +349,7 @@ public final class Autos {
     public static Command centerDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                PathPlannerPathFollow.create(drive, "HubToDepot")
+                PathPlannerPathFollow.create(drive, "HubToDepot", true)
                     .build(),
 
                 new SequentialCommandGroup(
@@ -378,11 +378,13 @@ public final class Autos {
     public static Command centerDepotStaright(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                PathPlannerPathFollow.create(drive, "center")
+                PathPlannerPathFollow.create(drive, "center", true)
                     .build()
             ),
             new WaitCommand(1),
-            AutoCommands.startPivotCommand(intake),
+            // AutoCommands.startPivotCommand(intake),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO),
+
             new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.SHORT),
                 new WaitCommand(2),

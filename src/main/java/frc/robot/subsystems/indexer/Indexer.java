@@ -9,8 +9,8 @@ import lombok.Getter;
 
 public class Indexer {
     public enum IndexerValue {
-        INTAKE(50,30),
-        OUTTAKE(-50,-30),
+        INTAKE(100,30),
+        OUTTAKE(-30,-30),
         STOP(0,0),
         HOLD(0,0);
 
