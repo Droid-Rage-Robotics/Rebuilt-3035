@@ -18,7 +18,7 @@ public class DRShooter extends Command {
     private final SwerveDrive drive;
     
     private Translation2d hubPose;
-    private Translation2d goalPose;
+    private Translation2d goalPose, alliancePose;
     private double distanceRobotToGoal;
 
     public DRShooter(SwerveDrive drive, Shooter shooter) {
@@ -28,10 +28,10 @@ public class DRShooter extends Command {
         //LEAVE THIS - Do NOT Comment Out
         if(DroidRageConstants.alliance == Alliance.Red){
             this.hubPose = FieldConstants.HUB_RED;
-            // this.alliancePose = FieldConstants.ALLIANCE_RED;
+            this.alliancePose = FieldConstants.ALLIANCE_RED;
         } else if (DroidRageConstants.alliance == Alliance.Blue){
             this.hubPose = FieldConstants.HUB_BLUE;
-            // this.alliancePose = FieldConstants.ALLIANCE_BLUE;
+            this.alliancePose = FieldConstants.ALLIANCE_BLUE;
         }
         
         this.goalPose = this.hubPose;
@@ -46,10 +46,10 @@ public class DRShooter extends Command {
     public void initialize(){
         if(DroidRageConstants.alliance == Alliance.Red){
             this.hubPose = FieldConstants.HUB_RED;
-            // this.alliancePose = FieldConstants.ALLIANCE_RED;
+            this.alliancePose = FieldConstants.ALLIANCE_RED;
         } else if (DroidRageConstants.alliance == Alliance.Blue){
             this.hubPose = FieldConstants.HUB_BLUE;
-            // this.alliancePose = FieldConstants.ALLIANCE_BLUE;
+            this.alliancePose = FieldConstants.ALLIANCE_BLUE;
         }
     }
     
@@ -67,7 +67,7 @@ public class DRShooter extends Command {
                 break;
             case NEUTRAL, OPPOSITION:
                 // this.goalPose = this.hubPose;
-                // this.goalPose = new Translation2d(this.alliancePose.getX(), drive.getState().Pose.getY());
+                this.goalPose = new Translation2d(this.alliancePose.getX(), drive.getState().Pose.getY());
                 break;
         }
 

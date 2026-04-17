@@ -369,9 +369,29 @@ public final class Autos {
                 // AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
                 )
-            )
+            ),
+            new WaitCommand(5),
+            shooter.setShooterTargetCommand(Shooter.ShooterValue.HOLD)
         );
     }
 
+    public static Command centerDepotStaright(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                PathPlannerPathFollow.create(drive, "center")
+                    .build()
+            ),
+            new WaitCommand(1),
+            AutoCommands.startPivotCommand(intake),
+            new SequentialCommandGroup(
+                shooter.setShooterTargetCommand(Shooter.ShooterValue.SHORT),
+                new WaitCommand(2),
+                new ParallelCommandGroup(
+                // AutoCommands.autoIndexerWiggleIntake(intake), 
+                AutoCommands.index(indexer, kicker)
+                )
+            )
+        );
+    }
 
 }

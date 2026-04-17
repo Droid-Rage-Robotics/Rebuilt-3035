@@ -129,6 +129,8 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("LeftNeutralSwoop", Autos.leftNeutralSwoop(drive, intake, indexer, kicker, shooter, vision));
         
         autoChooser.addOption("CenterDepot", Autos.centerDepot(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("CenterDepotStraigh", Autos.centerDepotStaright(drive, intake, indexer, kicker, shooter, vision));
+
 
     }
     
