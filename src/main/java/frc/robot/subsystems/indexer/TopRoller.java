@@ -29,7 +29,7 @@ public class TopRoller extends FlywheelTemplate {
         .withDirection(Direction.Reversed)
         .withIdleMode(NeutralModeValue.Coast)
         .withSupplyCurrentLimit(80)
-        .withStatorCurrentLimit(70); 
+        .withStatorCurrentLimit(75); 
 
     public TopRoller(boolean isEnabled) {
         super(isEnabled, constants, rightMotor);
