@@ -365,12 +365,33 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         });
     }
 
+    public Command scaleStator(double scalar) {
+        return new InstantCommand(() -> {
+            var enableCurrentLimits = new CurrentLimitsConfigs()
+                .withSupplyCurrentLimit(ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT*scalar)
+                .withSupplyCurrentLimitEnable(true)
+                .withStatorCurrentLimit(ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT*scalar)
+                .withStatorCurrentLimitEnable(true);
+                
+            SwerveModule<TalonFX, TalonFX, CANcoder>[] modules = getModules();
+            TalonFX[] driveMotors = new TalonFX[modules.length];
+
+            for (int i = 0; i < modules.length; i++) {
+                driveMotors[i] = modules[i].getDriveMotor();
+            }
+
+            for (TalonFX motor: driveMotors) {
+                motor.getConfigurator().apply(enableCurrentLimits);
+            }
+        });
+    }
+
     public Command disableTurboTorque() {
         return new InstantCommand(() -> {
             var enableCurrentLimits = new CurrentLimitsConfigs()
                 .withSupplyCurrentLimit(ModuleConstants.DRIVE_SUPPLY_CURRENT_LIMIT)
                 .withSupplyCurrentLimitEnable(true)
-                .withStatorCurrentLimit(ModuleConstants.DRIVE_SLIP_CURRENT)
+                .withStatorCurrentLimit(ModuleConstants.DRIVE_STATOR_CURRENT_LIMIT)
                 .withStatorCurrentLimitEnable(true);
                 
             SwerveModule<TalonFX, TalonFX, CANcoder>[] modules = getModules();

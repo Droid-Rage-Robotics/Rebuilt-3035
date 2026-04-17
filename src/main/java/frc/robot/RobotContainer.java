@@ -35,19 +35,19 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(false), 
-		new TopRoller(false)
+		new BottomRollers(true), 
+		new TopRoller(true)
 	);
 
-    private final Kicker kicker = new Kicker(false);
+    private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
-        new ShooterWheel(false)
+        new Turret(true),
+        new Hood(true),
+        new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
@@ -128,8 +128,8 @@ public class RobotContainer {
 
 		operator.povLeft()
 			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
-			.onTrue(drive.setSpeed(Speed.SLOW))
-			.onFalse(drive.setSpeed(Speed.NORMAL))
+			// .onTrue(drive.setSpeed(Speed.SLOW))
+			// .onFalse(drive.setSpeed(Speed.NORMAL))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
 		operator.rightBumper()
