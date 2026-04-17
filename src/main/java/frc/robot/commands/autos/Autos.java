@@ -76,28 +76,6 @@ public final class Autos {
         );
     }
 
-    public static Command newRightOutpost(String depth, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        return new SequentialCommandGroup (
-            new ParallelCommandGroup (
-                PathPlannerPathFollow.create(drive, "TrenchToNeutralRight" + depth, true)
-                    .withMaxVelocity(11)
-                    .withMaxAcceleration(11)
-                    .build(),
-
-                new SequentialCommandGroup(
-                    AutoCommands.startPivotCommand(intake),
-                    new WaitCommand(0.25),
-                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE),
-                    new WaitCommand(.5),
-                    shooter.setTurretCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
-
-                )
-            ),
-
-            PathPlannerPathFollow.create(drive, "NeutralToTrenchRight" + depth)
-                .withMaxVelocity(13)
-                .withMaxAcceleration(13)
-                .build(),
             // new ConditionalCommand(
             //     new AutoDRShooter(drive, shooter)
             //         .repeatedly()
@@ -116,21 +94,39 @@ public final class Autos {
             //     ),
             //     ()->DRAreaManager.getCurrentZone()==Zone.ALLIANCE_ZONE
             // )
+
+
+    public static Command newRightOutpost(String depth, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup (
+            new ParallelCommandGroup (
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralRight" + depth, true)
+                    .withMaxVelocity(11)
+                    .withMaxAcceleration(11)
+                    .build(),
+
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE),
+                    new WaitCommand(.5),
+                    shooter.setTurretCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
+                )
+            ),
+
+            PathPlannerPathFollow.create(drive, "NeutralToTrenchRight" + depth)
+                .withMaxVelocity(13)
+                .withMaxAcceleration(13)
+                .build(),
             new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE),
                 new WaitCommand(.5),
                 new ParallelCommandGroup(
                 // AutoCommands.autoIndexerWiggleIntake(intake), 
-                AutoCommands.index(indexer, kicker)
+                AutoCommands.index(indexer, kicker),
+                new WaitCommand(4)
                 )
             ),
-            // new AutoDRShooter(drive, shooter)
-            //     .repeatedly()
-            //     .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
-            //     .raceWith(new WaitCommand(5)),
-
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
-                //IF Manual, give robot time to reset
 
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRightSec")
@@ -152,9 +148,6 @@ public final class Autos {
                 .withMaxAcceleration(13)
                 .build(),
 
-            // new AutoDRShooter(drive, shooter)
-            //     .repeatedly()
-            //     .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
             new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_TWO),
                 new WaitCommand(.5),
@@ -163,12 +156,6 @@ public final class Autos {
                 AutoCommands.index(indexer, kicker)
                 )
             )
-
-            // new ParallelCommandGroup(
-            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR),
-            //     AutoCommands.autoIndexerWiggleIntake(intake),
-            //     AutoCommands.index(indexer, kicker)
-            // )
         );
     }
 
@@ -193,38 +180,16 @@ public final class Autos {
                 .withMaxVelocity(13)
                 .withMaxAcceleration(13)
                 .build(),
-            // new ConditionalCommand(
-            //     new AutoDRShooter(drive, shooter)
-            //         .repeatedly()
-            //         .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker)
-            //     ),
-            //     new SequentialCommandGroup(
-            //         PathPlannerPathFindingFollow.create(drive, AutoChooser.getStartingPoseFromPath("NeutralToTrenchLeft"))
-            //             .build(),
-            //         PathPlannerPathFollow.create(drive, "NeutralToTrenchLeft")
-            //             .withMaxVelocity(13)
-            //             .withMaxAcceleration(13)
-            //             .build(),
-            //         new AutoDRShooter(drive, shooter)
-            //             .repeatedly()
-            //             .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
-            //     ),
-            //     ()->DRAreaManager.getCurrentZone()==Zone.ALLIANCE_ZONE
-            // )
-            // new AutoDRShooter(drive, shooter)
-            //     .repeatedly()
-            //     .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
-            //     .raceWith(new WaitCommand(5)),
             new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE),
                 new WaitCommand(.5),
                 new ParallelCommandGroup(
                 // AutoCommands.autoIndexerWiggleIntake(intake), 
-                AutoCommands.index(indexer, kicker)
+                AutoCommands.index(indexer, kicker),
+                new WaitCommand(4)
                 )
             ),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
-                //IF Manual, give robot time to reset
 
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralLeftSec")
@@ -246,9 +211,6 @@ public final class Autos {
                 .withMaxAcceleration(13)
                 .build(),
 
-            // new AutoDRShooter(drive, shooter)
-            //     .repeatedly()
-            //     .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
             new ParallelCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_TWO),
                 new WaitCommand(.5),
@@ -257,30 +219,6 @@ public final class Autos {
                 AutoCommands.index(indexer, kicker)
                 )
             )
-            // new ConditionalCommand(
-            //     new AutoDRShooter(drive, shooter)
-            //         .repeatedly()
-            //         .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker)
-            //     ),
-            //     new SequentialCommandGroup(
-            //         PathPlannerPathFindingFollow.create(drive, AutoChooser.getStartingPoseFromPath("NeutralToTrenchLeftSec"))
-            //             .build(),
-            //         PathPlannerPathFollow.create(drive, "NeutralToTrenchLeftSec")
-            //             .withMaxVelocity(13)
-            //             .withMaxAcceleration(13)
-            //             .build(),
-            //         new AutoDRShooter(drive, shooter)
-            //             .repeatedly()
-            //             .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
-            //     ),
-            //     ()->DRAreaManager.getCurrentZone()==Zone.ALLIANCE_ZONE
-            // )
-
-            // new ParallelCommandGroup(
-            //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR),
-            //     AutoCommands.autoIndexerWiggleIntake(intake),
-            //     AutoCommands.index(indexer, kicker)
-            // )
         );
     }
 
