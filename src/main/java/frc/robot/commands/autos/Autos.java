@@ -120,7 +120,7 @@ public final class Autos {
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE),
                 new WaitCommand(.5),
                 new ParallelCommandGroup(
-                AutoCommands.autoIndexerWiggleIntake(intake), 
+                // AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
                 )
             ),
@@ -159,7 +159,7 @@ public final class Autos {
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_TWO),
                 new WaitCommand(.5),
                 new ParallelCommandGroup(
-                AutoCommands.autoIndexerWiggleIntake(intake), 
+                // AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
                 )
             )
@@ -219,7 +219,7 @@ public final class Autos {
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE),
                 new WaitCommand(.5),
                 new ParallelCommandGroup(
-                AutoCommands.autoIndexerWiggleIntake(intake), 
+                // AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
                 )
             ),
@@ -253,7 +253,7 @@ public final class Autos {
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_TWO),
                 new WaitCommand(.5),
                 new ParallelCommandGroup(
-                AutoCommands.autoIndexerWiggleIntake(intake), 
+                // AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
                 )
             )
@@ -306,7 +306,7 @@ public final class Autos {
             
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
-                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+                .alongWith(AutoCommands.index(indexer, kicker))
             // new ParallelCommandGroup(
             //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR),
             //     AutoCommands.autoIndexerWiggleIntake(intake),
@@ -337,7 +337,7 @@ public final class Autos {
 
             new AutoDRShooter(drive, shooter)
                 .repeatedly()
-                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+                .alongWith(AutoCommands.index(indexer, kicker))
             // new ParallelCommandGroup(
             //     shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR),
             //     AutoCommands.autoIndexerWiggleIntake(intake),
@@ -359,9 +359,17 @@ public final class Autos {
                 )
             ),
 
-            new AutoDRShooter(drive, shooter)
-                .repeatedly()
-                .alongWith(AutoCommands.autoIndexerWiggleIntake(intake), AutoCommands.index(indexer, kicker))
+            // new AutoDRShooter(drive, shooter)
+            //     .repeatedly()
+            //     .alongWith(AutoCommands.index(indexer, kicker))
+            new ParallelCommandGroup(
+                shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_DEPOT),
+                new WaitCommand(.5),
+                new ParallelCommandGroup(
+                // AutoCommands.autoIndexerWiggleIntake(intake), 
+                AutoCommands.index(indexer, kicker)
+                )
+            )
         );
     }
 
