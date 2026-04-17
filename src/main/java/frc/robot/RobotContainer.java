@@ -126,14 +126,14 @@ public class RobotContainer {
 		operator.povDown()
 			.onTrue(new InstantCommand(()->DroidRageConstants.isShooterManual = false));
 
-		operator.povLeft()
-			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+		operator.povLeft().and(()->shooter.isShooterReady())
+			.whileTrue(TeleopCommands.operatorPovLeftWhileTrue(indexer, kicker,intake,shooter))
 			// .onTrue(drive.setSpeed(Speed.SLOW))
 			// .onFalse(drive.setSpeed(Speed.NORMAL))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 
 		operator.rightBumper()
-			.whileTrue(TeleopCommands.operatorRightBumperOnTrue(indexer, kicker,intake))
+			.whileTrue(TeleopCommands.operatorRightBumperWhileTrue(indexer,kicker,intake))
 			.whileTrue(TeleopCommands.indexerWiggleIntake(intake))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
 

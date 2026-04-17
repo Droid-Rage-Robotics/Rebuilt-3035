@@ -54,11 +54,21 @@ public class TeleopCommands {
         );
     }
 
-    public static Command operatorRightBumperOnTrue(Indexer indexer, Kicker kicker, Intake intake) {
+    public static Command operatorRightBumperWhileTrue(Indexer indexer, Kicker kicker, Intake intake) {
         return new SequentialCommandGroup(
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()),
             new WaitCommand(0.1),
             indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
+            new WaitCommand(2),
+            intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(-30))
+        );
+    }
+
+    public static Command operatorPovLeftWhileTrue(Indexer indexer, Kicker kicker, Intake intake, Shooter shooter) {
+        return new SequentialCommandGroup(
+            new WaitCommand(0.1),
+            kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue()).onlyIf(shooter::isShooterReady),
+            indexer.setTargetVelocityCommand(IndexerValue.INTAKE).onlyIf(shooter::isShooterReady),
             new WaitCommand(2),
             intake.getIntakeWheel().setTargetVelocityCommand(RotationsPerSecond.of(-30))
         );
