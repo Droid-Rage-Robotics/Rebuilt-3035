@@ -37,8 +37,8 @@ import lombok.Getter;
 public class SwerveConfig {
     public static class ModuleConstants {
         /* Current Limits */
-        public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35; //MA:40
-        public static final double TURN_SUPPLY_CURRENT_LIMIT = 35; //MA:40 //2025=80
+        public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 30; //MA:40
+        public static final double TURN_SUPPLY_CURRENT_LIMIT = 30; //MA:40 //2025=80
         
         public static final double DRIVE_STATOR_CURRENT_LIMIT = 70; // STATOR
         public static final Current DRIVE_SLIP_CURRENT = Amps.of(DRIVE_STATOR_CURRENT_LIMIT); // STATOR
