@@ -123,7 +123,7 @@ public final class Autos {
                 new ParallelCommandGroup(
                 // AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker),
-                new WaitCommand(4)
+                new WaitCommand(8)
                 )
             ),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
@@ -186,7 +186,7 @@ public final class Autos {
                 new ParallelCommandGroup(
                 // AutoCommands.autoIndexerWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker),
-                new WaitCommand(4)
+                new WaitCommand(8)
                 )
             ),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
@@ -289,26 +289,31 @@ public final class Autos {
             new ParallelCommandGroup(
                 PathPlannerPathFollow.create(drive, "HubToDepot", true)
                     .build(),
-
                 new SequentialCommandGroup(
-                    AutoCommands.startPivotCommand(intake),
+                    // AutoCommands.startPivotCommand(intake),
+                    intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.AUTO_DOWN),
                     new WaitCommand(0.25),
                     intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
                 )
             ),
+            new WaitCommand(.5),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+            new WaitCommand(.5),
 
-            // new AutoDRShooter(drive, shooter)
-            //     .repeatedly()
-            //     .alongWith(AutoCommands.index(indexer, kicker))
             new ParallelCommandGroup(
-                shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_DEPOT),
-                new WaitCommand(.5),
-                new ParallelCommandGroup(
-                // AutoCommands.autoIndexerWiggleIntake(intake), 
-                AutoCommands.index(indexer, kicker)
+                PathPlannerPathFollow.create(drive, "HubToDepot2")
+                    .build(),
+                new SequentialCommandGroup(
+                    new WaitCommand(1.5),
+                    shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_DEPOT),
+                    new WaitCommand(.2),
+                    new ParallelCommandGroup(
+                    AutoCommands.autoWiggleIntake(intake),
+                    AutoCommands.index(indexer, kicker)
+                    )
                 )
             ),
-            new WaitCommand(5),
+            new WaitCommand(10), //Remove if wiggling indexer
             shooter.setShooterTargetCommand(Shooter.ShooterValue.HOLD)
         );
     }
@@ -320,14 +325,14 @@ public final class Autos {
                     .build()
             ),
             new WaitCommand(1),
-            // AutoCommands.startPivotCommand(intake),
-            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO),
+            AutoCommands.startPivotCommand(intake),
+            // intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO),
 
             new SequentialCommandGroup(
                 shooter.setShooterTargetCommand(Shooter.ShooterValue.SHORT),
                 new WaitCommand(2),
                 new ParallelCommandGroup(
-                // AutoCommands.autoIndexerWiggleIntake(intake), 
+                AutoCommands.autoWiggleIntake(intake), 
                 AutoCommands.index(indexer, kicker)
                 )
             )

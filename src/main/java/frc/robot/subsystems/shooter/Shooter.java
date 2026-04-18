@@ -42,7 +42,7 @@ public class Shooter implements Dashboard, Sendable {
         AUTO_SHOOT_TRENCH_RIGHT_FAR_TWO(244,16,52),
         AUTO_SHOOT_TRENCH_LEFT_FAR_TWO(118,16,52),
 
-        AUTO_DEPOT(75,17,58),
+        AUTO_DEPOT(150,15.,52),
         
     
         // AUTO_SHOOT_TRENCH_RIGHT(SHOOT_TRENCH_RIGHT.getTurretAngle().in(Degrees),
@@ -117,7 +117,7 @@ public class Shooter implements Dashboard, Sendable {
         flywheelSpeedMap.put(2.0,42.7);
         flywheelSpeedMap.put(2.9,46.0);
         flywheelSpeedMap.put(4.20,50.0);
-        flywheelSpeedMap.put(5.10,53.5);
+        flywheelSpeedMap.put(5.10,54.5);//53.5
         flywheelSpeedMap.put(5.6,58.5);//58.1
         flywheelSpeedMap.put(6.1,60.0);
 
@@ -125,7 +125,7 @@ public class Shooter implements Dashboard, Sendable {
         hoodMap.put(2.00, 7.8);
         hoodMap.put(2.9,10.7);
         hoodMap.put(4.2,16.8);
-        hoodMap.put(5.10,18.5);
+        hoodMap.put(5.10,18.9);//18.5
         hoodMap.put(5.6,19.5);
         hoodMap.put(6.1,20.0);
 

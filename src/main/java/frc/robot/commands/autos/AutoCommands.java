@@ -48,7 +48,7 @@ public class AutoCommands{
         );
     }
 
-    public static Command autoIndexerWiggleIntake(Intake intake) {
+    public static Command autoWiggleIntake(Intake intake) {
         return new SequentialCommandGroup(
             new WaitCommand(1),
             new SequentialCommandGroup(
