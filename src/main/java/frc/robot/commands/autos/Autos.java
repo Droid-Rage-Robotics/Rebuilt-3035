@@ -324,6 +324,13 @@ public final class Autos {
         );
     }
 
+    public static Command bumpTest(int num, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            PathPlannerPathFollow.create(drive, "RightBump" + num, true)
+                .build()
+        );
+    }
+
     public static Command centerDepotStaright(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(

@@ -131,6 +131,11 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("CenterDepot", Autos.centerDepot(drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("CenterDepotStraigh", Autos.centerDepotStaright(drive, intake, indexer, kicker, shooter, vision));
 
+        autoChooser.addOption("BumpTest0", Autos.bumpTest(0, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("BumpTest1", Autos.bumpTest(1, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("BumpTest2", Autos.bumpTest(2, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("BumpTest3", Autos.bumpTest(3, drive, intake, indexer, kicker, shooter, vision));
+
 
     }
     
