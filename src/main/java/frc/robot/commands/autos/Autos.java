@@ -306,15 +306,21 @@ public final class Autos {
                 new SequentialCommandGroup(
                     new WaitCommand(1.5),
                     shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_DEPOT),
-                    new WaitCommand(.2),
+                    new WaitCommand(.4),
+                    AutoCommands.index(indexer, kicker),
+                    new WaitCommand(.5),
                     new ParallelCommandGroup(
-                    AutoCommands.autoWiggleIntake(intake),
-                    AutoCommands.index(indexer, kicker)
+                        AutoCommands.autoWiggleIntake(intake)
                     )
                 )
             ),
-            new WaitCommand(10), //Remove if wiggling indexer
-            shooter.setShooterTargetCommand(Shooter.ShooterValue.HOLD)
+            new WaitCommand(8), //Remove if wiggling indexer
+            new ParallelCommandGroup(
+                shooter.setShooterTargetCommand(Shooter.ShooterValue.HOLD),
+                PathPlannerPathFollow.create(drive, "HubToDepot3")
+                    .build()
+                
+            )
         );
     }
 
