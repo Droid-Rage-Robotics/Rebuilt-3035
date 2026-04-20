@@ -326,6 +326,7 @@ public final class Autos {
 
     public static Command bumpTest(int num, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
             PathPlannerPathFollow.create(drive, "RightBump" + num, true)
                 .build()
         );
