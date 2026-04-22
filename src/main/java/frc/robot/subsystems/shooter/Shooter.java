@@ -102,9 +102,13 @@ public class Shooter implements Dashboard, Sendable {
         new Transform2d(
             new Translation2d(Inches.zero(), Inches.of(-9.32)), //-13.25
             new Rotation2d(Degrees.of(0)));//-32.5
-    public static final InterpolatingDoubleTreeMap hoodMap =
+    public static final InterpolatingDoubleTreeMap hubHoodMap =
         new InterpolatingDoubleTreeMap();
-    public static final InterpolatingDoubleTreeMap flywheelSpeedMap =
+    public static final InterpolatingDoubleTreeMap hubWheelMap =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap allianceHoodMap =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap allianceSpeedMap =
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap timeOfFlightMap =
         new InterpolatingDoubleTreeMap();
@@ -112,34 +116,51 @@ public class Shooter implements Dashboard, Sendable {
     //     new InterpolatingDoubleTreeMap();
     static{
 
-        //Comp
-        flywheelSpeedMap.put(1.5,41.5);
-        flywheelSpeedMap.put(2.0,42.7);
-        flywheelSpeedMap.put(2.9,46.0);
-        flywheelSpeedMap.put(4.20,50.0);
-        flywheelSpeedMap.put(5.10,54.5);//53.5
-        flywheelSpeedMap.put(5.6,58.5);//58.1
-        flywheelSpeedMap.put(6.1,60.0);
+        //Competition Values - Tested
+        // hubSpeedMap.put(1.5,41.5);
+        // hubSpeedMap.put(2.0,42.7);
+        // hubSpeedMap.put(2.9,46.0);
+        // hubSpeedMap.put(4.20,50.0);
+        // hubSpeedMap.put(5.10,54.5);//53.5
+        // hubSpeedMap.put(5.6,58.5);//58.1
+        // hubSpeedMap.put(6.1,60.0);
 
-        hoodMap.put(1.5,2.85);
-        hoodMap.put(2.00, 7.8);
-        hoodMap.put(2.9,10.7);
-        hoodMap.put(4.2,16.8);
-        hoodMap.put(5.10,18.9);//18.5
-        hoodMap.put(5.6,19.5);
-        hoodMap.put(6.1,20.0);
+        // hubHoodMap.put(1.5,2.85);
+        // hubHoodMap.put(2.00, 7.8);
+        // hubHoodMap.put(2.9,10.7);
+        // hubHoodMap.put(4.2,16.8);
+        // hubHoodMap.put(5.10,18.9);//18.5
+        // hubHoodMap.put(5.6,19.5);
+        // hubHoodMap.put(6.1,20.0);
 
 
-        // //Home Positions
-        // flywheelSpeedMap.put(1.25,40.0);
-        // flywheelSpeedMap.put(1.89,42.0);
-        // flywheelSpeedMap.put(3.05,47.0);
-        // flywheelSpeedMap.put(4.27,50.2);
+        //Home Positions
+        hubWheelMap.put(1.25,40.0);
+        hubWheelMap.put(1.89,42.0);
+        hubWheelMap.put(3.05,47.0);
+        hubWheelMap.put(4.27,50.2);
 
-        // hoodMap.put(1.25,0.0);
-        // hoodMap.put(1.89,11.2);
-        // hoodMap.put(3.05,12.1);
-        // hoodMap.put(4.27,12.75);
+        hubHoodMap.put(1.25,0.0);
+        hubHoodMap.put(1.89,11.2);
+        hubHoodMap.put(3.05,12.1);
+        hubHoodMap.put(4.27,12.75);
+
+        //ARBITRARY VALUES FOR SHOOTING, Not CALIBRATED
+        allianceSpeedMap.put(1.5,40.0);
+        allianceSpeedMap.put(2.0,41.0);
+        allianceSpeedMap.put(2.9,44.0);
+        allianceSpeedMap.put(4.2,48.0);
+        allianceSpeedMap.put(5.1,52.0);
+        allianceSpeedMap.put(5.6,55.0);
+        allianceSpeedMap.put(6.1,57.0);
+
+        allianceHoodMap.put(1.5,4.0);
+        allianceHoodMap.put(2.0,9.5);
+        allianceHoodMap.put(2.9,13.0);
+        allianceHoodMap.put(4.2,18.5);
+        allianceHoodMap.put(5.1,21.5);
+        allianceHoodMap.put(5.6,23.0);
+        allianceHoodMap.put(6.1,24.5);
 
         
         //Values for on the fly Dripping Springs
@@ -148,52 +169,16 @@ public class Shooter implements Dashboard, Sendable {
         timeOfFlightMap.put(3.15,1.11);
         timeOfFlightMap.put(1.88,1.01);
         timeOfFlightMap.put(1.38,0.9);
-
-        // DR Values for on the fly
-        // timeOfFlightMap.put(1.38,0.9); // NOT CALIBRATED
-        // timeOfFlightMap.put(1.76, 1.84);
-        // timeOfFlightMap.put(3.50, 1.92);
-        // timeOfFlightMap.put(5.00, 2.00); // NOT CALIBRATED
-
-        //State Comp...
-        // timeOfFlightMap.put(1.38,1.); // NOT CALIBRATED
-        // timeOfFlightMap.put(2.6, 0.546);
-        // timeOfFlightMap.put(3.4, .647);
-        // timeOfFlightMap.put(4.26, .7025); // NOT CALIBRATED
-
-
-        //Mech Advantage
-        // timeOfFlightMap.put(1.63, 1.017);
-        // timeOfFlightMap.put(2.40, 0.967);
-        // timeOfFlightMap.put(3.25, 1.19);
-        // timeOfFlightMap.put(4.15, 1.18);
-        // timeOfFlightMap.put(4.875, 1.25);
-
-
-
-        // driveSpeedMap.put(1.,1.0);
-        // driveSpeedMap.put(3.,2.0);
-        // driveSpeedMap.put(5.,3.0);
-        // driveSpeedMap.put(7.,4.0);
-        // driveSpeedMap.put(10.,5.0);
-
-        //M/s to Multiplier 
-        // driveSpeedMap.put(0.1,1.05);
-        // driveSpeedMap.put(1.0,1.3);
-        // driveSpeedMap.put(1.5,1.6);
-
-
-
-        
-
-
     }
 
     @Getter private final Turret turret;
     @Getter private final Hood hood;
     @Getter private final ShooterWheel shooterWheel;
     
+    public static final Angle HOOD_SHUTTLE_ANGLE = Degrees.of(15);
+    public static final AngularVelocity SHUTTLE_VELOCITY = RotationsPerSecond.of(90);
     public static final AngularVelocity IDLE_VELOCITY = RotationsPerSecond.of(30);
+
 
     @Getter @Setter private ShooterValue currentShooterPos = ShooterValue.HOLD;
 

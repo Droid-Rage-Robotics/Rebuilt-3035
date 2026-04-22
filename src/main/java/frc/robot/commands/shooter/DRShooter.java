@@ -20,6 +20,7 @@ public class DRShooter extends Command {
     private Translation2d hubPose;
     private Translation2d goalPose, alliancePose;
     private double distanceRobotToGoal;
+    private Pose2d drivePose = new Pose2d();
 
     public DRShooter(SwerveDrive drive, Shooter shooter) {
         this.shooter = shooter;
@@ -58,6 +59,8 @@ public class DRShooter extends Command {
         
         // this.hubPose = FieldConstants.HUB_RED;
 
+        drivePose = drive.getState().Pose;
+        
         switch(DRAreaManager.getCurrentZone()){
             case ALLIANCE_ZONE:
                 this.goalPose = this.hubPose;
@@ -67,43 +70,74 @@ public class DRShooter extends Command {
                 break;
             case NEUTRAL, OPPOSITION:
                 // this.goalPose = this.hubPose;
-                this.goalPose = new Translation2d(this.alliancePose.getX(), drive.getState().Pose.getY());
+                this.goalPose = new Translation2d(this.alliancePose.getX(), drivePose.getY());
+                // this.goalPose = new Translation2d(this.alliancePose.getX(), getShuttleY(drivePose));
                 break;
+            
         }
 
         // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
         Pose2d lookAheadPose = Shooter.predictPosePos(
-            drive.getState().Pose, 
+            drivePose, 
             goalPose,
             drive.getCurrentRobotChassisSpeeds(),
-            Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
+            Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drivePose, goalPose)));
         distanceRobotToGoal = Shooter.getDistanceToHub(lookAheadPose, goalPose);
 
         // this.goalPose = Shooter.predictPosePosMoveHub(
-        //     drive.getState().Pose, 
+        //     drivePose, 
         //     goalPose,
         //     drive.getCurrentRobotChassisSpeeds(),
-        //     Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
-        // distanceRobotToGoal = Shooter.getDistanceToHub(drive.getState().Pose, goalPose);
+        //     Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drivePose, goalPose)));
+        // distanceRobotToGoal = Shooter.getDistanceToHub(drivePose, goalPose);
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE:
-                    // System.out.println(calculateAzimuthAngle(drive.getState().Pose, hubPose).in(Degrees));
-                    shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drive.getState().Pose, hubPose));
-                    shooter.getHood().setGoalAngle(Degrees.of(Shooter.hoodMap.get(distanceRobotToGoal)));
-                    shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.flywheelSpeedMap.get(distanceRobotToGoal)));
+                    // System.out.println(calculateAzimuthAngle(drivePose, hubPose).in(Degrees));
+                    shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
+                    shooter.getHood().setGoalAngle(Degrees.of(Shooter.hubHoodMap.get(distanceRobotToGoal)));
+                    shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.hubWheelMap.get(distanceRobotToGoal)));
                     break;
-                case NEUTRAL,OPPOSITION:
+                case NEUTRAL:
+                    // shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
+                    // shooter.getHood().setGoalAngle(Degrees.of(Shooter.hoodMap.get(distanceRobotToGoal)));
+                    // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.flywheelSpeedMap.get(distanceRobotToGoal)));
+
+                    shooter.getHood().setGoalAngle(Degrees.zero());
+                    shooter.getShooterWheel().setTargetVelocity(Shooter.IDLE_VELOCITY);
+                    break;
+                case OPPOSITION:
+                    // shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
+                    // shooter.getHood().setGoalAngle(Shooter.HOOD_SHUTTLE_ANGLE);
+                    // shooter.getShooterWheel().setTargetVelocity(Shooter.SHUTTLE_VELOCITY);
+
                     shooter.getHood().setGoalAngle(Degrees.zero());
                     shooter.getShooterWheel().setTargetVelocity(Shooter.IDLE_VELOCITY);
                     break;
                 case BETWEEN:
-                    shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drive.getState().Pose, hubPose));
+                    shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
                     shooter.getHood().setGoalAngle(Degrees.zero());
-                    shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.flywheelSpeedMap.get(distanceRobotToGoal)));
+                    shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.hubWheelMap.get(distanceRobotToGoal)));
                     break;
             }
         }
+    }
+
+    public double getShuttleY(Pose2d robotPose){
+        double y = robotPose.getY();
+
+        if (6 < y && y < 8) {
+            double distToLower = Math.abs(y - 6);
+            double distToUpper = Math.abs(8 - y);
+
+            if (distToLower < distToUpper) {
+                return 6;
+            } else {
+                return 8;
+            }
+        }
+
+        return y;
     }
 }
