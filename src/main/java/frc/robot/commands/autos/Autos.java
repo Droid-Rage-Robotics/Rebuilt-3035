@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -71,8 +73,7 @@ public final class Autos {
         return new SequentialCommandGroup(
             PathPlannerFollow.create(drive, "leftNeutralDepotSh")
                 .setMaxVelocity(8)
-                .setAcceleration(8)
-                .build()
+                .setAcceleration(8).build()
         );
     }
 
@@ -350,6 +351,23 @@ public final class Autos {
                 AutoCommands.index(indexer, kicker)
                 )
             )
+        );
+    }
+
+    public static Command testPath(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            PathFollow.create("ForwardTest")
+            .withVelocity(0)
+            .withAcceleration(0)
+            .withResetOdo(true)
+            .withMirror(false)
+            .build()
+            // PathFollow.create("ForwardTest")
+            //     .withVelocity(8)
+            //     .withAcceleration(8)
+            //     .withResetOdo(true)
+            //     .withMirror(true)
+            //     .build()
         );
     }
 

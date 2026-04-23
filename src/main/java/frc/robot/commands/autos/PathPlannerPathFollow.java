@@ -15,23 +15,25 @@ import frc.robot.subsystems.drive.SwerveDrive;
 public class PathPlannerPathFollow {
     private final SwerveDrive drive;
     private final String pathName;
-    private final boolean doesResetOdo;
+    private final boolean doesResetOdo, mirror;
     private double maxVelocity = 0.3;
     private double maxAcceleration = 0.5;
     private HashMap<String, Command> eventMap = new HashMap<>();
 
     /*  */
-    private PathPlannerPathFollow(SwerveDrive drive, String pathName, HashMap<String, Command> eventMap, boolean doesResetOdo) {
+    private PathPlannerPathFollow(SwerveDrive drive, String pathName, HashMap<String, Command> eventMap, boolean doesResetOdo, boolean mirror) {
         this.drive = drive;
         this.pathName = pathName;
         this.eventMap = eventMap;
         this.doesResetOdo=doesResetOdo;
+        this.mirror=mirror;
     }
 
     private PathPlannerPathFollow(SwerveDrive drive, String pathName, boolean doesResetOdo) {
         this.drive = drive;
         this.pathName = pathName;
         this.doesResetOdo=doesResetOdo;
+        this.mirror=false;
     }
 
     public static PathPlannerPathFollow create(SwerveDrive drive, String pathName) {
@@ -51,19 +53,28 @@ public class PathPlannerPathFollow {
         this.maxAcceleration=maxAcceleration;
         return this;
     }
+    // public PathPlannerPathFollow withMirror(boolean mirror) {
+    //     this.mirror=mirror;
+    //     return this;
+    // }
 
     public PathPlannerPathFollow addMarker(String name, Command toRun) {
         eventMap.put(name, toRun);
-        return new PathPlannerPathFollow(drive, pathName, eventMap, doesResetOdo);
+        return new PathPlannerPathFollow(drive, pathName, eventMap, doesResetOdo, mirror);
     }
     public PathPlannerPathFollow addMarker(String name, ParallelCommandGroup toRun) {
         eventMap.put(name, toRun);
-        return new PathPlannerPathFollow(drive, pathName, eventMap,doesResetOdo);
+        return new PathPlannerPathFollow(drive, pathName, eventMap, doesResetOdo, mirror);
     }
 
     public Command build(){
         try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            PathPlannerPath path;
+            if(mirror){
+                path = PathPlannerPath.fromPathFile(pathName).mirrorPath();
+            }else{
+                path = PathPlannerPath.fromPathFile(pathName);
+            }
 
             if (doesResetOdo) {
                 return new SequentialCommandGroup(

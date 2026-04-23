@@ -75,15 +75,15 @@ public class AutoChooser implements Dashboard {
         return autoChooser.getSelected();
     }
 
-    public static Pose2d getStartingPoseFromPath(String pathName) {
-        try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-            return path.getStartingHolonomicPose().get();
-        } catch (Exception e) {
-            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-            return new Pose2d();
-        }
-    }
+    // public static Pose2d getStartingPoseFromPath(String pathName) {
+    //     try {
+    //         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    //         return path.getStartingHolonomicPose().get();
+    //     } catch (Exception e) {
+    //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    //         return new Pose2d();
+    //     }
+    // }
 
     // public static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
     //     autoChooser.addOption("TurretTestStrafeRight", new ParallelCommandGroup(
@@ -135,6 +135,8 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("BumpTest1", Autos.bumpTest(1, drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("BumpTest2", Autos.bumpTest(2, drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("BumpTest3", Autos.bumpTest(3, drive, intake, indexer, kicker, shooter, vision));
+
+        autoChooser.addOption("TestPath", Autos.testPath(drive, intake, indexer, kicker, shooter, vision));
 
 
     }
