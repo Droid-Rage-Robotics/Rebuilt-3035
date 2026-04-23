@@ -369,19 +369,19 @@ public final class Autos {
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRightS", true)
                     .withMaxVelocity(6)
                     .withMaxAcceleration(6)
-                    .build(),
+                    .build()
             ),
-            PathPlannerPathFollow.create(drive, "NeutralToTrenchRightS" + depth)
+            PathPlannerPathFollow.create(drive, "NeutralToTrenchRightS")
                 .withMaxVelocity(6)
-                .withMaxAcceleration()
+                .withMaxAcceleration(6)
                 .build(),
             new AutoDRShooter(drive, shooter),
             new WaitCommand(19),
-            AutoCommands.resetBot(shooter, indexer, kicker, intake),
+            AutoCommands.resetBot(shooter, indexer, kicker, intake)
         );
     }
 
-    public static Command newRightOutpost(String depth, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    // public static Command newRightOutpost(String depth, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         
-    }
+    // }
 }
