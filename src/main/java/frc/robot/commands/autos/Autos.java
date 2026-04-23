@@ -355,15 +355,33 @@ public final class Autos {
     }
 
     public static Command testPath(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        return new SequentialCommandGroup(
+        // return new SequentialCommandGroup(
+        //     new ParallelCommandGroup (
+        //         PathPlannerPathFollow.create(drive, "TrenchToNeutralRightS", true)
+        //             .withMaxVelocity(11)
+        //             .withMaxAcceleration(11)
+        //             .build(),
+        //         new AutoDRShooter(drive, shooter)
+        //     )
+        // );
+        return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathPlannerPathFollow.create(drive, "TrenchToNeutralRightS", true)
-                    .withMaxVelocity(11)
-                    .withMaxAcceleration(11)
+                    .withMaxVelocity(6)
+                    .withMaxAcceleration(6)
                     .build(),
-                new AutoDRShooter(drive, shooter)
-            )
+            ),
+            PathPlannerPathFollow.create(drive, "NeutralToTrenchRightS" + depth)
+                .withMaxVelocity(6)
+                .withMaxAcceleration()
+                .build(),
+            new AutoDRShooter(drive, shooter),
+            new WaitCommand(19),
+            AutoCommands.resetBot(shooter, indexer, kicker, intake),
         );
     }
 
+    public static Command newRightOutpost(String depth, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        
+    }
 }
