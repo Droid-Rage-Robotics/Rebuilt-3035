@@ -79,6 +79,18 @@ public class AutoChooser implements Dashboard {
 
 
     }
+
+    public static void adddChampsAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        autoChooser.addOption("ChampsSideLeft", ChampsAutos.sideDepot("S", false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideRight", ChampsAutos.sideDepot("S", true, drive, intake, indexer, kicker, shooter, vision));
+
+        autoChooser.addOption("ChampsBumpLeft", ChampsAutos.bump(false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsBumpRight", ChampsAutos.bump(true, drive, intake, indexer, kicker, shooter, vision));
+
+        autoChooser.addOption("ChampsSweepLeft", ChampsAutos.neutralSwoop(false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSweepRight", ChampsAutos.neutralSwoop(true, drive, intake, indexer, kicker, shooter, vision));
+
+    }
     
     @Override
     public void elasticInit() {

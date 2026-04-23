@@ -70,13 +70,12 @@ public class Intake implements Sendable {
         return intakeValue.toString();
     }
 
-    public Command setTargetVelocityWaitCommand(WheelVelocity target) {
-        return new SequentialCommandGroup(
-            new WaitCommand(0.25),   
-            intakeWheel.setTargetVelocityCommand(target)
-        );
-            
-    }
+    // public Command setTargetVelocityWaitCommand(WheelVelocity target) {
+    //     return new SequentialCommandGroup(
+    //         new WaitCommand(0.25),   
+    //         intakeWheel.setTargetVelocityCommand(target)
+    //     );
+    // }
 
     
     

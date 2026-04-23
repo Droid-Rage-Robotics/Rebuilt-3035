@@ -29,7 +29,7 @@ public class PathFollow {
         return pf.new VelocityBuilder();
     }
     
-    //IDK If these even do anything
+    //FIX THIS
     public class VelocityBuilder {
         public AccelarationBuilder withVelocity(double velocity) {
             PathFollow.this.maxVelocity = velocity;
