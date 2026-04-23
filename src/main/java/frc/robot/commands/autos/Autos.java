@@ -357,7 +357,7 @@ public final class Autos {
     public static Command testPath(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup (
-                PathPlannerPathFollow.create(drive, "ForwardTest", true)
+                PathPlannerPathFollow.create(drive, "StrafeLeft", true)
                     .withMaxVelocity(11)
                     .withMaxAcceleration(11)
                     .build(),
