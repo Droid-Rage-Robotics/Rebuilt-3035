@@ -64,7 +64,7 @@ public class AutoChooser implements Dashboard {
         // ));
 
         
-        // addTuningAuto(drive);
+        addTuningAutos(drive);
         addAutos(drive, intake, indexer, kicker, shooter, vision);
         // addTurretTesting(drive, shooter);
 
