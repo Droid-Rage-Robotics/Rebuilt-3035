@@ -41,15 +41,6 @@ public class AutoDRShooter extends Command {
     
     @Override 
     public void execute(){
-        // Get the predicted robot pose based on current velocity to improve targeting while moving for 1 Second ahead
-        // Pose2d lookAheadPose = Shooter.predictPosePos(
-        //     drive.getState().Pose, 
-        //     goalPose,
-        //     drive.getCurrentRobotChassisSpeeds(),
-        //     Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
-
-            // Shooter.timeOffFlightMap.get(Shooter.getDistanceToHub(drive.getState().Pose, goalPose)));
-        
         distanceRobotToGoal = Shooter.getDistanceToHub(drive.getState().Pose, goalPose);
 
         shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drive.getState().Pose, goalPose));

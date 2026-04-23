@@ -23,48 +23,8 @@ public class AutoChooser implements Dashboard {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
     public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision){
-        // NamedCommands.registerCommand("startPivot", AutoCommands.startPivotCommand(intake));
         
-        // NamedCommands.registerCommand("intakeDown",  intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN.getAngle()));
-        // NamedCommands.registerCommand("intakeUp", intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.UP.getAngle()));
-
-        // NamedCommands.registerCommand("intake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE));
-        // NamedCommands.registerCommand("outtake", intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE));
-
-        // NamedCommands.registerCommand("shootTrenchR", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_RIGHT));
-        // NamedCommands.registerCommand("shootTrenchL", shooter.setShooterTargetCommand(ShooterValue.SHOOT_TRENCH_LEFT));
-        // NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.SHOOT_DEPOT));
-
-        // NamedCommands.registerCommand("setShootTrenchR", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT));
-        // NamedCommands.registerCommand("setShootTrenchL", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT));
-
-        // NamedCommands.registerCommand("setShootTrenchRTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_TWO));
-        // NamedCommands.registerCommand("setShootTrenchLTwo", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_TRENCH_LEFT_TWO));
-        
-        // // NamedCommands.registerCommand("shootDepot", shooter.setShooterTargetCommand(ShooterValue.AUTO_SHOOT_DEPOT));
-
-
-        // NamedCommands.registerCommand("intakeWait", intake.setTargetVelocityWaitCommand(WheelVelocity.INTAKE));
-
-        // NamedCommands.registerCommand("shootOutpost", AutoCommands.shootOutpost(shooter, indexer, kicker));
-        // NamedCommands.registerCommand("resetBot", AutoCommands.resetBot(shooter, indexer, kicker, intake));
-
-        // NamedCommands.registerCommand("wiggleIntake", AutoCommands.autoIndexerWiggleIntake(intake));
-        // NamedCommands.registerCommand("index", new SequentialCommandGroup(
-        //     indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
-        //     kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
-        // ));
-        // NamedCommands.registerCommand("stopIndexer", new SequentialCommandGroup(
-        //     indexer.setTargetVelocityCommand(IndexerValue.STOP),
-        //     kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
-        // ));
-        // NamedCommands.registerCommand("resetShooter", new SequentialCommandGroup(
-        //     indexer.setTargetVelocityCommand(IndexerValue.STOP.getIndexerValue()),
-        //     kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue())
-        // ));
-
-        
-        addTuningAutos(drive);
+        // addTuningAutos(drive);
         addAutos(drive, intake, indexer, kicker, shooter, vision);
         // addTurretTesting(drive, shooter);
 
@@ -74,27 +34,6 @@ public class AutoChooser implements Dashboard {
     public  Command getAutonomousCommand() {
         return autoChooser.getSelected();
     }
-
-    // public static Pose2d getStartingPoseFromPath(String pathName) {
-    //     try {
-    //         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-    //         return path.getStartingHolonomicPose().get();
-    //     } catch (Exception e) {
-    //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-    //         return new Pose2d();
-    //     }
-    // }
-
-    // public static void addTurretTesting(SwerveDrive drive, Shooter shooter) {
-    //     autoChooser.addOption("TurretTestStrafeRight", new ParallelCommandGroup(
-    //         TuningAutos.strafeRight(drive),
-    //         new ShootHub(drive, shooter))
-    //     ); // Use this for Turret Testing
-    //     autoChooser.addOption("TurretTestStrafeLeft", new ParallelCommandGroup(
-    //         TuningAutos.strafeLeft(drive),
-    //         new ShootHub(drive, shooter))
-    //     ); // Use this for Turret Testing
-    // }
     
     public static void addTuningAutos(SwerveDrive drive) {
         autoChooser.addOption("BackTest", TuningAutos.backTest(drive));
@@ -136,7 +75,7 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("BumpTest2", Autos.bumpTest(2, drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("BumpTest3", Autos.bumpTest(3, drive, intake, indexer, kicker, shooter, vision));
 
-        autoChooser.addOption("TestPath", Autos.testPath(drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.setDefaultOption("TestPath", Autos.testPath(drive, intake, indexer, kicker, shooter, vision));
 
 
     }

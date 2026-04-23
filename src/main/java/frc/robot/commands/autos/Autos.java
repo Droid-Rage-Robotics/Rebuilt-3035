@@ -356,18 +356,13 @@ public final class Autos {
 
     public static Command testPath(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
-            PathFollow.create("ForwardTest")
-            .withVelocity(0)
-            .withAcceleration(0)
-            .withResetOdo(true)
-            .withMirror(false)
-            .build()
-            // PathFollow.create("ForwardTest")
-            //     .withVelocity(8)
-            //     .withAcceleration(8)
-            //     .withResetOdo(true)
-            //     .withMirror(true)
-            //     .build()
+            new ParallelCommandGroup (
+                PathPlannerPathFollow.create(drive, "TrenchToNeutralRightS", true)
+                    .withMaxVelocity(11)
+                    .withMaxAcceleration(11)
+                    .build(),
+                new AutoDRShooter(drive, shooter)
+            )
         );
     }
 
