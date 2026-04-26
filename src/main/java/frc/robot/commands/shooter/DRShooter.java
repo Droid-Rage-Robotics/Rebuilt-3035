@@ -70,8 +70,8 @@ public class DRShooter extends Command {
                 break;
             case NEUTRAL, OPPOSITION:
                 // this.goalPose = this.hubPose;
-                this.goalPose = new Translation2d(this.alliancePose.getX(), drivePose.getY());
-                // this.goalPose = new Translation2d(this.alliancePose.getX(), getShuttleY(drivePose));
+                // this.goalPose = new Translation2d(this.alliancePose.getX(), drivePose.getY());
+                this.goalPose = new Translation2d(this.alliancePose.getX(), getShuttleY(drivePose));
                 break;
             
         }
@@ -100,14 +100,19 @@ public class DRShooter extends Command {
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.hubWheelMap.get(distanceRobotToGoal)));
                     break;
                 case NEUTRAL:
-                    // shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
-                    // shooter.getHood().setGoalAngle(Degrees.of(Shooter.hoodMap.get(distanceRobotToGoal)));
-                    // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.flywheelSpeedMap.get(distanceRobotToGoal)));
+                    shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
+                    shooter.getHood().setGoalAngle(Degrees.of(Shooter.allianceHoodMap.get(distanceRobotToGoal)));
+                    shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.allianceWheelMap.get(distanceRobotToGoal)));
 
-                    shooter.getHood().setGoalAngle(Degrees.zero());
-                    shooter.getShooterWheel().setTargetVelocity(Shooter.IDLE_VELOCITY);
+                    // shooter.getHood().setGoalAngle(Degrees.zero());
+                    // shooter.getShooterWheel().setTargetVelocity(Shooter.IDLE_VELOCITY);
                     break;
                 case OPPOSITION:
+                    // shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
+                    // shooter.getHood().setGoalAngle(Degrees.of(Shooter.allianceHoodMap.get(distanceRobotToGoal)));
+                    // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.allianceWheelMap.get(distanceRobotToGoal)));
+
+
                     // shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
                     // shooter.getHood().setGoalAngle(Shooter.HOOD_SHUTTLE_ANGLE);
                     // shooter.getShooterWheel().setTargetVelocity(Shooter.SHUTTLE_VELOCITY);
@@ -127,7 +132,7 @@ public class DRShooter extends Command {
     public double getShuttleY(Pose2d robotPose){
         double y = robotPose.getY();
 
-        if (6 < y && y < 8) {
+        if (3 < y && y < 5) {
             double distToLower = Math.abs(y - 6);
             double distToUpper = Math.abs(8 - y);
 

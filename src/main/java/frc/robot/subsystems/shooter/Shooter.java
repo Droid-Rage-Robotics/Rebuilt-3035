@@ -108,7 +108,7 @@ public class Shooter implements Dashboard, Sendable {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap allianceHoodMap =
         new InterpolatingDoubleTreeMap();
-    public static final InterpolatingDoubleTreeMap allianceSpeedMap =
+    public static final InterpolatingDoubleTreeMap allianceWheelMap =
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap timeOfFlightMap =
         new InterpolatingDoubleTreeMap();
@@ -146,13 +146,13 @@ public class Shooter implements Dashboard, Sendable {
         hubHoodMap.put(4.27,12.75);
 
         //ARBITRARY VALUES FOR SHOOTING, Not CALIBRATED
-        allianceSpeedMap.put(1.5,40.0);
-        allianceSpeedMap.put(2.0,41.0);
-        allianceSpeedMap.put(2.9,44.0);
-        allianceSpeedMap.put(4.2,48.0);
-        allianceSpeedMap.put(5.1,52.0);
-        allianceSpeedMap.put(5.6,55.0);
-        allianceSpeedMap.put(6.1,57.0);
+        allianceWheelMap.put(1.5,40.0);
+        allianceWheelMap.put(2.0,41.0);
+        allianceWheelMap.put(2.9,44.0);
+        allianceWheelMap.put(4.2,48.0);
+        allianceWheelMap.put(5.1,52.0);
+        allianceWheelMap.put(5.6,55.0);
+        allianceWheelMap.put(6.1,57.0);
 
         allianceHoodMap.put(1.5,4.0);
         allianceHoodMap.put(2.0,9.5);
