@@ -150,9 +150,9 @@ public class Shooter implements Dashboard, Sendable {
         allianceWheelMap.put(2.0,41.0);
         allianceWheelMap.put(2.9,44.0);
         allianceWheelMap.put(4.2,48.0);
-        allianceWheelMap.put(5.1,52.0);
-        allianceWheelMap.put(5.6,55.0);
-        allianceWheelMap.put(6.1,57.0);
+        allianceWheelMap.put(5.1,50.0);
+        allianceWheelMap.put(5.6,53.0);
+        allianceWheelMap.put(6.1,55.0);
         allianceWheelMap.put(8.0,60.0);
         // allianceWheelMap.put(9.0,60.0);
 
@@ -164,9 +164,9 @@ public class Shooter implements Dashboard, Sendable {
         allianceHoodMap.put(5.1,21.5);
         allianceHoodMap.put(5.6,23.0);
         allianceHoodMap.put(6.1,24.5);
-        allianceWheelMap.put(8.0,26.0);
-        allianceWheelMap.put(9.0,28.0);
-
+        allianceHoodMap.put(8.0,26.0);
+        allianceHoodMap.put(9.0,28.0);
+        //HOOD MAX is 28
         
 
         
@@ -182,8 +182,8 @@ public class Shooter implements Dashboard, Sendable {
     @Getter private final Hood hood;
     @Getter private final ShooterWheel shooterWheel;
     
-    public static final Angle HOOD_SHUTTLE_ANGLE = Degrees.of(15);
-    public static final AngularVelocity SHUTTLE_VELOCITY = RotationsPerSecond.of(90);
+    public static final Angle HOOD_SHUTTLE_ANGLE = Degrees.of(28);
+    public static final AngularVelocity SHUTTLE_VELOCITY = RotationsPerSecond.of(110);
     public static final AngularVelocity IDLE_VELOCITY = RotationsPerSecond.of(30);
 
 
