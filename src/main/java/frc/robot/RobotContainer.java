@@ -128,6 +128,8 @@ public class RobotContainer {
 
 		operator.povLeft().and(()->shooter.isShooterReady())
 			.whileTrue(TeleopCommands.operatorPovLeftWhileTrue(indexer, kicker,intake,shooter))
+			.onTrue(drive.scaleStator(0.5))
+			.onFalse(drive.disableTurboTorque())
 			// .onTrue(drive.setSpeed(Speed.SLOW))
 			// .onFalse(drive.setSpeed(Speed.NORMAL))
 			.onFalse(TeleopCommands.operatorRightBumperOnFalse(indexer, kicker,intake));
