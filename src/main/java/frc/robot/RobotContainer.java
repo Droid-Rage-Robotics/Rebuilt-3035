@@ -43,11 +43,11 @@ public class RobotContainer {
 		new TopRoller(false)
 	);
 
-    private final Kicker kicker = new Kicker(false);
+    private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
         new Turret(true),
         new Hood(true),
-        new ShooterWheel(false)
+        new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);

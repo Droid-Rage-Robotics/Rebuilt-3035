@@ -153,6 +153,9 @@ public class Shooter implements Dashboard, Sendable {
         allianceWheelMap.put(5.1,52.0);
         allianceWheelMap.put(5.6,55.0);
         allianceWheelMap.put(6.1,57.0);
+        allianceWheelMap.put(8.0,60.0);
+        // allianceWheelMap.put(9.0,60.0);
+
 
         allianceHoodMap.put(1.5,4.0);
         allianceHoodMap.put(2.0,9.5);
@@ -161,6 +164,10 @@ public class Shooter implements Dashboard, Sendable {
         allianceHoodMap.put(5.1,21.5);
         allianceHoodMap.put(5.6,23.0);
         allianceHoodMap.put(6.1,24.5);
+        allianceWheelMap.put(8.0,26.0);
+        allianceWheelMap.put(9.0,28.0);
+
+        
 
         
         //Values for on the fly Dripping Springs

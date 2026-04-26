@@ -90,11 +90,11 @@ public class DRShooter extends Command {
         //     drive.getCurrentRobotChassisSpeeds(),
         //     Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drivePose, goalPose)));
         // distanceRobotToGoal = Shooter.getDistanceToHub(drivePose, goalPose);
+        System.out.println(distanceRobotToGoal);
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
                 case ALLIANCE_ZONE:
-                    // System.out.println(calculateAzimuthAngle(drivePose, hubPose).in(Degrees));
                     shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, hubPose));
                     shooter.getHood().setGoalAngle(Degrees.of(Shooter.hubHoodMap.get(distanceRobotToGoal)));
                     shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.hubWheelMap.get(distanceRobotToGoal)));
