@@ -35,12 +35,12 @@ public class RobotContainer {
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true),
+        new IntakeWheel(true)
     );
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(false), 
-		new TopRoller(false)
+		new BottomRollers(true), 
+		new TopRoller(true)
 	);
 
     private final Kicker kicker = new Kicker(true);
