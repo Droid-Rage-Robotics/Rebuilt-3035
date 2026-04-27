@@ -117,33 +117,33 @@ public class Shooter implements Dashboard, Sendable {
     static{
 
         //Competition Values - Tested
-        // hubSpeedMap.put(1.5,41.5);
-        // hubSpeedMap.put(2.0,42.7);
-        // hubSpeedMap.put(2.9,46.0);
-        // hubSpeedMap.put(4.20,50.0);
-        // hubSpeedMap.put(5.10,54.5);//53.5
-        // hubSpeedMap.put(5.6,58.5);//58.1
-        // hubSpeedMap.put(6.1,60.0);
+        hubWheelMap.put(1.5,41.5);
+        hubWheelMap.put(2.0,42.7);
+        hubWheelMap.put(2.9,46.0);
+        hubWheelMap.put(4.20,50.0);
+        hubWheelMap.put(5.10,54.5);//53.5
+        hubWheelMap.put(5.6,58.5);//58.1
+        hubWheelMap.put(6.1,60.0);
 
-        // hubHoodMap.put(1.5,2.85);
-        // hubHoodMap.put(2.00, 7.8);
-        // hubHoodMap.put(2.9,10.7);
-        // hubHoodMap.put(4.2,16.8);
-        // hubHoodMap.put(5.10,18.9);//18.5
-        // hubHoodMap.put(5.6,19.5);
-        // hubHoodMap.put(6.1,20.0);
+        hubHoodMap.put(1.5,2.85);
+        hubHoodMap.put(2.00, 7.8);
+        hubHoodMap.put(2.9,10.7);
+        hubHoodMap.put(4.2,16.8);
+        hubHoodMap.put(5.10,18.9);//18.5
+        hubHoodMap.put(5.6,19.5);
+        hubHoodMap.put(6.1,20.0);
 
 
         //Home Positions
-        hubWheelMap.put(1.25,40.0);
-        hubWheelMap.put(1.89,42.0);
-        hubWheelMap.put(3.05,47.0);
-        hubWheelMap.put(4.27,50.2);
+        // hubWheelMap.put(1.25,40.0);
+        // hubWheelMap.put(1.89,42.0);
+        // hubWheelMap.put(3.05,47.0);
+        // hubWheelMap.put(4.27,50.2);
 
-        hubHoodMap.put(1.25,0.0);
-        hubHoodMap.put(1.89,11.2);
-        hubHoodMap.put(3.05,12.1);
-        hubHoodMap.put(4.27,12.75);
+        // hubHoodMap.put(1.25,0.0);
+        // hubHoodMap.put(1.89,11.2);
+        // hubHoodMap.put(3.05,12.1);
+        // hubHoodMap.put(4.27,12.75);
 
         //ARBITRARY VALUES FOR SHOOTING, Not CALIBRATED
         allianceWheelMap.put(1.5,40.0);
