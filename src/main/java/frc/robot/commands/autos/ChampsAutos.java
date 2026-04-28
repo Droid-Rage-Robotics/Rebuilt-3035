@@ -126,4 +126,55 @@ public class ChampsAutos {
             AutoCommands.index(indexer, kicker)
         );
     }
+
+    public static Command centerDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                PathFollow.create("HubToDepot")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(true)
+                    .withMirror(false)
+                    .build(),
+                new SequentialCommandGroup(
+                    intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.AUTO_DOWN),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+            new WaitCommand(.5),
+            intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+            new WaitCommand(.5),
+
+            new ParallelCommandGroup(
+                PathFollow.create("HubToDepot2")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(false)
+                    .build(),
+                new SequentialCommandGroup(
+                    new WaitCommand(1.5),
+                    shooter.setShooterTargetCommand(Shooter.ShooterValue.AUTO_DEPOT),
+                    new WaitCommand(.4),
+                    AutoCommands.index(indexer, kicker),
+                    new WaitCommand(.5),
+                    new ParallelCommandGroup(
+                        AutoCommands.autoWiggleIntake(intake)
+                    )
+                )
+            ),
+            // new WaitCommand(8), //Remove if wiggling indexer
+            new ParallelCommandGroup(
+                shooter.setShooterTargetCommand(Shooter.ShooterValue.HOLD),
+                PathFollow.create("HubToDepot3")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(false)
+                    .build()
+                
+            )
+        );
+    }
 }

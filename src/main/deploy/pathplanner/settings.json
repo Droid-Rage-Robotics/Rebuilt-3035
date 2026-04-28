@@ -3,10 +3,10 @@
   "robotLength": 0.9144,
   "holonomicMode": true,
   "pathFolders": [
+    "Bump",
     "Left",
     "LeftSwoop",
-    "Middle",
-    "Bump",
+    "HubToDepot",
     "Right",
     "RightSwoop",
     "Test"

@@ -45,7 +45,7 @@
     "rotation": 0.368923823144705
   },
   "reversed": false,
-  "folder": "Middle",
+  "folder": "HubToDepot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
