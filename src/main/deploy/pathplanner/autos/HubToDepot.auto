@@ -21,6 +21,12 @@
           "data": {
             "pathName": "HubToDepot3"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HubToDepot4"
+          }
         }
       ]
     }

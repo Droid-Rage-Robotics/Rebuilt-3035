@@ -261,8 +261,21 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(false)
                     .build()
-                
+            ),
+            new ParallelCommandGroup(
+                PathFollow.create("HubToDepot4")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(false)
+                    .build(),
+                new SequentialCommandGroup(
+                    intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.AUTO_DOWN),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
             )
+            //HubToDepot4
         );
     }
 }
