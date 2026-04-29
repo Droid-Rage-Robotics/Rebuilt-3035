@@ -3,7 +3,12 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.DroidRageConstants;
+import frc.utility.DRAreaManager;
+import frc.utility.DRAreaManager.Zone;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.template.ArmTemplate;
@@ -33,8 +38,12 @@ public class Hood extends ArmTemplate {
         .withSupplyCurrentLimit(45)
         .withStatorCurrentLimit(50);
 
+    private final Trigger hoodProtect = new Trigger(()-> (DRAreaManager.getCurrentZone()==Zone.BETWEEN));
+    
     public Hood(boolean isEnabled) {
         super(isEnabled, constants, null, motorConstants);
+
+        hoodProtect.whileTrue(setTargetPositionCommand(Degrees.zero()));
     }
 
     @Override
@@ -44,5 +53,7 @@ public class Hood extends ArmTemplate {
         if (getCurrentAngle().in(Degrees)<0) {
             resetEncoder(Rotation.zero());
         }
+        
     }
+
 }
