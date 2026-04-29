@@ -115,6 +115,16 @@ public class Shooter implements Dashboard, Sendable {
     // public static final InterpolatingDoubleTreeMap driveSpeedMap =
     //     new InterpolatingDoubleTreeMap();
     static{
+        //Home Positions
+        // hubWheelMap.put(1.25,40.0);
+        // hubWheelMap.put(1.89,42.0);
+        // hubWheelMap.put(3.05,47.0);
+        // hubWheelMap.put(4.27,50.2);
+
+        // hubHoodMap.put(1.25,0.0);
+        // hubHoodMap.put(1.89,11.2);
+        // hubHoodMap.put(3.05,12.1);
+        // hubHoodMap.put(4.27,12.75);
 
         //Competition Values - Tested
         hubWheelMap.put(1.5,41.5);
@@ -133,18 +143,6 @@ public class Shooter implements Dashboard, Sendable {
         hubHoodMap.put(5.6,19.5);
         hubHoodMap.put(6.1,20.0);
 
-
-        //Home Positions
-        // hubWheelMap.put(1.25,40.0);
-        // hubWheelMap.put(1.89,42.0);
-        // hubWheelMap.put(3.05,47.0);
-        // hubWheelMap.put(4.27,50.2);
-
-        // hubHoodMap.put(1.25,0.0);
-        // hubHoodMap.put(1.89,11.2);
-        // hubHoodMap.put(3.05,12.1);
-        // hubHoodMap.put(4.27,12.75);
-
         //ARBITRARY VALUES FOR SHOOTING, Not CALIBRATED
         allianceWheelMap.put(1.5,40.0);
         allianceWheelMap.put(2.0,41.0);
@@ -154,18 +152,16 @@ public class Shooter implements Dashboard, Sendable {
         allianceWheelMap.put(5.6,53.0);
         allianceWheelMap.put(6.1,55.0);
         allianceWheelMap.put(8.0,60.0);
-        // allianceWheelMap.put(9.0,60.0);
 
-
-        allianceHoodMap.put(1.5,4.0);
-        allianceHoodMap.put(2.0,9.5);
-        allianceHoodMap.put(2.9,13.0);
-        allianceHoodMap.put(4.2,18.5);
-        allianceHoodMap.put(5.1,21.5);
-        allianceHoodMap.put(5.6,23.0);
-        allianceHoodMap.put(6.1,24.5);
-        allianceHoodMap.put(8.0,26.0);
-        allianceHoodMap.put(9.0,28.0);
+        allianceHoodMap.put(1.5,3.0);
+        allianceHoodMap.put(2.0,8.0);
+        allianceHoodMap.put(2.9,11.0);
+        allianceHoodMap.put(4.2,16.5);
+        allianceHoodMap.put(5.1,19.5);
+        allianceHoodMap.put(5.6,20.0);
+        allianceHoodMap.put(6.1,22.0);
+        allianceHoodMap.put(8.0,23.5);
+        allianceHoodMap.put(9.0,25.0);
         //HOOD MAX is 28
         
 
