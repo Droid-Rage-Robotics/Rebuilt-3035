@@ -24,6 +24,7 @@ public class DRAreaManager implements Dashboard, Sendable{
 	private final Rectangle2d nuetralZone;
 
 	private static Zone currentZone = Zone.ALLIANCE_ZONE;
+	private double freeZoneStartY = 1.7, freeZoneEndY = 6.3;
 
 	public DRAreaManager(SwerveDrive drive) {
 		this.drive = drive;
@@ -51,7 +52,11 @@ public class DRAreaManager implements Dashboard, Sendable{
 			} else if (nuetralZone.contains(drivePosition)) {
 				currentZone = Zone.NEUTRAL;
 			} else 
-				currentZone = Zone.BETWEEN;
+				if (drivePosition.getY() < freeZoneStartY || freeZoneEndY < drivePosition.getY()){
+					currentZone = Zone.BETWEEN;
+				} else {
+					currentZone = Zone.NEUTRAL;
+				}
 		} else {
 			if (redAllianceZone.contains(drivePosition)) {
 				currentZone = Zone.OPPOSITION;
@@ -60,7 +65,11 @@ public class DRAreaManager implements Dashboard, Sendable{
 			} else if (nuetralZone.contains(drivePosition)) {
 				currentZone = Zone.NEUTRAL;
 			} else 
-				currentZone = Zone.BETWEEN;
+				if (drivePosition.getY() < freeZoneStartY || freeZoneEndY < drivePosition.getY()){
+					currentZone = Zone.BETWEEN;
+				} else {
+					currentZone = Zone.NEUTRAL;
+				}
 		}
 	}
 
