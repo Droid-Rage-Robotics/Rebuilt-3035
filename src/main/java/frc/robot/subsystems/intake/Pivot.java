@@ -52,6 +52,8 @@ public class Pivot extends ArmTemplate {
     @Override
     public void elasticInit() {
         SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand(Units.degreesToRotations(startingPosDegree)));
+        SmartDashboard.putNumber(constants.name + "/Stall Current", getMotor().getStatorCurrent().in(Amps));
+        
     }
 
     public Command setTargetPositionCommand(IntakeValue.PivotAngle goalAngle) {
@@ -62,12 +64,20 @@ public class Pivot extends ArmTemplate {
     public void periodic() {
         super.periodic();
 
+        if (isStalled()) {
+            resetEncoder(getGoalAngle().in(Degrees));
+        }
+
        // System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
         //TODO:TEst
         // if (getCurrentAngle().in(Degrees)<35) {
         //     resetEncoderCommand(35);
         // }
 
+    }
+
+    public boolean isStalled() {
+        return (getMotor().getStatorCurrent().in(Amps) > 50);
     }
 
     // public void isPushed(){  //Might need to put a timeout period for this AND might need a switch to turn it off when mechanism is off
