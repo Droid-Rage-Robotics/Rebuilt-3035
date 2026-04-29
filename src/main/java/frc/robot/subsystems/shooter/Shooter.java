@@ -306,4 +306,21 @@ public class Shooter implements Dashboard, Sendable {
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
         return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
     }
+
+    public static double getShuttleY(Pose2d robotPose){
+        double y = robotPose.getY();
+
+        if (3 < y && y < 5) {
+            double distToLower = Math.abs(y - 3);
+            double distToUpper = Math.abs(5 - y);
+
+            if (distToLower < distToUpper) {
+                return 1;
+            } else {
+                return 7;
+            }
+        }
+
+        return y;
+    }
 }

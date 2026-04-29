@@ -75,8 +75,12 @@ public class AutoChooser implements Dashboard {
     }
 
     public static void adddChampsAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        autoChooser.addOption("ChampsSideLeft", ChampsAutos.sideDepot("M", false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsSideRight", ChampsAutos.sideDepot("M", true, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideLeftS", ChampsAutos.sideDepot("S", false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideRightS", ChampsAutos.sideDepot("S", true, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideLeftM", ChampsAutos.sideDepot("M", false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideRightM", ChampsAutos.sideDepot("M", true, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideLeftD", ChampsAutos.sideDepot("D", false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideRightD", ChampsAutos.sideDepot("D", true, drive, intake, indexer, kicker, shooter, vision));
 
         autoChooser.addOption("ChampsBumpLeft", ChampsAutos.bump(false, drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("ChampsBumpRight", ChampsAutos.bump(true, drive, intake, indexer, kicker, shooter, vision));
