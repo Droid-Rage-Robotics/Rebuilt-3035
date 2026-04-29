@@ -53,8 +53,8 @@ public class AutoCommands{
 
     public static Command shooterBeReady(boolean mirror, Shooter shooter, ShooterValue left, ShooterValue right) {
         return new ConditionalCommand(
-            shooter.setShooterTargetCommand(right), // onTrue
-            shooter.setShooterTargetCommand(left), // onFalse
+            shooter.setTurretCommand(right), // onTrue
+            shooter.setTurretCommand(left), // onFalse
             () -> mirror
         );
     }

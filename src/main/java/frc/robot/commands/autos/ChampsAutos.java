@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.shooter.AutoDRShooter;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
@@ -83,8 +82,11 @@ public class ChampsAutos {
                 .withResetOdo(false)
                 .withMirror(mirror)
                 .build(),
-            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
 
+                new SequentialCommandGroup(
+                    new WaitCommand(3),
+                    AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
+                )
             )
         );
     }
