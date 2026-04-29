@@ -65,7 +65,7 @@ public class ChampsAutos {
                 //     AutoCommands.index(indexer, kicker),
                 //     new WaitCommand(5)
                 // )
-            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
+                AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
 
             
             ),
@@ -104,12 +104,16 @@ public class ChampsAutos {
                 )
             ),
 
-            PathFollow.create("NeutralToTrenchLeft" + depth)
-                .withVelocity(13.0)
-                .withAcceleration(13.0)
-                .withResetOdo(false)
-                .withMirror(mirror)
-                .build(),
+            new ParallelCommandGroup(
+                PathFollow.create("NeutralToTrenchLeft" + depth)
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.shooterBeReady(mirror, shooter, null, null)
+            ),
+
             AutoCommands.autoShoot(6, drive, shooter, indexer, kicker),
             // new WaitCommand(3),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
@@ -129,12 +133,16 @@ public class ChampsAutos {
                 )
             ),
 
-            PathFollow.create("NeutralToTrenchLeftSec")
-                .withVelocity(13.0)
-                .withAcceleration(13.0)
-                .withResetOdo(false)
-                .withMirror(mirror)
-                .build(),
+            new ParallelCommandGroup(
+                PathFollow.create("NeutralToTrenchLeftSec")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.shooterBeReady(mirror, shooter, null, null)
+            ),
+            
             AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
 
         );
@@ -155,12 +163,15 @@ public class ChampsAutos {
                     intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
                 )
             ),
-            PathFollow.create("NeutralSwoopToTrenchLeft")
-                .withVelocity(13.0)
-                .withAcceleration(13.0)
-                .withResetOdo(false)
-                .withMirror(mirror)
-                .build(),
+            new ParallelCommandGroup(
+                PathFollow.create("NeutralSwoopToTrenchLeft")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.shooterBeReady(mirror, shooter, null, null)
+            ),
             AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
         );
     }

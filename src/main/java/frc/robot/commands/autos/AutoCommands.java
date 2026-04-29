@@ -3,6 +3,7 @@ package frc.robot.commands.autos;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -41,9 +42,20 @@ public class AutoCommands{
     public static Command autoShoot(int raceLength, SwerveDrive drive, Shooter shooter, Indexer indexer, Kicker kicker) {
         return new ParallelCommandGroup (
             new AutoDRShooter(drive, shooter),
+            new SequentialCommandGroup(
+                new WaitCommand(.5),
             AutoCommands.index(indexer, kicker)
+            )
         ).raceWith(
             new WaitCommand(raceLength)
+        );
+    }
+
+    public static Command shooterBeReady(boolean mirror, Shooter shooter, ShooterValue left, ShooterValue right) {
+        return new ConditionalCommand(
+            shooter.setShooterTargetCommand(right), // onTrue
+            shooter.setShooterTargetCommand(left), // onFalse
+            () -> mirror
         );
     }
 

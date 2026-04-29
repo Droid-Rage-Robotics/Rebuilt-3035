@@ -127,13 +127,13 @@ public class Shooter implements Dashboard, Sendable {
         // hubHoodMap.put(4.27,12.75);
 
         //Competition Values - Tested
-        hubWheelMap.put(1.5,41.5);
-        hubWheelMap.put(2.0,42.7);
-        hubWheelMap.put(2.9,46.0);
-        hubWheelMap.put(4.20,50.0);
-        hubWheelMap.put(5.10,54.5);//53.5
-        hubWheelMap.put(5.6,58.5);//58.1
-        hubWheelMap.put(6.1,60.0);
+        hubWheelMap.put(1.5,42.0);
+        hubWheelMap.put(2.0,43.0);
+        hubWheelMap.put(2.9,46.6);
+        hubWheelMap.put(4.20,51.0);
+        hubWheelMap.put(5.10,55.0);//53.5
+        hubWheelMap.put(5.6,59.0);//58.1
+        hubWheelMap.put(6.1,60.5);
 
         hubHoodMap.put(1.5,2.85);
         hubHoodMap.put(2.00, 7.8);
