@@ -42,7 +42,7 @@ public class Hood extends ArmTemplate {
         super.periodic();
 
         if (getCurrentAngle().in(Degrees)<0) {
-            resetEncoder(0);
+            resetEncoder(Rotation.zero());
         }
     }
 }

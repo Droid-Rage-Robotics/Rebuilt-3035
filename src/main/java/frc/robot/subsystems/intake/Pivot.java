@@ -2,10 +2,17 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.utility.devices.motor.MotorConstants;
@@ -18,7 +25,7 @@ public class Pivot extends ArmTemplate {
     private static final double startingPosDegree = 35;
     private static final SubsystemConstants constants = new SubsystemConstants()
         .withPID(25, 0, 0.35)
-        .withFeedforward(0.74109, 0.27134, 3.3, 0.25)//kA:0.23
+        .withFeedforward(0.74109, 0.27134, 3.3, 0.25)//kA:0.23 kV:3.3
         .withMaxVelocity(RotationsPerSecond.of(10))
         .withMaxAcceleration(RotationsPerSecondPerSecond.of(15))
         .withGearRatio(54.0)
@@ -46,12 +53,22 @@ public class Pivot extends ArmTemplate {
 
             setGoalAngle(Degrees.of(startingPosDegree));
 
+        stall.onTrue(
+            new SequentialCommandGroup(
+                new WaitCommand(1.5),
+                new InstantCommand(() -> System.out.println("INTAKE STALL!")),
+                new InstantCommand(() -> System.out.println(getGoalAngle().in(Degrees))),
+
+                resetEncoderCommand(getPositionSetpoint())
+            ).until(()-> !highCurrent.getAsBoolean())
+        );
+        
         // controller.setTolerance(Units.degreesToRadians(1), 1);
     }
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand(Units.degreesToRotations(startingPosDegree)));
+        SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand(Degrees.of(startingPosDegree)));
         SmartDashboard.putNumber(constants.name + "/Stall Current", getMotor().getStatorCurrent().in(Amps));
         
     }
@@ -64,9 +81,9 @@ public class Pivot extends ArmTemplate {
     public void periodic() {
         super.periodic();
 
-        if (isStalled()) {
-            resetEncoder(getGoalAngle().in(Degrees));
-        }
+        // if (isStalled()) {
+        //     resetEncoder(getGoalAngle().in(Rotations));
+        // }
 
        // System.out.println("Pivot Angle: " + getCurrentAngle().getDegrees());
         //TODO:TEst
@@ -76,9 +93,14 @@ public class Pivot extends ArmTemplate {
 
     }
 
-    public boolean isStalled() {
-        return (getMotor().getStatorCurrent().in(Amps) > 50);
-    }
+    // public boolean isStalled() {
+    //     return (getMotor().getStatorCurrent().in(Amps) > 19);
+    // }
+
+    public BooleanSupplier highCurrent = () -> (getMotor().getStatorCurrent().in(Amps) > 15);
+
+
+    public Trigger stall = new Trigger(highCurrent);
 
     // public void isPushed(){  //Might need to put a timeout period for this AND might need a switch to turn it off when mechanism is off
     //     boolean isPushed = pivot.getSetpointError()> 20 && pivot.getMotor().getVoltage()>5;
