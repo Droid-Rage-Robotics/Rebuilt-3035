@@ -32,22 +32,22 @@ import frc.utility.DRAreaManager;
 
 public class RobotContainer {
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(true),
-        new IntakeWheel(true)
+        new IntakeWheel(false)
     );
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(true), 
-		new TopRoller(true)
+		new BottomRollers(false), 
+		new TopRoller(false)
 	);
 
     private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(true),
-        new Hood(true),
-        new ShooterWheel(true)
+        new Turret(false),
+        new Hood(false),
+        new ShooterWheel(false)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);

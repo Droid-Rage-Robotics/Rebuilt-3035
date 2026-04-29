@@ -14,6 +14,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.intake.Intake.IntakeValue.WheelVelocity;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.vision.Vision;
 
 public class ChampsAutos {
@@ -49,6 +50,8 @@ public class ChampsAutos {
                 .withResetOdo(false)
                 .withMirror(mirror)
                 .build(),
+            AutoCommands.shooterBeReady(mirror, shooter, 
+                ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE),
 
             new ParallelCommandGroup(
                 // new AutoDRShooter(drive, shooter),
@@ -111,7 +114,8 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(mirror)
                     .build(),
-                AutoCommands.shooterBeReady(mirror, shooter, null, null)
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
 
             AutoCommands.autoShoot(6, drive, shooter, indexer, kicker),
@@ -140,7 +144,8 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(mirror)
                     .build(),
-                AutoCommands.shooterBeReady(mirror, shooter, null, null)
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
             
             AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
@@ -170,7 +175,8 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(mirror)
                     .build(),
-                AutoCommands.shooterBeReady(mirror, shooter, null, null)
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
             AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
         );
@@ -201,7 +207,9 @@ public class ChampsAutos {
                 .withMirror(mirror)
                 .build(),
                 intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP),
-                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO)
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO),
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
             AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
         );
