@@ -1,15 +1,8 @@
 package frc.robot.commands.autos;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
@@ -25,7 +18,8 @@ public class AutoChooser implements Dashboard {
     public AutoChooser(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision){
         
         // addTuningAutos(drive);
-        addAutos(drive, intake, indexer, kicker, shooter, vision);
+        // addAutos(drive, intake, indexer, kicker, shooter, vision);
+        adddChampsAutos(drive, intake, indexer, kicker, shooter, vision);
         // addTurretTesting(drive, shooter);
 
         TelemetryUtils.registerDashboard(this);
@@ -81,8 +75,8 @@ public class AutoChooser implements Dashboard {
     }
 
     public static void adddChampsAutos(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        autoChooser.addOption("ChampsSideLeft", ChampsAutos.sideDepot("S", false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsSideRight", ChampsAutos.sideDepot("S", true, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideLeft", ChampsAutos.sideDepot("M", false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsSideRight", ChampsAutos.sideDepot("M", true, drive, intake, indexer, kicker, shooter, vision));
 
         autoChooser.addOption("ChampsBumpLeft", ChampsAutos.bump(false, drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("ChampsBumpRight", ChampsAutos.bump(true, drive, intake, indexer, kicker, shooter, vision));

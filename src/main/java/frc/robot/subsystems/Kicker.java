@@ -17,7 +17,7 @@ import lombok.Getter;
 
 public class Kicker extends FlywheelTemplate {
     public enum KickerValue {
-        INTAKE(55),
+        INTAKE(150), //55
         OUTTAKE(-150),
         STOP(0);
         // HOLD(0);

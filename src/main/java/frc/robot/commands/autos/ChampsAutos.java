@@ -40,7 +40,7 @@ public class ChampsAutos {
                 .build(),
             new AutoDRShooter(drive, shooter),
             AutoCommands.index(indexer, kicker),
-            new WaitCommand(8),
+            new WaitCommand(3),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
 
 

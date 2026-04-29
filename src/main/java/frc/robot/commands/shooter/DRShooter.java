@@ -132,14 +132,14 @@ public class DRShooter extends Command {
     public double getShuttleY(Pose2d robotPose){
         double y = robotPose.getY();
 
-        if (3 < y && y < 5) {
-            double distToLower = Math.abs(y - 6);
-            double distToUpper = Math.abs(8 - y);
+        if (2 < y && y < 7) {
+            double distToLower = Math.abs(y - 2);
+            double distToUpper = Math.abs(7 - y);
 
             if (distToLower < distToUpper) {
-                return 6;
+                return 2;
             } else {
-                return 8;
+                return 7;
             }
         }
 
