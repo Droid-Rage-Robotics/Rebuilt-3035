@@ -25,6 +25,17 @@ public class AutoDRShooter extends Command {
         this.shooter = shooter;
         this.drive = drive;
 
+        //LEAVE THIS - Do NOT Comment Out
+        if(DroidRageConstants.alliance == Alliance.Red){
+            this.hubPose = FieldConstants.HUB_RED;
+            this.alliancePose = FieldConstants.ALLIANCE_RED;
+        } else if (DroidRageConstants.alliance == Alliance.Blue){
+            this.hubPose = FieldConstants.HUB_BLUE;
+            this.alliancePose = FieldConstants.ALLIANCE_BLUE;
+        }
+        
+        this.goalPose = this.hubPose;
+
         addRequirements(
             shooter.getHood(),
             shooter.getShooterWheel(),
@@ -35,10 +46,10 @@ public class AutoDRShooter extends Command {
     public void initialize(){
         if(DroidRageConstants.alliance == Alliance.Red){
             this.goalPose = FieldConstants.HUB_RED;
-            // this.alliancePose = FieldConstants.ALLIANCE_RED;
+            this.alliancePose = FieldConstants.ALLIANCE_RED;
         } else if (DroidRageConstants.alliance == Alliance.Blue){
             this.goalPose = FieldConstants.HUB_BLUE;
-            // this.alliancePose = FieldConstants.ALLIANCE_BLUE;
+            this.alliancePose = FieldConstants.ALLIANCE_BLUE;
         }
     }
     

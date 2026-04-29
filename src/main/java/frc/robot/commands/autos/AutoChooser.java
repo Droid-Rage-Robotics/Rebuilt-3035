@@ -88,7 +88,9 @@ public class AutoChooser implements Dashboard {
         autoChooser.addOption("ChampsSweepLeft", ChampsAutos.neutralSwoop(false, drive, intake, indexer, kicker, shooter, vision));
         autoChooser.addOption("ChampsSweepRight", ChampsAutos.neutralSwoop(true, drive, intake, indexer, kicker, shooter, vision));
 
-        
+        autoChooser.addOption("ChampsLeftDouble", ChampsAutos.doubleSide(false, drive, intake, indexer, kicker, shooter, vision));
+        autoChooser.addOption("ChampsRightDouble", ChampsAutos.doubleSide(true, drive, intake, indexer, kicker, shooter, vision));
+
         autoChooser.addOption("ChampsHubToDepot", ChampsAutos.centerDepot(drive, intake, indexer, kicker, shooter, vision));
 
     }

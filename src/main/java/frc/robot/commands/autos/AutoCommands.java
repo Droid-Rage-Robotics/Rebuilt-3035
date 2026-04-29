@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.shooter.AutoDRShooter;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Kicker.KickerValue;
+import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.Indexer.IndexerValue;
 import frc.robot.subsystems.intake.Intake;
@@ -33,6 +35,15 @@ public class AutoCommands{
             shooter.setShooterTargetCommand(ShooterValue.SHOOT_OUTPOST),
             indexer.setTargetVelocityCommand(IndexerValue.INTAKE),
             kicker.setTargetVelocityCommand(KickerValue.INTAKE.getKickerValue())
+        );
+    }
+
+    public static Command autoShoot(int raceLength, SwerveDrive drive, Shooter shooter, Indexer indexer, Kicker kicker) {
+        return new ParallelCommandGroup (
+            new AutoDRShooter(drive, shooter),
+            AutoCommands.index(indexer, kicker)
+        ).raceWith(
+            new WaitCommand(raceLength)
         );
     }
 

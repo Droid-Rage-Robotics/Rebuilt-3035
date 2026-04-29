@@ -285,6 +285,8 @@ public final class Autos {
         );
     }
 
+    
+
     public static Command centerDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(

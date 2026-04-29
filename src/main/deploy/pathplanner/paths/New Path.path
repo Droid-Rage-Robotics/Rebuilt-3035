@@ -3,45 +3,65 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.047,
-        "y": 5.565
+        "x": 1.0,
+        "y": 7.35
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.948853924327733,
-        "y": 5.794929006065207
+        "x": 2.0,
+        "y": 7.35
       },
       "isLocked": false,
-      "linkedName": "dl3-end"
+      "linkedName": "depot-3"
     },
     {
       "anchor": {
-        "x": 2.303469879518072,
-        "y": 7.367951807228916
+        "x": 6.0,
+        "y": 7.35
       },
       "prevControl": {
-        "x": 3.251199393094357,
-        "y": 5.162551897839458
+        "x": 5.0,
+        "y": 7.35
+      },
+      "nextControl": {
+        "x": 8.0,
+        "y": 7.35
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.778330955777461,
+        "y": 1.2467189728958648
+      },
+      "prevControl": {
+        "x": 7.778330955777461,
+        "y": 6.246718972895865
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "dl4-end"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8046345811051688,
-      "rotationDegrees": 45.0
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.5446265938069217,
+      "rotationDegrees": -90.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0,
+      "minWaypointRelativePos": 1.47029428095502,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 3.0,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -61,13 +81,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 39.83295580447993
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Double",
+  "folder": "HubToDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -0.01504063059721853
+    "rotation": 0.368923823144705
   },
   "useDefaultConstraints": true
 }
