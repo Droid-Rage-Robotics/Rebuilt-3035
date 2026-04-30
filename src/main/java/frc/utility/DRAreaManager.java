@@ -32,7 +32,7 @@ public class DRAreaManager implements Dashboard, Sendable{
 		nuetralZone = new Rectangle2d(new Translation2d(5.75, 0), new Translation2d(10.25,8));
 		redAllianceZone = new Rectangle2d(new Translation2d(12.75,0), new Translation2d(16.5, 8));
 
-
+		updateZone();
 		
 		// blueAllianceZone = new Rectangle2d(new Translation2d(0,0), new Translation2d(3,8));
 		// nuetralZone = new Rectangle2d(new Translation2d(6, 0), new Translation2d(10,8));
@@ -43,6 +43,10 @@ public class DRAreaManager implements Dashboard, Sendable{
 	}
 
 	public void periodic() {
+		updateZone();
+	}
+
+	public void updateZone() {
 		Translation2d drivePosition = drive.getState().Pose.getTranslation();
 		if (DroidRageConstants.alliance == Alliance.Red) {
 			if (redAllianceZone.contains(drivePosition)) {

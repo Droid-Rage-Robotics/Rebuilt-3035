@@ -20,7 +20,7 @@ public class Hood extends ArmTemplate {
         .withPID(20, 0, 20)
         .withFeedforward(0.4334, 0, 0.28114, 2.2) // kA 2.0731
         .withMaxVelocity(RotationsPerSecond.of(1))
-        .withMaxAcceleration(RotationsPerSecondPerSecond.of(0.5))
+        .withMaxAcceleration(RotationsPerSecondPerSecond.of(2))
         .withGearRatio(4.0 * (155.0/9.0))
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.zero())

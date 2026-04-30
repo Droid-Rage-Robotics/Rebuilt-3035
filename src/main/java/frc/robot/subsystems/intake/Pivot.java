@@ -12,9 +12,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
+import frc.robot.subsystems.intake.Intake.IntakeValue.PivotAngle;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.template.ArmTemplate;
@@ -48,19 +50,21 @@ public class Pivot extends ArmTemplate {
         //TODO: Uncomment and check the command to turn on and off current limit
 
 
-    public Pivot(boolean isEnabled) {
+    public Pivot(boolean isEnabled, CommandXboxController driver) {
         super(isEnabled, constants, null, motorConstants);
 
             setGoalAngle(Degrees.of(startingPosDegree));
 
-        stall.onTrue(
+        stall.and(driver.rightTrigger()).whileTrue(
             new SequentialCommandGroup(
                 new WaitCommand(1.5),
                 new InstantCommand(() -> System.out.println("INTAKE STALL!")),
                 new InstantCommand(() -> System.out.println(getGoalAngle().in(Degrees))),
 
-                resetEncoderCommand(getPositionSetpoint())
-            ).until(()-> !highCurrent.getAsBoolean())
+                resetEncoderCommand(PivotAngle.DOWN.getAngle())
+                
+            )
+            // .until(()-> !highCurrent.getAsBoolean())
         );
         
         // controller.setTolerance(Units.degreesToRadians(1), 1);

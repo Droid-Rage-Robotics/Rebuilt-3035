@@ -144,14 +144,14 @@ public class Shooter implements Dashboard, Sendable {
         hubHoodMap.put(6.1,20.0);
 
         //ARBITRARY VALUES FOR SHOOTING, Not CALIBRATED
-        allianceWheelMap.put(1.5,40.0);
-        allianceWheelMap.put(2.0,41.0);
-        allianceWheelMap.put(2.9,44.0);
-        allianceWheelMap.put(4.2,48.0);
-        allianceWheelMap.put(5.1,50.0);
-        allianceWheelMap.put(5.6,53.0);
-        allianceWheelMap.put(6.1,55.0);
-        allianceWheelMap.put(8.0,60.0);
+        allianceWheelMap.put(1.5,42.0);
+        allianceWheelMap.put(2.0,43.0);
+        allianceWheelMap.put(2.9,46.0);
+        allianceWheelMap.put(4.2,50.0);
+        allianceWheelMap.put(5.1,52.0);
+        allianceWheelMap.put(5.6,55.0);
+        allianceWheelMap.put(6.1,57.0);
+        allianceWheelMap.put(8.0,62.0);
 
         allianceHoodMap.put(1.5,3.0);
         allianceHoodMap.put(2.0,8.0);

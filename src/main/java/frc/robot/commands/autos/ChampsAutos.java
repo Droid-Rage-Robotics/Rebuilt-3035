@@ -19,6 +19,7 @@ import frc.robot.subsystems.vision.Vision;
 public class ChampsAutos {
     public static Command doubleSide(boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
+            new WaitCommand(3),
             new ParallelCommandGroup(
                 PathFollow.create("doubleLeftOne")
                     .withVelocity(11.0)
@@ -61,12 +62,6 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(mirror)
                     .build(),
-
-                // new SequentialCommandGroup(
-                //     new WaitCommand(1),
-                //     AutoCommands.index(indexer, kicker),
-                //     new WaitCommand(5)
-                // )
                 AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
 
             

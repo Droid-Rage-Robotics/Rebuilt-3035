@@ -47,6 +47,9 @@ public class Robot extends LoggedRobot {
         commandScheduler.run();
         TelemetryUtils.onRobotPeriodic();
         robotContainer.periodic();
+        if (DriverStation.getAlliance().isPresent()) {
+            DroidRageConstants.alliance = DriverStation.getAlliance().get();
+        }
     }
 
     @Override

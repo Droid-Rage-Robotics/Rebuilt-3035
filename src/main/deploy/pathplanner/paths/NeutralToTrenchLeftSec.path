@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.1721683309557767,
-        "y": 7.5996005706134095
+        "x": 2.7,
+        "y": 7.573723252496434
       },
       "prevControl": {
-        "x": 6.300338027767953,
-        "y": 7.5996005706134095
+        "x": 5.828169696812177,
+        "y": 7.573723252496434
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "L-Shoot"
     }
   ],
   "rotationTargets": [
@@ -61,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Left",
