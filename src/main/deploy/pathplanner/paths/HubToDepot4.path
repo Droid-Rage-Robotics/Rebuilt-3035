@@ -87,7 +87,7 @@
   "folder": "HubToDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.368923823144705
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

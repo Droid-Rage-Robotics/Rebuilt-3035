@@ -52,6 +52,18 @@ public class AutoCommands{
             new WaitCommand(raceLength)
         );
     }
+    public static Command autoShootWithIntake(int raceLength, SwerveDrive drive, Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
+        return new ParallelCommandGroup (
+            new DRShooter(drive, shooter),
+            new SequentialCommandGroup(
+                new WaitCommand(.5),
+            AutoCommands.index(indexer, kicker),
+            intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+            )
+        ).raceWith(
+            new WaitCommand(raceLength)
+        );
+    }
 
     public static Command shooterBeReady(boolean mirror, Shooter shooter, ShooterValue left, ShooterValue right) {
         return new ConditionalCommand(

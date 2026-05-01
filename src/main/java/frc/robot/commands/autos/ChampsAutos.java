@@ -117,26 +117,28 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(mirror)
                     .build(),
-                AutoCommands.shooterBeReady(mirror, shooter, 
-                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
+                AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
             ),
 
-            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
 
+            PathFollow.create("LeftBumpToNeutralSwoop")
+                .withVelocity(13.0)
+                .withAcceleration(13.0)
+                .withResetOdo(false)
+                .withMirror(mirror)
+                .build(),
+            new WaitCommand(0.5),
+            
             new ParallelCommandGroup(
-                PathFollow.create("LeftBumpToNeutralSwoop")
+                PathFollow.create("LeftBumpToNeutralSwoop2")
                     .withVelocity(13.0)
                     .withAcceleration(13.0)
                     .withResetOdo(false)
                     .withMirror(mirror)
                     .build(),
-                new SequentialCommandGroup(
-                    new WaitCommand(3),
-                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE),
-                    AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
-                )
-            )
+                AutoCommands.autoShootWithIntake(8, drive, shooter, indexer, kicker,intake)
+           )
         );
     }
     public static Command sideDepot(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
@@ -167,7 +169,7 @@ public class ChampsAutos {
                     ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
 
-            AutoCommands.autoShoot(9, drive, shooter, indexer, kicker,intake),
+            AutoCommands.autoShoot(7, drive, shooter, indexer, kicker,intake),
             // new WaitCommand(3),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
 
@@ -297,7 +299,7 @@ public class ChampsAutos {
                     AutoCommands.index(indexer, kicker),
                     new WaitCommand(.5),
                     new ParallelCommandGroup(
-                        AutoCommands.autoWiggleIntake(intake)
+                        AutoCommands.autoWiggleIntake(intake).raceWith(new WaitCommand(7))
                     )
                 )
             ),

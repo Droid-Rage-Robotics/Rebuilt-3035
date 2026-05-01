@@ -27,6 +27,12 @@
           "data": {
             "pathName": "LeftBumpToNeutralSwoop"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftBumpToNeutralSwoop2"
+          }
         }
       ]
     }
