@@ -454,7 +454,6 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    @Getter private RobotConfig robotConfig = null;
     // --------------------------------------------------------------------------------
     // Path Planner
     // --------------------------------------------------------------------------------
@@ -466,7 +465,7 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         //                 Units.feetToMeters(27.0 / 2.0),
         //                 config.getBlueAlliancePerspectiveRotation()));
 
-         // Initialize with null in case of exception
+        RobotConfig robotConfig = null; // Initialize with null in case of exception
         try {
             robotConfig =
                     RobotConfig.fromGUISettings(); // Takes config from Robot Config on Pathplanner
