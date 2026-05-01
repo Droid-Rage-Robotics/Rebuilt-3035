@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToNeutralLeftD"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NeutralToTrenchLeftD"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchToBumpLeft"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftBumpToNeutralSwoop"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

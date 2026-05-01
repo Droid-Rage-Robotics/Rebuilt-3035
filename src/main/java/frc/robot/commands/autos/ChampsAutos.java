@@ -86,6 +86,59 @@ public class ChampsAutos {
     }
     
     //false = left, true = right
+    public static Command bumpSwoop(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup (
+            new ParallelCommandGroup (
+                PathFollow.create("TrenchToNeutralLeft" + depth)
+                    .withVelocity(11.0)
+                    .withAcceleration(11.0)
+                    .withResetOdo(true)
+                    .withMirror(mirror)
+                    .build(),
+
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+
+            PathFollow.create("NeutralToTrenchLeft" + depth)
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+
+            new ParallelCommandGroup (
+                PathFollow.create("TrenchToBumpLeft")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
+            ),
+
+            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake),
+            AutoCommands.resetBot(shooter, indexer, kicker, intake),
+
+            new ParallelCommandGroup(
+                PathFollow.create("LeftBumpToNeutralSwoop")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                new SequentialCommandGroup(
+                    new WaitCommand(3),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE),
+                    AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
+                )
+            )
+        );
+    }
     public static Command sideDepot(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (

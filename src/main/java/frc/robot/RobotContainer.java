@@ -39,7 +39,7 @@ public class RobotContainer {
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 	
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
         new Pivot(true, driver),
@@ -51,7 +51,7 @@ public class RobotContainer {
 	);
 
     private final Kicker kicker = new Kicker(true);
-    private final Shooter shooter = new Shooter(
+    private final Shooter shooter = new Shooter( 
         new Turret(true),
         new Hood(true),
         new ShooterWheel(true)
