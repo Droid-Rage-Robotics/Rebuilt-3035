@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
@@ -57,7 +58,12 @@ public class DRAreaManager implements Dashboard, Sendable{
 				currentZone = Zone.NEUTRAL;
 			} else 
 				if (drivePosition.getY() < freeZoneStartY || freeZoneEndY < drivePosition.getY()){
-					currentZone = Zone.BETWEEN;
+					if (DriverStation.isAutonomous() && drivePosition.getX()>12.5){
+						currentZone = Zone.ALLIANCE_ZONE;
+					}
+					else{
+						currentZone = Zone.BETWEEN;
+					}
 				} else {
 					currentZone = Zone.NEUTRAL;
 				}
@@ -70,7 +76,12 @@ public class DRAreaManager implements Dashboard, Sendable{
 				currentZone = Zone.NEUTRAL;
 			} else 
 				if (drivePosition.getY() < freeZoneStartY || freeZoneEndY < drivePosition.getY()){
-					currentZone = Zone.BETWEEN;
+					if (DriverStation.isAutonomous() && drivePosition.getX()<4){
+						currentZone = Zone.ALLIANCE_ZONE;
+					}
+					else{
+						currentZone = Zone.BETWEEN;
+					}
 				} else {
 					currentZone = Zone.NEUTRAL;
 				}

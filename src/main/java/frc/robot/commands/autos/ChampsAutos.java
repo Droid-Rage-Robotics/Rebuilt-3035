@@ -54,7 +54,6 @@ public class ChampsAutos {
                 ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE),
 
             new ParallelCommandGroup(
-                // new AutoDRShooter(drive, shooter),
 
                 PathFollow.create("doubleLeftFour")
                     .withVelocity(13.0)
@@ -62,7 +61,7 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(mirror)
                     .build(),
-                AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
+                AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
 
             
             ),
@@ -80,7 +79,7 @@ public class ChampsAutos {
 
                 new SequentialCommandGroup(
                     new WaitCommand(3),
-                    AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
+                    AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
                 )
             )
         );
@@ -115,7 +114,7 @@ public class ChampsAutos {
                     ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
 
-            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker),
+            AutoCommands.autoShoot(9, drive, shooter, indexer, kicker,intake),
             // new WaitCommand(3),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
 
@@ -145,7 +144,7 @@ public class ChampsAutos {
                     ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
             
-            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
+            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
 
         );
     }
@@ -175,7 +174,7 @@ public class ChampsAutos {
                 AutoCommands.shooterBeReady(mirror, shooter, 
                     ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
-            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
+            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
         );
     }
 
@@ -208,7 +207,7 @@ public class ChampsAutos {
                 AutoCommands.shooterBeReady(mirror, shooter, 
                     ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
-            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker)
+            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
         );
     }
 

@@ -39,22 +39,22 @@ public class RobotContainer {
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 	
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false, driver),
-        new IntakeWheel(false)
+        new Pivot(true, driver),
+        new IntakeWheel(true)
     );
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(false), 
-		new TopRoller(false)
+		new BottomRollers(true), 
+		new TopRoller(true)
 	);
 
-    private final Kicker kicker = new Kicker(false);
+    private final Kicker kicker = new Kicker(true);
     private final Shooter shooter = new Shooter(
-        new Turret(false),
+        new Turret(true),
         new Hood(true),
-        new ShooterWheel(false)
+        new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
@@ -72,7 +72,7 @@ public class RobotContainer {
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
 		configureTeleOpBindings();
-		SmartDashboard.putString("color", DroidRageConstants.alliance.toString());
+		// SmartDashboard.putString("color", DroidRageConstants.alliance.toString());
 		// testShootingMove();
 		// driver.a().onTrue(shooter.getTurret().getSysIdCommand());
 		// driver.a().onTrue(shooter.getShooterWheel().getSysIdCommand());
@@ -110,6 +110,10 @@ public class RobotContainer {
 			.whileTrue(indexer.setTargetVelocityCommand(IndexerValue.OUTTAKE))
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP));
+
+		driver.leftBumper()
+			.onTrue(TeleopCommands.turboMode(drive, intake, indexer, kicker, shooter))
+			.onFalse(TeleopCommands.stopTurboMode(drive, intake, indexer, kicker, shooter));
 
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));

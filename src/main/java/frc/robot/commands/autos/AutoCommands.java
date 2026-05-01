@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.shooter.AutoDRShooter;
+import frc.robot.commands.shooter.DRShooter;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Kicker.KickerValue;
 import frc.robot.subsystems.drive.SwerveDrive;
@@ -39,12 +39,14 @@ public class AutoCommands{
         );
     }
 
-    public static Command autoShoot(int raceLength, SwerveDrive drive, Shooter shooter, Indexer indexer, Kicker kicker) {
+    public static Command autoShoot(int raceLength, SwerveDrive drive, Shooter shooter, Indexer indexer, Kicker kicker, Intake intake) {
         return new ParallelCommandGroup (
-            new AutoDRShooter(drive, shooter),
+            new DRShooter(drive, shooter),
             new SequentialCommandGroup(
                 new WaitCommand(.5),
-            AutoCommands.index(indexer, kicker)
+            AutoCommands.index(indexer, kicker),
+            AutoCommands.autoWiggleIntake(intake)
+
             )
         ).raceWith(
             new WaitCommand(raceLength)
