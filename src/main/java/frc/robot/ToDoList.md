@@ -2,33 +2,17 @@ TO DO: https://docs.google.com/spreadsheets/d/1TZz3zMqfm-XgtNCV5C_01jbwO_sf3FTpZ
 
 
 Code:
-Teleop Buttons
-Shooter States: Alliance Side (Use IMU/ Odo), Scoring to Hub, Hold in One location (maybe add functionality to choose which direction); Change based on location and driver?
-Are we or are we not using Field Centric turning? - Might wait till bot is built
-
-
-Test:
-Test Candle Lights, take videos, and share (Unable to connect to the LED due to too small wire)
-
-Mount April Tags on hub
-
-Test new motor setup
-
-Tune turret
-
-test turrent for full 360 degrees Need to make sure that the turret knows that it cant go past 270 degrees of movement and turns around. - lucky
-
-video taping from behind the limelight so u can see the tag and limelight in the same frame -lucky
-
-Turret seeks hub when it can't see the april tag. (Look in general direction using odometry) - lucky
-
-Maybe make it function like this bot https://www.instagram.com/reel/DUFUoRaiSyr/?igsh=MWFtc3Bjd3RhOHdxdg== - dalberto
-(could make it so when it reaches the max rotational distance we give it make it do 180 the other way?)
-
-
-Auto to Teleop Robot reset
-Turret Wraapping
-Update Wiring Diagram
-telemetry kicker, indexer, intake on
-
-vision on or oiff
+- Turn off non-important telemetry for each motor for matched
+- Use Odometry to force the robot to have the dt face a certain direction
+- Pathfinding to path 
+- shoot on move quickly
+- remove loop overruns
+- Test Intake Reset with Stall to improve
+- Clean and clear code
+- Use CANdle Lights and set up code
+- Make Middle LL Work
+- Make Rumble for .5 second when ready to shoot
+- Teach people how to run the robot in general
+- Subsystem Constants force implementation of .with
+- LL Tracking of Game Elements
+- 

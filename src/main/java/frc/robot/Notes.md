@@ -42,6 +42,7 @@ Wiring
 - Radio power module is powered by a 10A mini fuse - DO NOT USE
 - RoboRio has a 10A mini fuse
 - CANivore has a 10A mini fuse
+- ALWAYS double power the radio
 
 Setting Up Telemetry
 - Add FMS Info: In the left hand pane, select the Network Tables Tab. Scroll down to block of data titled FMSinfo, and drag
