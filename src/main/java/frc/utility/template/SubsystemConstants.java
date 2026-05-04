@@ -14,7 +14,7 @@ public final class SubsystemConstants {
     
     public String name;
     public EncoderType encoderType;
-    public int mainNum;
+    public int mainNum = 0;
     public Distance maxDistance;
     public Distance minDistance;
     public Angle maxAngle;
@@ -23,8 +23,8 @@ public final class SubsystemConstants {
     public AngularAcceleration maxAcceleration;
     public double maxJerk;
     public AngularVelocity minVelocity;
-    public double conversionFactor;
-    public double offset;
+    public double conversionFactor = 1;
+    public double offset = 0;
     public Angle resetAngle;
     
     public double kP;
@@ -35,7 +35,7 @@ public final class SubsystemConstants {
     public double kV;
     public double kA;
 
-    public double gearRatio;
+    public double gearRatio = 1;
 
     public boolean hasLimitSwitch;
     

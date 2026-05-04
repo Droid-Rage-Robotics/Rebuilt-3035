@@ -1,16 +1,11 @@
 package frc.robot.subsystems.intake;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.intake.Intake.IntakeValue.WheelVelocity;
 import lombok.Getter;
 
 public class Intake implements Sendable {
@@ -76,8 +71,6 @@ public class Intake implements Sendable {
     //         intakeWheel.setTargetVelocityCommand(target)
     //     );
     // }
-
-    
     
     // public Command setPositionCommand(IntakeValue targetPos) {
     //     intakeValue = targetPos;
@@ -97,6 +90,4 @@ public class Intake implements Sendable {
     //         setPositionCommand(IntakeValue.HOLD);
     //     }
     // }
-    
-    
 }

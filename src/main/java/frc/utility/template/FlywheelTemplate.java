@@ -137,6 +137,10 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
         return targetVelocity.get();
     }
 
+    public AngularVelocity getVelocityError() {
+        return RotationsPerSecond.of(motors[mainNum].getMotor().getClosedLoopError().getValueAsDouble());
+    }
+
     /* ---------------- Sensor Access ---------------- */
 
     public Angle getCurrentAngle() {
@@ -225,7 +229,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
         return motors;
     }
 
-    // public boolean atSetpoint() {
-    //     return controller.atSetpoint();
-    // }
+    public boolean atSetpoint() {
+        return (Math.abs(getVelocityError().in(RotationsPerSecond)) < 5);
+    }
 }

@@ -42,7 +42,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
     // private final MotionMagicExpoVoltage motionMagicRequest = new MotionMagicExpoVoltage(0);
 
-
     private final boolean isEnabled;
 
     private final AtomicReference<Angle> goalAngle = new AtomicReference<Angle>(Degrees.zero());
@@ -290,9 +289,9 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         return motor;
     }
 
-    // public boolean atGoal(){
-    //     return controller.atGoal();
-    // }
+    public boolean atGoal(){
+        return (Math.abs(getPositionError().in(Degrees)) < 5);
+    }
 
     private boolean isAtUpperLimit() {
         return getCurrentAngle().in(Radians) >= maxAngleRad - Units.degreesToRadians(20); // 0.05 rad buffer

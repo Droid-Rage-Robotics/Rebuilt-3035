@@ -108,7 +108,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand(Rotation.zero()));
+        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override
@@ -204,6 +204,19 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         }
     }
 
+    public void resetEncoder() {
+        switch(constants.encoderType){
+            case ABSOLUTE: 
+                return;
+            case EXTERNAL: 
+                encoder.get().resetPosition(resetAngle);
+                motor.resetEncoder(resetAngle);
+                break;
+            case INTEGRATED: 
+                motor.resetEncoder(resetAngle);
+        }
+    }
+
     public void resetEncoder(Angle resetAngle) {
         switch(constants.encoderType){
             case ABSOLUTE: 
@@ -217,6 +230,10 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         }
     }
 
+    public Command resetEncoderCommand() {
+        return new InstantCommand(() -> resetEncoder()).ignoringDisable(true);
+    }
+    
     public Command resetEncoderCommand(Angle resetAngle) {
         return new InstantCommand(() -> resetEncoder(resetAngle)).ignoringDisable(true);
     }
@@ -274,9 +291,9 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         return motor;
     }
 
-    // public boolean atGoal(){
-    //     return controller.atGoal();
-    // }
+    public boolean atGoal(){
+        return (Math.abs(getPositionError().in(Degrees)) < 5);
+    }
 
     private boolean isAtUpperLimit() {
         return getCurrentAngle().in(Radians) >= maxAngleRad - 0.05; // 0.05 rad buffer
