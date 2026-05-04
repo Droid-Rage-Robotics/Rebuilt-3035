@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot"
+            "pathName": "doubleLeftOne"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot2"
+            "pathName": "doubleLeftTwo"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot3"
+            "pathName": "doubleLeftThree"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot4"
+            "pathName": "doubleLeftFour"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "doubleLeftFive"
           }
         }
       ]

@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot"
+            "pathName": "TrenchToNeutralLeftD"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot2"
+            "pathName": "NeutralToTrenchLeftD"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot3"
+            "pathName": "TrenchToBumpLeft"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HubToDepot4"
+            "pathName": "LeftBumpToNeutralSwoop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftBumpToNeutralSwoop2"
           }
         }
       ]

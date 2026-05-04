@@ -1,5 +1,7 @@
 package frc.robot.commands.autos;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -11,12 +13,82 @@ import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
+import frc.robot.subsystems.intake.Intake.IntakeValue.WheelVelocity;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterValue;
 import frc.robot.subsystems.vision.Vision;
 
 public class ChampsAutos {
+    public static Command doubleSide(boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup(
+            new WaitCommand(3),
+            new ParallelCommandGroup(
+                PathFollow.create("doubleLeftOne")
+                    .withVelocity(11.0)
+                    .withAcceleration(11.0)
+                    .withResetOdo(true)
+                    .withMirror(mirror)
+                    .build(),
+
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+
+            PathFollow.create("doubleLeftTwo")
+                .withVelocity(13.0)
+                .withAcceleration(13.0)
+                .withResetOdo(false)
+                .withMirror(mirror)
+                .build(),
+
+            intake.getIntakeWheel().setTargetVelocityCommand(RPM.zero()),
+
+            PathFollow.create("doubleLeftThree")
+                .withVelocity(13.0)
+                .withAcceleration(13.0)
+                .withResetOdo(false)
+                .withMirror(mirror)
+                .build(),
+            AutoCommands.shooterBeReady(mirror, shooter, 
+                ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE),
+
+            new ParallelCommandGroup(
+
+                PathFollow.create("doubleLeftFour")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
+
+            
+            ),
+
+            AutoCommands.resetBot(shooter, indexer, kicker, intake),
+            intake.getIntakeWheel().setTargetVelocityCommand(WheelVelocity.INTAKE),
+
+            new ParallelCommandGroup(
+                PathFollow.create("doubleLeftFive")
+                .withVelocity(13.0)
+                .withAcceleration(13.0)
+                .withResetOdo(false)
+                .withMirror(mirror)
+                .build(),
+
+                new SequentialCommandGroup(
+                    new WaitCommand(3),
+                    AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
+                )
+            )
+        );
+    }
+    
     //false = left, true = right
-    public static Command sideDepot(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command bumpSwoop(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathFollow.create("TrenchToNeutralLeft" + depth)
@@ -34,14 +106,73 @@ public class ChampsAutos {
             ),
 
             PathFollow.create("NeutralToTrenchLeft" + depth)
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+
+            new ParallelCommandGroup (
+                PathFollow.create("TrenchToBumpLeft")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
+            ),
+
+            AutoCommands.resetBot(shooter, indexer, kicker, intake),
+
+            PathFollow.create("LeftBumpToNeutralSwoop")
                 .withVelocity(13.0)
                 .withAcceleration(13.0)
                 .withResetOdo(false)
                 .withMirror(mirror)
                 .build(),
-            new AutoDRShooter(drive, shooter),
-            AutoCommands.index(indexer, kicker),
-            new WaitCommand(8),
+            new WaitCommand(0.5),
+            
+            new ParallelCommandGroup(
+                PathFollow.create("LeftBumpToNeutralSwoop2")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.autoShootWithIntake(8, drive, shooter, indexer, kicker,intake)
+           )
+        );
+    }
+    public static Command sideDepot(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+        return new SequentialCommandGroup (
+            new ParallelCommandGroup (
+                PathFollow.create("TrenchToNeutralLeft" + depth)
+                    .withVelocity(11.0)
+                    .withAcceleration(11.0)
+                    .withResetOdo(true)
+                    .withMirror(mirror)
+                    .build(),
+
+                new SequentialCommandGroup(
+                    AutoCommands.startPivotCommand(intake),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
+            ),
+
+            new ParallelCommandGroup(
+                PathFollow.create("NeutralToTrenchLeft" + depth)
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
+            ),
+
+            AutoCommands.autoShoot(7, drive, shooter, indexer, kicker,intake),
+            // new WaitCommand(3),
             AutoCommands.resetBot(shooter, indexer, kicker, intake),
 
 
@@ -59,14 +190,19 @@ public class ChampsAutos {
                 )
             ),
 
-            PathFollow.create("NeutralToTrenchLeftSec")
-                .withVelocity(13.0)
-                .withAcceleration(13.0)
-                .withResetOdo(false)
-                .withMirror(mirror)
-                .build(),
-            new AutoDRShooter(drive, shooter),
-            AutoCommands.index(indexer, kicker)
+            new ParallelCommandGroup(
+                PathFollow.create("NeutralToTrenchLeftSec")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
+            ),
+            
+            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
+
         );
     }
 
@@ -85,14 +221,17 @@ public class ChampsAutos {
                     intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
                 )
             ),
-            PathFollow.create("NeutralSwoopToTrenchLeft")
-                .withVelocity(13.0)
-                .withAcceleration(13.0)
-                .withResetOdo(false)
-                .withMirror(mirror)
-                .build(),
-            new AutoDRShooter(drive, shooter),
-            AutoCommands.index(indexer, kicker)
+            new ParallelCommandGroup(
+                PathFollow.create("NeutralSwoopToTrenchLeft")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(mirror)
+                    .build(),
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
+            ),
+            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
         );
     }
 
@@ -121,10 +260,11 @@ public class ChampsAutos {
                 .withMirror(mirror)
                 .build(),
                 intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP),
-                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO)
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF_TWO),
+                AutoCommands.shooterBeReady(mirror, shooter, 
+                    ShooterValue.AUTO_SHOOT_TRENCH_LEFT_FAR_ONE, ShooterValue.AUTO_SHOOT_TRENCH_RIGHT_FAR_ONE)
             ),
-            new AutoDRShooter(drive, shooter),
-            AutoCommands.index(indexer, kicker)
+            AutoCommands.autoShoot(6, drive, shooter, indexer, kicker,intake)
         );
     }
 
@@ -161,7 +301,7 @@ public class ChampsAutos {
                     AutoCommands.index(indexer, kicker),
                     new WaitCommand(.5),
                     new ParallelCommandGroup(
-                        AutoCommands.autoWiggleIntake(intake)
+                        AutoCommands.autoWiggleIntake(intake).raceWith(new WaitCommand(7))
                     )
                 )
             ),
@@ -174,8 +314,21 @@ public class ChampsAutos {
                     .withResetOdo(false)
                     .withMirror(false)
                     .build()
-                
+            ),
+            new ParallelCommandGroup(
+                PathFollow.create("HubToDepot4")
+                    .withVelocity(13.0)
+                    .withAcceleration(13.0)
+                    .withResetOdo(false)
+                    .withMirror(false)
+                    .build(),
+                new SequentialCommandGroup(
+                    intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.AUTO_DOWN),
+                    new WaitCommand(0.25),
+                    intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE)
+                )
             )
+            //HubToDepot4
         );
     }
 }

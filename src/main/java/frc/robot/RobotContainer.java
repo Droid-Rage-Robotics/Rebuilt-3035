@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -31,23 +32,29 @@ import frc.robot.subsystems.vision.Vision;
 import frc.utility.DRAreaManager;
 
 public class RobotContainer {
+	private final CommandXboxController driver =
+		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
+	
+	private final CommandXboxController operator =		
+        new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
+	
 	private final SwerveConfig swerveConfig = new SwerveConfig();
-	public final SwerveDrive drive = new SwerveDrive(false, swerveConfig);
+	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(
-        new Pivot(false),
-        new IntakeWheel(false)
+        new Pivot(true, driver),
+        new IntakeWheel(true)
     );
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(false), 
-		new TopRoller(false)
+		new BottomRollers(true), 
+		new TopRoller(true)
 	);
 
     private final Kicker kicker = new Kicker(true);
-    private final Shooter shooter = new Shooter(
-        new Turret(false),
-        new Hood(false),
-        new ShooterWheel(false)
+    private final Shooter shooter = new Shooter( 
+        new Turret(true),
+        new Hood(true),
+        new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager = new DRAreaManager(drive);
@@ -56,11 +63,7 @@ public class RobotContainer {
 
     // private final Light light = new Light(0);
     
-    private final CommandXboxController driver =
-		new CommandXboxController(DroidRageConstants.Gamepad.DRIVER_CONTROLLER_PORT);
-	
-	private final CommandXboxController operator =		
-        new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
+    
 	
 
 	public RobotContainer() {
@@ -69,6 +72,7 @@ public class RobotContainer {
 		LiveWindow.disableAllTelemetry(); // LiveWindow is not used so disable for performance boost
 		
 		configureTeleOpBindings();
+		// SmartDashboard.putString("color", DroidRageConstants.alliance.toString());
 		// testShootingMove();
 		// driver.a().onTrue(shooter.getTurret().getSysIdCommand());
 		// driver.a().onTrue(shooter.getShooterWheel().getSysIdCommand());
@@ -107,6 +111,10 @@ public class RobotContainer {
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP));
 
+		driver.leftBumper()
+			.onTrue(TeleopCommands.turboMode(drive, intake, indexer, kicker, shooter))
+			.onFalse(TeleopCommands.stopTurboMode(drive, intake, indexer, kicker, shooter));
+
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
 		operator.b()
@@ -128,7 +136,7 @@ public class RobotContainer {
 
 		operator.povLeft().and(()->shooter.isShooterReady())
 			.whileTrue(TeleopCommands.operatorPovLeftWhileTrue(indexer, kicker,intake,shooter))
-			.onTrue(drive.scaleStator(0.5))
+			.onTrue(drive.scaleStator(0.3))
 			.onFalse(drive.disableTurboTorque())
 			// .onTrue(drive.setSpeed(Speed.SLOW))
 			// .onFalse(drive.setSpeed(Speed.NORMAL))

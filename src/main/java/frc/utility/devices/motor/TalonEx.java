@@ -197,6 +197,9 @@ public class TalonEx implements Dashboard {
     public Current getTorqueCurrent() {
         return motor.getTorqueCurrent().getValue();
     }
+    public Current getMotorStallCurrent() {
+        return motor.getMotorStallCurrent().getValue();
+    }
 
     public TalonFXSimState getSimState() {
         return motor.getSimState();
@@ -270,6 +273,15 @@ public class TalonEx implements Dashboard {
      * @param value
      */
     public void resetEncoder(double value) {
+        motor.setPosition(value);
+    }
+
+    /**
+     * Used to reset the encoder of the motor to a
+     * specific position in rotations.
+     * @param value
+     */
+    public void resetEncoder(Angle value) {
         motor.setPosition(value);
     }
 

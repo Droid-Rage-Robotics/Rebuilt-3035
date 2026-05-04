@@ -56,9 +56,6 @@ public class DRShooter extends Command {
     
     @Override 
     public void execute(){
-        
-        // this.hubPose = FieldConstants.HUB_RED;
-
         drivePose = drive.getState().Pose;
         
         switch(DRAreaManager.getCurrentZone()){
@@ -71,7 +68,7 @@ public class DRShooter extends Command {
             case NEUTRAL, OPPOSITION:
                 // this.goalPose = this.hubPose;
                 // this.goalPose = new Translation2d(this.alliancePose.getX(), drivePose.getY());
-                this.goalPose = new Translation2d(this.alliancePose.getX(), getShuttleY(drivePose));
+                this.goalPose = new Translation2d(this.alliancePose.getX(), Shooter.getShuttleY(drivePose));
                 break;
             
         }
@@ -84,13 +81,7 @@ public class DRShooter extends Command {
             Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drivePose, goalPose)));
         distanceRobotToGoal = Shooter.getDistanceToHub(lookAheadPose, goalPose);
 
-        // this.goalPose = Shooter.predictPosePosMoveHub(
-        //     drivePose, 
-        //     goalPose,
-        //     drive.getCurrentRobotChassisSpeeds(),
-        //     Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drivePose, goalPose)));
-        // distanceRobotToGoal = Shooter.getDistanceToHub(drivePose, goalPose);
-        System.out.println(distanceRobotToGoal);
+        //System.out.println(distanceRobotToGoal);
 
         if (!DroidRageConstants.isShooterManual) {
             switch(DRAreaManager.getCurrentZone()){
@@ -108,11 +99,6 @@ public class DRShooter extends Command {
                     // shooter.getShooterWheel().setTargetVelocity(Shooter.IDLE_VELOCITY);
                     break;
                 case OPPOSITION:
-                    // shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, goalPose));
-                    // shooter.getHood().setGoalAngle(Degrees.of(Shooter.allianceHoodMap.get(distanceRobotToGoal)));
-                    // shooter.getShooterWheel().setTargetVelocity(RotationsPerSecond.of(Shooter.allianceWheelMap.get(distanceRobotToGoal)));
-
-
                     shooter.getTurret().setGoalAngle(Shooter.calculateAzimuthAngle(drivePose, goalPose));
                     shooter.getHood().setGoalAngle(Shooter.HOOD_SHUTTLE_ANGLE);
                     shooter.getShooterWheel().setTargetVelocity(Shooter.SHUTTLE_VELOCITY);
@@ -129,20 +115,5 @@ public class DRShooter extends Command {
         }
     }
 
-    public double getShuttleY(Pose2d robotPose){
-        double y = robotPose.getY();
-
-        if (3 < y && y < 5) {
-            double distToLower = Math.abs(y - 6);
-            double distToUpper = Math.abs(8 - y);
-
-            if (distToLower < distToUpper) {
-                return 6;
-            } else {
-                return 8;
-            }
-        }
-
-        return y;
-    }
+    
 }

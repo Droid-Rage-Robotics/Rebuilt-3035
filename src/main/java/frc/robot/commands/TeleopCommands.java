@@ -44,30 +44,22 @@ public class TeleopCommands {
      * @return a new sequential command group
      */
     public static Command indexerWiggleIntake(Intake intake) {
-        // return new SequentialCommandGroup(
-        //     new WaitCommand(1),
-        //     new SequentialCommandGroup(
-        //         intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
-        //         new WaitCommand(0.5),
-        //         intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
-        //         new WaitCommand(0.5)
-        //     ).repeatedly()
-        // );
         return new SequentialCommandGroup(
             new WaitCommand(1),
-            new RunCommand(() -> {
-                double current = intake.getPivot().getPositionSetpoint().in(Degrees);
-                double min = IntakeValue.PivotAngle.DOWN.getAngle().in(Degrees);
-                double max = IntakeValue.PivotAngle.HALF.getAngle().in(Degrees); // or UP if you have it
-
-                // small increment per cycle → controls speed
-                double step = 0.01;
-
-                if (current < max && current >= min) {
-                    intake.getPivot().setGoalAngle(Degrees.of(current + step));
-                }
-            }, intake.getPivot())
+            new SequentialCommandGroup(
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.HALF),
+                new WaitCommand(0.5),
+                intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN),
+                new WaitCommand(0.5)
+            ).repeatedly()
         );
+        // return new SequentialCommandGroup(
+        //     new WaitCommand(0.5),
+        //     new SequentialCommandGroup(
+        //         intake.getPivot().setTargetPositionCommand(intake.getPivot().getGoalAngle().plus(Degrees.of(0.0000000002))))
+        //         .repeatedly()
+        //         .raceWith(new WaitCommand(0.1))
+        // );
     }
 
     public static Command operatorRightBumperWhileTrue(Indexer indexer, Kicker kicker, Intake intake) {

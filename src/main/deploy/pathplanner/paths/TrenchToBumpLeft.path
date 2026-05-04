@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.09,
-        "y": 6.15
+        "x": 2.7,
+        "y": 7.573723252496434
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.34,
-        "y": 6.15
+        "x": 2.7,
+        "y": 6.853555053564207
       },
       "isLocked": false,
-      "linkedName": "DEPOT_2"
+      "linkedName": "L-Shoot"
     },
     {
       "anchor": {
-        "x": 1.0,
-        "y": 7.35
+        "x": 2.7,
+        "y": 5.5
       },
       "prevControl": {
-        "x": 1.0,
-        "y": 6.85
+        "x": 2.691273796781359,
+        "y": 5.999923847578196
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "depot-3"
+      "linkedName": "L-Shoot-Bump"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.39615736505032395,
-      "rotationDegrees": 180.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -46,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 45.0
   },
   "reversed": false,
-  "folder": "HubToDepot",
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

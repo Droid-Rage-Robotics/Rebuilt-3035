@@ -108,7 +108,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand(0));
+        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand(Rotation.zero()));
     }
 
     @Override
@@ -204,12 +204,12 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         }
     }
 
-    public void resetEncoder(double resetAngle) {
+    public void resetEncoder(Angle resetAngle) {
         switch(constants.encoderType){
             case ABSOLUTE: 
                 return;
             case EXTERNAL: 
-                encoder.get().resetPosition(Rotations.of(resetAngle));
+                encoder.get().resetPosition(resetAngle);
                 motor.resetEncoder(resetAngle);
                 break;
             case INTEGRATED: 
@@ -217,7 +217,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         }
     }
 
-    public Command resetEncoderCommand(double resetAngle) {
+    public Command resetEncoderCommand(Angle resetAngle) {
         return new InstantCommand(() -> resetEncoder(resetAngle)).ignoringDisable(true);
     }
 

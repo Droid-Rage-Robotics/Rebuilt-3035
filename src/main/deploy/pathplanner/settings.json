@@ -4,9 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "Bump",
+    "HubToDepot",
     "Left",
     "LeftSwoop",
-    "HubToDepot",
+    "Double",
     "Right",
     "RightSwoop",
     "Test"

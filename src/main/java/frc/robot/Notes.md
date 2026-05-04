@@ -61,3 +61,4 @@ shooter hood stator 50, supply 45
 wheel - stator 60, supply 55
 turret - stator 30, supply 15
 kicker stator50, supply 45
+Power Radio with POE and Noral wire ports

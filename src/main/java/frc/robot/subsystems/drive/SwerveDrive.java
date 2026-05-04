@@ -224,11 +224,11 @@ public class SwerveDrive extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
 
             // if (Vision.isReasonable(getEstimatedPose(), middle.pose)) {
-                addVisionMeasurement(
-                    middle.pose,
-                    middle.timestampSeconds,
-                    VecBuilder.fill(std, std, stdTheta)
-                );
+                // addVisionMeasurement(
+                //     middle.pose,
+                //     middle.timestampSeconds,
+                //     VecBuilder.fill(std, std, stdTheta)
+                // );
             // }  
         }
     }

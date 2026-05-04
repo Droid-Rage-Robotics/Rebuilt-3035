@@ -115,25 +115,6 @@ public class Shooter implements Dashboard, Sendable {
     // public static final InterpolatingDoubleTreeMap driveSpeedMap =
     //     new InterpolatingDoubleTreeMap();
     static{
-
-        //Competition Values - Tested
-        hubWheelMap.put(1.5,41.5);
-        hubWheelMap.put(2.0,42.7);
-        hubWheelMap.put(2.9,46.0);
-        hubWheelMap.put(4.20,50.0);
-        hubWheelMap.put(5.10,54.5);//53.5
-        hubWheelMap.put(5.6,58.5);//58.1
-        hubWheelMap.put(6.1,60.0);
-
-        hubHoodMap.put(1.5,2.85);
-        hubHoodMap.put(2.00, 7.8);
-        hubHoodMap.put(2.9,10.7);
-        hubHoodMap.put(4.2,16.8);
-        hubHoodMap.put(5.10,18.9);//18.5
-        hubHoodMap.put(5.6,19.5);
-        hubHoodMap.put(6.1,20.0);
-
-
         //Home Positions
         // hubWheelMap.put(1.25,40.0);
         // hubWheelMap.put(1.89,42.0);
@@ -145,27 +126,42 @@ public class Shooter implements Dashboard, Sendable {
         // hubHoodMap.put(3.05,12.1);
         // hubHoodMap.put(4.27,12.75);
 
+        //Competition Values - Tested
+        hubWheelMap.put(1.5,42.0);
+        hubWheelMap.put(2.0,43.0);
+        hubWheelMap.put(2.9,46.6);
+        hubWheelMap.put(4.20,51.0);
+        hubWheelMap.put(5.10,55.0);//53.5
+        hubWheelMap.put(5.6,59.0);//58.1
+        hubWheelMap.put(6.1,60.5);
+
+        hubHoodMap.put(1.5,2.85);
+        hubHoodMap.put(2.00, 7.8);
+        hubHoodMap.put(2.9,10.7);
+        hubHoodMap.put(4.2,16.8);
+        hubHoodMap.put(5.10,18.9);//18.5
+        hubHoodMap.put(5.6,19.5);
+        hubHoodMap.put(6.1,20.0);
+
         //ARBITRARY VALUES FOR SHOOTING, Not CALIBRATED
-        allianceWheelMap.put(1.5,40.0);
-        allianceWheelMap.put(2.0,41.0);
-        allianceWheelMap.put(2.9,44.0);
-        allianceWheelMap.put(4.2,48.0);
-        allianceWheelMap.put(5.1,50.0);
-        allianceWheelMap.put(5.6,53.0);
-        allianceWheelMap.put(6.1,55.0);
-        allianceWheelMap.put(8.0,60.0);
-        // allianceWheelMap.put(9.0,60.0);
+        allianceWheelMap.put(1.5,42.0);
+        allianceWheelMap.put(2.0,43.0);
+        allianceWheelMap.put(2.9,46.0);
+        allianceWheelMap.put(4.2,50.0);
+        allianceWheelMap.put(5.1,52.0);
+        allianceWheelMap.put(5.6,55.0);
+        allianceWheelMap.put(6.1,57.0);
+        allianceWheelMap.put(8.0,62.0);
 
-
-        allianceHoodMap.put(1.5,4.0);
-        allianceHoodMap.put(2.0,9.5);
-        allianceHoodMap.put(2.9,13.0);
-        allianceHoodMap.put(4.2,18.5);
-        allianceHoodMap.put(5.1,21.5);
-        allianceHoodMap.put(5.6,23.0);
-        allianceHoodMap.put(6.1,24.5);
-        allianceHoodMap.put(8.0,26.0);
-        allianceHoodMap.put(9.0,28.0);
+        allianceHoodMap.put(1.5,3.0);
+        allianceHoodMap.put(2.0,8.0);
+        allianceHoodMap.put(2.9,11.0);
+        allianceHoodMap.put(4.2,16.5);
+        allianceHoodMap.put(5.1,19.5);
+        allianceHoodMap.put(5.6,20.0);
+        allianceHoodMap.put(6.1,22.0);
+        allianceHoodMap.put(8.0,23.5);
+        allianceHoodMap.put(9.0,25.0);
         //HOOD MAX is 28
         
 
@@ -309,5 +305,22 @@ public class Shooter implements Dashboard, Sendable {
 
         // Wrap to [0, 2π] first, then you can clamp in setGoalAngle
         return Radians.of(MathUtil.inputModulus(rawAngle, 0, 2 * Math.PI));
+    }
+
+    public static double getShuttleY(Pose2d robotPose){
+        double y = robotPose.getY();
+
+        if (3 < y && y < 5) {
+            double distToLower = Math.abs(y - 3);
+            double distToUpper = Math.abs(5 - y);
+
+            if (distToLower < distToUpper) {
+                return 1;
+            } else {
+                return 7;
+            }
+        }
+
+        return y;
     }
 }

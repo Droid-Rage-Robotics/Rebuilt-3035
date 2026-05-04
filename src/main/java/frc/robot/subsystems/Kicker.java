@@ -17,7 +17,7 @@ import lombok.Getter;
 
 public class Kicker extends FlywheelTemplate {
     public enum KickerValue {
-        INTAKE(55),
+        INTAKE(170), //55
         OUTTAKE(-150),
         STOP(0);
         // HOLD(0);
@@ -34,8 +34,8 @@ public class Kicker extends FlywheelTemplate {
         .withPID(0.2, 0, 0) //.24
         .withFeedforward(0.038, 0.14, 0.25) //.043254, 0.1229, 0.02026
         .withEncoderType(EncoderType.INTEGRATED)
-        .withMinVelocity(RotationsPerSecond.of(-300))
-        .withMaxVelocity(RotationsPerSecond.of(300))
+        .withMinVelocity(RotationsPerSecond.of(-100))
+        .withMaxVelocity(RotationsPerSecond.of(100))
         .withName("Kicker")
         .withOffset(0)
         .withMainNum(0);
