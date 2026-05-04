@@ -22,7 +22,8 @@ public class Hood extends ArmTemplate {
         .withEncoderType(EncoderType.INTEGRATED)
         .withMinAngle(Degrees.zero())
         .withMaxAngle(Degrees.of(28))
-        .withName("Hood");
+        .withName("Hood")
+        .withResetAngle(Degrees.zero());
 
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withDeviceId(19)
