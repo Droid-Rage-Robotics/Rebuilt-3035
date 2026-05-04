@@ -1,4 +1,4 @@
-package frc.robot.commands.autos;
+package frc.robot.commands.autos.pathplanner;
 
 import java.util.HashMap;
 

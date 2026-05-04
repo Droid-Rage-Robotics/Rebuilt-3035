@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.DroidRageConstants;
+import frc.robot.commands.autos.pathplanner.PathPlannerFollow;
+import frc.robot.commands.autos.pathplanner.PathPlannerPathFollow;
 import frc.robot.commands.shooter.AutoDRShooter;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Kicker.KickerValue;
