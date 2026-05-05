@@ -8,20 +8,19 @@ import frc.robot.DroidRageConstants;
 import frc.utility.DRAreaManager;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
+import frc.utility.io.ArmIOTalonFX;
 import frc.utility.template.ArmTemplate;
-import frc.utility.template.SubsystemConstants;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.template.Constants.ArmConstants;
+import frc.utility.template.Constants.EncoderType;
 
 public class Hood extends ArmTemplate {
-    private static final SubsystemConstants constants = new SubsystemConstants()
+    private static final ArmConstants constants = new ArmConstants()
         .withPID(20, 0, 20)
         .withFeedforward(0.4334, 0, 0.28114, 2.2) // kA 2.0731
-        .withMaxVelocity(RotationsPerSecond.of(1))
-        .withMaxAcceleration(RotationsPerSecondPerSecond.of(2))
+        .withMotionMagic(RotationsPerSecond.of(1), RotationsPerSecondPerSecond.of(2), 0)
         .withGearRatio(4.0 * (155.0/9.0))
         .withEncoderType(EncoderType.INTEGRATED)
-        .withMinAngle(Degrees.zero())
-        .withMaxAngle(Degrees.of(28))
+        .withLimits(Degrees.zero(), Degrees.of(28))
         .withName("Hood")
         .withResetAngle(Degrees.zero());
 
@@ -35,7 +34,7 @@ public class Hood extends ArmTemplate {
         .withStatorCurrentLimit(50);
 
     public Hood(boolean isEnabled) {
-        super(isEnabled, constants, null, motorConstants);
+        super(isEnabled, constants, new ArmIOTalonFX(isEnabled, constants, null, motorConstants));
 
         DRAreaManager.inBetween().whileTrue(setTargetPositionCommand(Degrees.zero()));
     }

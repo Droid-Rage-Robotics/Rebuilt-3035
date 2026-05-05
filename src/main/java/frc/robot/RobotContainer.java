@@ -82,21 +82,21 @@ public class RobotContainer {
 		shooter.getShooterWheel().setDefaultCommand(new DRShooter(drive, shooter));
 		// light.setDefaultCommand(new LightCommand(light));
 		
-		driver.povRight()
-			.onTrue(new InstantCommand(() -> {
-				shooter.getHood().getMotor().setPower(1);
-				shooter.getHood().disableControlLoop();
-				})
-			)
-			.onFalse(shooter.getHood().enableControlLoop());
+		// driver.povRight()
+		// 	.onTrue(new InstantCommand(() -> {
+		// 		shooter.getHood().getMotor().setPower(1);
+		// 		shooter.getHood().disableControlLoop();
+		// 		})
+		// 	)
+		// 	.onFalse(shooter.getHood().enableControlLoop());
 
-		driver.povLeft()
-			.onTrue(new InstantCommand(() -> {
-				shooter.getHood().getMotor().setPower(1);
-				shooter.getHood().disableControlLoop();
-				})
-			)
-			.onFalse(shooter.getHood().enableControlLoop());
+		// driver.povLeft()
+		// 	.onTrue(new InstantCommand(() -> {
+		// 		shooter.getHood().getMotor().setPower(1);
+		// 		shooter.getHood().disableControlLoop();
+		// 		})
+		// 	)
+		// 	.onFalse(shooter.getHood().enableControlLoop());
 
 		driver.rightTrigger()
 			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
@@ -109,9 +109,9 @@ public class RobotContainer {
 			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP))
 			.onFalse(indexer.setTargetVelocityCommand(IndexerValue.STOP));
 
-		driver.leftBumper()
-			.onTrue(TeleopCommands.turboMode(drive, intake, indexer, kicker, shooter))
-			.onFalse(TeleopCommands.stopTurboMode(drive, intake, indexer, kicker, shooter));
+		// driver.leftBumper()
+		// 	.onTrue(TeleopCommands.turboMode(drive, intake, indexer, kicker, shooter))
+		// 	.onFalse(TeleopCommands.stopTurboMode(drive, intake, indexer, kicker, shooter));
 
 		operator.y()
 			.onTrue(shooter.setShooterTargetCommand(ShooterValue.SHORT));
@@ -153,26 +153,26 @@ public class RobotContainer {
 			.onFalse(kicker.setTargetVelocityCommand(KickerValue.STOP.getKickerValue()));
 	}
 
-	public void testCurrentChangingLimits(){
-		driver.rightTrigger()
-			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
-			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOn()))
-			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-		driver.leftTrigger()
-			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
-			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOn()))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-		driver.rightBumper()
-			.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
-			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOff()))
-			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-		driver.leftBumper()
-			.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
-			.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOff()))
-			.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
-	}
+	// public void testCurrentChangingLimits(){
+	// 	driver.rightTrigger()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
+	// 		.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOn()))
+	// 		.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	driver.leftTrigger()
+	// 		.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+	// 		.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOn()))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	driver.rightBumper()
+	// 		.onTrue(intake.getPivot().setTargetPositionCommand(Intake.IntakeValue.PivotAngle.DOWN))
+	// 		.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOff()))
+	// 		.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.INTAKE))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// 	driver.leftBumper()
+	// 		.whileTrue(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.OUTTAKE))
+	// 		.onTrue(new InstantCommand(()->intake.getIntakeWheel().getMotor().turnCurrentLimitOff()))
+	// 		.onFalse(intake.getIntakeWheel().setTargetVelocityCommand(IntakeValue.WheelVelocity.STOP));
+	// }
 
 	public void periodic() {
 		areaManager.periodic();

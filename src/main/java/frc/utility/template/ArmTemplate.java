@@ -2,19 +2,16 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -25,86 +22,68 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
-import frc.utility.devices.encoder.CANcoderEx;
-import frc.utility.devices.encoder.EncoderConstants;
-import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.TalonEx;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.io.ArmIO;
+import frc.utility.io.ArmIOInputsAutoLogged;
+import frc.utility.template.Constants.ArmConstants;
+
 
 public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
-    private final TalonEx motor;
-    private final Optional<CANcoderEx> encoder;
+    private final ArmIO io;
+    private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
     private final double minAngleRad;
     private final double maxAngleRad;
     private final Angle resetAngle;
-    private final SubsystemConstants constants;
-
-    private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
+    // private final SubsystemConstants constants;
 
     private final boolean isEnabled;
-
-    private final AtomicReference<Angle> goalAngle = new AtomicReference<Angle>(Degrees.zero());
+    private final AtomicReference<Angle> goalAngle = new AtomicReference<>(Degrees.zero());
 
     public boolean controlLoopEnabled = true;
 
     private final String name;
+    private final Alert motorDisconnectedAlert;
+    private final Alert tempAlert;
 
-    public ArmTemplate (
-        boolean isEnabled,
-        SubsystemConstants constants,
-        EncoderConstants encoderConstants,
-        MotorConstants motorConstants
+    public ArmTemplate(
+            boolean isEnabled,
+            ArmConstants constants,
+            ArmIO io
     ) {
-        this.constants=constants;
-        this.name=constants.name;
-        this.minAngleRad=constants.minAngle.in(Radians);
-        this.resetAngle=constants.resetAngle;
-        this.maxAngleRad=constants.maxAngle.in(Radians);
-        this.isEnabled=isEnabled;
+        // this.constants = constants;
+        this.name = constants.name;
+        this.minAngleRad = constants.minAngle.in(Radians);
+        this.maxAngleRad = constants.maxAngle.in(Radians);
+        this.resetAngle = constants.resetAngle;
+        this.isEnabled = isEnabled;
+        this.io = io;
 
-        motorConstants.subsystem=this;
-        motorConstants.isEnabled=isEnabled;
-        
-        this.motor = TalonEx.createWithConstants(motorConstants);
+        motorDisconnectedAlert =
+            new Alert(name + " motor disconnected", AlertType.kWarning);
+        tempAlert =
+            new Alert(name + " motor temperature high", AlertType.kWarning);
 
-        var motorConfig = motor.getConfig();
-
-        if (constants.encoderType == EncoderType.ABSOLUTE || constants.encoderType == EncoderType.EXTERNAL) {
-            if (encoderConstants == null) {
-                throw new NullPointerException("Encoder constants required for external encoder");
-            }
-            this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
-            
-            motorConfig.Feedback.FeedbackRemoteSensorID=encoderConstants.deviceId;
-            motorConfig.Feedback.FeedbackSensorSource=FeedbackSensorSourceValue.RemoteCANcoder;
-        } else {
-            this.encoder = Optional.empty();
-        }
-        
-        motorConfig.Feedback.SensorToMechanismRatio=constants.gearRatio;
-        motorConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-
-        // PID slot 0
-        motorConfig.Slot0.kP = constants.kP;
-        motorConfig.Slot0.kI = constants.kI;
-        motorConfig.Slot0.kD = constants.kD;
-        motorConfig.Slot0.kV = constants.kV;
-        motorConfig.Slot0.kA = constants.kA;
-        motorConfig.Slot0.kS = constants.kS;
-        motorConfig.Slot0.kG = constants.kG;
-
-        motorConfig.MotionMagic.MotionMagicCruiseVelocity = constants.maxVelocity.in(RotationsPerSecond);
-        motorConfig.MotionMagic.MotionMagicAcceleration = constants.maxAcceleration.in(RotationsPerSecondPerSecond);
-        motorConfig.MotionMagic.MotionMagicJerk = constants.maxJerk; // optional, set nonzero for S-curve smoothing
-
-        motor.getMotor().getConfigurator().apply(motorConfig);
-        
         TelemetryUtils.registerDashboard(this);
         TelemetryUtils.registerTelemetry(this);
     }
 
-    /* ---------------- Dashboard ---------------- */
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs(name, inputs);
+
+        motorDisconnectedAlert.set(!inputs.motorConnected);
+        tempAlert.set(inputs.temp.gt(Celsius.of(70)));
+
+        if (controlLoopEnabled) {
+            io.setGoalAngle(goalAngle.get());
+        }
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        periodic();
+    }
 
     @Override
     public void elasticInit() {
@@ -122,33 +101,15 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         Logger.recordOutput(name + "/Goal Angle", getGoalAngle().in(Degrees));
         Logger.recordOutput(name + "/Current Angle", getCurrentAngle().in(Degrees));
         Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint().in(Degrees));
-        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
-        Logger.recordOutput(name + "/Current Velocity", getVelocity());
+        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint().in(RotationsPerSecond));
+        Logger.recordOutput(name + "/Current Velocity", getVelocity().in(RotationsPerSecond));
         Logger.recordOutput(name + "/Applied Voltage", getVoltage());
         Logger.recordOutput(name + "/Position Error", getPositionError().in(Degrees));
     }
-    
-    /* ---------------- Periodic Control Loop ---------------- */
 
-    @Override
-    public void periodic() {
-        if (controlLoopEnabled) {
-            motor.setControl(motionMagicRequest.withPosition(goalAngle.get())); // isEnabled safety in motor file and auto unit conversion
-        }
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        periodic();
-    }
-
-    /* ---------------- Commands ---------------- */
-    
     public Command setTargetPositionCommand(Angle goalAngle) {
-        return new InstantCommand(() -> setGoalAngle(goalAngle));
+        return new InstantCommand(() -> setGoalAngle(goalAngle), this);
     }
-
-    /* ---------------- Manual Goal Control ---------------- */
 
     public void setGoalAngle(Angle angle) {
         double clamped = MathUtil.clamp(
@@ -160,110 +121,81 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         goalAngle.set(Radians.of(clamped));
     }
 
+    public ArmIOInputsAutoLogged getInputs() {
+        io.updateInputs(inputs);
+        return inputs;
+    }
+
     public Angle getGoalAngle() {
         return goalAngle.get();
     }
 
     public Angle getPositionSetpoint() {
-        return Rotations.of(motor.getMotor().getClosedLoopReference().getValueAsDouble());
+        return inputs.closedLoopReference;
     }
 
     public AngularVelocity getVelocitySetpoint() {
-        return RotationsPerSecond.of(motor.getMotor().getClosedLoopReferenceSlope().getValueAsDouble());
+        return inputs.closedLoopReferenceVelocity;
     }
 
     public Angle getPositionError() {
-        return Rotations.of(motor.getMotor().getClosedLoopError().getValueAsDouble());
+        return inputs.closedLoopError;
     }
-    
-    /* ---------------- Sensor Access ---------------- */
 
     public Angle getCurrentAngle() {
-        return motor.getPosition();
+        return inputs.position;
     }
 
     public AngularVelocity getVelocity() {
-        return motor.getVelocity();
-    }
-    
-    public double getVoltage() {
-        return motor.getVoltage();
+        return inputs.velocity;
     }
 
-    /* ---------------- Motor Control ---------------- */
+    public Voltage getVoltage() {
+        return inputs.appliedVoltage;
+    }
 
     public void setVoltage(double voltage) {
         if (isEnabled) {
-            motor.setVoltage(voltage);
+            io.setVoltage(voltage);
         }
     }
 
     public void setVoltage(Voltage voltage) {
         if (isEnabled) {
-            motor.setVoltage(voltage);
+            io.setVoltage(voltage);
         }
     }
 
     public void resetEncoder() {
-        switch(constants.encoderType){
-            case ABSOLUTE: 
-                return;
-            case EXTERNAL: 
-                encoder.get().resetPosition(resetAngle);
-                motor.resetEncoder(resetAngle);
-                break;
-            case INTEGRATED: 
-                motor.resetEncoder(resetAngle);
-        }
+        io.resetEncoder(resetAngle);
     }
 
     public void resetEncoder(Angle resetAngle) {
-        switch(constants.encoderType){
-            case ABSOLUTE: 
-                return;
-            case EXTERNAL: 
-                encoder.get().resetPosition(resetAngle);
-                motor.resetEncoder(resetAngle);
-                break;
-            case INTEGRATED: 
-                motor.resetEncoder(resetAngle);
-        }
+        io.resetEncoder(resetAngle);
     }
 
     public Command resetEncoderCommand() {
-        return new InstantCommand(() -> resetEncoder()).ignoringDisable(true);
+        return new InstantCommand(this::resetEncoder).ignoringDisable(true);
     }
-    
+
     public Command resetEncoderCommand(Angle resetAngle) {
         return new InstantCommand(() -> resetEncoder(resetAngle)).ignoringDisable(true);
     }
 
-    /* ---------------- SysId ---------------- */
-
     public SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(
             new SysIdRoutine.Config(
-                null, // Use default ramp rate (1 V/s)
-                Volts.of(0.5), // Reduce dynamic step voltage to 4 to prevent brownout
-                null, // Use default timeout (10 s)
+                null,
+                Volts.of(0.5),
+                null,
                 null
-            ), 
+            ),
             new SysIdRoutine.Mechanism(
-                (voltage) -> {
-                    // Only apply voltage if within safe bounds
-                    // double currentAngle = getCurrentAngle().getRadians();
-                    // if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
-                        setVoltage(voltage);
-                    // } else {
-                    //     setVoltage(0); // Stop if at limits
-                    // }
-                }, 
-                (log) -> {
-                    log.motor("motor")
-                        .voltage(Volts.of(getVoltage()))
-                        .angularPosition(this.getCurrentAngle())
-                        .angularVelocity(this.getVelocity());
-                }, 
+                this::setVoltage,
+                log -> log.motor("motor")
+                    .voltage(inputs.appliedVoltage)
+                    .angularPosition(inputs.position)
+                    .angularVelocity(inputs.velocity),
                 this
             )
         );
@@ -284,30 +216,24 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
                 .until(this::isAtLowerLimit)
         );
     }
-    
-    /* ---------------- Utility ---------------- */
-    
-    public TalonEx getMotor(){
-        return motor;
-    }
 
-    public boolean atGoal(){
-        return (Math.abs(getPositionError().in(Degrees)) < 5);
+    public boolean atGoal() {
+        return Math.abs(getPositionError().in(Degrees)) < 5.0;
     }
 
     private boolean isAtUpperLimit() {
-        return getCurrentAngle().in(Radians) >= maxAngleRad - 0.05; // 0.05 rad buffer
+        return getCurrentAngle().in(Radians) >= maxAngleRad - 0.05;
     }
 
     private boolean isAtLowerLimit() {
-        return getCurrentAngle().in(Radians) <= minAngleRad + 0.05; // 0.05 rad buffer
+        return getCurrentAngle().in(Radians) <= minAngleRad + 0.05;
     }
 
     public Command disableControlLoop() {
-        return new InstantCommand(()->controlLoopEnabled = false);
+        return new InstantCommand(() -> controlLoopEnabled = false, this);
     }
-    
+
     public Command enableControlLoop() {
-        return new InstantCommand(()->controlLoopEnabled = true);
+        return new InstantCommand(() -> controlLoopEnabled = true, this);
     }
 }

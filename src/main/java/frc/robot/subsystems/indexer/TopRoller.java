@@ -7,20 +7,17 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
+import frc.utility.io.FlywheelIOTalonFX;
 import frc.utility.template.FlywheelTemplate;
-import frc.utility.template.SubsystemConstants;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.template.Constants.FlywheelConstants;
 
 public class TopRoller extends FlywheelTemplate {
-    private static final SubsystemConstants constants = new SubsystemConstants()
+    private static final FlywheelConstants constants = new FlywheelConstants()
         .withGearRatio(1.0)
         .withPID(0.013449, 0, 0)
         .withFeedforward(0.2067, 0.11912, 0.0032711)
-        .withEncoderType(EncoderType.INTEGRATED)
-        .withMinVelocity(RotationsPerSecond.of(-150))
-        .withMaxVelocity(RotationsPerSecond.of(150))
+        .withVelocityLimits(RotationsPerSecond.of(-150), RotationsPerSecond.of(-150))
         .withName("Top Roller")
-        .withOffset(0)
         .withMainNum(0);
     
     private static final MotorConstants rightMotor = new MotorConstants()
@@ -32,6 +29,6 @@ public class TopRoller extends FlywheelTemplate {
         .withStatorCurrentLimit(75); 
 
     public TopRoller(boolean isEnabled) {
-        super(isEnabled, constants, rightMotor);
+        super(constants, new FlywheelIOTalonFX(isEnabled, constants, rightMotor));
     }
 }

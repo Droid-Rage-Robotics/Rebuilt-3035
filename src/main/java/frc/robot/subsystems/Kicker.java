@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
+import frc.utility.io.FlywheelIOTalonFX;
 import frc.utility.template.FlywheelTemplate;
-import frc.utility.template.SubsystemConstants;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.template.Constants.FlywheelConstants;
 import lombok.Getter;
 
 public class Kicker extends FlywheelTemplate {
@@ -29,15 +29,14 @@ public class Kicker extends FlywheelTemplate {
         }
     } 
 
-    private static final SubsystemConstants constants = new SubsystemConstants()
-        .withConversionFactor(1)
+    private static final FlywheelConstants constants = new FlywheelConstants()
+        // .withConversionFactor(1)
         .withPID(0.2, 0, 0) //.24
         .withFeedforward(0.038, 0.14, 0.25) //.043254, 0.1229, 0.02026
-        .withEncoderType(EncoderType.INTEGRATED)
-        .withMinVelocity(RotationsPerSecond.of(-100))
-        .withMaxVelocity(RotationsPerSecond.of(100))
+        // .withEncoderType(EncoderType.INTEGRATED)
+        .withVelocityLimits(RotationsPerSecond.of(-100), RotationsPerSecond.of(100))
         .withName("Kicker")
-        .withOffset(0)
+        // .withOffset(0)
         .withMainNum(0);
     
     private static final MotorConstants motor = new MotorConstants() 
@@ -50,7 +49,7 @@ public class Kicker extends FlywheelTemplate {
         .withStatorCurrentLimit(50);
 
     public Kicker(boolean isEnabled) {
-        super(isEnabled, constants, motor);
+        super(constants, new FlywheelIOTalonFX(isEnabled, constants, motor));
     }
 
     

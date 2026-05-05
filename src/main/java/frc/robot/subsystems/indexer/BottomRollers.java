@@ -6,20 +6,17 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
+import frc.utility.io.FlywheelIOTalonFX;
 import frc.utility.template.FlywheelTemplate;
-import frc.utility.template.SubsystemConstants;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.template.Constants.FlywheelConstants;
 
 public class BottomRollers extends FlywheelTemplate {
-    private static final SubsystemConstants constants = new SubsystemConstants()
+    private static final FlywheelConstants constants = new FlywheelConstants()
         .withGearRatio(3.0)
         .withPID(0.017256, 0, 0)
         .withFeedforward(0.27325,0.35848,0.0072889)
-        .withEncoderType(EncoderType.INTEGRATED)
-        .withMinVelocity(RotationsPerSecond.of(-150))
-        .withMaxVelocity(RotationsPerSecond.of(150))
+        .withVelocityLimits(RotationsPerSecond.of(-150), RotationsPerSecond.of(150))
         .withName("Bottom Rollers")
-        .withOffset(0)
         .withMainNum(0);
 
     private static final MotorConstants leftMotor = new MotorConstants() 
@@ -31,6 +28,6 @@ public class BottomRollers extends FlywheelTemplate {
         .withSupplyCurrentLimit(75);//100
     
     public BottomRollers(boolean isEnabled) {
-        super(isEnabled, constants, leftMotor);
+        super(constants, new FlywheelIOTalonFX(isEnabled, constants, leftMotor));
     }
 }

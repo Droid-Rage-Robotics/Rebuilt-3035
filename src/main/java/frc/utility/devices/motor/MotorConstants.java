@@ -53,6 +53,7 @@ public final class MotorConstants {
     public Subsystem subsystem;
     public boolean isEnabled;
     public MotorType motorType;
+    public Direction direction;
 
     public MotorAlignmentValue alignment = MotorAlignmentValue.Aligned;
 

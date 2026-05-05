@@ -23,11 +23,12 @@ public class AutoCommands{
     public static Command startPivotCommand(Intake intake){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new InstantCommand(()->intake.getPivot().turnCurrentLimitOff()),
+                // new InstantCommand(()->intake.getPivot().turnCurrentLimitOff()),
                 intake.getPivot().setTargetPositionCommand(IntakeValue.PivotAngle.DOWN)
             ),
-            new WaitCommand(1),
-            new InstantCommand(()->intake.getPivot().turnCurrentLimitOn())
+            new WaitCommand(1)
+            // ,
+            // new InstantCommand(()->intake.getPivot().turnCurrentLimitOn())
         );
     }
 

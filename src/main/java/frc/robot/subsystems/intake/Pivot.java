@@ -15,22 +15,21 @@ import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.intake.Intake.IntakeValue.PivotAngle;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
+import frc.utility.io.ArmIOTalonFX;
 import frc.utility.template.ArmTemplate;
-import frc.utility.template.SubsystemConstants;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.template.Constants.ArmConstants;
+import frc.utility.template.Constants.EncoderType;
 
 public class Pivot extends ArmTemplate {
     private static final Angle startingPos = Degrees.of(35);
 
-    private static final SubsystemConstants constants = new SubsystemConstants()
+    private static final ArmConstants constants = new ArmConstants()
         .withPID(25, 0, 0.35)
         .withFeedforward(0.74109, 0.27134, 3.3, 0.25)//kA:0.23 kV:3.3
-        .withMaxVelocity(RotationsPerSecond.of(10))
-        .withMaxAcceleration(RotationsPerSecondPerSecond.of(15))
+        .withMotionMagic(RotationsPerSecond.of(10), RotationsPerSecondPerSecond.of(15), 0)
         .withGearRatio(54.0)
         .withEncoderType(EncoderType.INTEGRATED)
-        .withMinAngle(Degrees.of(35))
-        .withMaxAngle(Degrees.of(168))
+        .withLimits(startingPos, Degrees.of(168))
         .withName("Pivot")
         .withResetAngle(startingPos);
 
@@ -44,10 +43,10 @@ public class Pivot extends ArmTemplate {
         .withSupplyCurrentLimit(35); //Reefscape None
         //TODO: Uncomment and check the command to turn on and off current limit
 
-    public final Trigger highCurrent = new Trigger(() -> (getMotor().getStatorCurrent().in(Amps) > 15));
+    public final Trigger highCurrent = new Trigger(() -> (getInputs().statorCurrent.in(Amps) > 15));
 
     public Pivot(boolean isEnabled, CommandXboxController driver) {
-        super(isEnabled, constants, null, motorConstants);
+        super(isEnabled, constants, new ArmIOTalonFX(isEnabled, constants, null, motorConstants));
 
         setGoalAngle(startingPos);
 
@@ -90,11 +89,11 @@ public class Pivot extends ArmTemplate {
     //     }
     // }
 
-    public void turnCurrentLimitOff(){ 
-        getMotor().turnCurrentLimitOff();
-    }
-    public void turnCurrentLimitOn(){ 
-        getMotor().turnCurrentLimitOn();
+    // public void turnCurrentLimitOff(){ 
+    //     getMotor().turnCurrentLimitOff();
+    // }
+    // public void turnCurrentLimitOn(){ 
+    //     getMotor().turnCurrentLimitOn();
 
-    }
+    // }
 }

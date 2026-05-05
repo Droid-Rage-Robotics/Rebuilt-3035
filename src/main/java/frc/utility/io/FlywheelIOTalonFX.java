@@ -1,0 +1,126 @@
+package frc.utility.io;
+
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.ParentDevice;
+import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
+import frc.utility.devices.motor.MotorConstants;
+import frc.utility.devices.motor.MotorIO;
+import frc.utility.devices.motor.MotorIOTalonFX;
+import frc.utility.template.Constants.FlywheelConstants;
+
+public class FlywheelIOTalonFX implements FlywheelIO {
+    private final MotorIOTalonFX[] motors;
+    private final MotorIO.MotorIOInputs mainMotorInputs = new MotorIO.MotorIOInputs();
+
+    private final TalonFX mainMotor;
+    private final int mainNum;
+
+    private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
+    private final VoltageOut voltageRequest = new VoltageOut(0.0);
+
+    private final StatusSignal<Double> closedLoopReference;
+    private final StatusSignal<Double> closedLoopError;
+
+    public FlywheelIOTalonFX(
+            boolean isEnabled,
+            FlywheelConstants constants,
+            MotorConstants... motorConstants
+    ) {
+        this.mainNum = constants.mainNum;
+
+        motors = new MotorIOTalonFX[motorConstants.length];
+
+        for (int i = 0; i < motorConstants.length; i++) {
+            motorConstants[i].isEnabled = isEnabled;
+            motors[i] = new MotorIOTalonFX(motorConstants[i]);
+        }
+
+        mainMotor = motors[mainNum].getMotor();
+
+        for (int i = 0; i < motors.length; i++) {
+            if (i == mainNum) continue;
+
+            motors[i].setControl(
+                new Follower(
+                    mainMotor.getDeviceID(),
+                    motorConstants[i].alignment
+                )
+            );
+        }
+
+        var config = motorConstants[mainNum].getConfig();
+
+        config.Feedback.SensorToMechanismRatio = constants.gearRatio;
+
+        config.Slot0.kP = constants.kP;
+        config.Slot0.kI = constants.kI;
+        config.Slot0.kD = constants.kD;
+        config.Slot0.kV = constants.kV;
+        config.Slot0.kA = constants.kA;
+        config.Slot0.kS = constants.kS;
+
+        mainMotor.getConfigurator().apply(config, 0.25);
+
+        closedLoopReference = mainMotor.getClosedLoopReference();
+        closedLoopError = mainMotor.getClosedLoopError();
+
+        BaseStatusSignal.setUpdateFrequencyForAll(
+            50.0,
+            closedLoopReference,
+            closedLoopError
+        );
+
+        ParentDevice.optimizeBusUtilizationForAll(mainMotor);
+    }
+
+    @Override
+    public void updateInputs(FlywheelIOInputs inputs) {
+        motors[mainNum].updateInputs(mainMotorInputs);
+
+        BaseStatusSignal.refreshAll(
+            closedLoopReference,
+            closedLoopError
+        );
+
+        inputs.mainMotorConnected = mainMotorInputs.connected;
+
+        inputs.position = mainMotorInputs.position;
+        inputs.velocity = mainMotorInputs.velocity;
+        inputs.appliedVoltage = mainMotorInputs.appliedVolts;
+        inputs.statorCurrent = mainMotorInputs.statorCurrent;
+        inputs.torqueCurrent = mainMotorInputs.torqueCurrent;
+
+        inputs.closedLoopReference =
+            RotationsPerSecond.of(closedLoopReference.getValueAsDouble());
+
+        inputs.closedLoopError =
+            RotationsPerSecond.of(closedLoopError.getValueAsDouble());
+    }
+
+    @Override
+    public void setVelocity(AngularVelocity velocity) {
+        mainMotor.setControl(velocityRequest.withVelocity(velocity));
+    }
+
+    @Override
+    public void setVoltage(Voltage voltage) {
+        mainMotor.setControl(voltageRequest.withOutput(voltage));
+    }
+
+    public TalonFX getMainMotor() {
+        return mainMotor;
+    }
+
+    public MotorIOTalonFX[] getMotors() {
+        return motors;
+    }
+}

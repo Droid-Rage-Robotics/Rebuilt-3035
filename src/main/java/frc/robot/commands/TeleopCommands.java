@@ -73,28 +73,28 @@ public class TeleopCommands {
         );
     }
 
-    public static Command turboMode(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter) {
-        return new ParallelCommandGroup(
-            drive.enableTurboTorque(),
-            new InstantCommand(()->intake.getPivot().getMotor().changeCurrentLimits(0.5)),
-            new InstantCommand(()-> intake.getIntakeWheel().getMotor().changeCurrentLimits(0.5)),
-            new InstantCommand(()-> indexer.getBottomRollers().getMotor().changeCurrentLimits(0.5)),
-            new InstantCommand(()-> indexer.getTopRoller().getMotor().changeCurrentLimits(0.5)),
-            new InstantCommand(()-> kicker.getMotor().changeCurrentLimits(0.5))
-            // new InstantCommand(()-> shooter.getHood().getMotor().changeCurrentLimits(0.5)),
-            // new InstantCommand(()-> shooter.getTurret().getMotor().changeCurrentLimits(0.5)),
-        );
-    }
-    public static Command stopTurboMode(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter) {
-        return new ParallelCommandGroup(
-            drive.disableTurboTorque(),
-            new InstantCommand(()->intake.getPivot().getMotor().changeCurrentLimits(1)),
-            new InstantCommand(()-> intake.getIntakeWheel().getMotor().changeCurrentLimits(1)),
-            new InstantCommand(()-> indexer.getBottomRollers().getMotor().changeCurrentLimits(1)),
-            new InstantCommand(()-> indexer.getTopRoller().getMotor().changeCurrentLimits(1)),
-            new InstantCommand(()-> kicker.getMotor().changeCurrentLimits(1))
-            // new InstantCommand(()-> shooter.getHood().getMotor().changeCurrentLimits(1)),
-            // new InstantCommand(()-> shooter.getTurret().getMotor().changeCurrentLimits(1)),
-        );
-    }
+    // public static Command turboMode(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter) {
+    //     return new ParallelCommandGroup(
+    //         drive.enableTurboTorque(),
+    //         new InstantCommand(()->intake.getPivot().getMotor().changeCurrentLimits(0.5)),
+    //         new InstantCommand(()-> intake.getIntakeWheel().getMotor().changeCurrentLimits(0.5)),
+    //         new InstantCommand(()-> indexer.getBottomRollers().getMotor().changeCurrentLimits(0.5)),
+    //         new InstantCommand(()-> indexer.getTopRoller().getMotor().changeCurrentLimits(0.5)),
+    //         new InstantCommand(()-> kicker.getMotor().changeCurrentLimits(0.5))
+    //         // new InstantCommand(()-> shooter.getHood().getMotor().changeCurrentLimits(0.5)),
+    //         // new InstantCommand(()-> shooter.getTurret().getMotor().changeCurrentLimits(0.5)),
+    //     );
+    // }
+    // public static Command stopTurboMode(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter) {
+    //     return new ParallelCommandGroup(
+    //         drive.disableTurboTorque(),
+    //         new InstantCommand(()->intake.getPivot().getMotor().changeCurrentLimits(1)),
+    //         new InstantCommand(()-> intake.getIntakeWheel().getMotor().changeCurrentLimits(1)),
+    //         new InstantCommand(()-> indexer.getBottomRollers().getMotor().changeCurrentLimits(1)),
+    //         new InstantCommand(()-> indexer.getTopRoller().getMotor().changeCurrentLimits(1)),
+    //         new InstantCommand(()-> kicker.getMotor().changeCurrentLimits(1))
+    //         // new InstantCommand(()-> shooter.getHood().getMotor().changeCurrentLimits(1)),
+    //         // new InstantCommand(()-> shooter.getTurret().getMotor().changeCurrentLimits(1)),
+    //     );
+    // }
 }

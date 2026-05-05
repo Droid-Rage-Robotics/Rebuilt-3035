@@ -2,13 +2,11 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -22,74 +20,55 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.utility.TelemetryUtils;
 import frc.utility.TelemetryUtils.Dashboard;
 import frc.utility.TelemetryUtils.TelemetryUpdater;
-import frc.utility.devices.encoder.CANcoderEx;
-import frc.utility.devices.encoder.EncoderConstants;
-import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.TalonEx;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.io.ElevatorIO;
+import frc.utility.io.ElevatorIOInputsAutoLogged;
+import frc.utility.template.Constants.ElevatorConstants;
 
 public class ElevatorTemplate extends SubsystemBase implements Dashboard, TelemetryUpdater {
-    private final TalonEx[] motors;
-    private final Optional<CANcoderEx> encoder;
-    private final ProfiledPIDController controller;
-    private final ElevatorFeedforward feedforward;
+    private final ElevatorIO io;
+    private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-    // private final double maxPosition;
-    // private final double minPosition;
-    private final double conversionFactor;
-    private final int mainNum;
-    private final SubsystemConstants constants;
-
-    private final boolean isEnabled;
+    private final ElevatorConstants constants;
     private final String name;
-    
+    private final SysIdRoutine sysIdRoutine;
+
+    private boolean sysIdActive = false;
+
+    private final AtomicReference<Distance> goalPosition =
+        new AtomicReference<>(Meters.zero());
+
     public ElevatorTemplate(
-        boolean isEnabled,
-        ProfiledPIDController controller,
-        ElevatorFeedforward feedforward,
-        SubsystemConstants constants,
-        EncoderConstants encoderConstants,
-        MotorConstants... motorConstants
+            ElevatorConstants constants,
+            ElevatorIO io
     ) {
-        this.constants=constants;
-        this.mainNum=constants.mainNum;
-        this.controller=controller;
-        this.feedforward=feedforward;
-        this.name=constants.name;
-        // this.maxPosition=constants.maxDistance.in(Meters);
-        // this.minPosition=constants.minDistance.in(Meters);
-        this.conversionFactor=constants.conversionFactor;
-        this.isEnabled=isEnabled;
-
-        if (constants.encoderType == EncoderType.ABSOLUTE) {
-            if (encoderConstants == null) {
-                throw new NullPointerException("Encoder constants required for absolute encoder");
-            }
-            this.encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
-        } else {
-            this.encoder = Optional.empty();
-        }
-
-        this.motors = new TalonEx[motorConstants.length];
-        
-        for (MotorConstants m_motorConstants : motorConstants) {
-            m_motorConstants.subsystem=this;
-            m_motorConstants.isEnabled=isEnabled;
-        }
-
-        for (int i = 0; i < motorConstants.length; i++) {
-            this.motors[i] = TalonEx.createWithConstants(motorConstants[i]);
-        }
+        this.constants = constants;
+        this.name = constants.name;
+        this.io = io;
 
         TelemetryUtils.registerDashboard(this);
         TelemetryUtils.registerTelemetry(this);
+
+        sysIdRoutine = createSysIdRoutine();
     }
 
-    /* ---------------- Dashboard ---------------- */
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs(name, inputs);
+
+        if (!sysIdActive) {
+            io.setPosition(goalPosition.get());
+        }
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        periodic();
+    }
 
     @Override
     public void elasticInit() {
-        SmartDashboard.putData(constants.name + "/Reset Encoder", resetEncoderCommand());
+        SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }
 
     @Override
@@ -106,133 +85,75 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
     @Override public void practiceWriters() {}
     @Override public void alerts() {}
 
-    /* ---------------- Periodic Control Loop ---------------- */
-
-    @Override
-    public void periodic() {
-        double meter = getPosition().in(Meters);
-        double pidOut = controller.calculate(meter);
-        double ffOut = feedforward.calculate(controller.getSetpoint().velocity);
-
-        setVoltage(pidOut + ffOut);
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        periodic();
-    }
-
-    /* ---------------- Commands ---------------- */
-
     public Command setTargetPositionCommand(Distance value) {
-        return new InstantCommand(() -> setTargetPosition(value));
+        return new InstantCommand(() -> setTargetPosition(value), this);
     }
-
-    /* ---------------- Manual Goal Control ---------------- */
-
 
     public void setTargetPosition(Distance position) {
-        double clamped = MathUtil.clamp(
+        double clampedMeters = MathUtil.clamp(
             position.in(Meters),
             constants.minDistance.in(Meters),
             constants.maxDistance.in(Meters)
         );
-        controller.setGoal(clamped);
+
+        goalPosition.set(Meters.of(clampedMeters));
     }
 
     public Distance getGoalPosition() {
-        return Meters.of(controller.getGoal().position);
+        return goalPosition.get();
     }
-
-    public LinearVelocity getVelocitySetpoint() {
-        return MetersPerSecond.of(controller.getSetpoint().velocity);
-    }
-
-    public Distance getPositionSetpoint() {
-        return Meters.of(controller.getSetpoint().position);
-    }
-
-    public Distance getPositionError() {
-        return Meters.of(controller.getPositionError());
-    }
-    
-    /* ---------------- Sensor Access ---------------- */
 
     public Distance getPosition() {
-        return Meters.of(encoder
-            .map(enc -> enc.getAbsolutePosition().in(Radians) * conversionFactor)
-            .orElse(motors[mainNum].getPosition().in(Radians) * conversionFactor)
-        );
+        return inputs.position;
     }
 
     public LinearVelocity getVelocity() {
-        return MetersPerSecond.of(encoder
-            .map(enc -> enc.getVelocity().in(RadiansPerSecond) * conversionFactor)
-            .orElse(motors[mainNum].getVelocity().in(RadiansPerSecond) * conversionFactor));
-    }
-    
-    public double getVoltage() {
-        return motors[mainNum].getVoltage();
+        return inputs.velocity;
     }
 
-    /* ---------------- Motor Control ---------------- */
+    public Voltage getVoltage() {
+        return inputs.appliedVoltage;
+    }
 
-    public void setVoltage(double voltage) {
-        if (isEnabled) {
-            for (TalonEx motor: motors) {
-            motor.setVoltage(voltage);
-        }
-        }
+    public Distance getPositionSetpoint() {
+        return inputs.closedLoopReference;
+    }
+
+    public LinearVelocity getVelocitySetpoint() {
+        return inputs.closedLoopReferenceVelocity;
+    }
+
+    public Distance getPositionError() {
+        return inputs.closedLoopError;
     }
 
     public void setVoltage(Voltage voltage) {
-        if (isEnabled) {
-            for (TalonEx motor: motors) {
-                motor.setVoltage(voltage);
-            }
-        }
+        io.setVoltage(voltage);
     }
-    
+
+    public void setVoltage(double voltage) {
+        setVoltage(Volts.of(voltage));
+    }
+
     public void resetEncoder() {
-        if (hasExternalEncoder()) {
-            return;
-        } else {
-            for (TalonEx motor: motors) {
-                motor.resetEncoder(0);
-            }
-            setTargetPosition(Meters.zero());
-        }
+        io.resetEncoder(Meters.zero());
+        setTargetPosition(Meters.zero());
     }
 
     public Command resetEncoderCommand() {
-        return new InstantCommand(this::resetEncoder) {
-            @Override
-            public boolean runsWhenDisabled() {
-                return true;
-            }
-        };
+        return new InstantCommand(this::resetEncoder)
+            .ignoringDisable(true);
     }
 
-    /* ---------------- SysId ---------------- */
-
-    private SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(new SysIdRoutine.Config(), 
+    private SysIdRoutine createSysIdRoutine() {
+        return new SysIdRoutine(
+            new SysIdRoutine.Config(),
             new SysIdRoutine.Mechanism(
-                (voltage) -> {
-                    // Only apply voltage if within safe bounds
-                    // double currentPos = getPosition().in(Meters);
-                    // if (currentPos >= minPosition || currentPos <= maxPosition) {
-                        setVoltage(voltage);
-                    // } else {
-                    //     setVoltage(0); // Stop if at limits
-                    // }
-                }, 
-                (log) -> {
-                    log.motor("motor")
-                        .voltage(Volts.of(getVoltage()))
-                        .linearPosition(this.getPosition())
-                        .linearVelocity(this.getVelocity());
-                }, 
+                this::setVoltage,
+                log -> log.motor("motor")
+                    .voltage(getVoltage())
+                    .linearPosition(getPosition())
+                    .linearVelocity(getVelocity()),
                 this
             )
         );
@@ -240,43 +161,19 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
 
     public Command getSysIdCommand() {
         return new SequentialCommandGroup(
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward),
-                // .until(this::isAtUpperLimit),
+            new InstantCommand(() -> sysIdActive = true, this),
+            sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward),
             new WaitCommand(0.1),
-            getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse),
-                // .until(this::isAtLowerLimit),
+            sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse),
             new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward),
-                // .until(this::isAtUpperLimit),
+            sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward),
             new WaitCommand(0.1),
-            getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse)
-                // .until(this::isAtLowerLimit)
+            sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse),
+            new InstantCommand(() -> sysIdActive = false, this)
         );
     }
 
-    /* ---------------- Utility ---------------- */
-    
-    public TalonEx getMotor(){
-        return motors[mainNum];
-    }
-    
-    public TalonEx[] getAllMotor() {
-        return motors;
-    }
-
-    public boolean atGoal(){
-        return controller.atGoal();
-    }
-
-    // private boolean isAtUpperLimit() {
-    //     return getPosition().in(Meters) >= maxPosition - 0.05; // 0.05 cm buffer
-    // }
-
-    // private boolean isAtLowerLimit() {
-    //     return getPosition().in(Meters) <= minPosition + 0.05; // 0.05 cm buffer
-    // }
-
-    private boolean hasExternalEncoder() {
-        return constants.encoderType == EncoderType.ABSOLUTE;
+    public boolean atGoal() {
+        return Math.abs(getPositionError().in(Meters)) < 0.03;
     }
 }

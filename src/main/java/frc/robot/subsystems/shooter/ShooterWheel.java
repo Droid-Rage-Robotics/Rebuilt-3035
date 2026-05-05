@@ -7,20 +7,19 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.devices.motor.MotorConstants.Direction;
+import frc.utility.io.FlywheelIOTalonFX;
 import frc.utility.template.FlywheelTemplate;
-import frc.utility.template.SubsystemConstants;
-import frc.utility.template.SubsystemConstants.EncoderType;
+import frc.utility.template.Constants.FlywheelConstants;
 
 public class ShooterWheel extends FlywheelTemplate {
-    private static final SubsystemConstants constants = new SubsystemConstants()
+    private static final FlywheelConstants constants = new FlywheelConstants()
         .withPID(0.046955, 0, 0) //0.035014
         .withFeedforward(0.10211, 0.11705, 0.010939) //ks: 0.083079
-        .withConversionFactor(1)
-        .withEncoderType(EncoderType.INTEGRATED)
-        .withMinVelocity(RotationsPerSecond.of(-60))
-        .withMaxVelocity(RotationsPerSecond.of(200))
+        // .withConversionFactor(1)
+        // .withEncoderType(EncoderType.INTEGRATED)
+        .withVelocityLimits(RotationsPerSecond.of(-60), RotationsPerSecond.of(200))
         .withName("ShooterWheel")
-        .withOffset(0)
+        // .withOffset(0)
         .withMainNum(0);
     
     private static final MotorConstants rightMotor = new MotorConstants() // LEADER
@@ -43,6 +42,6 @@ public class ShooterWheel extends FlywheelTemplate {
         .withStatorCurrentLimit(80);
 
     public ShooterWheel(boolean isEnabled) {
-        super(isEnabled, constants, rightMotor, leftMotor);
+        super(constants, new FlywheelIOTalonFX(isEnabled, constants, rightMotor, leftMotor));
     }
 }
