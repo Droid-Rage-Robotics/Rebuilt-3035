@@ -1,4 +1,4 @@
-package frc.utility.devices.motor;
+package frc.utility.io.devices;
 
 import static edu.wpi.first.units.Units.*;
 

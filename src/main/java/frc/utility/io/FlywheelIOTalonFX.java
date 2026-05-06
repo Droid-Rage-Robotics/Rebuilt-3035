@@ -13,8 +13,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorIO;
-import frc.utility.devices.motor.MotorIOTalonFX;
+import frc.utility.io.devices.MotorIO;
+import frc.utility.io.devices.MotorIOTalonFX;
 import frc.utility.template.Constants.FlywheelConstants;
 
 public class FlywheelIOTalonFX implements FlywheelIO {

@@ -28,6 +28,7 @@ import frc.robot.subsystems.shooter.ShooterWheel;
 import frc.robot.subsystems.shooter.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.utility.DRAreaManager;
+import lombok.Getter;
 
 public class RobotContainer {
 	private final CommandXboxController driver =
@@ -36,7 +37,7 @@ public class RobotContainer {
 	private final CommandXboxController operator =		
         new CommandXboxController(DroidRageConstants.Gamepad.OPERATOR_CONTROLLER_PORT);
 	
-	private final SwerveConfig swerveConfig = new SwerveConfig();
+	@Getter private static final SwerveConfig swerveConfig = new SwerveConfig();
 	public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
 	private final Vision vision = new Vision();
 	private final Intake intake = new Intake(

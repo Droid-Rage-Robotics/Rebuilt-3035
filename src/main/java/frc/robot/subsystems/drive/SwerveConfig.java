@@ -30,6 +30,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.DroidRageConstants;
 import lombok.Getter;
 
 public class SwerveConfig {
@@ -228,7 +229,7 @@ public class SwerveConfig {
 
     // CAN bus that the devices are located on;
     // All swerve devices must share the same CAN bus
-    public static final CANBus kCANBus = new CANBus("drive", "./logs/example.hoot");
+    public static final CANBus kCANBus = DroidRageConstants.driveCanBus;
 
     public static final LinearVelocity ATTAINABLE_MAX_SPEED = MetersPerSecond.of(4.47);
     public static final AngularVelocity ATTAINABLE_MAX_SPEED_ANG = RadiansPerSecond.of(2 * (2 * Math.PI));

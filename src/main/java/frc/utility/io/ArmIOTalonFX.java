@@ -18,8 +18,8 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.utility.devices.encoder.CANcoderEx;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorIO;
-import frc.utility.devices.motor.MotorIOTalonFX;
+import frc.utility.io.devices.MotorIO;
+import frc.utility.io.devices.MotorIOTalonFX;
 import frc.utility.template.Constants.ArmConstants;
 import frc.utility.template.Constants.EncoderType;
 

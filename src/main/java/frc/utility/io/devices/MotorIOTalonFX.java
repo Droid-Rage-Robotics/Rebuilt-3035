@@ -1,4 +1,4 @@
-package frc.utility.devices.motor;
+package frc.utility.io.devices;
 
 import static edu.wpi.first.units.Units.Volts;
 
@@ -17,6 +17,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import frc.utility.devices.motor.MotorConstants;
 
 public class MotorIOTalonFX implements MotorIO {
     private final TalonFX motor;
