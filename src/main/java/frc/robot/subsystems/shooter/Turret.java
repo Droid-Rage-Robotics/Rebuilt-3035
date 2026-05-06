@@ -2,13 +2,13 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.io.TurretIOTalonFX;
 import frc.utility.template.Constants.EncoderType;
 import frc.utility.template.Constants.TurretConstants;
@@ -39,7 +39,7 @@ public class Turret extends TurretTemplate {
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withDeviceId(24)
         .withCANBus(DroidRageConstants.rioCanBus)
-        .withDirection(Direction.Reversed)
+        .withDirection(InvertedValue.CounterClockwise_Positive)
         .withIdleMode(NeutralModeValue.Brake)
         .withSupplyCurrentLimit(15)
         .withStatorCurrentLimit(30);

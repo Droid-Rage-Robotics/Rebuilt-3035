@@ -11,40 +11,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
 
 public final class MotorConstants {
-    /**
-     * Determines the direction that the motor will
-     * rotate when given a positive control request
-     */
-    public enum Direction {
-        /**
-         * Clockwise rotation is positive for the motor.
-         */
-        Forward,
-        /**
-         * Counterclockwise rotation is positive for the
-         * motor.
-         */
-        Reversed,
-    }
-
-    /**
-     * Determines motor behavior when not recieving
-     * commands for voltage/power
-     */
-    public enum ZeroPowerMode {
-        /**
-         * Motor will resist movement when not recieving
-         * commands for voltage/power.
-         */
-        Brake,
-
-        /**
-         * Motor will allow free movement when not recieving
-         * commands for voltage/power.
-         */
-        Coast,
-    }
-
     private final TalonFXConfiguration config = new TalonFXConfiguration();
     
     public int deviceId;
@@ -53,7 +19,6 @@ public final class MotorConstants {
     public Subsystem subsystem;
     public boolean isEnabled;
     public MotorType motorType;
-    public Direction direction;
 
     public MotorAlignmentValue alignment = MotorAlignmentValue.Aligned;
 
@@ -151,11 +116,8 @@ public final class MotorConstants {
      * @param direction
      * @return MotorConstants (for call chaining)
      */
-    public MotorConstants withDirection(Direction direction) {
-        config.MotorOutput.Inverted = switch (direction) {
-            case Forward -> InvertedValue.Clockwise_Positive;
-            case Reversed -> InvertedValue.CounterClockwise_Positive;
-        };
+    public MotorConstants withDirection(InvertedValue direction) {
+        config.MotorOutput.Inverted = direction;
         return this;
     }
 

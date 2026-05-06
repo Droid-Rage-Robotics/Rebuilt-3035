@@ -2,11 +2,11 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.io.FlywheelIOTalonFX;
 import frc.utility.template.FlywheelTemplate;
 import frc.utility.template.Constants.FlywheelConstants;
@@ -25,7 +25,7 @@ public class ShooterWheel extends FlywheelTemplate {
     private static final MotorConstants rightMotor = new MotorConstants() // LEADER
         .withDeviceId(20)
         .withCANBus(DroidRageConstants.rioCanBus)
-        .withDirection(Direction.Reversed)
+        .withDirection(InvertedValue.CounterClockwise_Positive)
         .withIdleMode(NeutralModeValue.Coast)
         .withConversionFactor(1)
         .withSupplyCurrentLimit(55)//80

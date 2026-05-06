@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -9,7 +10,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.io.FlywheelIOTalonFX;
 import frc.utility.template.FlywheelTemplate;
 import frc.utility.template.Constants.FlywheelConstants;
@@ -42,7 +42,7 @@ public class Kicker extends FlywheelTemplate {
     private static final MotorConstants motor = new MotorConstants() 
         .withDeviceId(18)
         .withCANBus(DroidRageConstants.rioCanBus)
-        .withDirection(Direction.Forward)
+        .withDirection(InvertedValue.Clockwise_Positive)
         .withIdleMode(NeutralModeValue.Coast)
         .withConversionFactor( 1)
         .withSupplyCurrentLimit(45)

@@ -22,7 +22,6 @@ public class MotorIOTalonFX implements MotorIO {
     private final TalonFX motor;
     private final TalonFXConfiguration config;
 
-    private final double conversionFactor;
     private boolean enabled;
 
     private final StatusSignal<Angle> position;
@@ -42,13 +41,7 @@ public class MotorIOTalonFX implements MotorIO {
     public MotorIOTalonFX(MotorConstants constants, double conversionFactor) {
         this.motor = new TalonFX(constants.deviceId, constants.canBus);
         this.config = constants.getConfig();
-        this.conversionFactor = conversionFactor;
         this.enabled = constants.isEnabled;
-
-        config.MotorOutput.Inverted = switch (constants.direction) {
-            case Forward -> com.ctre.phoenix6.signals.InvertedValue.Clockwise_Positive;
-            case Reversed -> com.ctre.phoenix6.signals.InvertedValue.CounterClockwise_Positive;
-        };
 
         motor.getConfigurator().apply(config, 0.25);
 

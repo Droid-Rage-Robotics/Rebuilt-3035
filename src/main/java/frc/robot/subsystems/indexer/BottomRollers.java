@@ -2,10 +2,10 @@ package frc.robot.subsystems.indexer;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.DroidRageConstants;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.io.FlywheelIOTalonFX;
 import frc.utility.template.FlywheelTemplate;
 import frc.utility.template.Constants.FlywheelConstants;
@@ -22,7 +22,7 @@ public class BottomRollers extends FlywheelTemplate {
     private static final MotorConstants leftMotor = new MotorConstants() 
         .withDeviceId(14)
         .withCANBus(DroidRageConstants.driveCanBus)
-        .withDirection(Direction.Forward)
+        .withDirection(InvertedValue.Clockwise_Positive)
         .withIdleMode(NeutralModeValue.Coast)
         .withStatorCurrentLimit(80)//100
         .withSupplyCurrentLimit(75);//100

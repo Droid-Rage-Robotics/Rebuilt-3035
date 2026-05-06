@@ -2,12 +2,12 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.DroidRageConstants;
 import frc.utility.DRAreaManager;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.io.ArmIOTalonFX;
 import frc.utility.template.ArmTemplate;
 import frc.utility.template.Constants.ArmConstants;
@@ -27,7 +27,7 @@ public class Hood extends ArmTemplate {
     private static final MotorConstants motorConstants = new MotorConstants() 
         .withDeviceId(19)
         .withCANBus(DroidRageConstants.rioCanBus)
-        .withDirection(Direction.Reversed)
+        .withDirection(InvertedValue.CounterClockwise_Positive)
         .withIdleMode(NeutralModeValue.Brake)
         .withConversionFactor( 1)
         .withSupplyCurrentLimit(45)

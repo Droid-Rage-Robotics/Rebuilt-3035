@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,7 +15,6 @@ import frc.robot.DroidRageConstants;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.intake.Intake.IntakeValue.PivotAngle;
 import frc.utility.devices.motor.MotorConstants;
-import frc.utility.devices.motor.MotorConstants.Direction;
 import frc.utility.io.ArmIOTalonFX;
 import frc.utility.template.ArmTemplate;
 import frc.utility.template.Constants.ArmConstants;
@@ -37,7 +37,7 @@ public class Pivot extends ArmTemplate {
         .withDeviceId(16)
         .withCANBus(DroidRageConstants.driveCanBus)
         .withConversionFactor(1)
-        .withDirection(Direction.Forward)
+        .withDirection(InvertedValue.Clockwise_Positive)
         .withIdleMode(NeutralModeValue.Brake)
         .withStatorCurrentLimit(45) //Reefscape 50
         .withSupplyCurrentLimit(35); //Reefscape None
