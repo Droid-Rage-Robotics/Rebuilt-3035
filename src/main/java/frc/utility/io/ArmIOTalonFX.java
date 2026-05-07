@@ -144,12 +144,16 @@ public class ArmIOTalonFX implements ArmIO {
 
     @Override
     public void setVoltage(double volts) {
-        motorIO.setVoltage(volts);
+        if (isEnabled) {
+            motorIO.setVoltage(volts);
+        }
     }
 
     @Override
     public void setVoltage(Voltage volts) {
-        motorIO.setVoltage(volts);
+        if (isEnabled) {
+            motorIO.setVoltage(volts);
+        }
     }
 
     @Override

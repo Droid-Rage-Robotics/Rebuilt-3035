@@ -22,9 +22,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-// import frc.robot.Constants;
 import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.drive.maple.Drive;
+import frc.robot.subsystems.drive.SwerveConfig;
 
 public abstract class ModuleIOTalonFX implements ModuleIO {
     protected final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants;
@@ -128,7 +127,7 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
         turnCurrent = turnTalon.getStatorCurrent();
 
         // Configure periodic frames
-        BaseStatusSignal.setUpdateFrequencyForAll(Drive.ODOMETRY_FREQUENCY, turnAbsolutePosition, drivePosition);
+        BaseStatusSignal.setUpdateFrequencyForAll(SwerveConfig.ODOMETRY_FREQUENCY, turnAbsolutePosition, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50.0, driveVelocity, driveAppliedVolts, driveCurrent, turnVelocity, turnAppliedVolts, turnCurrent);
         ParentDevice.optimizeBusUtilizationForAll(driveTalon, turnTalon);

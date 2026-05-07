@@ -1,6 +1,6 @@
 package frc.utility.io;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -30,12 +30,15 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     private final StatusSignal<Double> closedLoopReference;
     private final StatusSignal<Double> closedLoopError;
 
+    private boolean isEnabled;
+
     public FlywheelIOTalonFX(
             boolean isEnabled,
             FlywheelConstants constants,
             MotorConstants... motorConstants
     ) {
         this.mainNum = constants.mainNum;
+        this.isEnabled=isEnabled;
 
         motors = new MotorIOTalonFX[motorConstants.length];
 
@@ -108,12 +111,16 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     @Override
     public void setVelocity(AngularVelocity velocity) {
-        mainMotor.setControl(velocityRequest.withVelocity(velocity));
+        if (isEnabled) {
+            mainMotor.setControl(velocityRequest.withVelocity(velocity));
+        }
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
-        mainMotor.setControl(voltageRequest.withOutput(voltage));
+        if (isEnabled) {
+            mainMotor.setControl(voltageRequest.withOutput(voltage));
+        }
     }
 
     public TalonFX getMainMotor() {

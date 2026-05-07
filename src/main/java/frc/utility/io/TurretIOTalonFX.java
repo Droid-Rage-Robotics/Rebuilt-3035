@@ -41,6 +41,8 @@ public class TurretIOTalonFX implements TurretIO {
 
     private final Debouncer encoderConnectedDebounce = new Debouncer(0.5);
 
+    private boolean isEnabled;
+
     public TurretIOTalonFX(
             boolean isEnabled,
             TurretConstants constants,
@@ -48,6 +50,7 @@ public class TurretIOTalonFX implements TurretIO {
             MotorConstants motorConstants
     ) {
         this.constants = constants;
+        this.isEnabled = isEnabled;
 
         motorConstants.isEnabled = isEnabled;
 
@@ -133,12 +136,16 @@ public class TurretIOTalonFX implements TurretIO {
 
     @Override
     public void setPosition(Angle angle) {
-        motorIO.setControl(motionMagicRequest.withPosition(angle));
+        if (isEnabled) {
+            motorIO.setControl(motionMagicRequest.withPosition(angle));
+        }
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
-        motorIO.setControl(voltageRequest.withOutput(voltage));
+        if (isEnabled) {
+            motorIO.setControl(voltageRequest.withOutput(voltage));
+        }
     }
 
     @Override

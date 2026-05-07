@@ -32,11 +32,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final StatusSignal<Double> closedLoopReferenceSlope;
     private final StatusSignal<Double> closedLoopError;
 
+    private boolean isEnabled;
+
     public ElevatorIOTalonFX(
             boolean isEnabled,
             ElevatorConstants constants,
             MotorConstants... motorConstants
     ) {
+        this.isEnabled=isEnabled;
         this.mainNum = constants.mainNum;
         this.metersPerMotorRotation = constants.metersPerMotorRotation;
 
@@ -132,12 +135,16 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     @Override
     public void setPosition(Distance position) {
         double motorRotations = position.in(Meters) / metersPerMotorRotation;
-        mainMotor.setControl(motionMagicRequest.withPosition(motorRotations));
+        if (isEnabled) {
+            mainMotor.setControl(motionMagicRequest.withPosition(motorRotations));
+        }
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
-        mainMotor.setControl(voltageRequest.withOutput(voltage));
+        if (isEnabled) {
+            mainMotor.setControl(voltageRequest.withOutput(voltage));
+        }
     }
 
     @Override

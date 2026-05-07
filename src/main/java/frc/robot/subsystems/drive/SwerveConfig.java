@@ -231,6 +231,9 @@ public class SwerveConfig {
     // All swerve devices must share the same CAN bus
     public static final CANBus kCANBus = DroidRageConstants.driveCanBus;
 
+    public static final double ODOMETRY_FREQUENCY =
+            kCANBus.isNetworkFD() ? 250.0 : 100.0;
+
     public static final LinearVelocity ATTAINABLE_MAX_SPEED = MetersPerSecond.of(4.47);
     public static final AngularVelocity ATTAINABLE_MAX_SPEED_ANG = RadiansPerSecond.of(2 * (2 * Math.PI));
 
@@ -245,6 +248,8 @@ public class SwerveConfig {
     private static final boolean kInvertRightSide = true;
 
     private static final int kPigeonId = 13;
+
+    
 
     // These are only used for simulation
     private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
