@@ -8,17 +8,18 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.autos.pathplanner.PathFollow;
 import frc.robot.subsystems.Kicker;
-import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.drive.maple.Drive;
+// import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeValue;
 import frc.robot.subsystems.intake.Intake.IntakeValue.WheelVelocity;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterValue;
-import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.maple.Vision;
 
 public class ChampsAutos {
-    public static Command doubleSide(boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command doubleSide(boolean mirror, Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new WaitCommand(3),
             new ParallelCommandGroup(
@@ -87,7 +88,7 @@ public class ChampsAutos {
     }
     
     //false = left, true = right
-    public static Command bumpSwoop(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command bumpSwoop(String depth, boolean mirror, Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathFollow.create("TrenchToNeutralLeft" + depth)
@@ -142,7 +143,7 @@ public class ChampsAutos {
            )
         );
     }
-    public static Command sideDepot(String depth, boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command sideDepot(String depth, boolean mirror, Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup (
             new ParallelCommandGroup (
                 PathFollow.create("TrenchToNeutralLeft" + depth)
@@ -205,7 +206,7 @@ public class ChampsAutos {
         );
     }
 
-    public static Command neutralSwoop(boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command neutralSwoop(boolean mirror, Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 PathFollow.create("TrenchToNeutralSwoopLeft")
@@ -234,7 +235,7 @@ public class ChampsAutos {
         );
     }
 
-    public static Command bump(boolean mirror, SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command bump(boolean mirror, Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 PathFollow.create("Bump1")
@@ -267,7 +268,7 @@ public class ChampsAutos {
         );
     }
 
-    public static Command centerDepot(SwerveDrive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    public static Command centerDepot(Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 PathFollow.create("HubToDepot")

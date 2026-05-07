@@ -15,6 +15,7 @@ package frc.robot.subsystems.drive.maple;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -42,7 +43,10 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.DroidRageConstants;
@@ -50,12 +54,18 @@ import frc.robot.DroidRageConstants.Mode;
 import frc.robot.LocalADStarAK;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.SwerveConfig;
+import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import frc.robot.subsystems.vision.maple.Vision;
 import frc.utility.PhoenixOdometryThread;
 import frc.utility.io.devices.GyroIO;
+import frc.utility.io.devices.GyroIOInputsAutoLogged;
 import frc.utility.io.swerve.Module;
 import frc.utility.io.swerve.ModuleIO;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
@@ -66,9 +76,14 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase implements Vision.VisionConsumer {
+    private volatile Speed speed = Speed.NORMAL;
+
+    private boolean m_hasAppliedOperatorPerspective = false;
+
+    private Rotation2d fieldDirection = RobotContainer.getSwerveConfig().getBlueAlliancePerspectiveRotation();
+    
     // TunerConstants doesn't include these constants, so they are declared locally
-    public static final double ODOMETRY_FREQUENCY =
-            SwerveConfig.kCANBus.isNetworkFD() ? 250.0 : 100.0;
+    
     public static final double DRIVE_BASE_RADIUS = Math.max(
             Math.max(
                     Math.hypot(RobotContainer.getSwerveConfig().getFrontLeft().LocationX, RobotContainer.getSwerveConfig().getFrontLeft().LocationY),
@@ -175,6 +190,86 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 new SysIdRoutine.Mechanism((voltage) -> runCharacterization(voltage.in(Volts)), null, this));
     }
 
+    /**
+     * Measures the velocity feedforward constants for the drive motors.
+     *
+     * <p>This command should only be used in voltage control mode.
+     */
+    public static Command feedforwardCharacterization(Drive drive) {
+        List<Double> velocitySamples = new LinkedList<>();
+        List<Double> voltageSamples = new LinkedList<>();
+        Timer timer = new Timer();
+
+        return Commands.sequence(
+                // Reset data
+                Commands.runOnce(() -> {
+                    velocitySamples.clear();
+                    voltageSamples.clear();
+                }),
+
+                // Allow modules to orient
+                Commands.run(
+                                () -> {
+                                    drive.runCharacterization(0.0);
+                                },
+                                drive)
+                        .withTimeout(2.0),
+
+                // Start timer
+                Commands.runOnce(timer::restart),
+
+                // Accelerate and gather data
+                Commands.run(
+                                () -> {
+                                    double voltage = timer.get() * 0.1;
+                                    drive.runCharacterization(voltage);
+                                    velocitySamples.add(drive.getFFCharacterizationVelocity());
+                                    voltageSamples.add(voltage);
+                                },
+                                drive)
+
+                        // When cancelled, calculate and print results
+                        .finallyDo(() -> {
+                            int n = velocitySamples.size();
+                            double sumX = 0.0;
+                            double sumY = 0.0;
+                            double sumXY = 0.0;
+                            double sumX2 = 0.0;
+                            for (int i = 0; i < n; i++) {
+                                sumX += velocitySamples.get(i);
+                                sumY += voltageSamples.get(i);
+                                sumXY += velocitySamples.get(i) * voltageSamples.get(i);
+                                sumX2 += velocitySamples.get(i) * velocitySamples.get(i);
+                            }
+                            double kS = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - sumX * sumX);
+                            double kV = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+
+                            NumberFormat formatter = new DecimalFormat("#0.00000");
+                            System.out.println("********** Drive FF Characterization Results **********");
+                            System.out.println("\tkS: " + formatter.format(kS));
+                            System.out.println("\tkV: " + formatter.format(kV));
+                        }));
+    }
+
+    /**
+     * Takes the {@link SwerveRequest.ForwardPerspectiveValue#BlueAlliance} perpective direction
+     * and treats it as the forward direction for
+     * {@link SwerveRequest.ForwardPerspectiveValue#OperatorPerspective}.
+     * <p>
+     * If the operator is in the Blue Alliance Station, this should be 0 degrees.
+     * If the operator is in the Red Alliance Station, this should be 180 degrees.
+     * <p>
+     * This does not change the robot pose, which is in the
+     * {@link SwerveRequest.ForwardPerspectiveValue#BlueAlliance} perspective.
+     * As a result, the robot pose may need to be reset using {@link #resetPose}.
+     *
+     * @param fieldDirection Heading indicating which direction is forward from
+     *                       the {@link SwerveRequest.ForwardPerspectiveValue#BlueAlliance} perspective
+     */
+    private void setOperatorPerspectiveForward(Rotation2d fieldDirection) {
+        this.fieldDirection=fieldDirection;
+    }
+
     @Override
     public void periodic() {
         odometryLock.lock(); // Prevents odometry updates while reading data
@@ -184,6 +279,24 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
             module.periodic();
         }
         odometryLock.unlock();
+
+        /*
+         * Periodically try to apply the operator perspective.
+         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
+         * This allows us to correct the perspective in case the robot code restarts mid-match.
+         * Otherwise, only check and apply the operator perspective if the DS is disabled.
+         * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+         */
+        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent(allianceColor -> {
+                setOperatorPerspectiveForward(
+                    allianceColor == Alliance.Red
+                        ? RobotContainer.getSwerveConfig().getRedAlliancePerspectiveRotation()
+                        : RobotContainer.getSwerveConfig().getBlueAlliancePerspectiveRotation()
+                );
+                m_hasAppliedOperatorPerspective = true;
+            });
+        }
 
         // Stop moving when disabled
         if (DriverStation.isDisabled()) {
@@ -229,6 +342,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && DroidRageConstants.currentMode != Mode.SIM);
+    }
+
+    public void seedFieldCentric() {
+        setPose(new Pose2d(getPose().getTranslation(), new Rotation2d().plus(fieldDirection)));
     }
 
     /**
@@ -311,8 +428,22 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
     /** Returns the measured chassis speeds of the robot. */
     @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
-    private ChassisSpeeds getChassisSpeeds() {
+    public ChassisSpeeds getChassisSpeeds() {
         return kinematics.toChassisSpeeds(getModuleStates());
+    }
+
+    public Command setSpeed(Speed speed) {
+        return new InstantCommand(() -> {
+            this.speed = speed;
+        });
+    }
+
+    public double getTranslationalSpeed() {
+        return speed.getTranslationalSpeed();
+    }
+
+    public double getAngularSpeed() {
+        return speed.getAngularSpeed();
     }
 
     /** Returns the position of each module in radians. */

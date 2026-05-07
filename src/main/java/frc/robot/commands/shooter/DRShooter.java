@@ -8,21 +8,21 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.FieldConstants;
-import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.drive.maple.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.utility.DRAreaManager;
 
 
 public class DRShooter extends Command {
     private final Shooter shooter;
-    private final SwerveDrive drive;
+    private final Drive drive;
     
     private Translation2d hubPose;
     private Translation2d goalPose, alliancePose;
     private double distanceRobotToGoal;
     private Pose2d drivePose = new Pose2d();
 
-    public DRShooter(SwerveDrive drive, Shooter shooter) {
+    public DRShooter(Drive drive, Shooter shooter) {
         this.shooter = shooter;
         this.drive = drive;
 
@@ -56,7 +56,7 @@ public class DRShooter extends Command {
     
     @Override 
     public void execute(){
-        drivePose = drive.getState().Pose;
+        drivePose = drive.getPose();
         
         switch(DRAreaManager.getCurrentZone()){
             case ALLIANCE_ZONE:
@@ -77,7 +77,7 @@ public class DRShooter extends Command {
         Pose2d lookAheadPose = Shooter.predictPosePos(
             drivePose, 
             goalPose,
-            drive.getCurrentRobotChassisSpeeds(),
+            drive.getChassisSpeeds(),
             Shooter.timeOfFlightMap.get(Shooter.getDistanceToHub(drivePose, goalPose)));
         distanceRobotToGoal = Shooter.getDistanceToHub(lookAheadPose, goalPose);
 

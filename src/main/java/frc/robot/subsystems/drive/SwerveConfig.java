@@ -116,6 +116,11 @@ public class SwerveConfig {
         .withKP(0.79827).withKI(0).withKD(0)
         .withKS(0.14055).withKV(1.929);
 
+//         ﻿﻿﻿﻿﻿ ********** Drive FF Characterization Results ********** ﻿
+// ﻿﻿﻿﻿﻿﻿ 	kS: 0.16059 ﻿
+// ﻿﻿﻿﻿﻿﻿ 	kV: 0.62493 ﻿
+
+
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;

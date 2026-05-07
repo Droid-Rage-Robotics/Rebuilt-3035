@@ -1,5 +1,7 @@
 package frc.utility;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
@@ -9,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.drive.SwerveDrive;
+import frc.robot.subsystems.drive.maple.Drive;
 import frc.utility.TelemetryUtils.Dashboard;
 
 public class DRAreaManager implements Dashboard, Sendable{
@@ -20,19 +22,26 @@ public class DRAreaManager implements Dashboard, Sendable{
 		BETWEEN
 	}
 
-	private final SwerveDrive drive;
+	private final Drive drive;
 	private final Rectangle2d redAllianceZone;
 	private final Rectangle2d blueAllianceZone;
 	private final Rectangle2d nuetralZone;
 
+	private final BooleanSupplier isInNeutralZone, isInBlueAllianceZone, isInRedAllianceZone;
+
 	private static Zone currentZone = Zone.ALLIANCE_ZONE;
 	private double freeZoneStartY = 1.7, freeZoneEndY = 6.3;
 
-	public DRAreaManager(SwerveDrive drive) {
+	public DRAreaManager(Drive drive) {
 		this.drive = drive;
 		blueAllianceZone = new Rectangle2d(new Translation2d(0,0), new Translation2d(3.25,8));
 		nuetralZone = new Rectangle2d(new Translation2d(5.75, 0), new Translation2d(10.25,8));
 		redAllianceZone = new Rectangle2d(new Translation2d(12.75,0), new Translation2d(16.5, 8));
+
+		isInNeutralZone = () -> nuetralZone.contains(drive.getPose().getTranslation());
+		isInBlueAllianceZone = () -> blueAllianceZone.contains(drive.getPose().getTranslation());
+		isInRedAllianceZone = () -> redAllianceZone.contains(drive.getPose().getTranslation());
+
 
 		updateZone();
 		
@@ -49,7 +58,7 @@ public class DRAreaManager implements Dashboard, Sendable{
 	}
 
 	public void updateZone() {
-		Translation2d drivePosition = drive.getState().Pose.getTranslation();
+		Translation2d drivePosition = drive.getPose().getTranslation();
 		if (DroidRageConstants.alliance == Alliance.Red) {
 			if (redAllianceZone.contains(drivePosition)) {
 				currentZone = Zone.ALLIANCE_ZONE;
@@ -115,7 +124,7 @@ public class DRAreaManager implements Dashboard, Sendable{
 
 	@Override
 	public void elasticInit() {
-		SmartDashboard.putData("Drive/AreaManager", this );
+		SmartDashboard.putData("Drive/AreaManager", this);
 	}
 	
 	@Override

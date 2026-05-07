@@ -3,22 +3,20 @@ package frc.robot.commands.manual;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
-import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveConfig.DriveOptions;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
+import frc.robot.subsystems.drive.maple.Drive;
 
 public class SwerveDriveTeleop extends Command {
-    private final SwerveDrive drive;
-
-    private final SwerveRequest.FieldCentric fieldCentricRequest = new SwerveRequest.FieldCentric();
-    private final SwerveRequest.RobotCentric robotCentricRequest = new SwerveRequest.RobotCentric();
-    private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+    private final Drive drive;
     
     private final Supplier<Double> x, y, turn;
     private volatile double xSpeed, ySpeed, turnSpeed;
@@ -27,7 +25,7 @@ public class SwerveDriveTeleop extends Command {
     // private static final PIDController antiTipX = 
     //     new PIDController(0.006, 0, 0.0005);
 
-    public SwerveDriveTeleop(SwerveDrive drive, CommandXboxController driver) {
+    public SwerveDriveTeleop(Drive drive, CommandXboxController driver) {
         this.drive = drive;
         this.x = driver::getLeftX;
         this.y = driver::getLeftY;
@@ -40,7 +38,7 @@ public class SwerveDriveTeleop extends Command {
         driver.leftBumper().onTrue(drive.setSpeed(Speed.SUPER_SLOW))
             .onFalse(drive.setSpeed(Speed.NORMAL));
 
-        driver.x().whileTrue(drive.applyRequest(()->brakeRequest));
+        driver.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
         driver.b().onTrue(new InstantCommand(drive::seedFieldCentric));
         // driver.b().and(driver.back()).onTrue(new InstantCommand(drive::tareEverything)); //This is bad idea
@@ -90,26 +88,32 @@ public class SwerveDriveTeleop extends Command {
             SwerveConfig.ATTAINABLE_MAX_SPEED_ANG.in(RadiansPerSecond) * 
             drive.getAngularSpeed();
 
-        if (DriveOptions.IS_FIELD_ORIENTED.get()) {
-            drive.setControl(
-                fieldCentricRequest
-                    .withVelocityX(xSpeed)
-                    .withVelocityY(ySpeed)
-                    .withRotationalRate(turnSpeed)
-            );
-        } else {
-            drive.setControl(
-                robotCentricRequest
-                    .withVelocityX(xSpeed)
-                    .withVelocityY(ySpeed)
-                    .withRotationalRate(turnSpeed)
-            );
-        }
+        ChassisSpeeds speeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+
+        drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getRotation()));
+        
+        // if (DriveOptions.IS_FIELD_ORIENTED.get()) {
+        //     drive.setControl(
+        //         fieldCentricRequest
+        //             .withVelocityX(xSpeed)
+        //             .withVelocityY(ySpeed)
+        //             .withRotationalRate(turnSpeed)
+        //     );
+        // } else {
+        //     drive.setControl(
+        //         robotCentricRequest
+        //             .withVelocityX(xSpeed)
+        //             .withVelocityY(ySpeed)
+        //             .withRotationalRate(turnSpeed)
+        //     );
+        // }
     }
 
     @Override
     public void end(boolean interrupted) {
-        drive.setControl(brakeRequest);
+        drive.stop();
+        // drive.setControl(brakeRequest);
+        // drive.stopWithX();
     }
 
     @Override
