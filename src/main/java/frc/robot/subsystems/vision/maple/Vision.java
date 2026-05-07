@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.utility.io.devices.VisionIO;
 import frc.utility.io.devices.VisionIO.PoseObservationType;
+import frc.utility.io.devices.VisionIOInputsAutoLogged;
 
 import java.util.LinkedList;
 import java.util.List;
