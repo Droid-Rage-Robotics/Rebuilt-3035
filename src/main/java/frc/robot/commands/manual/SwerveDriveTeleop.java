@@ -2,6 +2,7 @@ package frc.robot.commands.manual;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -20,6 +21,8 @@ public class SwerveDriveTeleop extends Command {
     
     private final Supplier<Double> x, y, turn;
     private volatile double xSpeed, ySpeed, turnSpeed;
+
+    private final BooleanSupplier noInput;
     // private static final PIDController antiTipY = 
     //     new PIDController(0.006, 0, 0.0005);
     // private static final PIDController antiTipX = 
@@ -33,6 +36,11 @@ public class SwerveDriveTeleop extends Command {
         // antiTipX.setTolerance(2);
         // antiTipY.setTolerance(2);
 
+        noInput = () ->
+            xSpeed == 0.0 &&
+            ySpeed == 0.0 &&
+            turnSpeed == 0.0;
+
         driver.rightBumper().onTrue(drive.setSpeed(Speed.SLOW))
             .onFalse(drive.setSpeed(Speed.NORMAL));
         driver.leftBumper().onTrue(drive.setSpeed(Speed.SUPER_SLOW))
@@ -41,7 +49,6 @@ public class SwerveDriveTeleop extends Command {
         driver.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
         driver.b().onTrue(new InstantCommand(drive::seedFieldCentric));
-        // driver.b().and(driver.back()).onTrue(new InstantCommand(drive::tareEverything)); //This is bad idea
 
         addRequirements(drive);
     }
@@ -61,7 +68,6 @@ public class SwerveDriveTeleop extends Command {
             ySpeed = DroidRageConstants.squareInput(ySpeed);
             turnSpeed = DroidRageConstants.squareInput(turnSpeed);
         }
-
 
         // Apply deadzone
         if (Math.abs(xSpeed) < DroidRageConstants.Gamepad.DRIVER_STICK_DEADZONE) xSpeed = 0;
@@ -89,6 +95,11 @@ public class SwerveDriveTeleop extends Command {
             drive.getAngularSpeed();
 
         ChassisSpeeds speeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+
+        if (noInput.getAsBoolean()) {
+            drive.stopDriveMotors();
+            return;
+        }
 
         drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getRotation()));
         

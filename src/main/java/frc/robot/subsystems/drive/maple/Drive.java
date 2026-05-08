@@ -145,13 +145,17 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
+    private boolean isEnabled;
+
     public Drive(
+            boolean isEnabled,
             GyroIO gyroIO,
             ModuleIO flModuleIO,
             ModuleIO frModuleIO,
             ModuleIO blModuleIO,
             ModuleIO brModuleIO,
             Consumer<Pose2d> resetSimulationPoseCallBack) {
+        this.isEnabled=isEnabled;
         this.gyroIO = gyroIO;
         this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
         modules[0] = new Module(flModuleIO, 0, RobotContainer.getSwerveConfig().getFrontLeft());
@@ -188,6 +192,12 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 new SysIdRoutine.Config(
                         null, null, null, (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
                 new SysIdRoutine.Mechanism((voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    }
+
+    public void stopDriveMotors() {
+        for (var module : modules) {
+            module.stopDriveMotor();
+        }
     }
 
     /**
@@ -363,9 +373,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
         Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
         Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
 
-        // Send setpoints to modules
-        for (int i = 0; i < 4; i++) {
-            modules[i].runSetpoint(setpointStates[i]);
+        if (isEnabled) {
+            // Send setpoints to modules
+            for (int i = 0; i < 4; i++) {
+                modules[i].runSetpoint(setpointStates[i]);
+            }
         }
 
         // Log optimized setpoints (runSetpoint mutates each state)

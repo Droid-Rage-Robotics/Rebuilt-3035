@@ -77,6 +77,10 @@ public class Module {
         io.setTurnPosition(state.angle);
     }
 
+    public void stopDriveMotor() {
+        io.setDriveOpenLoop(0.0);
+    }
+
     /** Runs the module with the specified output while controlling to zero degrees. */
     public void runCharacterization(double output) {
         io.setDriveOpenLoop(output);

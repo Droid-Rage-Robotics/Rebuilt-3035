@@ -69,7 +69,7 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		// Real robot, instantiate hardware IO implementations
-                drive = new Drive(
+                drive = new Drive(false,
 					new GyroIOPigeon2(),
 					new ModuleIOTalonFXReal(swerveConfig.getFrontLeft()),
 					new ModuleIOTalonFXReal(swerveConfig.getFrontRight()),
@@ -171,8 +171,7 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		// return autoChooser.getAutonomousCommand();
-		return null;
+		return autoChooser.getAutonomousCommand();
 	}
 
 	public void resetSubsystemsAutoExit() {

@@ -106,7 +106,6 @@ public class SwerveConfig {
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     @Getter private final Rotation2d redAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
 
-
     private static final Slot0Configs steerGains = new Slot0Configs()
         .withKP(110).withKI(0).withKD(0)
         // .withKS(0.35738).withKV(2.4411).withKA(0.18145)
@@ -115,11 +114,6 @@ public class SwerveConfig {
     private static final Slot0Configs driveGains = new Slot0Configs()
         .withKP(0.79827).withKI(0).withKD(0)
         .withKS(0.14055).withKV(1.929);
-
-//         ﻿﻿﻿﻿﻿ ********** Drive FF Characterization Results ********** ﻿
-// ﻿﻿﻿﻿﻿﻿ 	kS: 0.16059 ﻿
-// ﻿﻿﻿﻿﻿﻿ 	kV: 0.62493 ﻿
-
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
