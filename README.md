@@ -2,13 +2,11 @@
 
 ## Overview
 
-This repository contains the competition code for Team 3035's 2026 FRC robot, **Nomad**, built for the **Rebuilt** season.
+This repository contains the competition code for Team 3035's FRC robot, **Nomad**, from the 2026 **Rebuilt** season.
 
 ---
 
 ## Season Summary
-
-The 2026 season saw Team 3035 compete at two FIRST in Texas district events, the District Championship, and the World Championship.
 
 ### Events Attended
 
