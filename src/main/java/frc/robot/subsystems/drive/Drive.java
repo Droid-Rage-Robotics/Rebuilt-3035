@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.drive.maple;
+package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -52,7 +52,6 @@ import frc.robot.DroidRageConstants;
 import frc.robot.DroidRageConstants.Mode;
 import frc.robot.LocalADStarAK;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import frc.robot.subsystems.vision.maple.Vision;
 import frc.utility.PhoenixOdometryThread;

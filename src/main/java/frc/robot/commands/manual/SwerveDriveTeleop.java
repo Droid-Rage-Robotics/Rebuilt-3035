@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.DroidRageConstants;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConfig;
 import frc.robot.subsystems.drive.SwerveConfig.DriveOptions;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
-import frc.robot.subsystems.drive.maple.Drive;
 
 public class SwerveDriveTeleop extends Command {
     private final Drive drive;

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.drive.maple.Drive;
+import frc.robot.subsystems.drive.Drive;
 import frc.utility.TelemetryUtils.Dashboard;
 
 public class DRAreaManager implements Dashboard, Sendable{
