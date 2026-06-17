@@ -20,7 +20,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
@@ -175,7 +174,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 this::setPose,
                 this::getChassisSpeeds,
                 this::runVelocity,
-                new PPHolonomicDriveController(new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                new DRHolonomicSwerveController(
+                        new PIDConstants(5.0, 0.0, 0.0),
+                        new PIDConstants(5.0, 0.0, 0.0),
+                        "PathPlanner/Controller"),
                 PP_CONFIG,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
@@ -456,6 +458,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
     public double getAngularSpeed() {
         return speed.getAngularSpeed();
+    }
+
+    public RobotConfig getPathPlannerRobotConfig() {
+        return PP_CONFIG;
     }
 
     /** Returns the position of each module in radians. */
