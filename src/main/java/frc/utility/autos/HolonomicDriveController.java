@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.utility.autos;
 
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PathFollowingController;
@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.littletonrobotics.junction.Logger;
 
 /** PathPlanner holonomic controller with AdvantageKit-visible tracking telemetry. */
-public class DRHolonomicSwerveController implements PathFollowingController {
+public class HolonomicDriveController implements PathFollowingController {
     private static final double DEFAULT_PERIOD_SECONDS = 0.02;
 
     private final String logKey;
@@ -19,12 +19,12 @@ public class DRHolonomicSwerveController implements PathFollowingController {
     private final PIDController rotationController;
     private boolean enabled = true;
 
-    public DRHolonomicSwerveController(
+    public HolonomicDriveController(
             PIDConstants translationConstants, PIDConstants rotationConstants, String logKey) {
         this(translationConstants, rotationConstants, logKey, DEFAULT_PERIOD_SECONDS);
     }
 
-    public DRHolonomicSwerveController(
+    public HolonomicDriveController(
             PIDConstants translationConstants,
             PIDConstants rotationConstants,
             String logKey,

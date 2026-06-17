@@ -55,6 +55,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import frc.robot.subsystems.vision.maple.Vision;
 import frc.utility.PhoenixOdometryThread;
+import frc.utility.autos.HolonomicDriveController;
 import frc.utility.io.devices.GyroIO;
 import frc.utility.io.devices.GyroIOInputsAutoLogged;
 import frc.utility.io.swerve.Module;
@@ -173,7 +174,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 this::setPose,
                 this::getChassisSpeeds,
                 this::runVelocity,
-                new DRHolonomicSwerveController(
+                new HolonomicDriveController(
                         new PIDConstants(5.0, 0.0, 0.0),
                         new PIDConstants(5.0, 0.0, 0.0),
                         "PathPlanner/Controller"),
