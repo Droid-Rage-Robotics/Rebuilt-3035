@@ -1,193 +1,182 @@
+// Copyright 2021-2025 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// version 3 as published by the Free Software Foundation or
+// available in the root directory of this project.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.DroidRageConstants;
-import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
-import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
-import frc.utility.TelemetryUtils;
-import frc.utility.TelemetryUtils.Dashboard;
-import lombok.Getter;
+import frc.utility.io.devices.VisionIO;
+import frc.utility.io.devices.VisionIO.PoseObservationType;
+import frc.utility.io.devices.VisionIOInputsAutoLogged;
 
-public class Vision extends SubsystemBase implements Dashboard {
-    public enum MountPose { // ONLY APPLY IN LIMELIGHT WEB UI
-        LEFT_FORWARD(Units.inchesToMeters(-10)),
-        LEFT_SIDE(Units.inchesToMeters(-10.25)),
-        LEFT_UP(Units.inchesToMeters(7.35)),
-        LEFT_ROLL(0),
-        LEFT_PITCH(55),
-        LEFT_YAW(140),
-        
-        RIGHT_FORWARD(Units.inchesToMeters(-10)),
-        RIGHT_SIDE(Units.inchesToMeters(10.25)),
-        RIGHT_UP(Units.inchesToMeters(7.35)),
-        RIGHT_ROLL(0),
-        RIGHT_PITCH(55),
-        RIGHT_YAW(-140),
-        ;
+import static frc.robot.subsystems.vision.VisionConstants.*;
 
-        // MIDDLE_FORWARD(Units.inchesToMeters(0)),
-        // MIDDLE_SIDE(Units.inchesToMeters(0)),
-        // MIDDLE_UP(Units.inchesToMeters(0)),
-        // MIDDLE_ROLL(0),
-        // MIDDLE_PITCH(0),
-        // MIDDLE_YAW(0)
-        // ;
+import java.util.LinkedList;
+import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
-        @Getter private final double value;
+public class Vision extends SubsystemBase {
+    private final VisionConsumer consumer;
+    private final VisionIO[] io;
+    private final VisionIOInputsAutoLogged[] inputs;
+    private final Alert[] disconnectedAlerts;
 
-        private MountPose(double value) {
-            this.value=value;
+    public Vision(VisionConsumer consumer, VisionIO... io) {
+        this.consumer = consumer;
+        this.io = io;
+
+        // Initialize inputs
+        this.inputs = new VisionIOInputsAutoLogged[io.length];
+        for (int i = 0; i < inputs.length; i++) {
+            inputs[i] = new VisionIOInputsAutoLogged();
+        }
+
+        // Initialize disconnected alerts
+        this.disconnectedAlerts = new Alert[io.length];
+        for (int i = 0; i < inputs.length; i++) {
+            disconnectedAlerts[i] =
+                    new Alert("Vision camera " + Integer.toString(i) + " is disconnected.", AlertType.kWarning);
         }
     }
-    
-    public static class Constants {
-        public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
-        
-        public static final int[] BLUE_HUB_IDS = {18,19,20,21,24,25,26,27};
-        public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
-    }
 
-    public int targetHubIds[], targetOdoIds[];
-    // private int odoPipeline = 0, blueHubPipeline = 1, redHubPipeline = 2;
-
-    public Vision() {
-        TelemetryUtils.registerDashboard(this);
-    }
-    
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addBooleanProperty("Right Target", () -> LimelightHelpers.getTV(DroidRageConstants.rightLL), null);
-        builder.addBooleanProperty("Left Target", () -> LimelightHelpers.getTV(DroidRageConstants.leftLL), null);
-        builder.addBooleanProperty("Middle Target", () -> LimelightHelpers.getTV(DroidRageConstants.middleLL), null);
+    /**
+     * Returns the X angle to the best target, which can be used for simple servoing with vision.
+     *
+     * @param cameraIndex The index of the camera to use.
+     */
+    public Rotation2d getTargetX(int cameraIndex) {
+        return inputs[cameraIndex].latestTargetObservation.tx();
     }
 
     @Override
-    public void periodic() {}
-
-    /**
-     * Used to get the distance to the closest april tag seen by the limelight
-     * from a pose estimate.
-     * 
-     * @param est a pose estimate
-     * @return distance in meters
-     */
-    public static double closestTagDistance(PoseEstimate est) {
-        if (est.rawFiducials == null || est.rawFiducials.length == 0) return 999;
-        double minDist = 999;
-        for (var f : est.rawFiducials) {
-            minDist = Math.min(minDist, f.distToRobot);
+    public void periodic() {
+        for (int i = 0; i < io.length; i++) {
+            io[i].updateInputs(inputs[i]);
+            Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
         }
-        return minDist;
-    }
 
-    /**
-     * Used to get the distance to the closest april tag seen by the limelight.
-     * 
-     * @param rawFiducials an array of raw fiducials from the limelight
-     * @return distance in meters
-     */
-    public static double closestTagDistance(RawFiducial[] rawFiducials) {
-        if (rawFiducials == null || rawFiducials.length == 0) return 999;
-        double minDist = 999;
-        for (var f : rawFiducials) {
-            minDist = Math.min(minDist, f.distToRobot);
-        }
-        return minDist;
-    }
+        // Initialize logging values
+        List<Pose3d> allTagPoses = new LinkedList<>();
+        List<Pose3d> allRobotPoses = new LinkedList<>();
+        List<Pose3d> allRobotPosesAccepted = new LinkedList<>();
+        List<Pose3d> allRobotPosesRejected = new LinkedList<>();
 
-    /**
-     * Used to get the distance to a specific april tag.
-     * 
-     * @param rawFiducials an array of raw fiducials from the limelight
-     * @param id the id of the april tag
-     * @return distance in meters
-     */
-    public static double getDistanceToTag(RawFiducial[] rawFiducials, int id) {
-        if (rawFiducials == null || rawFiducials.length == 0) return 999;
-        double distance = 999;
-        for (RawFiducial f : rawFiducials) {
-            if (f.id == id) {
-                distance = Math.min(distance, f.distToRobot);
+        // Loop over cameras
+        for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
+            // Update disconnected alert
+            disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
+
+            // Initialize logging values
+            List<Pose3d> tagPoses = new LinkedList<>();
+            List<Pose3d> robotPoses = new LinkedList<>();
+            List<Pose3d> robotPosesAccepted = new LinkedList<>();
+            List<Pose3d> robotPosesRejected = new LinkedList<>();
+
+            // Add tag poses
+            for (int tagId : inputs[cameraIndex].tagIds) {
+                var tagPose = aprilTagLayout.getTagPose(tagId);
+                if (tagPose.isPresent()) {
+                    tagPoses.add(tagPose.get());
+                }
             }
+
+            // Loop over pose observations
+            for (var observation : inputs[cameraIndex].poseObservations) {
+                // Check whether to reject pose
+                boolean rejectPose = observation.tagCount() == 0 // Must have at least one tag
+                        || (observation.tagCount() == 1
+                                && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
+                        || Math.abs(observation.pose().getZ()) > maxZError // Must have realistic Z coordinate
+
+                        // Must be within the field boundaries
+                        || observation.pose().getX() < 0.0
+                        || observation.pose().getX() > aprilTagLayout.getFieldLength()
+                        || observation.pose().getY() < 0.0
+                        || observation.pose().getY() > aprilTagLayout.getFieldWidth();
+
+                // Add pose to log
+                robotPoses.add(observation.pose());
+                if (rejectPose) {
+                    robotPosesRejected.add(observation.pose());
+                } else {
+                    robotPosesAccepted.add(observation.pose());
+                }
+
+                // Skip if rejected
+                if (rejectPose) {
+                    continue;
+                }
+
+                // Calculate standard deviations
+                double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+                double linearStdDev = linearStdDevBaseline * stdDevFactor;
+                double angularStdDev = angularStdDevBaseline * stdDevFactor;
+                if (observation.type() == PoseObservationType.MEGATAG_2) {
+                    linearStdDev *= linearStdDevMegatag2Factor;
+                    angularStdDev *= angularStdDevMegatag2Factor;
+                }
+                if (cameraIndex < cameraStdDevFactors.length) {
+                    linearStdDev *= cameraStdDevFactors[cameraIndex];
+                    angularStdDev *= cameraStdDevFactors[cameraIndex];
+                }
+
+                // Send vision observation
+                consumer.accept(
+                        observation.pose().toPose2d(),
+                        observation.timestamp(),
+                        VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+            }
+
+            // Log camera datadata
+            Logger.recordOutput(
+                    "Vision/Camera" + Integer.toString(cameraIndex) + "/TagPoses",
+                    tagPoses.toArray(new Pose3d[tagPoses.size()]));
+            Logger.recordOutput(
+                    "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPoses",
+                    robotPoses.toArray(new Pose3d[robotPoses.size()]));
+            Logger.recordOutput(
+                    "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesAccepted",
+                    robotPosesAccepted.toArray(new Pose3d[robotPosesAccepted.size()]));
+            Logger.recordOutput(
+                    "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesRejected",
+                    robotPosesRejected.toArray(new Pose3d[robotPosesRejected.size()]));
+            allTagPoses.addAll(tagPoses);
+            allRobotPoses.addAll(robotPoses);
+            allRobotPosesAccepted.addAll(robotPosesAccepted);
+            allRobotPosesRejected.addAll(robotPosesRejected);
         }
-        return distance;
-    }
-    
-    
-    public static double distanceToStdDev(double distMeters) {
-        double MIN_STD = 0.05; // 5cm close
-        double MAX_STD = 1.0;  // 1m far away
-        double SLOPE = 0.15;   // uncertainty per meter
-    
-        return Math.min(MAX_STD, MIN_STD + SLOPE * distMeters);
-    }
 
-    /**
-     * @apiNote NOT FULLY FUNCTIONAL YET; WILL ALWAYS RETURN TRUE
-     * 
-     * Used to prevent large jumps in position or rotation when using
-     * limelight odometry by checking differences in position between
-     * current and next position estimates.
-     * 
-     * @param current the curremt position of the robot
-     * @param vision the next vision estimate
-     * @return true if the position difference is reasonable; false otherwise
-     */
-    public static boolean isReasonable(Pose2d current, Pose2d vision) {
-        // double posDiff = current.getTranslation().getDistance(vision.getTranslation());
-        // double rotDiff = Math.abs(current.getRotation().minus(vision.getRotation()).getDegrees());
-
-        // return posDiff < Constants.MAX_POSITION_JUMP && rotDiff < Constants.MAX_ROTATION_JUMP;
-        return true;
+        // Log summary data
+        Logger.recordOutput("Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
+        Logger.recordOutput("Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose3d[allRobotPoses.size()]));
+        Logger.recordOutput(
+                "Vision/Summary/RobotPosesAccepted",
+                allRobotPosesAccepted.toArray(new Pose3d[allRobotPosesAccepted.size()]));
+        Logger.recordOutput(
+                "Vision/Summary/RobotPosesRejected",
+                allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
     }
 
-    /**
-     * Gets the MegaTag2 Pose2d and timestamp from the left limelight for use with WPILib pose estimator
-     * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
-     * Make sure you are calling setRobotOrientation() before calling this method.
-     * 
-     * @return a new PoseEstimate
-     */
-    public static PoseEstimate getLeftEstimate() {
-        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.leftLL);
+    @FunctionalInterface
+    public interface VisionConsumer {
+        void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);
     }
-
-    /**
-     * Gets the MegaTag2 Pose2d and timestamp from the left limelight for use with WPILib pose estimator
-     * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
-     * Make sure you are calling setRobotOrientation() before calling this method.
-     * 
-     * @return a new PoseEstimate
-     */
-    public static PoseEstimate getRightEstimate() {
-        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.rightLL);
-    }
-
-    /**
-     * Gets the MegaTag2 Pose2d and timestamp from the left limelight for use with WPILib pose estimator
-     * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
-     * Make sure you are calling setRobotOrientation() before calling this method.
-     * 
-     * @return a new PoseEstimate
-     */
-    public static PoseEstimate getMiddleEstimate() {
-        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(DroidRageConstants.middleLL);
-    }
-
-    @Override
-    public void elasticInit() {
-        SmartDashboard.putData("Vision", this);
-    }
-
-    @Override
-    public void practiceWriters() {}
-
-    @Override
-    public void alerts() {}
 }

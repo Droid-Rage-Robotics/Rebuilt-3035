@@ -11,7 +11,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.vision.maple;
+package frc.robot.subsystems.vision;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -29,8 +32,14 @@ public class VisionConstants {
 
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)
-    public static final Transform3d robotToLeftLL = new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, (Math.PI/2)));
-    public static final Transform3d robotToRightLL = new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, (-Math.PI/2)));
+    public static final Transform3d robotToLeftLL = 
+        new Transform3d(Inches.of(-10), Inches.of(-10.25), Inches.of(7.35), 
+        new Rotation3d(Degrees.zero(), Degrees.of(55), Degrees.of(140)));
+    
+    public static final Transform3d robotToRightLL = 
+        new Transform3d(Inches.of(-10), Inches.of(10.25), Inches.of(7.35), 
+        new Rotation3d(Degrees.zero(), Degrees.of(55), Degrees.of(-140)));
+        
     public static final Transform3d robotToMiddleLL = new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
 
     // Basic filtering thresholds

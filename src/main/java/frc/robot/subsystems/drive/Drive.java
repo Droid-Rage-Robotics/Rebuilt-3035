@@ -53,7 +53,7 @@ import frc.robot.DroidRageConstants.Mode;
 import frc.robot.LocalADStarAK;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
-import frc.robot.subsystems.vision.maple.Vision;
+import frc.robot.subsystems.vision.Vision;
 import frc.utility.PhoenixOdometryThread;
 import frc.utility.autos.HolonomicDriveController;
 import frc.utility.io.devices.GyroIO;
