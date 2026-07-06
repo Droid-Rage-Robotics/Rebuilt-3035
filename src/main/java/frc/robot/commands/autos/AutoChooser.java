@@ -19,7 +19,7 @@ public class AutoChooser implements Dashboard {
         
         // addTuningAutos(drive);
         // addAutos(drive, intake, indexer, kicker, shooter, vision);
-        adddChampsAutos(drive, intake, indexer, kicker, shooter, vision);
+        // adddChampsAutos(drive, intake, indexer, kicker, shooter, vision);
         // addTurretTesting(drive, shooter);
 
         TelemetryUtils.registerDashboard(this);
@@ -74,33 +74,33 @@ public class AutoChooser implements Dashboard {
 
     // }
 
-    public static void adddChampsAutos(Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
-        autoChooser.addOption("ChampsSideLeftS", ChampsAutos.sideDepot("S", false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsSideRightS", ChampsAutos.sideDepot("S", true, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsSideLeftM", ChampsAutos.sideDepot("M", false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsSideRightM", ChampsAutos.sideDepot("M", true, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsSideLeftD", ChampsAutos.sideDepot("D", false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsSideRightD", ChampsAutos.sideDepot("D", true, drive, intake, indexer, kicker, shooter, vision));
+    // public static void adddChampsAutos(Drive drive, Intake intake, Indexer indexer, Kicker kicker, Shooter shooter, Vision vision) {
+    //     autoChooser.addOption("ChampsSideLeftS", ChampsAutos.sideDepot("S", false, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsSideRightS", ChampsAutos.sideDepot("S", true, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsSideLeftM", ChampsAutos.sideDepot("M", false, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsSideRightM", ChampsAutos.sideDepot("M", true, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsSideLeftD", ChampsAutos.sideDepot("D", false, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsSideRightD", ChampsAutos.sideDepot("D", true, drive, intake, indexer, kicker, shooter, vision));
 
-        // autoChooser.addOption("ChampsBumpLeft", ChampsAutos.bump(false, drive, intake, indexer, kicker, shooter, vision));
-        // autoChooser.addOption("ChampsBumpRight", ChampsAutos.bump(true, drive, intake, indexer, kicker, shooter, vision));
+    //     // autoChooser.addOption("ChampsBumpLeft", ChampsAutos.bump(false, drive, intake, indexer, kicker, shooter, vision));
+    //     // autoChooser.addOption("ChampsBumpRight", ChampsAutos.bump(true, drive, intake, indexer, kicker, shooter, vision));
 
-        // autoChooser.addOption("ChampsSweepLeft", ChampsAutos.neutralSwoop(false, drive, intake, indexer, kicker, shooter, vision));
-        // autoChooser.addOption("ChampsSweepRight", ChampsAutos.neutralSwoop(true, drive, intake, indexer, kicker, shooter, vision));
+    //     // autoChooser.addOption("ChampsSweepLeft", ChampsAutos.neutralSwoop(false, drive, intake, indexer, kicker, shooter, vision));
+    //     // autoChooser.addOption("ChampsSweepRight", ChampsAutos.neutralSwoop(true, drive, intake, indexer, kicker, shooter, vision));
 
-        autoChooser.addOption("ChampsLeftDouble", ChampsAutos.doubleSide(false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsRightDouble", ChampsAutos.doubleSide(true, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsLeftDouble", ChampsAutos.doubleSide(false, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsRightDouble", ChampsAutos.doubleSide(true, drive, intake, indexer, kicker, shooter, vision));
 
-        autoChooser.addOption("ChampsHubToDepot", ChampsAutos.centerDepot(drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsHubToDepot", ChampsAutos.centerDepot(drive, intake, indexer, kicker, shooter, vision));
 
-        autoChooser.addOption("ChampsLeftBumpSwoopS", ChampsAutos.bumpSwoop("S", false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsRightBumpSwoopS", ChampsAutos.bumpSwoop("S", true, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsLeftBumpSwoopS", ChampsAutos.bumpSwoop("S", false, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsRightBumpSwoopS", ChampsAutos.bumpSwoop("S", true, drive, intake, indexer, kicker, shooter, vision));
         
-        autoChooser.addOption("ChampsLeftBumpSwoopM", ChampsAutos.bumpSwoop("M", false, drive, intake, indexer, kicker, shooter, vision));
-        autoChooser.addOption("ChampsRightBumpSwoopM", ChampsAutos.bumpSwoop("M", true, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsLeftBumpSwoopM", ChampsAutos.bumpSwoop("M", false, drive, intake, indexer, kicker, shooter, vision));
+    //     autoChooser.addOption("ChampsRightBumpSwoopM", ChampsAutos.bumpSwoop("M", true, drive, intake, indexer, kicker, shooter, vision));
 
 
-    }
+    // }
     
     @Override
     public void elasticInit() {
