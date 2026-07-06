@@ -30,13 +30,10 @@ public class Kicker extends FlywheelTemplate {
     } 
 
     private static final FlywheelConstants constants = new FlywheelConstants()
-        // .withConversionFactor(1)
         .withPID(0.2, 0, 0) //.24
         .withFeedforward(0.038, 0.14, 0.25) //.043254, 0.1229, 0.02026
-        // .withEncoderType(EncoderType.INTEGRATED)
         .withVelocityLimits(RotationsPerSecond.of(-100), RotationsPerSecond.of(100))
         .withName("Kicker")
-        // .withOffset(0)
         .withMainNum(0);
     
     private static final MotorConstants motor = new MotorConstants() 
