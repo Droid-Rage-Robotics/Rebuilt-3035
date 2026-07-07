@@ -36,10 +36,6 @@ public class MotorIOTalonFX implements MotorIO {
     private final Debouncer connectedDebounce = new Debouncer(0.5);
 
     public MotorIOTalonFX(MotorConstants constants) {
-        this(constants, 1.0);
-    }
-
-    public MotorIOTalonFX(MotorConstants constants, double conversionFactor) {
         this.motor = new TalonFX(constants.deviceId, constants.canBus);
         this.config = constants.getConfig();
         this.enabled = constants.isEnabled;
