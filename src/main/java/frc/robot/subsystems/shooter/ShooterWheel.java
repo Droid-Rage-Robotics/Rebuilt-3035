@@ -15,11 +15,8 @@ public class ShooterWheel extends FlywheelTemplate {
     private static final FlywheelConstants constants = new FlywheelConstants()
         .withPID(0.046955, 0, 0) //0.035014
         .withFeedforward(0.10211, 0.11705, 0.010939) //ks: 0.083079
-        // .withConversionFactor(1)
-        // .withEncoderType(EncoderType.INTEGRATED)
         .withVelocityLimits(RotationsPerSecond.of(-60), RotationsPerSecond.of(200))
         .withName("ShooterWheel")
-        // .withOffset(0)
         .withMainNum(0);
     
     private static final MotorConstants rightMotor = new MotorConstants() // LEADER
