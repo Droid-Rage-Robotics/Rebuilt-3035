@@ -31,6 +31,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     private final double minAngleRad;
     private final double maxAngleRad;
+    private final Angle resetAngle;
 
     private final String name;
     private boolean sysIdActive = false;
@@ -47,6 +48,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         this.name = constants.name;
         this.minAngleRad = constants.minAngle.in(Radians);
         this.maxAngleRad = constants.maxAngle.in(Radians);
+        this.resetAngle = constants.resetAngle;
 
         TelemetryUtils.registerDashboard(this);
         TelemetryUtils.registerTelemetry(this);
@@ -152,12 +154,22 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     }
 
     public void resetEncoder() {
-        io.resetEncoder(Degrees.zero());
-        setGoalAngle(Degrees.zero());
+        io.resetEncoder(resetAngle);
+        setGoalAngle(resetAngle);
+    }
+
+    public void resetEncoder(Angle resetAngle) {
+        io.resetEncoder(resetAngle);
+        setGoalAngle(resetAngle);
     }
 
     public Command resetEncoderCommand() {
         return new InstantCommand(this::resetEncoder)
+            .ignoringDisable(true);
+    }
+
+    public Command resetEncoderCommand(Angle resetAngle) {
+        return new InstantCommand(() -> resetEncoder(resetAngle))
             .ignoringDisable(true);
     }
 
