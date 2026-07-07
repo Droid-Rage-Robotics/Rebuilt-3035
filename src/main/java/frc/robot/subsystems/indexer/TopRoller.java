@@ -16,7 +16,7 @@ public class TopRoller extends FlywheelTemplate {
         .withGearRatio(1.0)
         .withPID(0.013449, 0, 0)
         .withFeedforward(0.2067, 0.11912, 0.0032711)
-        .withVelocityLimits(RotationsPerSecond.of(-150), RotationsPerSecond.of(-150))
+        .withVelocityLimits(RotationsPerSecond.of(-150), RotationsPerSecond.of(150))
         .withName("Top Roller")
         .withMainNum(0);
     
