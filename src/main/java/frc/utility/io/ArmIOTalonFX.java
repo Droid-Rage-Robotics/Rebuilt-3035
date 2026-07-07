@@ -7,7 +7,6 @@ import java.util.Optional;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -16,8 +15,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
-import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
+import frc.utility.io.devices.EncoderIO;
+import frc.utility.io.devices.EncoderIOInputsAutoLogged;
 import frc.utility.io.devices.MotorIO;
 import frc.utility.io.devices.MotorIOTalonFX;
 import frc.utility.template.Constants.ArmConstants;
@@ -26,9 +26,10 @@ import frc.utility.template.Constants.EncoderType;
 public class ArmIOTalonFX implements ArmIO {
     private final MotorIOTalonFX motorIO;
     private final MotorIO.MotorIOInputs motorInputs = new MotorIO.MotorIOInputs();
+    private final EncoderIOInputsAutoLogged encoderInputs = new EncoderIOInputsAutoLogged();
 
     private final TalonFX motor;
-    private final Optional<CANcoder> encoder;
+    private final Optional<EncoderIO> encoderIO;
 
     private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0.0);
 
@@ -45,7 +46,7 @@ public class ArmIOTalonFX implements ArmIO {
     public ArmIOTalonFX(
             boolean isEnabled,
             ArmConstants constants,
-            EncoderConstants encoderConstants,
+            EncoderIO encoderIO,
             MotorConstants motorConstants
     ) {
         this.constants = constants;
@@ -60,18 +61,16 @@ public class ArmIOTalonFX implements ArmIO {
 
         if (constants.encoderType == EncoderType.ABSOLUTE
                 || constants.encoderType == EncoderType.EXTERNAL) {
-            if (encoderConstants == null) {
-                throw new NullPointerException("Encoder constants required for external encoder");
+            if (encoderIO == null) {
+                throw new NullPointerException("Encoder IO required for external encoder");
             }
 
-            var remoteEncoder = new CANcoder(encoderConstants.deviceId, encoderConstants.canBus);
-            remoteEncoder.getConfigurator().apply(encoderConstants.getConfig());
-            encoder = Optional.of(remoteEncoder);
+            this.encoderIO = Optional.of(encoderIO);
 
-            config.Feedback.FeedbackRemoteSensorID = encoderConstants.deviceId;
+            config.Feedback.FeedbackRemoteSensorID = encoderIO.getDeviceId();
             config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         } else {
-            encoder = Optional.empty();
+            this.encoderIO = Optional.empty();
         }
 
         config.Feedback.SensorToMechanismRatio = constants.gearRatio;
@@ -110,6 +109,7 @@ public class ArmIOTalonFX implements ArmIO {
     @Override
     public void updateInputs(ArmIOInputs inputs) {
         motorIO.updateInputs(motorInputs);
+        encoderIO.ifPresent(io -> io.updateInputs(encoderInputs));
 
         var closedLoopStatus = BaseStatusSignal.refreshAll(
                 closedLoopReference,
@@ -135,7 +135,8 @@ public class ArmIOTalonFX implements ArmIO {
                 closedLoopError.getValueAsDouble() * RADIANS_PER_ROTATION;
 
         inputs.encoderConnected =
-                encoderConnectedDebounce.calculate(closedLoopStatus.isOK());
+                encoderConnectedDebounce.calculate(
+                        encoderIO.isEmpty() || (encoderInputs.connected && closedLoopStatus.isOK()));
     }
 
     @Override
@@ -171,7 +172,7 @@ public class ArmIOTalonFX implements ArmIO {
                 return;
 
             case EXTERNAL:
-                encoder.get().setPosition(angle);
+                encoderIO.get().resetPosition(angle);
                 motorIO.setPosition(angle);
                 break;
 

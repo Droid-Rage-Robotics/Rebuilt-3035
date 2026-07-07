@@ -7,9 +7,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import frc.robot.DroidRageConstants;
-import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.io.TurretIOTalonFX;
+import frc.utility.io.devices.EncoderIOCANcoder;
 import frc.utility.template.Constants.EncoderType;
 import frc.utility.template.Constants.TurretConstants;
 import frc.utility.template.TurretTemplate;
@@ -44,12 +44,16 @@ public class Turret extends TurretTemplate {
         .withSupplyCurrentLimit(15)
         .withStatorCurrentLimit(30);
     
-    private static final EncoderConstants encoderConstants = new EncoderConstants()
-        .withDeviceId(22)    
-        .withCANBus(DroidRageConstants.rioCanBus)
-        .withDirection(SensorDirectionValue.CounterClockwise_Positive);
-    
     public Turret(boolean isEnabled) {
-        super(constants, new TurretIOTalonFX(isEnabled, constants, encoderConstants, motorConstants));
+        super(
+            constants,
+            new TurretIOTalonFX(
+                isEnabled,
+                constants,
+                new EncoderIOCANcoder(
+                    22,
+                    DroidRageConstants.rioCanBus,
+                    SensorDirectionValue.CounterClockwise_Positive),
+                motorConstants));
     }
 }
