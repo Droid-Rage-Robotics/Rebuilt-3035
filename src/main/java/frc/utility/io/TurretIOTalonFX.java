@@ -8,6 +8,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -15,7 +16,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
-import frc.utility.devices.encoder.CANcoderEx;
 import frc.utility.devices.encoder.EncoderConstants;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.io.devices.MotorIO;
@@ -28,7 +28,7 @@ public class TurretIOTalonFX implements TurretIO {
     private final MotorIO.MotorIOInputs motorInputs = new MotorIO.MotorIOInputs();
 
     private final TalonFX motor;
-    private final Optional<CANcoderEx> encoder;
+    private final Optional<CANcoder> encoder;
 
     private final TurretConstants constants;
 
@@ -66,7 +66,9 @@ public class TurretIOTalonFX implements TurretIO {
                 throw new NullPointerException("Encoder constants required for external encoder");
             }
 
-            encoder = Optional.of(CANcoderEx.createWithConstants(encoderConstants));
+            var remoteEncoder = new CANcoder(encoderConstants.deviceId, encoderConstants.canBus);
+            remoteEncoder.getConfigurator().apply(encoderConstants.getConfig());
+            encoder = Optional.of(remoteEncoder);
 
             config.Feedback.FeedbackRemoteSensorID = encoderConstants.deviceId;
             config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
@@ -161,7 +163,7 @@ public class TurretIOTalonFX implements TurretIO {
                 return;
 
             case EXTERNAL:
-                encoder.get().resetPosition(angle);
+                encoder.get().setPosition(angle);
                 motorIO.setPosition(angle);
                 break;
 
