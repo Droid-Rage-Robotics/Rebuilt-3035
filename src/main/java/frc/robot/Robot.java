@@ -34,9 +34,7 @@ public class Robot extends LoggedRobot {
 
         TelemetryUtils.onRobotInit();
 
-        if (DriverStation.getAlliance().isPresent()) {
-            DroidRageConstants.alliance = DriverStation.getAlliance().get();
-        }
+        DriverStation.getAlliance().ifPresent(alliance -> DroidRageConstants.alliance = alliance);
 
         Logger.addDataReceiver(new NT4Publisher());
         Logger.start();
@@ -47,9 +45,7 @@ public class Robot extends LoggedRobot {
         commandScheduler.run();
         TelemetryUtils.onRobotPeriodic();
         robotContainer.periodic();
-        if (DriverStation.getAlliance().isPresent()) {
-            DroidRageConstants.alliance = DriverStation.getAlliance().get();
-        }
+        DriverStation.getAlliance().ifPresent(alliance -> DroidRageConstants.alliance = alliance);
     }
 
     @Override
@@ -102,7 +98,7 @@ public class Robot extends LoggedRobot {
             autonomousCommand.cancel();
         }
         
-        DroidRageConstants.alliance = DriverStation.getAlliance().get();
+        DriverStation.getAlliance().ifPresent(alliance -> DroidRageConstants.alliance = alliance);
 
 
         /* DO NOT INITIALIZE BUTTON BINDINGS HERE */
