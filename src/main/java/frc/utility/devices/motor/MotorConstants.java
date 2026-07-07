@@ -15,7 +15,6 @@ public final class MotorConstants {
     
     public int deviceId;
     public CANBus canBus = DroidRageConstants.rioCanBus;
-    public double conversionFactor = 1;
     public Subsystem subsystem;
     public boolean isEnabled;
     public MotorType motorType;
@@ -59,18 +58,6 @@ public final class MotorConstants {
      */
     public MotorConstants withDeviceId(int deviceId) {
         this.deviceId=deviceId;
-        return this;
-    }
-
-    /**
-     * Used to set a conversion factor to be applied to
-     * the raw position/velocity of the motor. Defaults
-     * to 1.
-     * @param conversionFactor
-     * @return MotorConstants (for call chaining)
-     */
-    public MotorConstants withConversionFactor(double conversionFactor) {
-        this.conversionFactor=conversionFactor;
         return this;
     }
 

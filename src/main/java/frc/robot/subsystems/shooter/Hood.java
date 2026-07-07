@@ -29,7 +29,6 @@ public class Hood extends ArmTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(InvertedValue.CounterClockwise_Positive)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor( 1)
         .withSupplyCurrentLimit(45)
         .withStatorCurrentLimit(50);
 

@@ -36,7 +36,6 @@ public class Pivot extends ArmTemplate {
     private static final MotorConstants motorConstants = new MotorConstants()
         .withDeviceId(16)
         .withCANBus(DroidRageConstants.driveCanBus)
-        .withConversionFactor(1)
         .withDirection(InvertedValue.Clockwise_Positive)
         .withIdleMode(NeutralModeValue.Brake)
         .withStatorCurrentLimit(45) //Reefscape 50

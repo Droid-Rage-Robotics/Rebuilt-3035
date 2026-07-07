@@ -27,7 +27,6 @@ public class IntakeWheel extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(InvertedValue.CounterClockwise_Positive)
         .withIdleMode(NeutralModeValue.Brake)
-        .withConversionFactor(1)
         .withMotorType(MotorType.KrakenX60)
         .withStatorCurrentLimit(65)//50
         .withSupplyCurrentLimit(60);//50

@@ -41,7 +41,6 @@ public class Kicker extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(InvertedValue.Clockwise_Positive)
         .withIdleMode(NeutralModeValue.Coast)
-        .withConversionFactor( 1)
         .withSupplyCurrentLimit(45)
         .withStatorCurrentLimit(50);
 

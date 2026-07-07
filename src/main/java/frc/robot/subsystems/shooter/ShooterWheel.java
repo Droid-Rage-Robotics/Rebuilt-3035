@@ -27,17 +27,14 @@ public class ShooterWheel extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.rioCanBus)
         .withDirection(InvertedValue.CounterClockwise_Positive)
         .withIdleMode(NeutralModeValue.Coast)
-        .withConversionFactor(1)
         .withSupplyCurrentLimit(55)//80
         .withStatorCurrentLimit(60);//80
 
     private static final MotorConstants leftMotor = new MotorConstants() // FOLLOWER
         .withDeviceId(21)
         .withCANBus(DroidRageConstants.rioCanBus)
-        // .withDirection(Direction.Forward)
         .withMotorAlignment(MotorAlignmentValue.Opposed)
         .withIdleMode(NeutralModeValue.Coast)
-        .withConversionFactor( 1)
         .withSupplyCurrentLimit(80)
         .withStatorCurrentLimit(80);
 
