@@ -58,11 +58,6 @@ public final class EncoderConstants {
         return this;
     }
 
-    public EncoderConstants wihZeroOffset(double offset) {
-        config.MagnetSensor.MagnetOffset=offset;
-        return this;
-    }
-
     public CANcoderConfiguration getConfig() {
         return config;
     }
