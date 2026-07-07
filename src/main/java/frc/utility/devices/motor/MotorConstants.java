@@ -17,16 +17,6 @@ public final class MotorConstants {
 
     public MotorAlignmentValue alignment = MotorAlignmentValue.Aligned;
 
-    /**
-     * Used to enable/disable the motor.
-     * @param isEnabled
-     * @return MotorConstants (for call chaining)
-     */
-    public MotorConstants withIsEnabled(boolean isEnabled) {
-        this.isEnabled=isEnabled;
-        return this;
-    }
-
     public MotorConstants withMotorAlignment(MotorAlignmentValue alignmentValue) {
         this.alignment=alignmentValue;
         return this;
