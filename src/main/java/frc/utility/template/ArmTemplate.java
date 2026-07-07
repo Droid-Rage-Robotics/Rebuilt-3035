@@ -166,10 +166,12 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     public void resetEncoder() {
         io.resetEncoder(resetAngle);
+        setGoalAngle(resetAngle);
     }
 
     public void resetEncoder(Angle resetAngle) {
         io.resetEncoder(resetAngle);
+        setGoalAngle(resetAngle);
     }
 
     public Command resetEncoderCommand() {
