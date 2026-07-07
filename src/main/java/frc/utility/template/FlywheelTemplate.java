@@ -2,8 +2,6 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -28,22 +26,21 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-    private final AngularVelocity maxSpeed;
-    private final AngularVelocity minSpeed;
+    private final double maxSpeedRotationsPerSecond;
+    private final double minSpeedRotationsPerSecond;
     private final String name;
 
     private final SysIdRoutine sysIdRoutine;
     private boolean sysIdActive = false;
 
-    private final AtomicReference<AngularVelocity> targetVelocity =
-        new AtomicReference<>(RotationsPerSecond.zero());
+    private double targetVelocityRotationsPerSecond = 0.0;
 
     public FlywheelTemplate(
             FlywheelConstants constants,
             FlywheelIO io
     ) {
-        this.maxSpeed = constants.maxVelocity;
-        this.minSpeed = constants.minVelocity;
+        this.maxSpeedRotationsPerSecond = constants.maxVelocity.in(RotationsPerSecond);
+        this.minSpeedRotationsPerSecond = constants.minVelocity.in(RotationsPerSecond);
         this.name = constants.name;
         this.io = io;
 
@@ -58,7 +55,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
         Logger.processInputs(name, inputs);
 
         if (!sysIdActive) {
-            io.setVelocity(targetVelocity.get());
+            io.setVelocityRotationsPerSecond(targetVelocityRotationsPerSecond);
         }
     }
 
@@ -67,11 +64,11 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
 
     @Override
     public void updateTelemetry() {
-        Logger.recordOutput(name + "/Target Velocity", getTargetVelocity());
-        Logger.recordOutput(name + "/Current Velocity", getVelocity());
-        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
-        Logger.recordOutput(name + "/Torque Current", getCurrent());
-        Logger.recordOutput(name + "/Velocity Error", getVelocityError());
+        Logger.recordOutput(name + "/Target Velocity", targetVelocityRotationsPerSecond);
+        Logger.recordOutput(name + "/Current Velocity", inputs.velocityRotationsPerSecond);
+        Logger.recordOutput(name + "/Applied Voltage", inputs.appliedVolts);
+        Logger.recordOutput(name + "/Torque Current", inputs.torqueCurrentAmps);
+        Logger.recordOutput(name + "/Velocity Error", inputs.closedLoopErrorRotationsPerSecond);
     }
 
     @Override
@@ -87,35 +84,39 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     public void setTargetVelocity(AngularVelocity target) {
         double clampedRps = MathUtil.clamp(
             target.in(RotationsPerSecond),
-            minSpeed.in(RotationsPerSecond),
-            maxSpeed.in(RotationsPerSecond)
+            minSpeedRotationsPerSecond,
+            maxSpeedRotationsPerSecond
         );
 
-        targetVelocity.set(RotationsPerSecond.of(clampedRps));
+        targetVelocityRotationsPerSecond = clampedRps;
     }
 
     public AngularVelocity getTargetVelocity() {
-        return targetVelocity.get();
+        return RotationsPerSecond.of(targetVelocityRotationsPerSecond);
+    }
+
+    public double getTargetVelocityRotationsPerSecond() {
+        return targetVelocityRotationsPerSecond;
     }
 
     public AngularVelocity getVelocityError() {
-        return inputs.closedLoopError;
+        return RotationsPerSecond.of(inputs.closedLoopErrorRotationsPerSecond);
     }
 
     public Angle getCurrentAngle() {
-        return inputs.position;
+        return Rotations.of(inputs.positionRotations);
     }
 
     public AngularVelocity getVelocity() {
-        return inputs.velocity;
+        return RotationsPerSecond.of(inputs.velocityRotationsPerSecond);
     }
 
     public Voltage getVoltage() {
-        return inputs.appliedVoltage;
+        return Volts.of(inputs.appliedVolts);
     }
 
     public Current getCurrent() {
-        return inputs.statorCurrent;
+        return Amps.of(inputs.statorCurrentAmps);
     }
 
     public void setVoltage(Voltage voltage) {
@@ -161,6 +162,6 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     }
 
     public boolean atSetpoint() {
-        return Math.abs(getVelocityError().in(RotationsPerSecond)) < 5.0;
+        return Math.abs(inputs.closedLoopErrorRotationsPerSecond) < 5.0;
     }
 }

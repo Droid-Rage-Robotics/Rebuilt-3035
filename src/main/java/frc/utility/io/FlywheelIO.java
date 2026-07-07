@@ -6,7 +6,6 @@ import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 public interface FlywheelIO {
@@ -14,19 +13,23 @@ public interface FlywheelIO {
     class FlywheelIOInputs {
         public boolean mainMotorConnected = false;
 
-        public Angle position = Rotations.zero();
-        public AngularVelocity velocity = RotationsPerSecond.zero();
-        public Voltage appliedVoltage = Volts.zero();
-        public Current statorCurrent = Amps.zero();
-        public Current torqueCurrent = Amps.zero();
+        public double positionRotations = 0.0;
+        public double velocityRotationsPerSecond = 0.0;
+        public double appliedVolts = 0.0;
+        public double statorCurrentAmps = 0.0;
+        public double torqueCurrentAmps = 0.0;
 
-        public AngularVelocity closedLoopReference = RotationsPerSecond.zero();
-        public AngularVelocity closedLoopError = RotationsPerSecond.zero();
+        public double closedLoopReferenceRotationsPerSecond = 0.0;
+        public double closedLoopErrorRotationsPerSecond = 0.0;
     }
 
     default void updateInputs(FlywheelIOInputs inputs) {}
 
     default void setVelocity(AngularVelocity velocity) {}
+
+    default void setVelocityRotationsPerSecond(double velocityRotationsPerSecond) {
+        setVelocity(RotationsPerSecond.of(velocityRotationsPerSecond));
+    }
 
     default void setVoltage(Voltage voltage) {}
 

@@ -64,6 +64,6 @@ public class Kicker extends FlywheelTemplate {
     public void practiceWriters() {}
 
      public boolean isKickerOn(){
-        return !(getTargetVelocity() == KickerValue.STOP.getKickerValue());
+        return Math.abs(getTargetVelocityRotationsPerSecond()) > 1.0e-9;
     }
 }

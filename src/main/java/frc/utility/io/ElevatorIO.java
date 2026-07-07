@@ -5,8 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 public interface ElevatorIO {
@@ -15,19 +13,23 @@ public interface ElevatorIO {
         public boolean mainMotorConnected = false;
         public boolean encoderConnected = true;
 
-        public Distance position = Meters.zero();
-        public LinearVelocity velocity = MetersPerSecond.zero();
-        public Voltage appliedVoltage = Volts.zero();
-        public Current statorCurrent = Amps.zero();
+        public double positionMeters = 0.0;
+        public double velocityMetersPerSec = 0.0;
+        public double appliedVolts = 0.0;
+        public double statorCurrentAmps = 0.0;
 
-        public Distance closedLoopReference = Meters.zero();
-        public LinearVelocity closedLoopReferenceVelocity = MetersPerSecond.zero();
-        public Distance closedLoopError = Meters.zero();
+        public double closedLoopReferenceMeters = 0.0;
+        public double closedLoopReferenceVelocityMetersPerSec = 0.0;
+        public double closedLoopErrorMeters = 0.0;
     }
 
     default void updateInputs(ElevatorIOInputs inputs) {}
 
     default void setPosition(Distance position) {}
+
+    default void setPositionMeters(double positionMeters) {
+        setPosition(Meters.of(positionMeters));
+    }
 
     default void setVoltage(Voltage voltage) {}
 

@@ -5,9 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 
 public interface ArmIO {
@@ -16,20 +13,24 @@ public interface ArmIO {
         public boolean motorConnected = false;
         public boolean encoderConnected = true;
 
-        public Angle position = Radians.zero();
-        public AngularVelocity velocity = RadiansPerSecond.zero();
-        public Voltage appliedVoltage = Volts.zero();
-        public Current statorCurrent = Amps.zero();
-        public Temperature temp = Celsius.zero();
+        public double positionRad = 0.0;
+        public double velocityRadPerSec = 0.0;
+        public double appliedVolts = 0.0;
+        public double statorCurrentAmps = 0.0;
+        public double tempCelsius = 0.0;
 
-        public Angle closedLoopReference = Radians.zero();
-        public AngularVelocity closedLoopReferenceVelocity = RadiansPerSecond.zero();
-        public Angle closedLoopError = Radians.zero();
+        public double closedLoopReferenceRad = 0.0;
+        public double closedLoopReferenceVelocityRadPerSec = 0.0;
+        public double closedLoopErrorRad = 0.0;
     }
 
     default void updateInputs(ArmIOInputs inputs) {}
 
     default void setGoalAngle(Angle angle) {}
+
+    default void setGoalAngleRad(double angleRad) {
+        setGoalAngle(Radians.of(angleRad));
+    }
 
     default void setVoltage(double volts) {
         setVoltage(Volts.of(volts));

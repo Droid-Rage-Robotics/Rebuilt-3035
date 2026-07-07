@@ -111,30 +111,35 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
         inputs.mainMotorConnected = mainMotorInputs.connected;
 
-        inputs.position =
-            Meters.of(mainMotorInputs.position.in(Rotations) * metersPerMotorRotation);
+        inputs.positionMeters =
+            mainMotorInputs.positionRotations * metersPerMotorRotation;
 
-        inputs.velocity =
-            MetersPerSecond.of(mainMotorInputs.velocity.in(RotationsPerSecond) * metersPerMotorRotation);
+        inputs.velocityMetersPerSec =
+            mainMotorInputs.velocityRotationsPerSecond * metersPerMotorRotation;
 
-        inputs.appliedVoltage = mainMotorInputs.appliedVolts;
-        inputs.statorCurrent = mainMotorInputs.statorCurrent;
+        inputs.appliedVolts = mainMotorInputs.appliedVolts;
+        inputs.statorCurrentAmps = mainMotorInputs.statorCurrentAmps;
 
-        inputs.closedLoopReference =
-            Meters.of(closedLoopReference.getValueAsDouble() * metersPerMotorRotation);
+        inputs.closedLoopReferenceMeters =
+            closedLoopReference.getValueAsDouble() * metersPerMotorRotation;
 
-        inputs.closedLoopReferenceVelocity =
-            MetersPerSecond.of(closedLoopReferenceSlope.getValueAsDouble() * metersPerMotorRotation);
+        inputs.closedLoopReferenceVelocityMetersPerSec =
+            closedLoopReferenceSlope.getValueAsDouble() * metersPerMotorRotation;
 
-        inputs.closedLoopError =
-            Meters.of(closedLoopError.getValueAsDouble() * metersPerMotorRotation);
+        inputs.closedLoopErrorMeters =
+            closedLoopError.getValueAsDouble() * metersPerMotorRotation;
 
         inputs.encoderConnected = true;
     }
 
     @Override
     public void setPosition(Distance position) {
-        double motorRotations = position.in(Meters) / metersPerMotorRotation;
+        setPositionMeters(position.in(Meters));
+    }
+
+    @Override
+    public void setPositionMeters(double positionMeters) {
+        double motorRotations = positionMeters / metersPerMotorRotation;
         if (isEnabled) {
             mainMotor.setControl(motionMagicRequest.withPosition(motorRotations));
         }

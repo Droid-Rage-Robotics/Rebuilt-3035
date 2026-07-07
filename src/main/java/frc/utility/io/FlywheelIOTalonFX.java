@@ -96,23 +96,28 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
         inputs.mainMotorConnected = mainMotorInputs.connected;
 
-        inputs.position = mainMotorInputs.position;
-        inputs.velocity = mainMotorInputs.velocity;
-        inputs.appliedVoltage = mainMotorInputs.appliedVolts;
-        inputs.statorCurrent = mainMotorInputs.statorCurrent;
-        inputs.torqueCurrent = mainMotorInputs.torqueCurrent;
+        inputs.positionRotations = mainMotorInputs.positionRotations;
+        inputs.velocityRotationsPerSecond = mainMotorInputs.velocityRotationsPerSecond;
+        inputs.appliedVolts = mainMotorInputs.appliedVolts;
+        inputs.statorCurrentAmps = mainMotorInputs.statorCurrentAmps;
+        inputs.torqueCurrentAmps = mainMotorInputs.torqueCurrentAmps;
 
-        inputs.closedLoopReference =
-            RotationsPerSecond.of(closedLoopReference.getValueAsDouble());
+        inputs.closedLoopReferenceRotationsPerSecond =
+            closedLoopReference.getValueAsDouble();
 
-        inputs.closedLoopError =
-            RotationsPerSecond.of(closedLoopError.getValueAsDouble());
+        inputs.closedLoopErrorRotationsPerSecond =
+            closedLoopError.getValueAsDouble();
     }
 
     @Override
     public void setVelocity(AngularVelocity velocity) {
+        setVelocityRotationsPerSecond(velocity.in(RotationsPerSecond));
+    }
+
+    @Override
+    public void setVelocityRotationsPerSecond(double velocityRotationsPerSecond) {
         if (isEnabled) {
-            mainMotor.setControl(velocityRequest.withVelocity(velocity));
+            mainMotor.setControl(velocityRequest.withVelocity(velocityRotationsPerSecond));
         }
     }
 

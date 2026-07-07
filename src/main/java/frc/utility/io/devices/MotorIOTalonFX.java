@@ -93,14 +93,14 @@ public class MotorIOTalonFX implements MotorIO {
 
         inputs.connected = connectedDebounce.calculate(fastStatus.isOK());
 
-        inputs.position = position.getValue();
-        inputs.velocity = velocity.getValue();
+        inputs.positionRotations = position.getValueAsDouble();
+        inputs.velocityRotationsPerSecond = velocity.getValueAsDouble();
 
-        inputs.appliedVolts = appliedVolts.getValue();
-        inputs.supplyCurrent = supplyCurrent.getValue();
-        inputs.statorCurrent = statorCurrent.getValue();
-        inputs.torqueCurrent = torqueCurrent.getValue();
-        inputs.temp = temp.getValue();
+        inputs.appliedVolts = appliedVolts.getValueAsDouble();
+        inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
+        inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
+        inputs.torqueCurrentAmps = torqueCurrent.getValueAsDouble();
+        inputs.tempCelsius = temp.getValueAsDouble();
     }
 
     @Override

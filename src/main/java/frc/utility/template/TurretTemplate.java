@@ -2,8 +2,6 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -37,8 +35,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     private final String name;
     private boolean sysIdActive = false;
 
-    private final AtomicReference<Angle> goalAngle =
-        new AtomicReference<>(Degrees.zero());
+    private double goalAngleRad = 0.0;
 
     public TurretTemplate(
             TurretConstants constants,
@@ -61,7 +58,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
         Logger.processInputs(name, inputs);
 
         if (!sysIdActive) {
-            io.setPosition(goalAngle.get());
+            io.setPositionRad(goalAngleRad);
         }
     }
 
@@ -75,13 +72,13 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
 
     @Override
     public void updateTelemetry() {
-        Logger.recordOutput(name + "/Goal Angle", getGoalAngle());
-        Logger.recordOutput(name + "/Current Angle", getCurrentAngle());
-        Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint());
-        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
-        Logger.recordOutput(name + "/Current Velocity", getVelocity());
-        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
-        Logger.recordOutput(name + "/Position Error", getPositionError());
+        Logger.recordOutput(name + "/Goal Angle", Math.toDegrees(goalAngleRad));
+        Logger.recordOutput(name + "/Current Angle", Math.toDegrees(inputs.positionRad));
+        Logger.recordOutput(name + "/Position Setpoint", Math.toDegrees(inputs.closedLoopReferenceRad));
+        Logger.recordOutput(name + "/Velocity Setpoint", inputs.closedLoopReferenceVelocityRadPerSec / (2.0 * Math.PI));
+        Logger.recordOutput(name + "/Current Velocity", inputs.velocityRadPerSec / (2.0 * Math.PI));
+        Logger.recordOutput(name + "/Applied Voltage", inputs.appliedVolts);
+        Logger.recordOutput(name + "/Position Error", Math.toDegrees(inputs.closedLoopErrorRad));
     }
 
     @Override public void practiceWriters() {}
@@ -92,12 +89,12 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     }
 
     public void setGoalAngle(Angle angle) {
-        goalAngle.set(clampToLegalTurretAngle(angle));
+        goalAngleRad = clampToLegalTurretAngleRad(angle.in(Radians));
     }
 
-    private Angle clampToLegalTurretAngle(Angle angle) {
+    private double clampToLegalTurretAngleRad(double angle) {
         double angleRad = MathUtil.inputModulus(
-            angle.in(Radians),
+            angle,
             0.0,
             2.0 * Math.PI
         );
@@ -115,35 +112,35 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
             clamped = MathUtil.clamp(angleRad, minAngleRad, maxAngleRad);
         }
 
-        return Radians.of(clamped);
+        return clamped;
     }
 
     public Angle getGoalAngle() {
-        return goalAngle.get();
+        return Radians.of(goalAngleRad);
     }
 
     public Angle getPositionSetpoint() {
-        return inputs.closedLoopReference;
+        return Radians.of(inputs.closedLoopReferenceRad);
     }
 
     public AngularVelocity getVelocitySetpoint() {
-        return inputs.closedLoopReferenceVelocity;
+        return RadiansPerSecond.of(inputs.closedLoopReferenceVelocityRadPerSec);
     }
 
     public Angle getPositionError() {
-        return inputs.closedLoopError;
+        return Radians.of(inputs.closedLoopErrorRad);
     }
 
     public Angle getCurrentAngle() {
-        return inputs.position;
+        return Radians.of(inputs.positionRad);
     }
 
     public AngularVelocity getVelocity() {
-        return inputs.velocity;
+        return RadiansPerSecond.of(inputs.velocityRadPerSec);
     }
 
     public Voltage getVoltage() {
-        return inputs.appliedVoltage;
+        return Volts.of(inputs.appliedVolts);
     }
 
     public void setVoltage(double voltage) {
@@ -174,7 +171,7 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
             ),
             new SysIdRoutine.Mechanism(
                 voltage -> {
-                    double currentAngle = getCurrentAngle().in(Radians);
+                    double currentAngle = inputs.positionRad;
 
                     if (currentAngle >= minAngleRad && currentAngle <= maxAngleRad) {
                         setVoltage(voltage);
@@ -217,16 +214,16 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     }
 
     public boolean atGoal() {
-        return Math.abs(getPositionError().in(Degrees)) < 5.0;
+        return Math.abs(Math.toDegrees(inputs.closedLoopErrorRad)) < 5.0;
     }
 
     private boolean isAtUpperLimit() {
-        return getCurrentAngle().in(Radians)
+        return inputs.positionRad
             >= maxAngleRad - Units.degreesToRadians(20.0);
     }
 
     private boolean isAtLowerLimit() {
-        return getCurrentAngle().in(Radians)
+        return inputs.positionRad
             <= minAngleRad + Units.degreesToRadians(20.0);
     }
 }

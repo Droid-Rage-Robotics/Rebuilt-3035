@@ -2,8 +2,6 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -34,8 +32,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
 
     private boolean sysIdActive = false;
 
-    private final AtomicReference<Distance> goalPosition =
-        new AtomicReference<>(Meters.zero());
+    private double goalPositionMeters = 0.0;
 
     public ElevatorTemplate(
             ElevatorConstants constants,
@@ -57,7 +54,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
         Logger.processInputs(name, inputs);
 
         if (!sysIdActive) {
-            io.setPosition(goalPosition.get());
+            io.setPositionMeters(goalPositionMeters);
         }
     }
 
@@ -73,13 +70,13 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
 
     @Override
     public void updateTelemetry() {
-        Logger.recordOutput(name + "/Goal Position", getGoalPosition());
-        Logger.recordOutput(name + "/Current Position", getPosition());
-        Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint());
-        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint());
-        Logger.recordOutput(name + "/Current Velocity", getVelocity());
-        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
-        Logger.recordOutput(name + "/Position Error", getPositionError());
+        Logger.recordOutput(name + "/Goal Position", goalPositionMeters);
+        Logger.recordOutput(name + "/Current Position", inputs.positionMeters);
+        Logger.recordOutput(name + "/Position Setpoint", inputs.closedLoopReferenceMeters);
+        Logger.recordOutput(name + "/Velocity Setpoint", inputs.closedLoopReferenceVelocityMetersPerSec);
+        Logger.recordOutput(name + "/Current Velocity", inputs.velocityMetersPerSec);
+        Logger.recordOutput(name + "/Applied Voltage", inputs.appliedVolts);
+        Logger.recordOutput(name + "/Position Error", inputs.closedLoopErrorMeters);
     }
 
     @Override public void practiceWriters() {}
@@ -96,35 +93,35 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
             constants.maxDistance.in(Meters)
         );
 
-        goalPosition.set(Meters.of(clampedMeters));
+        goalPositionMeters = clampedMeters;
     }
 
     public Distance getGoalPosition() {
-        return goalPosition.get();
+        return Meters.of(goalPositionMeters);
     }
 
     public Distance getPosition() {
-        return inputs.position;
+        return Meters.of(inputs.positionMeters);
     }
 
     public LinearVelocity getVelocity() {
-        return inputs.velocity;
+        return MetersPerSecond.of(inputs.velocityMetersPerSec);
     }
 
     public Voltage getVoltage() {
-        return inputs.appliedVoltage;
+        return Volts.of(inputs.appliedVolts);
     }
 
     public Distance getPositionSetpoint() {
-        return inputs.closedLoopReference;
+        return Meters.of(inputs.closedLoopReferenceMeters);
     }
 
     public LinearVelocity getVelocitySetpoint() {
-        return inputs.closedLoopReferenceVelocity;
+        return MetersPerSecond.of(inputs.closedLoopReferenceVelocityMetersPerSec);
     }
 
     public Distance getPositionError() {
-        return inputs.closedLoopError;
+        return Meters.of(inputs.closedLoopErrorMeters);
     }
 
     public void setVoltage(Voltage voltage) {
@@ -132,7 +129,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
     }
 
     public void setVoltage(double voltage) {
-        setVoltage(Volts.of(voltage));
+        io.setVoltage(Volts.of(voltage));
     }
 
     public void resetEncoder() {
@@ -174,6 +171,6 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
     }
 
     public boolean atGoal() {
-        return Math.abs(getPositionError().in(Meters)) < 0.03;
+        return Math.abs(inputs.closedLoopErrorMeters) < 0.03;
     }
 }

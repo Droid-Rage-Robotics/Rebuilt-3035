@@ -40,6 +40,7 @@ public class ArmIOTalonFX implements ArmIO {
     private final StatusSignal<Double> closedLoopError;
 
     private final Debouncer encoderConnectedDebounce = new Debouncer(0.5);
+    private static final double RADIANS_PER_ROTATION = 2.0 * Math.PI;
 
     public ArmIOTalonFX(
             boolean isEnabled,
@@ -116,20 +117,20 @@ public class ArmIOTalonFX implements ArmIO {
 
         inputs.motorConnected = motorInputs.connected;
 
-        inputs.position = motorInputs.position;
-        inputs.velocity = motorInputs.velocity;
-        inputs.appliedVoltage = motorInputs.appliedVolts;
-        inputs.statorCurrent = motorInputs.statorCurrent;
-        inputs.temp = motorInputs.temp;
+        inputs.positionRad = motorInputs.positionRotations * RADIANS_PER_ROTATION;
+        inputs.velocityRadPerSec = motorInputs.velocityRotationsPerSecond * RADIANS_PER_ROTATION;
+        inputs.appliedVolts = motorInputs.appliedVolts;
+        inputs.statorCurrentAmps = motorInputs.statorCurrentAmps;
+        inputs.tempCelsius = motorInputs.tempCelsius;
 
-        inputs.closedLoopReference =
-                Rotations.of(closedLoopReference.getValueAsDouble());
+        inputs.closedLoopReferenceRad =
+                closedLoopReference.getValueAsDouble() * RADIANS_PER_ROTATION;
 
-        inputs.closedLoopReferenceVelocity =
-                RotationsPerSecond.of(closedLoopReferenceSlope.getValueAsDouble());
+        inputs.closedLoopReferenceVelocityRadPerSec =
+                closedLoopReferenceSlope.getValueAsDouble() * RADIANS_PER_ROTATION;
 
-        inputs.closedLoopError =
-                Rotations.of(closedLoopError.getValueAsDouble());
+        inputs.closedLoopErrorRad =
+                closedLoopError.getValueAsDouble() * RADIANS_PER_ROTATION;
 
         inputs.encoderConnected =
                 encoderConnectedDebounce.calculate(closedLoopStatus.isOK());
@@ -137,8 +138,13 @@ public class ArmIOTalonFX implements ArmIO {
 
     @Override
     public void setGoalAngle(Angle angle) {
+        setGoalAngleRad(angle.in(Radians));
+    }
+
+    @Override
+    public void setGoalAngleRad(double angleRad) {
         if (isEnabled) {
-            motorIO.setControl(motionMagicRequest.withPosition(angle));
+            motorIO.setControl(motionMagicRequest.withPosition(angleRad / RADIANS_PER_ROTATION));
         }
     }
 

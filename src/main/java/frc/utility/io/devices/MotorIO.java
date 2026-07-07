@@ -7,9 +7,6 @@ import org.littletonrobotics.junction.AutoLog;
 import com.ctre.phoenix6.controls.ControlRequest;
 
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 
 public interface MotorIO {
@@ -17,15 +14,15 @@ public interface MotorIO {
     class MotorIOInputs {
         public boolean connected = false;
 
-        public Angle position = Rotations.zero();
-        public AngularVelocity velocity = RotationsPerSecond.zero();
+        public double positionRotations = 0.0;
+        public double velocityRotationsPerSecond = 0.0;
 
-        public Voltage appliedVolts = Volts.zero();
-        public Current supplyCurrent = Amps.zero();
-        public Current statorCurrent = Amps.zero();
-        public Current torqueCurrent = Amps.zero();
+        public double appliedVolts = 0.0;
+        public double supplyCurrentAmps = 0.0;
+        public double statorCurrentAmps = 0.0;
+        public double torqueCurrentAmps = 0.0;
 
-        public Temperature temp = Celsius.zero();
+        public double tempCelsius = 0.0;
     }
 
     default void updateInputs(MotorIOInputs inputs) {}

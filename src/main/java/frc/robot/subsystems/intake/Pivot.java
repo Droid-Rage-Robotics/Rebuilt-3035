@@ -43,7 +43,7 @@ public class Pivot extends ArmTemplate {
         .withSupplyCurrentLimit(35); //Reefscape None
         //TODO: Uncomment and check the command to turn on and off current limit
 
-    public final Trigger highCurrent = new Trigger(() -> (getInputs().statorCurrent.in(Amps) > 15));
+    public final Trigger highCurrent = new Trigger(() -> (getInputs().statorCurrentAmps > 15));
 
     public Pivot(boolean isEnabled, CommandXboxController driver) {
         super(isEnabled, constants, new ArmIOTalonFX(isEnabled, constants, null, motorConstants));

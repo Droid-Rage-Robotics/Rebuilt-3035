@@ -34,7 +34,7 @@ public class Indexer {
     }
 
     public boolean isIndexerOn(){
-        return !(bottomRollers.getTargetVelocity() == IndexerValue.STOP.bottom);
+        return Math.abs(bottomRollers.getTargetVelocityRotationsPerSecond()) > 1.0e-9;
     }
 
     public Command setTargetVelocityCommand(IndexerValue target) {

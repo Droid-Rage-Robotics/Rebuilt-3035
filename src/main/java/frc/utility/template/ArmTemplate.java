@@ -2,8 +2,6 @@ package frc.utility.template;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -37,7 +35,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     // private final SubsystemConstants constants;
 
     private final boolean isEnabled;
-    private final AtomicReference<Angle> goalAngle = new AtomicReference<>(Degrees.zero());
+    private double goalAngleRad = 0.0;
 
     public boolean controlLoopEnabled = true;
 
@@ -73,10 +71,10 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         Logger.processInputs(name, inputs);
 
         motorDisconnectedAlert.set(!inputs.motorConnected);
-        tempAlert.set(inputs.temp.gt(Celsius.of(70)));
+        tempAlert.set(inputs.tempCelsius > 70.0);
 
         if (controlLoopEnabled) {
-            io.setGoalAngle(goalAngle.get());
+            io.setGoalAngleRad(goalAngleRad);
         }
     }
 
@@ -98,13 +96,13 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     @Override
     public void updateTelemetry() {
-        Logger.recordOutput(name + "/Goal Angle", getGoalAngle().in(Degrees));
-        Logger.recordOutput(name + "/Current Angle", getCurrentAngle().in(Degrees));
-        Logger.recordOutput(name + "/Position Setpoint", getPositionSetpoint().in(Degrees));
-        Logger.recordOutput(name + "/Velocity Setpoint", getVelocitySetpoint().in(RotationsPerSecond));
-        Logger.recordOutput(name + "/Current Velocity", getVelocity().in(RotationsPerSecond));
-        Logger.recordOutput(name + "/Applied Voltage", getVoltage());
-        Logger.recordOutput(name + "/Position Error", getPositionError().in(Degrees));
+        Logger.recordOutput(name + "/Goal Angle", Math.toDegrees(goalAngleRad));
+        Logger.recordOutput(name + "/Current Angle", Math.toDegrees(inputs.positionRad));
+        Logger.recordOutput(name + "/Position Setpoint", Math.toDegrees(inputs.closedLoopReferenceRad));
+        Logger.recordOutput(name + "/Velocity Setpoint", inputs.closedLoopReferenceVelocityRadPerSec / (2.0 * Math.PI));
+        Logger.recordOutput(name + "/Current Velocity", inputs.velocityRadPerSec / (2.0 * Math.PI));
+        Logger.recordOutput(name + "/Applied Voltage", inputs.appliedVolts);
+        Logger.recordOutput(name + "/Position Error", Math.toDegrees(inputs.closedLoopErrorRad));
     }
 
     public Command setTargetPositionCommand(Angle goalAngle) {
@@ -118,7 +116,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
             maxAngleRad
         );
 
-        goalAngle.set(Radians.of(clamped));
+        goalAngleRad = clamped;
     }
 
     public ArmIOInputsAutoLogged getInputs() {
@@ -127,31 +125,31 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     }
 
     public Angle getGoalAngle() {
-        return goalAngle.get();
+        return Radians.of(goalAngleRad);
     }
 
     public Angle getPositionSetpoint() {
-        return inputs.closedLoopReference;
+        return Radians.of(inputs.closedLoopReferenceRad);
     }
 
     public AngularVelocity getVelocitySetpoint() {
-        return inputs.closedLoopReferenceVelocity;
+        return RadiansPerSecond.of(inputs.closedLoopReferenceVelocityRadPerSec);
     }
 
     public Angle getPositionError() {
-        return inputs.closedLoopError;
+        return Radians.of(inputs.closedLoopErrorRad);
     }
 
     public Angle getCurrentAngle() {
-        return inputs.position;
+        return Radians.of(inputs.positionRad);
     }
 
     public AngularVelocity getVelocity() {
-        return inputs.velocity;
+        return RadiansPerSecond.of(inputs.velocityRadPerSec);
     }
 
     public Voltage getVoltage() {
-        return inputs.appliedVoltage;
+        return Volts.of(inputs.appliedVolts);
     }
 
     public void setVoltage(double voltage) {
@@ -193,9 +191,9 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
             new SysIdRoutine.Mechanism(
                 this::setVoltage,
                 log -> log.motor("motor")
-                    .voltage(inputs.appliedVoltage)
-                    .angularPosition(inputs.position)
-                    .angularVelocity(inputs.velocity),
+                    .voltage(Volts.of(inputs.appliedVolts))
+                    .angularPosition(Radians.of(inputs.positionRad))
+                    .angularVelocity(RadiansPerSecond.of(inputs.velocityRadPerSec)),
                 this
             )
         );
@@ -218,15 +216,15 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     }
 
     public boolean atGoal() {
-        return Math.abs(getPositionError().in(Degrees)) < 5.0;
+        return Math.abs(Math.toDegrees(inputs.closedLoopErrorRad)) < 5.0;
     }
 
     private boolean isAtUpperLimit() {
-        return getCurrentAngle().in(Radians) >= maxAngleRad - 0.05;
+        return inputs.positionRad >= maxAngleRad - 0.05;
     }
 
     private boolean isAtLowerLimit() {
-        return getCurrentAngle().in(Radians) <= minAngleRad + 0.05;
+        return inputs.positionRad <= minAngleRad + 0.05;
     }
 
     public Command disableControlLoop() {

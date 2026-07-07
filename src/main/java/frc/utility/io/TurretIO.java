@@ -6,7 +6,6 @@ import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 public interface TurretIO {
@@ -15,19 +14,23 @@ public interface TurretIO {
         public boolean motorConnected = false;
         public boolean encoderConnected = true;
 
-        public Angle position = Rotations.zero();
-        public AngularVelocity velocity = RotationsPerSecond.zero();
-        public Voltage appliedVoltage = Volts.zero();
-        public Current statorCurrent = Amps.zero();
+        public double positionRad = 0.0;
+        public double velocityRadPerSec = 0.0;
+        public double appliedVolts = 0.0;
+        public double statorCurrentAmps = 0.0;
 
-        public Angle closedLoopReference = Rotations.zero();
-        public AngularVelocity closedLoopReferenceVelocity = RotationsPerSecond.zero();
-        public Angle closedLoopError = Rotations.zero();
+        public double closedLoopReferenceRad = 0.0;
+        public double closedLoopReferenceVelocityRadPerSec = 0.0;
+        public double closedLoopErrorRad = 0.0;
     }
 
     default void updateInputs(TurretIOInputs inputs) {}
 
     default void setPosition(Angle angle) {}
+
+    default void setPositionRad(double angleRad) {
+        setPosition(Radians.of(angleRad));
+    }
 
     default void setVoltage(Voltage voltage) {}
 
