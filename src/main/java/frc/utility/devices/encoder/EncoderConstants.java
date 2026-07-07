@@ -9,7 +9,6 @@ public final class EncoderConstants {
 
     public Integer deviceId;
     public CANBus canBus;
-    public double conversionFactor = 1;
 
     /**
      * Used to set the canbus of the motor.
@@ -40,18 +39,6 @@ public final class EncoderConstants {
         } else {
             this.deviceId=deviceId;
         }
-        return this;
-    }
-
-    /**
-     * Used to set a conversion factor to be applied to
-     * the raw position/velocity of the motor. Defaults
-     * to 1.
-     * @param conversionFactor
-     * @return EncoderConstants (for call chaining)
-     */
-    public EncoderConstants withConversionFactor(double conversionFactor) {
-        this.conversionFactor=conversionFactor;
         return this;
     }
 
