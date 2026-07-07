@@ -6,7 +6,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
 
 public final class MotorConstants {
@@ -14,7 +13,6 @@ public final class MotorConstants {
     
     public int deviceId;
     public CANBus canBus = DroidRageConstants.rioCanBus;
-    public Subsystem subsystem;
     public boolean isEnabled;
 
     public MotorAlignmentValue alignment = MotorAlignmentValue.Aligned;
@@ -51,17 +49,6 @@ public final class MotorConstants {
      */
     public MotorConstants withDeviceId(int deviceId) {
         this.deviceId=deviceId;
-        return this;
-    }
-
-    /**
-     * Used to set the subsystem that this motor is a
-     * part of.
-     * @param subsystem
-     * @return MotorConstants (for call chaining)
-     */
-    public MotorConstants withSubsystem(Subsystem subsystem){
-        this.subsystem = subsystem;
         return this;
     }
 
