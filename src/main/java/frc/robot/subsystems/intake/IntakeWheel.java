@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.DroidRageConstants;
@@ -27,7 +26,6 @@ public class IntakeWheel extends FlywheelTemplate {
         .withCANBus(DroidRageConstants.driveCanBus)
         .withDirection(InvertedValue.CounterClockwise_Positive)
         .withIdleMode(NeutralModeValue.Brake)
-        .withMotorType(MotorType.KrakenX60)
         .withStatorCurrentLimit(65)//50
         .withSupplyCurrentLimit(60);//50
 

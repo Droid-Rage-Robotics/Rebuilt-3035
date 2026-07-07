@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DroidRageConstants;
@@ -17,7 +16,6 @@ public final class MotorConstants {
     public CANBus canBus = DroidRageConstants.rioCanBus;
     public Subsystem subsystem;
     public boolean isEnabled;
-    public MotorType motorType;
 
     public MotorAlignmentValue alignment = MotorAlignmentValue.Aligned;
 
@@ -33,11 +31,6 @@ public final class MotorConstants {
 
     public MotorConstants withMotorAlignment(MotorAlignmentValue alignmentValue) {
         this.alignment=alignmentValue;
-        return this;
-    }
-
-    public MotorConstants withMotorType(MotorType motorType) {
-        this.motorType=motorType;
         return this;
     }
 
