@@ -48,18 +48,18 @@ public class RobotContainer {
 	private final Vision vision;
 	private final Intake intake = new Intake(
         new Pivot(false, driver),
-        new IntakeWheel(false)
+        new IntakeWheel(true)
     );
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(false), 
-		new TopRoller(false)
+		new BottomRollers(true), 
+		new TopRoller(true)
 	);
 
     private final Kicker kicker = new Kicker(false);
     private final Shooter shooter = new Shooter( 
         new Turret(false),
-        new Hood(false),
-        new ShooterWheel(false)
+        new Hood(true),
+        new ShooterWheel(true)
     );
 
 	private final DRAreaManager areaManager;
