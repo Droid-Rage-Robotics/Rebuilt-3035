@@ -74,20 +74,27 @@ public class MotorIOTalonFX implements MotorIO {
 
     @Override
     public void updateInputs(MotorIOInputs inputs) {
-        StatusCode fastStatus = BaseStatusSignal.refreshAll(
-            position,
-            velocity,
-            appliedVolts
-        );
+        // StatusCode fastStatus = BaseStatusSignal.refreshAll(
+        //     position,
+        //     velocity,
+        //     appliedVolts
+        // );
 
         BaseStatusSignal.refreshAll(
+            position,
+            velocity,
+            appliedVolts,
             supplyCurrent,
             statorCurrent,
             torqueCurrent,
             temp
         );
 
-        inputs.connected = connectedDebounce.calculate(fastStatus.isOK());
+        inputs.connected = connectedDebounce.calculate(
+            position.getStatus().isOK()
+                && velocity.getStatus().isOK()
+                && appliedVolts.getStatus().isOK()
+        );
 
         inputs.positionRotations = position.getValueAsDouble();
         inputs.velocityRotationsPerSecond = velocity.getValueAsDouble();
