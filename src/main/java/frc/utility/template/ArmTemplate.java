@@ -119,7 +119,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     }
 
     public ArmIOInputsAutoLogged getInputs() {
-        io.updateInputs(inputs);
         return inputs;
     }
 
