@@ -81,6 +81,10 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
     @Override public void practiceWriters() {}
     @Override public void alerts() {}
 
+    public void setEnabled(boolean isEnabled) {
+        io.setEnabled(isEnabled);
+    }
+
     public Command setTargetPositionCommand(Distance value) {
         return new InstantCommand(() -> setTargetPosition(value), this);
     }

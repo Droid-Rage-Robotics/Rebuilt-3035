@@ -34,7 +34,6 @@ public class ArmIOTalonFX implements ArmIO {
     private final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0.0);
 
     private final ArmConstants constants;
-    private final boolean isEnabled;
 
     private final StatusSignal<Double> closedLoopReference;
     private final StatusSignal<Double> closedLoopReferenceSlope;
@@ -50,7 +49,6 @@ public class ArmIOTalonFX implements ArmIO {
             MotorConstants motorConstants
     ) {
         this.constants = constants;
-        this.isEnabled = isEnabled;
 
         motorConstants.isEnabled = isEnabled;
 
@@ -140,29 +138,28 @@ public class ArmIOTalonFX implements ArmIO {
     }
 
     @Override
+    public void setEnabled(boolean isEnabled) {
+        motorIO.setEnabled(isEnabled);
+    }
+
+    @Override
     public void setGoalAngle(Angle angle) {
         setGoalAngleRad(angle.in(Radians));
     }
 
     @Override
     public void setGoalAngleRad(double angleRad) {
-        if (isEnabled) {
-            motorIO.setControl(motionMagicRequest.withPosition(angleRad / RADIANS_PER_ROTATION));
-        }
+        motorIO.setControl(motionMagicRequest.withPosition(angleRad / RADIANS_PER_ROTATION));
     }
 
     @Override
     public void setVoltage(double volts) {
-        if (isEnabled) {
-            motorIO.setVoltage(volts);
-        }
+        motorIO.setVoltage(volts);
     }
 
     @Override
     public void setVoltage(Voltage volts) {
-        if (isEnabled) {
-            motorIO.setVoltage(volts);
-        }
+        motorIO.setVoltage(volts);
     }
 
     @Override

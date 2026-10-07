@@ -32,9 +32,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     private final double minAngleRad;
     private final double maxAngleRad;
     private final Angle resetAngle;
-    // private final SubsystemConstants constants;
 
-    private final boolean isEnabled;
     private double goalAngleRad = 0.0;
 
     public boolean controlLoopEnabled = true;
@@ -48,12 +46,10 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
             ArmConstants constants,
             ArmIO io
     ) {
-        // this.constants = constants;
         this.name = constants.name;
         this.minAngleRad = constants.minAngle.in(Radians);
         this.maxAngleRad = constants.maxAngle.in(Radians);
         this.resetAngle = constants.resetAngle;
-        this.isEnabled = isEnabled;
         this.io = io;
 
         motorDisconnectedAlert =
@@ -104,6 +100,10 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         Logger.recordOutput(name + "/Position Error", Math.toDegrees(inputs.closedLoopErrorRad));
     }
 
+    public void setEnabled(boolean isEnabled) {
+        io.setEnabled(isEnabled);
+    }
+
     public Command setTargetPositionCommand(Angle goalAngle) {
         return new InstantCommand(() -> setGoalAngle(goalAngle), this);
     }
@@ -151,15 +151,11 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     }
 
     public void setVoltage(double voltage) {
-        if (isEnabled) {
-            io.setVoltage(voltage);
-        }
+        io.setVoltage(voltage);
     }
 
     public void setVoltage(Voltage voltage) {
-        if (isEnabled) {
-            io.setVoltage(voltage);
-        }
+        io.setVoltage(voltage);
     }
 
     public void resetEncoder() {

@@ -4,8 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
 
 public interface ElevatorIO {
     @AutoLog
@@ -24,6 +23,8 @@ public interface ElevatorIO {
     }
 
     default void updateInputs(ElevatorIOInputs inputs) {}
+
+    default void setEnabled(boolean isEnabled) {}
 
     default void setPosition(Distance position) {}
 

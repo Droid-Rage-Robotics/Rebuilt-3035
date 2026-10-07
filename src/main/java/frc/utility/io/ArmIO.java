@@ -4,8 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
 
 public interface ArmIO {
     @AutoLog
@@ -25,6 +24,8 @@ public interface ArmIO {
     }
 
     default void updateInputs(ArmIOInputs inputs) {}
+
+    default void setEnabled(boolean isEnabled) {}
 
     default void setGoalAngle(Angle angle) {}
 

@@ -32,14 +32,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final StatusSignal<Double> closedLoopReferenceSlope;
     private final StatusSignal<Double> closedLoopError;
 
-    private boolean isEnabled;
+    private final Follower[] followerRequests;
 
     public ElevatorIOTalonFX(
             boolean isEnabled,
             ElevatorConstants constants,
             MotorConstants... motorConstants
     ) {
-        this.isEnabled=isEnabled;
         this.mainNum = constants.mainNum;
         this.metersPerMotorRotation = constants.metersPerMotorRotation;
 
@@ -52,15 +51,17 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
         mainMotor = motors[mainNum].getMotor();
 
+        followerRequests = new Follower[motors.length];
+
         for (int i = 0; i < motors.length; i++) {
             if (i == mainNum) continue;
 
-            motors[i].setControl(
-                new Follower(
-                    mainMotor.getDeviceID(),
-                    motorConstants[i].alignment
-                )
+            followerRequests[i] = new Follower(
+                mainMotor.getDeviceID(),
+                motorConstants[i].alignment
             );
+
+            motors[i].setControl(followerRequests[i]);
         }
 
         var config = motorConstants[mainNum].getConfig();
@@ -133,6 +134,24 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
+    public void setEnabled(boolean isEnabled) {
+        // Change permission on every motor.
+        // Disabling also stops each motor through the wrapper.
+        for (var motor : motors) {
+            motor.setEnabled(isEnabled);
+        }
+
+        // Restore follower mode after enabling their wrappers.
+        if (isEnabled) {
+            for (int i = 0; i < motors.length; i++) {
+                if (i == mainNum) continue;
+
+                motors[i].setControl(followerRequests[i]);
+            }
+        }
+    }
+
+    @Override
     public void setPosition(Distance position) {
         setPositionMeters(position.in(Meters));
     }
@@ -140,16 +159,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     @Override
     public void setPositionMeters(double positionMeters) {
         double motorRotations = positionMeters / metersPerMotorRotation;
-        if (isEnabled) {
-            motors[mainNum].setControl(motionMagicRequest.withPosition(motorRotations));
-        }
+        motors[mainNum].setControl(motionMagicRequest.withPosition(motorRotations));
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
-        if (isEnabled) {
-            motors[mainNum].setControl(voltageRequest.withOutput(voltage));
-        }
+        motors[mainNum].setControl(voltageRequest.withOutput(voltage));
     }
 
     @Override

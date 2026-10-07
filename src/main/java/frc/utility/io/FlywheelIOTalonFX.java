@@ -30,7 +30,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     private final StatusSignal<Double> closedLoopReference;
     private final StatusSignal<Double> closedLoopError;
 
-    private boolean isEnabled;
+    private final Follower[] followerRequests;
 
     public FlywheelIOTalonFX(
             boolean isEnabled,
@@ -38,7 +38,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
             MotorConstants... motorConstants
     ) {
         this.mainNum = constants.mainNum;
-        this.isEnabled=isEnabled;
 
         motors = new MotorIOTalonFX[motorConstants.length];
 
@@ -49,15 +48,17 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
         mainMotor = motors[mainNum].getMotor();
 
+        followerRequests = new Follower[motors.length];
+
         for (int i = 0; i < motors.length; i++) {
             if (i == mainNum) continue;
 
-            motors[i].setControl(
-                new Follower(
-                    mainMotor.getDeviceID(),
-                    motorConstants[i].alignment
-                )
+            followerRequests[i] = new Follower(
+                mainMotor.getDeviceID(),
+                motorConstants[i].alignment
             );
+
+            motors[i].setControl(followerRequests[i]);
         }
 
         var config = motorConstants[mainNum].getConfig();
@@ -110,22 +111,36 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     }
 
     @Override
+    public void setEnabled(boolean isEnabled) {
+        // Change permission on every motor.
+        // Disabling also stops each motor through the wrapper.
+        for (var motor : motors) {
+            motor.setEnabled(isEnabled);
+        }
+
+        // Restore follower mode after enabling their wrappers.
+        if (isEnabled) {
+            for (int i = 0; i < motors.length; i++) {
+                if (i == mainNum) continue;
+
+                motors[i].setControl(followerRequests[i]);
+            }
+        }
+    }
+
+    @Override
     public void setVelocity(AngularVelocity velocity) {
         setVelocityRotationsPerSecond(velocity.in(RotationsPerSecond));
     }
 
     @Override
     public void setVelocityRotationsPerSecond(double velocityRotationsPerSecond) {
-        if (isEnabled) {
-            motors[mainNum].setControl(velocityRequest.withVelocity(velocityRotationsPerSecond));
-        }
+        motors[mainNum].setControl(velocityRequest.withVelocity(velocityRotationsPerSecond));
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
-        if (isEnabled) {
-            motors[mainNum].setControl(voltageRequest.withOutput(voltage));
-        }
+        motors[mainNum].setControl(voltageRequest.withOutput(voltage));
     }
 
     public MotorIOTalonFX[] getMotors() {

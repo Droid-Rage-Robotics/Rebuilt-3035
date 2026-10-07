@@ -4,9 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
 
 public interface FlywheelIO {
     @AutoLog
@@ -24,6 +22,8 @@ public interface FlywheelIO {
     }
 
     default void updateInputs(FlywheelIOInputs inputs) {}
+
+    default void setEnabled(boolean isEnabled) {}
 
     default void setVelocity(AngularVelocity velocity) {}
 

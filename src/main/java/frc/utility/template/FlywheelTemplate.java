@@ -77,6 +77,10 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     @Override
     public void alerts() {}
 
+    public void setEnabled(boolean isEnabled) {
+        io.setEnabled(isEnabled);
+    }
+
     public Command setTargetVelocityCommand(AngularVelocity target) {
         return new InstantCommand(() -> setTargetVelocity(target), this);
     }

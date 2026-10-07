@@ -86,6 +86,10 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     @Override public void practiceWriters() {}
     @Override public void alerts() {}
 
+    public void setEnabled(boolean isEnabled) {
+        io.setEnabled(isEnabled);
+    }
+
     public Command setTargetPositionCommand(Angle goalAngle) {
         return new InstantCommand(() -> setGoalAngle(goalAngle), this);
     }
