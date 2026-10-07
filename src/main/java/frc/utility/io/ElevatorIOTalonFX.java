@@ -19,7 +19,7 @@ import frc.utility.template.Constants.ElevatorConstants;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
     private final MotorIOTalonFX[] motors;
-    private final MotorIO.MotorIOInputs mainMotorInputs = new MotorIO.MotorIOInputs();
+    private final MotorIO.MotorIOInputs[] motorInputs;
 
     private final TalonFX mainMotor;
     private final int mainNum;
@@ -43,10 +43,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         this.metersPerMotorRotation = constants.metersPerMotorRotation;
 
         motors = new MotorIOTalonFX[motorConstants.length];
+        motorInputs = new MotorIO.MotorIOInputs[motorConstants.length];
 
         for (int i = 0; i < motorConstants.length; i++) {
             motorConstants[i].isEnabled = isEnabled;
             motors[i] = new MotorIOTalonFX(motorConstants[i]);
+            motorInputs[i] = new MotorIO.MotorIOInputs();
         }
 
         mainMotor = motors[mainNum].getMotor();
@@ -102,7 +104,28 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
-        motors[mainNum].updateInputs(mainMotorInputs);
+        inputs.mainMotorIndex = mainNum;
+        if (inputs.motorIds.length != motors.length) {
+            inputs.motorIds = new int[motors.length];
+            inputs.motorConnected = new boolean[motors.length];
+            inputs.motorAppliedVolts = new double[motors.length];
+            inputs.motorStatorCurrentAmps = new double[motors.length];
+            inputs.motorSupplyCurrentAmps = new double[motors.length];
+            inputs.motorTorqueCurrentAmps = new double[motors.length];
+            inputs.motorTempCelsius = new double[motors.length];
+        }
+
+        for (int i = 0; i < motors.length; i++) {
+            motors[i].updateInputs(motorInputs[i]);
+            var measured = motorInputs[i];
+            inputs.motorIds[i] = motors[i].getMotor().getDeviceID();
+            inputs.motorConnected[i] = measured.connected;
+            inputs.motorAppliedVolts[i] = measured.appliedVolts;
+            inputs.motorStatorCurrentAmps[i] = measured.statorCurrentAmps;
+            inputs.motorSupplyCurrentAmps[i] = measured.supplyCurrentAmps;
+            inputs.motorTorqueCurrentAmps[i] = measured.torqueCurrentAmps;
+            inputs.motorTempCelsius[i] = measured.tempCelsius;
+        }
 
         BaseStatusSignal.refreshAll(
             closedLoopReference,
@@ -110,7 +133,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
             closedLoopError
         );
 
-        inputs.mainMotorConnected = mainMotorInputs.connected;
+        var mainMotorInputs = motorInputs[mainNum];
 
         inputs.positionMeters =
             mainMotorInputs.positionRotations * metersPerMotorRotation;
@@ -118,8 +141,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         inputs.velocityMetersPerSec =
             mainMotorInputs.velocityRotationsPerSecond * metersPerMotorRotation;
 
-        inputs.appliedVolts = mainMotorInputs.appliedVolts;
-        inputs.statorCurrentAmps = mainMotorInputs.statorCurrentAmps;
 
         inputs.closedLoopReferenceMeters =
             closedLoopReference.getValueAsDouble() * metersPerMotorRotation;

@@ -9,13 +9,20 @@ import edu.wpi.first.units.measure.*;
 public interface ElevatorIO {
     @AutoLog
     class ElevatorIOInputs {
-        public boolean mainMotorConnected = false;
+        public int mainMotorIndex = 0;
         public boolean encoderConnected = true;
+
+        // Array indices match the constructor motor order, including the leader.
+        public int[] motorIds = new int[0];
+        public boolean[] motorConnected = new boolean[0];
+        public double[] motorAppliedVolts = new double[0];
+        public double[] motorStatorCurrentAmps = new double[0];
+        public double[] motorSupplyCurrentAmps = new double[0];
+        public double[] motorTorqueCurrentAmps = new double[0];
+        public double[] motorTempCelsius = new double[0];
 
         public double positionMeters = 0.0;
         public double velocityMetersPerSec = 0.0;
-        public double appliedVolts = 0.0;
-        public double statorCurrentAmps = 0.0;
 
         public double closedLoopReferenceMeters = 0.0;
         public double closedLoopReferenceVelocityMetersPerSec = 0.0;

@@ -66,8 +66,8 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     public void updateTelemetry() {
         Logger.recordOutput(name + "/Target Velocity", targetVelocityRotationsPerSecond);
         Logger.recordOutput(name + "/Current Velocity", inputs.velocityRotationsPerSecond);
-        Logger.recordOutput(name + "/Applied Voltage", inputs.appliedVolts);
-        Logger.recordOutput(name + "/Torque Current", inputs.torqueCurrentAmps);
+        Logger.recordOutput(name + "/Applied Voltage", mainMotorValue(inputs.motorAppliedVolts));
+        Logger.recordOutput(name + "/Torque Current", mainMotorValue(inputs.motorTorqueCurrentAmps));
         Logger.recordOutput(name + "/Velocity Error", inputs.closedLoopErrorRotationsPerSecond);
     }
 
@@ -116,11 +116,17 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
     }
 
     public Voltage getVoltage() {
-        return Volts.of(inputs.appliedVolts);
+        return Volts.of(mainMotorValue(inputs.motorAppliedVolts));
     }
 
     public Current getCurrent() {
-        return Amps.of(inputs.statorCurrentAmps);
+        return Amps.of(mainMotorValue(inputs.motorStatorCurrentAmps));
+    }
+
+    // Inputs can be empty before the first update or when using default IO.
+    private double mainMotorValue(double[] values) {
+        int index = inputs.mainMotorIndex;
+        return index >= 0 && index < values.length ? values[index] : 0.0;
     }
 
     public void setVoltage(Voltage voltage) {

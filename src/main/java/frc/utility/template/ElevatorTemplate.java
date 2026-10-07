@@ -74,7 +74,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
         Logger.recordOutput(name + "/Position Setpoint", inputs.closedLoopReferenceMeters);
         Logger.recordOutput(name + "/Velocity Setpoint", inputs.closedLoopReferenceVelocityMetersPerSec);
         Logger.recordOutput(name + "/Current Velocity", inputs.velocityMetersPerSec);
-        Logger.recordOutput(name + "/Applied Voltage", inputs.appliedVolts);
+        Logger.recordOutput(name + "/Applied Voltage", mainMotorValue(inputs.motorAppliedVolts));
         Logger.recordOutput(name + "/Position Error", inputs.closedLoopErrorMeters);
     }
 
@@ -112,7 +112,13 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
     }
 
     public Voltage getVoltage() {
-        return Volts.of(inputs.appliedVolts);
+        return Volts.of(mainMotorValue(inputs.motorAppliedVolts));
+    }
+
+    // Inputs can be empty before the first update or when using default IO.
+    private double mainMotorValue(double[] values) {
+        int index = inputs.mainMotorIndex;
+        return index >= 0 && index < values.length ? values[index] : 0.0;
     }
 
     public Distance getPositionSetpoint() {
