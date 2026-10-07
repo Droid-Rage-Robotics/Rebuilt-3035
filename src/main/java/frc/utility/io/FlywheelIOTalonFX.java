@@ -117,19 +117,15 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     @Override
     public void setVelocityRotationsPerSecond(double velocityRotationsPerSecond) {
         if (isEnabled) {
-            mainMotor.setControl(velocityRequest.withVelocity(velocityRotationsPerSecond));
+            motors[mainNum].setControl(velocityRequest.withVelocity(velocityRotationsPerSecond));
         }
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
         if (isEnabled) {
-            mainMotor.setControl(voltageRequest.withOutput(voltage));
+            motors[mainNum].setControl(voltageRequest.withOutput(voltage));
         }
-    }
-
-    public TalonFX getMainMotor() {
-        return mainMotor;
     }
 
     public MotorIOTalonFX[] getMotors() {

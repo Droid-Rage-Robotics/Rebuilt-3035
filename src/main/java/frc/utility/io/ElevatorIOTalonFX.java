@@ -141,14 +141,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     public void setPositionMeters(double positionMeters) {
         double motorRotations = positionMeters / metersPerMotorRotation;
         if (isEnabled) {
-            mainMotor.setControl(motionMagicRequest.withPosition(motorRotations));
+            motors[mainNum].setControl(motionMagicRequest.withPosition(motorRotations));
         }
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
         if (isEnabled) {
-            mainMotor.setControl(voltageRequest.withOutput(voltage));
+            motors[mainNum].setControl(voltageRequest.withOutput(voltage));
         }
     }
 
