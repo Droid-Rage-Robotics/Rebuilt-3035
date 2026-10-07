@@ -2,6 +2,11 @@ package frc.utility.io;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
@@ -20,6 +25,7 @@ import frc.utility.template.Constants.ElevatorConstants;
 public class ElevatorIOTalonFX implements ElevatorIO {
     private final MotorIOTalonFX[] motors;
     private final MotorIO.MotorIOInputs[] motorInputs;
+    private final BaseStatusSignal[][] refreshGroups;
 
     private final TalonFX mainMotor;
     private final int mainNum;
@@ -100,10 +106,29 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         );
 
         ParentDevice.optimizeBusUtilizationForAll(mainMotor);
+
+        // Phoenix refresh batches must contain signals from only one CAN network.
+        var signalsByNetwork = new LinkedHashMap<String, List<BaseStatusSignal>>();
+        for (int i = 0; i < motors.length; i++) {
+            var signals = signalsByNetwork.computeIfAbsent(
+                motorConstants[i].canBus.getName(), network -> new ArrayList<>());
+            Collections.addAll(signals, motors[i].getStatusSignals());
+        }
+        var leaderSignals = signalsByNetwork.get(motorConstants[mainNum].canBus.getName());
+        leaderSignals.add(closedLoopReference);
+        leaderSignals.add(closedLoopReferenceSlope);
+        leaderSignals.add(closedLoopError);
+        refreshGroups = signalsByNetwork.values().stream()
+            .map(signals -> signals.toArray(new BaseStatusSignal[0]))
+            .toArray(BaseStatusSignal[][]::new);
     }
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
+        for (var signals : refreshGroups) {
+            BaseStatusSignal.refreshAll(signals);
+        }
+
         inputs.mainMotorIndex = mainNum;
         if (inputs.motorIds.length != motors.length) {
             inputs.motorIds = new int[motors.length];
@@ -116,7 +141,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         }
 
         for (int i = 0; i < motors.length; i++) {
-            motors[i].updateInputs(motorInputs[i]);
+            motors[i].copyInputs(motorInputs[i]);
             var measured = motorInputs[i];
             inputs.motorIds[i] = motors[i].getMotor().getDeviceID();
             inputs.motorConnected[i] = measured.connected;
@@ -126,12 +151,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
             inputs.motorTorqueCurrentAmps[i] = measured.torqueCurrentAmps;
             inputs.motorTempCelsius[i] = measured.tempCelsius;
         }
-
-        BaseStatusSignal.refreshAll(
-            closedLoopReference,
-            closedLoopReferenceSlope,
-            closedLoopError
-        );
 
         var mainMotorInputs = motorInputs[mainNum];
 

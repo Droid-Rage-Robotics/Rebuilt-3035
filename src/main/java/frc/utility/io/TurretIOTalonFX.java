@@ -2,6 +2,10 @@ package frc.utility.io;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -17,6 +21,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
 import frc.utility.devices.motor.MotorConstants;
 import frc.utility.io.devices.EncoderIO;
+import frc.utility.io.devices.EncoderIOCANcoder;
 import frc.utility.io.devices.EncoderIOInputsAutoLogged;
 import frc.utility.io.devices.MotorIO;
 import frc.utility.io.devices.MotorIOTalonFX;
@@ -30,6 +35,8 @@ public class TurretIOTalonFX implements TurretIO {
 
     private final TalonFX motor;
     private final Optional<EncoderIO> encoderIO;
+    private final Optional<EncoderIOCANcoder> batchedEncoder;
+    private final BaseStatusSignal[][] refreshGroups;
 
     private final TurretConstants constants;
 
@@ -103,23 +110,49 @@ public class TurretIOTalonFX implements TurretIO {
         );
 
         ParentDevice.optimizeBusUtilizationForAll(motor);
+
+        // Keep non-Phoenix encoder implementations on their normal update path.
+        batchedEncoder = this.encoderIO
+            .filter(io -> io instanceof EncoderIOCANcoder)
+            .map(io -> (EncoderIOCANcoder) io);
+
+        var signalsByNetwork = new LinkedHashMap<String, List<BaseStatusSignal>>();
+        var motorSignals = new ArrayList<BaseStatusSignal>();
+        Collections.addAll(motorSignals, motorIO.getStatusSignals());
+        motorSignals.add(closedLoopReference);
+        motorSignals.add(closedLoopReferenceSlope);
+        motorSignals.add(closedLoopError);
+        signalsByNetwork.put(motorConstants.canBus.getName(), motorSignals);
+        batchedEncoder.ifPresent(io -> {
+            var signals = signalsByNetwork.computeIfAbsent(
+                io.getCANNetworkName(), network -> new ArrayList<>());
+            Collections.addAll(signals, io.getStatusSignals());
+        });
+        refreshGroups = signalsByNetwork.values().stream()
+            .map(signals -> signals.toArray(new BaseStatusSignal[0]))
+            .toArray(BaseStatusSignal[][]::new);
     }
 
     @Override
     public void updateInputs(TurretIOInputs inputs) {
-        motorIO.updateInputs(motorInputs);
-        encoderIO.ifPresent(io -> io.updateInputs(encoderInputs));
+        for (var signals : refreshGroups) {
+            BaseStatusSignal.refreshAll(signals);
+        }
+        motorIO.copyInputs(motorInputs);
+        if (batchedEncoder.isPresent()) {
+            batchedEncoder.get().copyInputs(encoderInputs);
+        } else {
+            encoderIO.ifPresent(io -> io.updateInputs(encoderInputs));
+        }
 
-        var closedLoopStatus = BaseStatusSignal.refreshAll(
-            closedLoopReference,
-            closedLoopReferenceSlope,
-            closedLoopError
-        );
+        boolean closedLoopConnected = closedLoopReference.getStatus().isOK()
+            && closedLoopReferenceSlope.getStatus().isOK()
+            && closedLoopError.getStatus().isOK();
 
         inputs.motorConnected = motorInputs.connected;
         inputs.encoderConnected =
             encoderConnectedDebounce.calculate(
-                encoderIO.isEmpty() || (encoderInputs.connected && closedLoopStatus.isOK()));
+                encoderIO.isEmpty() || (encoderInputs.connected && closedLoopConnected));
 
         inputs.positionRad = motorInputs.positionRotations * RADIANS_PER_ROTATION;
         inputs.velocityRadPerSec = motorInputs.velocityRotationsPerSecond * RADIANS_PER_ROTATION;

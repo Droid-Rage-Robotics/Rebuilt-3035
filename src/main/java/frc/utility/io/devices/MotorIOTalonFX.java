@@ -3,7 +3,6 @@ package frc.utility.io.devices;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -32,6 +31,7 @@ public class MotorIOTalonFX implements MotorIO {
     private final StatusSignal<Current> statorCurrent;
     private final StatusSignal<Current> torqueCurrent;
     private final StatusSignal<Temperature> temp;
+    private final BaseStatusSignal[] statusSignals;
 
     private final Debouncer connectedDebounce = new Debouncer(0.5);
 
@@ -49,6 +49,10 @@ public class MotorIOTalonFX implements MotorIO {
         statorCurrent = motor.getStatorCurrent();
         torqueCurrent = motor.getTorqueCurrent();
         temp = motor.getDeviceTemp();
+        statusSignals = new BaseStatusSignal[] {
+            position, velocity, appliedVolts,
+            supplyCurrent, statorCurrent, torqueCurrent, temp
+        };
 
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
@@ -74,22 +78,17 @@ public class MotorIOTalonFX implements MotorIO {
 
     @Override
     public void updateInputs(MotorIOInputs inputs) {
-        // StatusCode fastStatus = BaseStatusSignal.refreshAll(
-        //     position,
-        //     velocity,
-        //     appliedVolts
-        // );
+        BaseStatusSignal.refreshAll(statusSignals);
+        copyInputs(inputs);
+    }
 
-        BaseStatusSignal.refreshAll(
-            position,
-            velocity,
-            appliedVolts,
-            supplyCurrent,
-            statorCurrent,
-            torqueCurrent,
-            temp
-        );
+    /** Returns the cached signals for a mechanism's constructor-time refresh batch. */
+    public BaseStatusSignal[] getStatusSignals() {
+        return statusSignals.clone();
+    }
 
+    /** Copies cached values after the caller has refreshed this motor's signals. */
+    public void copyInputs(MotorIOInputs inputs) {
         inputs.connected = connectedDebounce.calculate(
             position.getStatus().isOK()
                 && velocity.getStatus().isOK()

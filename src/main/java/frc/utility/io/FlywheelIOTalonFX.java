@@ -2,6 +2,11 @@ package frc.utility.io;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
@@ -20,6 +25,7 @@ import frc.utility.template.Constants.FlywheelConstants;
 public class FlywheelIOTalonFX implements FlywheelIO {
     private final MotorIOTalonFX[] motors;
     private final MotorIO.MotorIOInputs[] motorInputs;
+    private final BaseStatusSignal[][] refreshGroups;
 
     private final TalonFX mainMotor;
     private final int mainNum;
@@ -86,10 +92,28 @@ public class FlywheelIOTalonFX implements FlywheelIO {
         );
 
         ParentDevice.optimizeBusUtilizationForAll(mainMotor);
+
+        // Phoenix refresh batches must contain signals from only one CAN network.
+        var signalsByNetwork = new LinkedHashMap<String, List<BaseStatusSignal>>();
+        for (int i = 0; i < motors.length; i++) {
+            var signals = signalsByNetwork.computeIfAbsent(
+                motorConstants[i].canBus.getName(), network -> new ArrayList<>());
+            Collections.addAll(signals, motors[i].getStatusSignals());
+        }
+        var leaderSignals = signalsByNetwork.get(motorConstants[mainNum].canBus.getName());
+        leaderSignals.add(closedLoopReference);
+        leaderSignals.add(closedLoopError);
+        refreshGroups = signalsByNetwork.values().stream()
+            .map(signals -> signals.toArray(new BaseStatusSignal[0]))
+            .toArray(BaseStatusSignal[][]::new);
     }
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
+        for (var signals : refreshGroups) {
+            BaseStatusSignal.refreshAll(signals);
+        }
+
         inputs.mainMotorIndex = mainNum;
         if (inputs.motorIds.length != motors.length) {
             inputs.motorIds = new int[motors.length];
@@ -102,7 +126,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
         }
 
         for (int i = 0; i < motors.length; i++) {
-            motors[i].updateInputs(motorInputs[i]);
+            motors[i].copyInputs(motorInputs[i]);
             var measured = motorInputs[i];
             inputs.motorIds[i] = motors[i].getMotor().getDeviceID();
             inputs.motorConnected[i] = measured.connected;
@@ -112,11 +136,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
             inputs.motorTorqueCurrentAmps[i] = measured.torqueCurrentAmps;
             inputs.motorTempCelsius[i] = measured.tempCelsius;
         }
-
-        BaseStatusSignal.refreshAll(
-            closedLoopReference,
-            closedLoopError
-        );
 
         var mainMotorInputs = motorInputs[mainNum];
 

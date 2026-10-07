@@ -18,11 +18,14 @@ public class EncoderIOCANcoder implements EncoderIO {
     private final StatusSignal<Angle> absolutePosition;
     private final StatusSignal<Angle> position;
     private final StatusSignal<AngularVelocity> velocity;
+    private final BaseStatusSignal[] statusSignals;
+    private final String canNetworkName;
 
     private final Debouncer connectedDebounce = new Debouncer(0.5);
 
     public EncoderIOCANcoder(int deviceId, CANBus canBus, SensorDirectionValue direction) {
         encoder = new CANcoder(deviceId, canBus);
+        canNetworkName = canBus.getName();
 
         config.MagnetSensor.SensorDirection = direction;
         encoder.getConfigurator().apply(config, 0.25);
@@ -30,6 +33,7 @@ public class EncoderIOCANcoder implements EncoderIO {
         absolutePosition = encoder.getAbsolutePosition();
         position = encoder.getPosition();
         velocity = encoder.getVelocity();
+        statusSignals = new BaseStatusSignal[] {absolutePosition, position, velocity};
 
         BaseStatusSignal.setUpdateFrequencyForAll(50.0, absolutePosition, position, velocity);
         ParentDevice.optimizeBusUtilizationForAll(encoder);
@@ -37,9 +41,25 @@ public class EncoderIOCANcoder implements EncoderIO {
 
     @Override
     public void updateInputs(EncoderIOInputs inputs) {
-        var status = BaseStatusSignal.refreshAll(absolutePosition, position, velocity);
+        BaseStatusSignal.refreshAll(statusSignals);
+        copyInputs(inputs);
+    }
 
-        inputs.connected = connectedDebounce.calculate(status.isOK());
+    /** Returns the cached signals for a mechanism's constructor-time refresh batch. */
+    public BaseStatusSignal[] getStatusSignals() {
+        return statusSignals.clone();
+    }
+
+    public String getCANNetworkName() {
+        return canNetworkName;
+    }
+
+    /** Copies cached values after the caller has refreshed this encoder's signals. */
+    public void copyInputs(EncoderIOInputs inputs) {
+        inputs.connected = connectedDebounce.calculate(
+            absolutePosition.getStatus().isOK()
+                && position.getStatus().isOK()
+                && velocity.getStatus().isOK());
         inputs.absolutePositionRotations = absolutePosition.getValueAsDouble();
         inputs.positionRotations = position.getValueAsDouble();
         inputs.velocityRotationsPerSecond = velocity.getValueAsDouble();
