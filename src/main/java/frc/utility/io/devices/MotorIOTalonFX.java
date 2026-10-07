@@ -171,6 +171,9 @@ public class MotorIOTalonFX implements MotorIO {
     }
 
     public void setEnabled(boolean enabled) {
+        if (this.enabled && !enabled) {
+            stop();
+        }
         this.enabled = enabled;
     }
 }
