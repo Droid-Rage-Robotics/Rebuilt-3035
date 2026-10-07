@@ -29,7 +29,7 @@ import frc.utility.io.devices.VisionIOInputsAutoLogged;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
@@ -74,10 +74,10 @@ public class Vision extends SubsystemBase {
         }
 
         // Initialize logging values
-        List<Pose3d> allTagPoses = new LinkedList<>();
-        List<Pose3d> allRobotPoses = new LinkedList<>();
-        List<Pose3d> allRobotPosesAccepted = new LinkedList<>();
-        List<Pose3d> allRobotPosesRejected = new LinkedList<>();
+        List<Pose3d> allTagPoses = new ArrayList<>();
+        List<Pose3d> allRobotPoses = new ArrayList<>();
+        List<Pose3d> allRobotPosesAccepted = new ArrayList<>();
+        List<Pose3d> allRobotPosesRejected = new ArrayList<>();
 
         // Loop over cameras
         for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
@@ -85,10 +85,10 @@ public class Vision extends SubsystemBase {
             disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
 
             // Initialize logging values
-            List<Pose3d> tagPoses = new LinkedList<>();
-            List<Pose3d> robotPoses = new LinkedList<>();
-            List<Pose3d> robotPosesAccepted = new LinkedList<>();
-            List<Pose3d> robotPosesRejected = new LinkedList<>();
+            List<Pose3d> tagPoses = new ArrayList<>();
+            List<Pose3d> robotPoses = new ArrayList<>();
+            List<Pose3d> robotPosesAccepted = new ArrayList<>();
+            List<Pose3d> robotPosesRejected = new ArrayList<>();
 
             // Add tag poses
             for (int tagId : inputs[cameraIndex].tagIds) {
