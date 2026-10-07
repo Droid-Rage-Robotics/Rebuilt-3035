@@ -60,7 +60,6 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
 
     @Override
     public void simulationPeriodic() {
-        periodic();
     }
 
     @Override

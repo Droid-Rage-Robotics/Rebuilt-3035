@@ -80,7 +80,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
 
     @Override
     public void simulationPeriodic() {
-        periodic();
     }
 
     @Override
