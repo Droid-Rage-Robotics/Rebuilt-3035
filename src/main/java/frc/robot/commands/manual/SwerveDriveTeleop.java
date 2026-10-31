@@ -2,7 +2,6 @@ package frc.robot.commands.manual;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -22,7 +21,7 @@ public class SwerveDriveTeleop extends Command {
     private final Supplier<Double> x, y, turn;
     private volatile double xSpeed, ySpeed, turnSpeed;
 
-    private final BooleanSupplier noInput;
+    private boolean wasIdle = false;
     // private static final PIDController antiTipY = 
     //     new PIDController(0.006, 0, 0.0005);
     // private static final PIDController antiTipX = 
@@ -35,11 +34,6 @@ public class SwerveDriveTeleop extends Command {
         this.turn = driver::getRightX;
         // antiTipX.setTolerance(2);
         // antiTipY.setTolerance(2);
-
-        noInput = () ->
-            xSpeed == 0.0 &&
-            ySpeed == 0.0 &&
-            turnSpeed == 0.0;
 
         driver.rightBumper().onTrue(drive.setSpeed(Speed.SLOW))
             .onFalse(drive.setSpeed(Speed.NORMAL));
@@ -54,7 +48,9 @@ public class SwerveDriveTeleop extends Command {
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+        wasIdle = false;
+    }
 
     @Override
     public void execute() {
@@ -96,12 +92,24 @@ public class SwerveDriveTeleop extends Command {
 
         ChassisSpeeds speeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
 
-        if (noInput.getAsBoolean()) {
-            drive.stopDriveMotors();
-            return;
+        boolean idle = xSpeed == 0.0
+            && ySpeed == 0.0
+            && turnSpeed == 0.0;
+
+        if (idle) {
+            if (!wasIdle) {
+                drive.stopDriveMotors();
+            }
+        } else {
+            drive.runVelocity(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                    speeds,
+                    drive.getRotation()
+                )
+            );
         }
 
-        drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getRotation()));
+        wasIdle = idle;
         
         // if (DriveOptions.IS_FIELD_ORIENTED.get()) {
         //     drive.setControl(
