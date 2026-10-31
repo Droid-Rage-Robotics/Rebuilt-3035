@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -53,7 +54,7 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
         io.updateInputs(inputs);
         Logger.processInputs(name, inputs);
 
-        if (!sysIdActive) {
+        if (!sysIdActive && DriverStation.isEnabled()) {
             io.setPositionMeters(goalPositionMeters);
         }
     }

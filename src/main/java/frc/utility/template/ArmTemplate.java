@@ -9,6 +9,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,7 +70,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
         motorDisconnectedAlert.set(!inputs.motorConnected);
         tempAlert.set(inputs.tempCelsius > 70.0);
 
-        if (controlLoopEnabled) {
+        if (controlLoopEnabled && DriverStation.isEnabled()) {
             io.setGoalAngleRad(goalAngleRad);
         }
     }
@@ -196,7 +197,7 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     }
 
     public Command getSysIdCommand() {
-        return new SequentialCommandGroup(
+        return new SequentialCommandGroup( // TODO: disable control loop during sysid
             getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward)
                 .until(this::isAtUpperLimit),
             new WaitCommand(0.1),

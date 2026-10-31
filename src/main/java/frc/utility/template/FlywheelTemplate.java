@@ -9,6 +9,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -54,7 +55,7 @@ public class FlywheelTemplate extends SubsystemBase implements Dashboard, Teleme
         io.updateInputs(inputs);
         Logger.processInputs(name, inputs);
 
-        if (!sysIdActive) {
+        if (!sysIdActive && DriverStation.isEnabled()) {
             io.setVelocityRotationsPerSecond(targetVelocityRotationsPerSecond);
         }
     }
