@@ -75,11 +75,12 @@ public class RobotContainer {
 					new ModuleIOTalonFXReal(swerveConfig.getBackLeft()),
 					new ModuleIOTalonFXReal(swerveConfig.getBackRight()));
                         // (pose) -> {});
-                this.vision = new Vision(
-					drive,
-					new VisionIOLimelight(VisionConstants.leftLL, drive::getRotation),
-					new VisionIOLimelight(VisionConstants.rightLL, drive::getRotation),
-					new VisionIOLimelight(VisionConstants.middleLL, drive::getRotation));
+				this.vision = new Vision(drive);
+                // this.vision = new Vision(
+				// 	drive,
+				// 	new VisionIOLimelight(VisionConstants.leftLL, drive::getRotation),
+				// 	new VisionIOLimelight(VisionConstants.rightLL, drive::getRotation),
+				// 	new VisionIOLimelight(VisionConstants.middleLL, drive::getRotation));
 
 				this.areaManager = new DRAreaManager(drive);
 				autoChooser = new AutoChooser(drive, intake, indexer, kicker, shooter, vision);
