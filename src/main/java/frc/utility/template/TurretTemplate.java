@@ -66,9 +66,6 @@ public class TurretTemplate extends SubsystemBase implements Dashboard, Telemetr
     }
 
     @Override
-    public void simulationPeriodic() {}
-
-    @Override
     public void elasticInit() {
         SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }

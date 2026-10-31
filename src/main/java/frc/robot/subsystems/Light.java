@@ -29,12 +29,7 @@ public class Light extends SubsystemBase {
 	@Override
 	public void periodic() {
 	}
-
-	@Override
-	public void simulationPeriodic() {
-		periodic();
-	}
-
+    
 	// Animation that fades into and out of a specified color
     public void setSingleFadeColor(Color color) {
         candle.setSingleFadeColor(color);

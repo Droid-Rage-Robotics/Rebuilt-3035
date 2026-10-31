@@ -70,9 +70,6 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
-
-    @Override
     public void autonomousExit(){
         switch (DriverStation.getGameSpecificMessage()) { // Set didWeWin for Lights
             case "R": // Red won Auto
@@ -105,9 +102,6 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {}
-
-    @Override
     public void teleopExit(){
         SignalLogger.stop();
     }
@@ -116,13 +110,4 @@ public class Robot extends LoggedRobot {
     public void testInit() {
         commandScheduler.cancelAll();
     }
-
-    @Override
-    public void testPeriodic() {}
-
-    @Override
-    public void simulationInit() {}
-
-    @Override
-    public void simulationPeriodic() {}
 }

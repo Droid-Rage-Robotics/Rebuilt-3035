@@ -76,10 +76,6 @@ public class ArmTemplate extends SubsystemBase implements Dashboard, TelemetryUp
     }
 
     @Override
-    public void simulationPeriodic() {
-    }
-
-    @Override
     public void elasticInit() {
         SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }

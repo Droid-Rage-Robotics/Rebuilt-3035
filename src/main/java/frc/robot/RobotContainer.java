@@ -73,8 +73,8 @@ public class RobotContainer {
 					new ModuleIOTalonFXReal(swerveConfig.getFrontLeft()),
 					new ModuleIOTalonFXReal(swerveConfig.getFrontRight()),
 					new ModuleIOTalonFXReal(swerveConfig.getBackLeft()),
-					new ModuleIOTalonFXReal(swerveConfig.getBackRight()),
-                        (pose) -> {});
+					new ModuleIOTalonFXReal(swerveConfig.getBackRight()));
+                        // (pose) -> {});
                 this.vision = new Vision(
 					drive,
 					new VisionIOLimelight(VisionConstants.leftLL, drive::getRotation),

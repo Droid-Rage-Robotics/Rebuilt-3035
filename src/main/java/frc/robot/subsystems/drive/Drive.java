@@ -49,7 +49,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.DroidRageConstants;
-import frc.robot.DroidRageConstants.Mode;
+// import frc.robot.DroidRageConstants.Mode;
 import frc.robot.LocalADStarAK;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
@@ -68,9 +68,9 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-import org.ironmaple.simulation.drivesims.COTS;
-import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
-import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
+// import org.ironmaple.simulation.drivesims.COTS;
+// import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
+// import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -107,20 +107,20 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                     1),
             getModuleTranslations());
 
-    public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
-            .withRobotMass(Kilograms.of(ROBOT_MASS_KG))
-            .withCustomModuleTranslations(getModuleTranslations())
-            .withGyro(COTS.ofPigeon2())
-            .withSwerveModule(new SwerveModuleSimulationConfig(
-                    DCMotor.getKrakenX60(1),
-                    DCMotor.getFalcon500(1),
-                    RobotContainer.getSwerveConfig().getFrontLeft().DriveMotorGearRatio,
-                    RobotContainer.getSwerveConfig().getFrontLeft().SteerMotorGearRatio,
-                    Volts.of(RobotContainer.getSwerveConfig().getFrontLeft().DriveFrictionVoltage),
-                    Volts.of(RobotContainer.getSwerveConfig().getFrontLeft().SteerFrictionVoltage),
-                    Meters.of(RobotContainer.getSwerveConfig().getFrontLeft().WheelRadius),
-                    KilogramSquareMeters.of(RobotContainer.getSwerveConfig().getFrontLeft().SteerInertia),
-                    WHEEL_COF));
+    // public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
+    //         .withRobotMass(Kilograms.of(ROBOT_MASS_KG))
+    //         .withCustomModuleTranslations(getModuleTranslations())
+    //         .withGyro(COTS.ofPigeon2())
+    //         .withSwerveModule(new SwerveModuleSimulationConfig(
+    //                 DCMotor.getKrakenX60(1),
+    //                 DCMotor.getFalcon500(1),
+    //                 RobotContainer.getSwerveConfig().getFrontLeft().DriveMotorGearRatio,
+    //                 RobotContainer.getSwerveConfig().getFrontLeft().SteerMotorGearRatio,
+    //                 Volts.of(RobotContainer.getSwerveConfig().getFrontLeft().DriveFrictionVoltage),
+    //                 Volts.of(RobotContainer.getSwerveConfig().getFrontLeft().SteerFrictionVoltage),
+    //                 Meters.of(RobotContainer.getSwerveConfig().getFrontLeft().WheelRadius),
+    //                 KilogramSquareMeters.of(RobotContainer.getSwerveConfig().getFrontLeft().SteerInertia),
+    //                 WHEEL_COF));
 
     public static final Lock odometryLock = new ReentrantLock();
     private final GyroIO gyroIO;
@@ -142,7 +142,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     private final SwerveDrivePoseEstimator poseEstimator =
             new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
-    private final Consumer<Pose2d> resetSimulationPoseCallBack;
+    // private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
     private boolean isEnabled;
 
@@ -152,11 +152,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
             ModuleIO flModuleIO,
             ModuleIO frModuleIO,
             ModuleIO blModuleIO,
-            ModuleIO brModuleIO,
-            Consumer<Pose2d> resetSimulationPoseCallBack) {
+            ModuleIO brModuleIO) {
+            // Consumer<Pose2d> resetSimulationPoseCallBack) {
         this.isEnabled=isEnabled;
         this.gyroIO = gyroIO;
-        this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
+        // this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
         modules[0] = new Module(flModuleIO, 0, RobotContainer.getSwerveConfig().getFrontLeft());
         modules[1] = new Module(frModuleIO, 1, RobotContainer.getSwerveConfig().getFrontRight());
         modules[2] = new Module(blModuleIO, 2, RobotContainer.getSwerveConfig().getBackLeft());
@@ -352,7 +352,9 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
         }
 
         // Update gyro alert
-        gyroDisconnectedAlert.set(!gyroInputs.connected && DroidRageConstants.currentMode != Mode.SIM);
+        // gyroDisconnectedAlert.set(!gyroInputs.connected && DroidRageConstants.currentMode != Mode.SIM);
+        gyroDisconnectedAlert.set(!gyroInputs.connected);
+
     }
 
     public void seedFieldCentric() {
@@ -494,7 +496,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
     /** Resets the current odometry pose. */
     public void setPose(Pose2d pose) {
-        resetSimulationPoseCallBack.accept(pose);
+        // resetSimulationPoseCallBack.accept(pose);
         poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
     }
 

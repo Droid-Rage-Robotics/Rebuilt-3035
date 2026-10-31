@@ -60,10 +60,6 @@ public class ElevatorTemplate extends SubsystemBase implements Dashboard, Teleme
     }
 
     @Override
-    public void simulationPeriodic() {
-    }
-
-    @Override
     public void elasticInit() {
         SmartDashboard.putData(name + "/Reset Encoder", resetEncoderCommand());
     }
