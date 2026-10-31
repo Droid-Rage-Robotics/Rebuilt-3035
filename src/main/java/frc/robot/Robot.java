@@ -50,7 +50,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledInit() {
-        commandScheduler.cancelAll();
+        robotContainer.getDrive().stopModules();
     }
     
     @Override
@@ -89,14 +89,11 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
-        commandScheduler.cancelAll();
-        
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
         
         DriverStation.getAlliance().ifPresent(alliance -> DroidRageConstants.alliance = alliance);
-
 
         /* DO NOT INITIALIZE BUTTON BINDINGS HERE */
     }
@@ -104,10 +101,5 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopExit(){
         SignalLogger.stop();
-    }
-    
-    @Override
-    public void testInit() {
-        commandScheduler.cancelAll();
     }
 }

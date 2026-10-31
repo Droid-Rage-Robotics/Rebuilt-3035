@@ -309,13 +309,6 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
             });
         }
 
-        // Stop moving when disabled
-        if (DriverStation.isDisabled()) {
-            for (var module : modules) {
-                module.stop();
-            }
-        }
-
         // Log empty setpoint states when disabled
         if (DriverStation.isDisabled()) {
             Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
@@ -394,7 +387,20 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
         }
     }
 
-    /** Stops the drive. */
+    /**
+     * Stops the drivetrain by running {@link Module#stop()}
+     * on all swerve modules.
+     */
+    public void stopModules() {
+        for (var module : modules) {
+            module.stop();
+        }
+    }
+
+    /**
+     * Stops the drivetrain by applying a {@link ChassisSpeeds}
+     * with zeros for dx, dy, and theta.
+    */
     public void stop() {
         runVelocity(new ChassisSpeeds());
     }

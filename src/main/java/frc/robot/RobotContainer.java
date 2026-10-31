@@ -43,7 +43,7 @@ public class RobotContainer {
 	
 	@Getter private static final SwerveConfig swerveConfig = new SwerveConfig();
 	// public final SwerveDrive drive = new SwerveDrive(true, swerveConfig);
-	private final Drive drive;
+	@Getter private final Drive drive;
 	// private final Vision vision = new Vision();
 	private final Vision vision;
 	private final Intake intake = new Intake(
