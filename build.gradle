@@ -39,6 +39,8 @@ deploy {
                     jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
                     jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
                     jvmArgs.add("-Djava.rmi.server.hostname=10.30.35.2")
+
+                    jvmArgs.add("-Xms32m") // Increase default inital heap size to 32 megabytes
                 }
 
                 // Static files artifact
