@@ -51,8 +51,8 @@ public class RobotContainer {
         new IntakeWheel(false)
     );
 	private final Indexer indexer = new Indexer(
-		new BottomRollers(true), 
-		new TopRoller(true)
+		new BottomRollers(false), 
+		new TopRoller(false)
 	);
 
     private final Kicker kicker = new Kicker(false);
