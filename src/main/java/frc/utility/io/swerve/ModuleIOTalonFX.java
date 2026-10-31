@@ -136,12 +136,34 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
         // Refresh all signals
-        var driveStatus = BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
-        var turnStatus = BaseStatusSignal.refreshAll(turnVelocity, turnAppliedVolts, turnCurrent);
-        var turnEncoderStatus = BaseStatusSignal.refreshAll(turnAbsolutePosition);
+        BaseStatusSignal.refreshAll(
+                drivePosition,
+                driveVelocity,
+                driveAppliedVolts,
+                driveCurrent,
+                turnAbsolutePosition,
+                turnVelocity,
+                turnAppliedVolts,
+                turnCurrent
+        );
+
+        // Check individual device connections
+        boolean driveConnected =
+                drivePosition.getStatus().isOK()
+                && driveVelocity.getStatus().isOK()
+                && driveAppliedVolts.getStatus().isOK()
+                && driveCurrent.getStatus().isOK();
+
+        boolean turnConnected =
+                turnVelocity.getStatus().isOK()
+                && turnAppliedVolts.getStatus().isOK()
+                && turnCurrent.getStatus().isOK();
+
+        boolean encoderConnected =
+                turnAbsolutePosition.getStatus().isOK();
 
         // Update drive inputs
-        inputs.driveConnected = driveConnectedDebounce.calculate(driveStatus.isOK());
+        inputs.driveConnected = driveConnectedDebounce.calculate(driveConnected);
         inputs.drivePositionRad =
                 Units.rotationsToRadians(drivePosition.getValueAsDouble()) / constants.DriveMotorGearRatio;
         inputs.driveVelocityRadPerSec =
@@ -150,8 +172,8 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
         inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
 
         // Update turn inputs
-        inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());
-        inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(turnEncoderStatus.isOK());
+        inputs.turnConnected = turnConnectedDebounce.calculate(turnConnected);
+        inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(encoderConnected);
         inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
         inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
         inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
