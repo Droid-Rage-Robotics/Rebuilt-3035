@@ -35,14 +35,7 @@ public interface VisionIO {
             Pose3d pose,
             double ambiguity,
             int tagCount,
-            double averageTagDistance,
-            PoseObservationType type) {}
-
-    enum PoseObservationType {
-        MEGATAG_1,
-        MEGATAG_2,
-        PHOTONVISION
-    }
+            double averageTagDistance) {}
 
     default void updateInputs(VisionIOInputs inputs) {}
 }
