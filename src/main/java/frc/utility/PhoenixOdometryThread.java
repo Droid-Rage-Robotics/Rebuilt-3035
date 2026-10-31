@@ -78,8 +78,8 @@ public class PhoenixOdometryThread extends Thread {
             phoenixSignals = newSignals;
             phoenixQueues.add(queue);
         } finally {
-            signalsLock.unlock();
             Drive.odometryLock.unlock();
+            signalsLock.unlock();
         }
         return queue;
     }
@@ -93,8 +93,8 @@ public class PhoenixOdometryThread extends Thread {
             genericSignals.add(signal);
             genericQueues.add(queue);
         } finally {
-            signalsLock.unlock();
             Drive.odometryLock.unlock();
+            signalsLock.unlock();
         }
         return queue;
     }
