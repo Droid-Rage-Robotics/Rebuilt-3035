@@ -3,13 +3,6 @@ package frc.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.DroidRageConstants;
-
 public class TelemetryUtils {
     /**
      * Determines whether writers placed in {@code practiceWriters()}
@@ -59,17 +52,8 @@ public class TelemetryUtils {
         public void updateTelemetry();
     }
 
-    public interface Periodic {
-        public void periodic();
-    }
-
     private static final List<Dashboard> dashboardPublishers = new ArrayList<>();
-    private static final List<Periodic> periodicPublishers = new ArrayList<>();
     private static final List<TelemetryUpdater> telemetryUpdaters = new ArrayList<>();
-
-    private static final Alert batteryAlert = new Alert("Battery Voltage", AlertType.kError);
-    private static final Elastic.Notification notification = new Elastic.Notification();
-    // private static final PowerDistribution powerDistribution = new PowerDistribution();
     
     /**
      * Call this function to register the subsystem's {@code elasticInit()} method
@@ -78,17 +62,6 @@ public class TelemetryUtils {
      */
     public static void registerDashboard(Dashboard subsystem) {
         dashboardPublishers.add(subsystem);
-    }
-    
-    /**
-     * Call this function to register a class's {@code periodic()} method
-     * to be run periodically
-     * 
-     * <p>DO NOT USE THIS IN A SUBSYSTEM!!!
-     * @param value set to {@code this} while in a class
-     */
-    public static void registerPeriodic(Periodic value) {
-        periodicPublishers.add(value);
     }
 
     /**
@@ -113,48 +86,19 @@ public class TelemetryUtils {
                 pub.practiceWriters();
             }
         }
-
-        if (DroidRageConstants.BatteryLow.get()) {
-            Elastic.sendNotification(notification
-                .withLevel(Elastic.NotificationLevel.ERROR)
-                .withTitle("Battery")
-                .withDescription("Battery Low!")
-                .withDisplaySeconds(10.0));
-        }
     }
 
     /**
      * Elastic configurations to run while the robot is disabled. Call this once
-     * in {@code Robot.disabledPeriodic()}
+     * in {@link frc.robot.Robot#disabledPeriodic()}
      */
-    public static void onDisabledPeriodic() {
-        if (DroidRageConstants.BatteryLow.get()) {
-            batteryAlert.set(true);
-            batteryAlert.setText("Battery Voltage Low");
-        } else {
-            batteryAlert.set(false);
-        }
-    }
+    public static void onDisabledPeriodic() {}
 
     /**
      * Configurations to run periodically. Call this once
-     * in {@code Robot.robotPeriodic()}
+     * in {@link frc.robot.Robot#robotPeriodic()}
      */
     public static void onRobotPeriodic() {
-        // Update from HubShiftUtil
-        SmartDashboard.putString(
-            "Shifts/Remaining Shift Time",
-            String.format("%.1f", Math.max(HubShiftUtil.getOfficialShiftInfo().remainingTime(), 0.0)));
-        SmartDashboard.putBoolean("Shifts/Shift Active", HubShiftUtil.getOfficialShiftInfo().active());
-        SmartDashboard.putString(
-            "Shifts/Game State", HubShiftUtil.getOfficialShiftInfo().currentShift().toString());
-        SmartDashboard.putBoolean(
-            "Shifts/Won Auto?",
-            !(DriverStation.getAlliance().orElse(Alliance.Blue) == HubShiftUtil.getFirstActiveAlliance()));
-        for (Periodic pub : periodicPublishers) {
-            pub.periodic();
-        }
-
         for (TelemetryUpdater pub : telemetryUpdaters) {
             pub.updateTelemetry();
         }
