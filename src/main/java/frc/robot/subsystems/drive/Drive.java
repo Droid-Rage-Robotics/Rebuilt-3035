@@ -20,7 +20,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
@@ -48,9 +47,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.DroidRageConstants;
-// import frc.robot.DroidRageConstants.Mode;
-import frc.robot.LocalADStarAK;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.SwerveConfig.Speed;
 import frc.robot.subsystems.vision.Vision;
@@ -67,10 +63,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
-// import org.ironmaple.simulation.drivesims.COTS;
-// import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
-// import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -281,74 +273,98 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
         this.fieldDirection=fieldDirection;
     }
 
+    
     @Override
     public void periodic() {
-        odometryLock.lock(); // Prevents odometry updates while reading data
-        gyroIO.updateInputs(gyroInputs);
-        Logger.processInputs("Drive/Gyro", gyroInputs);
-        for (var module : modules) {
-            module.periodic();
+        odometryLock.lock();
+
+        // Only collect sensor values and drain queues while locked.
+        try {
+            gyroIO.updateInputs(gyroInputs);
+
+            for (int i = 0; i < modules.length; i++) {
+                modules[i].updateInputs();
+            }
+        } finally {
+            odometryLock.unlock();
         }
-        odometryLock.unlock();
+
+        // Logging and odometry conversions happen outside the lock.
+        Logger.processInputs("Drive/Gyro", gyroInputs);
+
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].processInputs();
+        }
 
         /*
-         * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
-         */
+        * Periodically try to apply the operator perspective.
+        * If we haven't applied the operator perspective before, apply it
+        * regardless of DS state. Otherwise, only update while disabled.
+        */
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
-                    allianceColor == Alliance.Red
-                        ? RobotContainer.getSwerveConfig().getRedAlliancePerspectiveRotation()
-                        : RobotContainer.getSwerveConfig().getBlueAlliancePerspectiveRotation()
-                );
+                        allianceColor == Alliance.Red
+                                ? RobotContainer.getSwerveConfig()
+                                        .getRedAlliancePerspectiveRotation()
+                                : RobotContainer.getSwerveConfig()
+                                        .getBlueAlliancePerspectiveRotation());
                 m_hasAppliedOperatorPerspective = true;
             });
         }
 
         // Log empty setpoint states when disabled
         if (DriverStation.isDisabled()) {
-            Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-            Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+            Logger.recordOutput(
+                    "SwerveStates/Setpoints",
+                    new SwerveModuleState[] {});
+            Logger.recordOutput(
+                    "SwerveStates/SetpointsOptimized",
+                    new SwerveModuleState[] {});
         }
 
         // Update odometry
-        double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
+        double[] sampleTimestamps = modules[0].getOdometryTimestamps();
         int sampleCount = sampleTimestamps.length;
+
         for (int i = 0; i < sampleCount; i++) {
-            // Read wheel positions and deltas from each module
-            SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
-            SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+            SwerveModulePosition[] modulePositions =
+                    new SwerveModulePosition[4];
+            SwerveModulePosition[] moduleDeltas =
+                    new SwerveModulePosition[4];
+
             for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-                modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+                modulePositions[moduleIndex] =
+                        modules[moduleIndex].getOdometryPositions()[i];
+
                 moduleDeltas[moduleIndex] = new SwerveModulePosition(
-                        modulePositions[moduleIndex].distanceMeters - lastModulePositions[moduleIndex].distanceMeters,
+                        modulePositions[moduleIndex].distanceMeters
+                                - lastModulePositions[moduleIndex].distanceMeters,
                         modulePositions[moduleIndex].angle);
+
                 lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
             }
 
             // Update gyro angle
             if (gyroInputs.connected) {
-                // Use the real gyro angle
                 rawGyroRotation = gyroInputs.odometryYawPositions[i];
             } else {
-                // Use the angle delta from the kinematics and module deltas
                 Twist2d twist = kinematics.toTwist2d(moduleDeltas);
-                rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+                rawGyroRotation =
+                        rawGyroRotation.plus(new Rotation2d(twist.dtheta));
             }
 
-            // Apply update
-            poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+            // Apply odometry update
+            poseEstimator.updateWithTime(
+                    sampleTimestamps[i],
+                    rawGyroRotation,
+                    modulePositions);
         }
 
         // Update gyro alert
-        // gyroDisconnectedAlert.set(!gyroInputs.connected && DroidRageConstants.currentMode != Mode.SIM);
         gyroDisconnectedAlert.set(!gyroInputs.connected);
-
     }
+
 
     public void seedFieldCentric() {
         setPose(new Pose2d(getPose().getTranslation(), new Rotation2d().plus(fieldDirection)));

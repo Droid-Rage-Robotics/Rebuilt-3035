@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -47,17 +48,32 @@ public class Module {
                 new Alert("Disconnected turn encoder on module " + Integer.toString(index) + ".", AlertType.kError);
     }
 
-    public void periodic() {
+    /** 
+     * Called while Drive.odometryLock is held. 
+     * Captures IO values and drains odometry queues.
+     */
+    public void updateInputs() {
         io.updateInputs(inputs);
-        Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
+    }
+
+    /**
+     * Called after Drive.odometryLock has been released.
+     */
+    public void processInputs() {
+        Logger.processInputs("Drive/Module" + index, inputs);
 
         // Calculate positions for odometry
-        int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
+        int sampleCount = inputs.odometryTimestamps.length;
         odometryPositions = new SwerveModulePosition[sampleCount];
+
         for (int i = 0; i < sampleCount; i++) {
-            double positionMeters = inputs.odometryDrivePositionsRad[i] * constants.WheelRadius;
+            double positionMeters =
+                    inputs.odometryDrivePositionsRad[i] * constants.WheelRadius;
+
             Rotation2d angle = inputs.odometryTurnPositions[i];
-            odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
+
+            odometryPositions[i] =
+                    new SwerveModulePosition(positionMeters, angle);
         }
 
         // Update alerts
